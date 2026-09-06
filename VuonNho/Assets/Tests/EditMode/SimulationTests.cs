@@ -9,6 +9,10 @@ namespace VuonNho.Tests
         ContentCatalog _catalog;
         FarmSimulation _simulation;
 
+        /// <summary>Doc tu catalog chu khong viet cung: can bang doi thi test khong vo theo.</summary>
+        int MintBatchInput { get { return _catalog.Recipe(DefaultContent.RecipeMint).InputCount; } }
+        int MintFullYield { get { return _catalog.Crop(DefaultContent.CropMint).Yield; } }
+
         [SetUp]
         public void SetUp()
         {
@@ -86,7 +90,7 @@ namespace VuonNho.Tests
         public void MeMayCongXuDungMotLanTaiDeadline()
         {
             var state = TestKit.NewState(_catalog);
-            state.AddInventory(DefaultContent.CropMint, 2);
+            state.AddInventory(DefaultContent.CropMint, MintBatchInput);
             Assert.IsTrue(_simulation.TryStartBatch(state, 0));
 
             long brew = _simulation.BrewMsFor(state, DefaultContent.RecipeMint);
@@ -140,30 +144,64 @@ namespace VuonNho.Tests
             state.RobotUnlocked = true;
             TestKit.PlantAllUnlocked(state, _simulation, DefaultContent.CropMint);
 
+            // Vuon duoc cham hoan hao: dat luon tot, sach co, sau benh chua ngay. Day la muc TRAN
+            // ma cong thuc can bang mo ta — no van dat toi duoc, chi la phai bo cong ra.
             const long tenMinutes = 600000;
-            _simulation.AdvanceTo(state, tenMinutes);
+            for (long now = 10000; now <= tenMinutes; now += 10000)
+            {
+                _simulation.AdvanceTo(state, now);
+                TestKit.TendEveryPlot(state);
+            }
 
             // Cong thuc trang thai on dinh o muc 5 ke hoach:
             // xu/phut = min(so o x 60 / giay lon / so nguyen lieu, 60 / giay pha) x xu moi me.
             var crop = _catalog.Crop(DefaultContent.CropMint);
             var recipe = _catalog.Recipe(DefaultContent.RecipeMint);
-            double fieldBatchesPerMinute = 4 * 60000.0 / crop.BaseGrowthMs / recipe.InputCount;
+            double fieldBatchesPerMinute =
+                4 * 60000.0 / crop.BaseGrowthMs * crop.Yield / recipe.InputCount;
             double machineBatchesPerMinute = 60000.0 / recipe.BaseBrewMs;
             double expected = System.Math.Min(fieldBatchesPerMinute, machineBatchesPerMinute)
                               * recipe.OutputCoins * (tenMinutes / 60000.0);
 
-            // Cong thuc tren la TRAN, khong con la muc dat toi duoc.
+            // Robot di toi tung o de thu, nen mot o chin xong con nam cho toi luot no — quang cho
+            // do an mat khoang 12% ngay ca khi vuon duoc cham hoan hao.
             //
-            // Robot di toi tung o de thu, nen mot o chin xong con nam cho toi luot no. Quang cho
-            // do la thu nguoi choi nhin thay va la ly do robot co mat trong vuon, nhung no cung
-            // an mat mot phan thu nhap — do duoc 792/900 xu o bon o bac ha, tuc mat 12%.
-            //
-            // Can duoi 15% giu cho phan mat do khong am tham phinh to. Can tren 1.02 moi la muc
-            // kiem that su: vuot tran nghia la robot da quay ve loi thu sach tuc thi.
+            // Can tren 1.02 la muc kiem that su: vuot tran nghia la mot he nao do da ngung tinh —
+            // robot thu tuc thi, hoac do phi khong con tru khi gieo.
             Assert.GreaterOrEqual(state.Coins, (long)(expected * 0.85),
                                   "Thu nhap on dinh thap hon nhieu so voi tran balance.");
             Assert.LessOrEqual(state.Coins, (long)(expected * 1.02),
                                "Thu nhap vuot tran: robot dang thu ma khong mat thoi gian di.");
+        }
+
+        /// <summary>
+        /// Vuon bo be. Bon he canh tac deu bop nang suat, va bai nay giu cho phan bop do nam trong
+        /// mot khoang doc duoc: du thap de nguoi choi thay ro la phai cham, nhung khong thap toi
+        /// muc bo mot buoi la ve tay trang.
+        /// </summary>
+        [Test]
+        public void VuonBoBeThiThuNhapTutXuongNhungKhongVeKhong()
+        {
+            var tended = TestKit.NewState(_catalog);
+            tended.RobotUnlocked = true;
+            TestKit.PlantAllUnlocked(tended, _simulation, DefaultContent.CropMint);
+
+            var neglected = tended.Clone();
+
+            const long tenMinutes = 600000;
+            for (long now = 10000; now <= tenMinutes; now += 10000)
+            {
+                _simulation.AdvanceTo(tended, now);
+                TestKit.TendEveryPlot(tended);
+            }
+            _simulation.AdvanceTo(neglected, tenMinutes);
+
+            Assert.Less(neglected.Coins, tended.Coins,
+                        "Bo be phai kem hon cham chi, neu khong bon he canh tac chi la trang tri.");
+            double share = neglected.Coins / (double)tended.Coins;
+            Assert.That(share, Is.InRange(0.25, 0.60),
+                        "Bo be con " + neglected.Coins + "/" + tended.Coins + " xu, ty le " +
+                        share.ToString("0.00") + " — ngoai khoang mong doi.");
         }
 
         // ---- Dong thoi ----------------------------------------------------------------
@@ -209,7 +247,7 @@ namespace VuonNho.Tests
             Assert.AreEqual(DefaultContent.CropChamomile, plot.CurrentCropId);
             Assert.AreEqual(mintGrowth + chamomileGrowth, plot.FinishAtMs,
                             "Cuc bat dau chu ky rieng ke tu luc gieo lai.");
-            Assert.AreEqual(1, state.InventoryOf(DefaultContent.CropMint));
+            Assert.AreEqual(MintFullYield, state.InventoryOf(DefaultContent.CropMint));
         }
 
         [Test]
@@ -217,8 +255,9 @@ namespace VuonNho.Tests
         {
             var state = TestKit.NewState(_catalog);
             state.UnlockedRecipeIds.Add(DefaultContent.RecipeChamomile);
-            state.AddInventory(DefaultContent.CropMint, 2);
-            state.AddInventory(DefaultContent.CropChamomile, 2);
+            state.AddInventory(DefaultContent.CropMint, MintBatchInput);
+            state.AddInventory(DefaultContent.CropChamomile,
+                               _catalog.Recipe(DefaultContent.RecipeChamomile).InputCount);
             Assert.IsTrue(_simulation.TryStartBatch(state, 0));
 
             long mintBrew = _simulation.BrewMsFor(state, DefaultContent.RecipeMint);
@@ -246,7 +285,7 @@ namespace VuonNho.Tests
             var state = TestKit.NewState(_catalog);
             var plot = state.Plot(0);
             _simulation.Plant(state, plot, DefaultContent.CropMint, 0);
-            state.AddInventory(DefaultContent.CropMint, 2);
+            state.AddInventory(DefaultContent.CropMint, MintBatchInput);
             _simulation.TryStartBatch(state, 0);
 
             long growthBefore = _simulation.GrowthMsFor(state, DefaultContent.CropMint);
@@ -280,12 +319,12 @@ namespace VuonNho.Tests
         public void BanHetNguyenLieuKhiMayDangPhaThiMeHienTaiVanXong()
         {
             var state = TestKit.NewState(_catalog);
-            state.AddInventory(DefaultContent.CropMint, 4);
+            state.AddInventory(DefaultContent.CropMint, MintBatchInput * 2);
             Assert.IsTrue(_simulation.TryStartBatch(state, 0));
-            Assert.AreEqual(2, state.InventoryOf(DefaultContent.CropMint),
+            Assert.AreEqual(MintBatchInput, state.InventoryOf(DefaultContent.CropMint),
                             "Nguyen lieu bi tru ngay luc bat dau me.");
 
-            state.AddInventory(DefaultContent.CropMint, -2);   // nguoi choi ban het phan con lai
+            state.AddInventory(DefaultContent.CropMint, -MintBatchInput);   // nguoi choi ban het phan con lai
 
             _simulation.AdvanceTo(state, _simulation.BrewMsFor(state, DefaultContent.RecipeMint));
             Assert.AreEqual(_catalog.Recipe(DefaultContent.RecipeMint).OutputCoins, state.Coins);
@@ -295,7 +334,7 @@ namespace VuonNho.Tests
             long missing;
             Assert.IsTrue(_simulation.TryGetMissingInput(state, out missingCropId, out missing));
             Assert.AreEqual(DefaultContent.CropMint, missingCropId);
-            Assert.AreEqual(2, missing);
+            Assert.AreEqual(MintBatchInput, missing);
         }
 
         [Test]
@@ -342,7 +381,7 @@ namespace VuonNho.Tests
             _simulation.AdvanceTo(state, 60000);
 
             Assert.AreEqual(PlotPhase.Empty, plot.Phase);
-            Assert.AreEqual(1, state.InventoryOf(DefaultContent.CropMint));
+            Assert.AreEqual(MintFullYield, state.InventoryOf(DefaultContent.CropMint));
         }
     }
 }

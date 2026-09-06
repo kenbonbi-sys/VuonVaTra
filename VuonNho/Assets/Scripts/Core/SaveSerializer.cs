@@ -26,8 +26,8 @@ namespace VuonNho.Core
 
     public sealed class SaveSnapshot
     {
-        /// <summary>4 = robot di toi tung o de thu, nen phai nho cho no dung va o dang nham.</summary>
-        public const int CurrentSchemaVersion = 4;
+        /// <summary>5 = canh tac: do phi, co dai, sau benh va so thu tu vu cua tung o.</summary>
+        public const int CurrentSchemaVersion = 5;
 
         public int SchemaVersion = CurrentSchemaVersion;
         public string BalanceVersion;
@@ -57,6 +57,7 @@ namespace VuonNho.Core
             root.Set("coins", state.Coins);
             root.Set("tutorialStep", state.TutorialStep);
             root.Set("robotUnlocked", state.RobotUnlocked);
+            root.Set("pestSeed", state.PestSeed);
             root.Set("robotXMm", state.RobotXMm);
             root.Set("robotZMm", state.RobotZMm);
             root.Set("robotTargetPlotId", state.RobotTargetPlotId);
@@ -89,7 +90,15 @@ namespace VuonNho.Core
                     .Set("nextCropId", plot.NextCropId)
                     .Set("startAtMs", plot.StartAtMs)
                     .Set("finishAtMs", plot.FinishAtMs)
-                    .Set("pendingYield", plot.PendingYield));
+                    .Set("pendingYield", plot.PendingYield)
+                    .Set("fertility", plot.Fertility)
+                    .Set("weeds", plot.Weeds)
+                    .Set("weedsUpdatedAtMs", plot.WeedsUpdatedAtMs)
+                    .Set("fertilityUpdatedAtMs", plot.FertilityUpdatedAtMs)
+                    .Set("cycleIndex", plot.CycleIndex)
+                    .Set("pestPending", plot.PestPending)
+                    .Set("pestActive", plot.PestActive)
+                    .Set("pestAtMs", plot.PestAtMs));
             }
             root.Set("plots", plots);
 
@@ -222,6 +231,7 @@ namespace VuonNho.Core
                 TutorialStep = root.GetInt("tutorialStep", 0),
                 RobotUnlocked = root.GetBool("robotUnlocked", false),
                 // Save cu khong co bon truong nay: mac dinh la robot dung o cho cua no va dang ranh.
+                PestSeed = root.GetLong("pestSeed", 0),
                 RobotXMm = root.GetInt("robotXMm", catalog.Balance.RobotCenterXMm),
                 RobotZMm = root.GetInt("robotZMm", catalog.Balance.RobotCenterZMm),
                 RobotTargetPlotId = root.GetInt("robotTargetPlotId", -1),
@@ -280,7 +290,16 @@ namespace VuonNho.Core
                     NextCropId = entry.GetStringOrNull("nextCropId"),
                     StartAtMs = entry.GetLong("startAtMs", -1),
                     FinishAtMs = entry.GetLong("finishAtMs", -1),
-                    PendingYield = entry.GetInt("pendingYield", -1)
+                    PendingYield = entry.GetInt("pendingYield", -1),
+                    // Save cu khong co bon he canh tac: dat con tot nguyen, khong co, khong sau benh.
+                    Fertility = entry.GetInt("fertility", 100),
+                    Weeds = entry.GetInt("weeds", 0),
+                    WeedsUpdatedAtMs = entry.GetLong("weedsUpdatedAtMs", 0),
+                    FertilityUpdatedAtMs = entry.GetLong("fertilityUpdatedAtMs", 0),
+                    CycleIndex = entry.GetInt("cycleIndex", 0),
+                    PestPending = entry.GetBool("pestPending", false),
+                    PestActive = entry.GetBool("pestActive", false),
+                    PestAtMs = entry.GetLong("pestAtMs", 0)
                 };
 
                 int phase = entry.GetInt("phase", -1);
@@ -292,6 +311,12 @@ namespace VuonNho.Core
                     throw new SaveCorruptException("plotId khong hop le hoac trung.");
                 if (plot.StartAtMs < 0 || plot.FinishAtMs < 0 || plot.PendingYield < 0)
                     throw new SaveCorruptException("So am tren o dat " + plot.PlotId + ".");
+                if (plot.Fertility < 0 || plot.Fertility > 100 || plot.Weeds < 0 || plot.Weeds > 100)
+                    throw new SaveCorruptException("Do phi hoac co dai ngoai khoang 0..100 tren o " +
+                                                   plot.PlotId + ".");
+                if (plot.CycleIndex < 0 || plot.PestAtMs < 0 ||
+                    plot.WeedsUpdatedAtMs < 0 || plot.FertilityUpdatedAtMs < 0)
+                    throw new SaveCorruptException("So am trong trang thai canh tac o o " + plot.PlotId + ".");
 
                 CropDefinition unused;
                 if (plot.CurrentCropId != null && !catalog.TryGetCrop(plot.CurrentCropId, out unused))
@@ -487,7 +512,12 @@ namespace VuonNho.Core
 
             // 3 -> 4: robot di toi tung o thay vi thu sach tuc thi. Khong truong nao doi y nghia;
             // bon truong moi deu co mac dinh dung o buoc doc, nen o day khong phai them gi.
-            if (fromSchemaVersion == 3) return root;
+            if (fromSchemaVersion == 3) fromSchemaVersion = 4;
+
+            // 4 -> 5: them do phi, co dai, sau benh. Cung the: moi truong moi deu co mac dinh o
+            // buoc doc, va mac dinh do la mot khu vuon dat con tot, sach co, khong sau benh —
+            // dung trang thai ma mot van dang choi dang o.
+            if (fromSchemaVersion == 4) return root;
 
             throw new SaveCorruptException("Khong co buoc migration tu schema " + fromSchemaVersion + ".");
         }

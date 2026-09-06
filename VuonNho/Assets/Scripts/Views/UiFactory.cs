@@ -497,6 +497,21 @@ namespace VuonNho.Views
             if (cache.Symbol != null) cache.Symbol.color = iconTint;
         }
 
+        /// <summary>
+        /// An hoac hien glyph dan dau cua nut.
+        ///
+        /// Mot nut co gia tien mang icon dong xu, nhung cung cai nut do co luc khong con gia nao
+        /// de noi ("Dat con tot") — luc do de icon lai la noi doi. Nut phai duoc dung voi symbol
+        /// tu dau thi moi co glyph de an.
+        /// </summary>
+        public static void SetButtonSymbolVisible(Button button, bool visible)
+        {
+            if (button == null) return;
+            var cache = button.GetComponent<UiButtonStyle>();
+            if (cache == null || cache.Symbol == null) return;
+            cache.Symbol.gameObject.SetActive(visible);
+        }
+
         public static void SetInteractable(Button button, bool interactable)
         {
             SetButtonState(button, interactable ? ButtonState.Normal : ButtonState.Disabled);

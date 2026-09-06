@@ -14,6 +14,7 @@ namespace VuonNho.Core
         void OnPlanted(int plotId, string cropId, long atMs);
         void OnBatchStarted(string recipeId, long atMs);
         void OnBatchCompleted(string recipeId, long coins, long atMs);
+        void OnPestAppeared(int plotId, string cropId, long atMs);
         void OnStationStarted(string stageId, string cropId, long atMs);
         void OnStationCompleted(string stageId, string cropId, int amount, long atMs);
         void OnWagesPaid(long coins, int workersPaid, int workersUnpaid, long atMs);
@@ -106,6 +107,11 @@ namespace VuonNho.Core
             }
 
             state.SimulationTimeMs = targetSimulationTimeMs;
+
+            // Co va do phi khong phai su kien nen khong keo AdvanceTo dung lai, nhung HUD doc
+            // chung moi khung hinh. Cong not phan le o day de so tren man hinh khong bao gio cu.
+            for (int i = 0; i < state.Plots.Count; i++)
+                AdvanceGround(state, state.Plots[i], targetSimulationTimeMs);
         }
 
         /// <summary>
@@ -130,6 +136,13 @@ namespace VuonNho.Core
             for (int i = 0; i < state.Plots.Count; i++)
             {
                 var plot = state.Plots[i];
+                AdvanceGround(state, plot, atMs);
+                if (plot.PestPending && !plot.PestActive && plot.PestAtMs <= atMs &&
+                    plot.Phase == PlotPhase.Growing)
+                {
+                    plot.PestActive = true;
+                    NotifyPestAppeared(plot.PlotId, plot.CurrentCropId, atMs);
+                }
                 if (plot.Phase == PlotPhase.Growing && plot.FinishAtMs <= atMs)
                 {
                     plot.Phase = PlotPhase.Ready;
@@ -285,6 +298,13 @@ namespace VuonNho.Core
                 var plot = state.Plots[i];
                 if (plot.Phase != PlotPhase.Growing) continue;
                 if (!found || plot.FinishAtMs < best) { best = plot.FinishAtMs; found = true; }
+                // Luc sau benh lo ra cung la mot deadline: khong co no thi mot vuon khong co gi
+                // khac dang chay se bo qua ca dot sau benh khi chay bu offline.
+                if (plot.PestPending && !plot.PestActive && (!found || plot.PestAtMs < best))
+                {
+                    best = plot.PestAtMs;
+                    found = true;
+                }
             }
 
             if (state.Machine.BatchRunning)
@@ -450,10 +470,16 @@ namespace VuonNho.Core
             if (plot == null || plot.Phase != PlotPhase.Ready) return false;
 
             string harvestedCropId = plot.CurrentCropId;
-            int amount = plot.PendingYield;
+            // Sau benh khong duoc chua thi vu do mat trang. O van duoc gieo lai binh thuong: mat
+            // mot vu da du dau, mat luon cho dat thi nguoi choi khong con duong nao go lai.
+            int amount = plot.PestActive ? 0 : plot.PendingYield;
             if (amount > 0 && harvestedCropId != null)
                 state.AddInventory(harvestedCropId, amount);
             NotifyHarvested(plot.PlotId, harvestedCropId, amount, byRobot, atMs);
+
+            plot.PestActive = false;
+            plot.PestPending = false;
+            plot.PestAtMs = 0;
 
             plot.Phase = PlotPhase.Empty;
             plot.CurrentCropId = null;
@@ -469,16 +495,96 @@ namespace VuonNho.Core
             return true;
         }
 
+        /// <summary>
+        /// Gieo mot vu. Ba con so cua vu — thu bao nhieu, lon bao lau, co dinh sau benh khong —
+        /// deu **chot ngay tai day** chu khong tinh lai luc thu.
+        ///
+        /// Do la mot quyet dinh thiet ke, khong phai cho tien: no bat nguoi choi lo cho manh dat
+        /// TRUOC khi gieo. Bon phan giua vu khong cuu duoc vu dang chay, va don co giua vu khong
+        /// lam vu do lon nhanh len.
+        /// </summary>
         public void Plant(GameState state, PlotState plot, string cropId, long atMs)
         {
+            AdvanceGround(state, plot, atMs);
+
             var crop = _catalog.Crop(cropId);
+            var season = Cultivation.SeasonAt(_catalog.Balance, atMs);
+            bool inSeason = Cultivation.IsInSeason(crop, season);
+
             plot.CurrentCropId = cropId;
             plot.NextCropId = cropId;
             plot.Phase = PlotPhase.Growing;
             plot.StartAtMs = atMs;
-            plot.FinishAtMs = atMs + GrowthMsFor(state, cropId);
-            plot.PendingYield = crop.Yield;
+            plot.CycleIndex++;
+
+            long growthMs = Cultivation.GrowthWithWeeds(_catalog.Balance, GrowthMsFor(state, cropId), plot.Weeds);
+            plot.FinishAtMs = atMs + growthMs;
+            plot.PendingYield = Cultivation.YieldFor(_catalog.Balance, crop, plot.Fertility, inSeason);
+
+            plot.Fertility = Cultivation.Clamp(plot.Fertility - _catalog.Balance.PlantFertilityCost, 0, 100);
+
+            plot.PestActive = false;
+            plot.PestPending = Cultivation.PestStrikes(state.PestSeed, plot.PlotId, plot.CycleIndex,
+                                                      PestChancePercent(state));
+            plot.PestAtMs = plot.PestPending
+                ? Cultivation.PestAppearsAtMs(state.PestSeed, plot.PlotId, plot.CycleIndex, atMs, growthMs)
+                : 0;
+
             NotifyPlanted(plot.PlotId, cropId, atMs);
+        }
+
+        /// <summary>Ty le sau benh sau khi tru phan nang cap phong tru sinh hoc da mua.</summary>
+        public int PestChancePercent(GameState state)
+        {
+            int chance = _catalog.Balance.PestChancePercent;
+            for (int i = 0; i < _catalog.Upgrades.Count; i++)
+            {
+                var upgrade = _catalog.Upgrades[i];
+                if (upgrade.Kind != UpgradeKind.PestControl) continue;
+                if (state.UpgradeLevel(upgrade.Id) < 1) continue;
+                chance = chance * upgrade.IntValue / 100;
+            }
+            return Cultivation.Clamp(chance, 0, 100);
+        }
+
+        /// <summary>
+        /// Cong don co dai va do phi tu lan cuoi toi bay gio.
+        ///
+        /// Cong theo **so buoc tron** roi doi moc, chu khong tick tung giay: bon gio vang mat cung
+        /// chi ton dung mot phep chia, va ket qua khong doi du chia lam bao nhieu lan goi.
+        /// </summary>
+        public void AdvanceGround(GameState state, PlotState plot, long atMs)
+        {
+            if (plot == null) return;
+            if (plot.WeedsUpdatedAtMs > atMs) plot.WeedsUpdatedAtMs = atMs;
+            if (plot.FertilityUpdatedAtMs > atMs) plot.FertilityUpdatedAtMs = atMs;
+
+            if (!plot.Unlocked)
+            {
+                plot.WeedsUpdatedAtMs = atMs;
+                plot.FertilityUpdatedAtMs = atMs;
+                return;
+            }
+
+            long weedSteps = (atMs - plot.WeedsUpdatedAtMs) / _catalog.Balance.WeedGrowthMs;
+            if (weedSteps > 0)
+            {
+                long weeds = plot.Weeds + weedSteps;
+                plot.Weeds = weeds > 100 ? 100 : (int)weeds;
+                plot.WeedsUpdatedAtMs += weedSteps * _catalog.Balance.WeedGrowthMs;
+            }
+
+            long fertilitySteps = (atMs - plot.FertilityUpdatedAtMs) / _catalog.Balance.FertilityRegenMs;
+            if (fertilitySteps > 0)
+            {
+                int cap = _catalog.Balance.NaturalFertilityCap;
+                if (plot.Fertility < cap)
+                {
+                    long grown = plot.Fertility + fertilitySteps;
+                    plot.Fertility = grown > cap ? cap : (int)grown;
+                }
+                plot.FertilityUpdatedAtMs += fertilitySteps * _catalog.Balance.FertilityRegenMs;
+            }
         }
 
         /// <summary>
@@ -565,6 +671,12 @@ namespace VuonNho.Core
                 if (ChooseCropFor(state, stage) != null) return true;
             }
             return false;
+        }
+
+        void NotifyPestAppeared(int plotId, string cropId, long atMs)
+        {
+            if (ListenersMuted) return;
+            for (int i = 0; i < _listeners.Count; i++) _listeners[i].OnPestAppeared(plotId, cropId, atMs);
         }
 
         void NotifyStationStarted(string stageId, string cropId, long atMs)

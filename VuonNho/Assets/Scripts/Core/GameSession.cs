@@ -570,6 +570,65 @@ namespace VuonNho.Core
             return CommandResult.Ok();
         }
 
+        // ---------------------------------------------------------------- cham soc o dat
+
+        /// <summary>
+        /// Bon phan huu co: dat ve lai muc tot nhat.
+        ///
+        /// Chi doi do phi cua o, khong dong vao vu dang chay — nang suat da duoc chot luc gieo.
+        /// Bon giua vu la tien vut di, va tu choi thang o day thi nguoi choi biet ngay dieu do.
+        /// </summary>
+        public CommandResult Compost(int plotId)
+        {
+            EnsureCurrent();
+            var plot = _state.Plot(plotId);
+            if (plot == null || !plot.Unlocked) return CommandResult.Fail("Ô này chưa mở khoá.");
+            if (plot.Fertility >= _catalog.Balance.CompostFertility)
+                return CommandResult.Fail("Đất còn tốt, chưa cần bón.");
+            if (_state.Coins < _catalog.Balance.CompostCost)
+                return CommandResult.Fail("Thiếu " + (_catalog.Balance.CompostCost - _state.Coins) + " xu.");
+
+            var working = _state.Clone();
+            working.Coins -= _catalog.Balance.CompostCost;
+            working.Plot(plotId).Fertility = _catalog.Balance.CompostFertility;
+            return Commit(working, "plot_composted", "plotId", plotId.ToString());
+        }
+
+        /// <summary>
+        /// Lam co. Khong ton xu — cai gia cua no la mot lan bam, va la mot vong chay cua nguoi
+        /// choi qua tung o. Co chi anh huong toi vu GIEO SAU do, khong cuu vu dang lon.
+        /// </summary>
+        public CommandResult ClearWeeds(int plotId)
+        {
+            EnsureCurrent();
+            var plot = _state.Plot(plotId);
+            if (plot == null || !plot.Unlocked) return CommandResult.Fail("Ô này chưa mở khoá.");
+            if (plot.Weeds <= 0) return CommandResult.Fail("Ô này đang sạch cỏ.");
+
+            var working = _state.Clone();
+            working.Plot(plotId).Weeds = 0;
+            return Commit(working, "plot_weeded", "plotId", plotId.ToString());
+        }
+
+        /// <summary>Phong tru sinh hoc cho mot o dang co sau benh. Khong chua thi mat trang vu do.</summary>
+        public CommandResult TreatPest(int plotId)
+        {
+            EnsureCurrent();
+            var plot = _state.Plot(plotId);
+            if (plot == null || !plot.Unlocked) return CommandResult.Fail("Ô này chưa mở khoá.");
+            if (!plot.PestActive) return CommandResult.Fail("Ô này không có sâu bệnh.");
+            if (_state.Coins < _catalog.Balance.PestTreatmentCost)
+                return CommandResult.Fail("Thiếu " + (_catalog.Balance.PestTreatmentCost - _state.Coins) + " xu.");
+
+            var working = _state.Clone();
+            working.Coins -= _catalog.Balance.PestTreatmentCost;
+            var target = working.Plot(plotId);
+            target.PestActive = false;
+            target.PestPending = false;
+            target.PestAtMs = 0;
+            return Commit(working, "plot_treated", "plotId", plotId.ToString());
+        }
+
         // ---------------------------------------------------------------- day chuyen che bien
 
         public bool CanBuyStation(string stageId, out string reason)
@@ -964,6 +1023,7 @@ namespace VuonNho.Core
             }
         }
 
+        void ISimulationListener.OnPestAppeared(int plotId, string cropId, long atMs) { }
         void ISimulationListener.OnStationStarted(string stageId, string cropId, long atMs) { }
         void ISimulationListener.OnStationCompleted(string stageId, string cropId, int amount, long atMs) { }
         void ISimulationListener.OnWagesPaid(long coins, int paid, int unpaid, long atMs)

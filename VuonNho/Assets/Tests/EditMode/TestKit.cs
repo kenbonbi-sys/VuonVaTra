@@ -112,6 +112,25 @@ namespace VuonNho.Tests
             state.NextPayrollAtMs = state.SimulationTimeMs + catalog.Balance.PayrollPeriodMs;
         }
 
+        /// <summary>
+        /// Cham soc hoan hao moi o: dat tot nhat, sach co, khong sau benh.
+        ///
+        /// Doi thang tren state chu khong goi lenh cua GameSession, vi cac bai test nhip do chay
+        /// tren FarmSimulation truc tiep va khong co vi tien de tra cho phan bon.
+        /// </summary>
+        public static void TendEveryPlot(GameState state)
+        {
+            for (int i = 0; i < state.Plots.Count; i++)
+            {
+                var plot = state.Plots[i];
+                if (!plot.Unlocked) continue;
+                plot.Fertility = 100;
+                plot.Weeds = 0;
+                plot.PestActive = false;
+                plot.PestPending = false;
+            }
+        }
+
         /// <summary>Gieo cay cho moi o da mo, dung cho cac bai test khong quan tam thao tac UI.</summary>
         public static void PlantAllUnlocked(GameState state, FarmSimulation simulation, string cropId)
         {
@@ -152,7 +171,13 @@ namespace VuonNho.Tests
                        .Append(plot.NextCropId ?? "-").Append('|')
                        .Append(plot.StartAtMs).Append('|')
                        .Append(plot.FinishAtMs).Append('|')
-                       .Append(plot.PendingYield).Append(',');
+                       .Append(plot.PendingYield).Append('|')
+                       .Append(plot.Fertility).Append('|')
+                       .Append(plot.Weeds).Append('|')
+                       .Append(plot.CycleIndex).Append('|')
+                       .Append(plot.PestPending ? 1 : 0).Append('|')
+                       .Append(plot.PestActive ? 1 : 0).Append('|')
+                       .Append(plot.PestAtMs).Append(',');
             }
 
             var machine = state.Machine;

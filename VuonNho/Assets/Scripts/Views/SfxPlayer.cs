@@ -147,6 +147,7 @@ namespace VuonNho.Views
         public void OnPlanted(int plotId, string cropId, long atMs) { Play(Cue.Plant); }
         public void OnBatchStarted(string recipeId, long atMs) { }
         public void OnBatchCompleted(string recipeId, long coins, long atMs) { Play(Cue.Brew); }
+        public void OnPestAppeared(int plotId, string cropId, long atMs) { Play(Cue.Click); }
         public void OnStationStarted(string stageId, string cropId, long atMs) { Play(Cue.Click); }
         public void OnStationCompleted(string stageId, string cropId, int amount, long atMs) { Play(Cue.Harvest); }
         public void OnWagesPaid(long coins, int paid, int unpaid, long atMs) { }

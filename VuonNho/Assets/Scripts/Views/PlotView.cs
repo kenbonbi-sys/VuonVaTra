@@ -39,6 +39,12 @@ namespace VuonNho.Views
         public GameObject ReadyBadge;
         public Renderer ReadyBadgeRenderer;
 
+        [Tooltip("Bui co dai; to nho theo luong co cua o.")]
+        public Transform WeedTufts;
+
+        [Tooltip("Hien khi o dang co sau benh.")]
+        public GameObject PestBadge;
+
         [Tooltip("Chỉ gán khi mặt đất là primitive; ô khóa được tô màu tối.")]
         public Renderer SoilRenderer;
 
@@ -47,6 +53,9 @@ namespace VuonNho.Views
 
         [Tooltip("Ba hạt/lá dùng lại cho phản hồi thu; không chứa logic kinh tế.")]
         public Transform HarvestFeedback;
+
+        /// <summary>Duoi muc nay thi co chua dang ke; hien bui co li ti chi lam nhieu mat.</summary>
+        const int WeedVisibleThreshold = 12;
 
         const float MatureStageThreshold = 0.34f;
         const float PopDurationSeconds = 0.20f;
@@ -58,14 +67,41 @@ namespace VuonNho.Views
 
         public PlotPhase LastPhase { get { return _lastPhase; } }
 
+        void RenderGround(PlotState plot)
+        {
+            if (WeedTufts != null)
+            {
+                bool weedy = plot.Unlocked && plot.Weeds >= WeedVisibleThreshold;
+                SetActive(WeedTufts.gameObject, weedy);
+                if (weedy)
+                {
+                    // Cao dan tu 40% den 100%: o vua chom co va o day co phai nhin ra khac nhau.
+                    float grown = 0.4f + 0.6f * Mathf.Clamp01(plot.Weeds / 100f);
+                    WeedTufts.localScale = new Vector3(grown, grown, grown);
+                }
+            }
+
+            SetActive(PestBadge, plot.Unlocked && plot.PestActive);
+        }
+
         public void Render(GameState state, FarmSimulation simulation)
         {
             var plot = state.Plot(PlotId);
             if (plot == null) return;
 
+            // Do phi doc thang tren mat dat: dat tot thi tham, dat bac mau thi nhat di. Nguoi
+            // choi liec ca vuon la thay o nao can bon ma khong phai mo tung popup.
             if (SoilRenderer != null)
-                SoilRenderer.material.color = plot.Unlocked ? GardenPalette.Soil : GardenPalette.SoilLocked;
+            {
+                SoilRenderer.material.color = plot.Unlocked
+                    ? Color.Lerp(GardenPalette.SoilPoor, GardenPalette.Soil, plot.Fertility / 100f)
+                    : GardenPalette.SoilLocked;
+            }
             if (LockedOverlay != null) SetActive(LockedOverlay, !plot.Unlocked);
+
+            // Co dai va sau benh khong phu thuoc vao viec o co cay hay khong: o trong bo do
+            // van moc co, va do chinh la cai nguoi choi phai thay.
+            RenderGround(plot);
 
             bool hasCrop = plot.Unlocked &&
                            (plot.Phase == PlotPhase.Growing || plot.Phase == PlotPhase.Ready);

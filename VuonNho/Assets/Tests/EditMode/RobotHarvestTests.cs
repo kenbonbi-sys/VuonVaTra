@@ -65,7 +65,8 @@ namespace VuonNho.Tests
             Assert.GreaterOrEqual(state.RobotTargetPlotId, 0);
             _simulation.AdvanceTo(state, state.RobotReadyAtMs);
 
-            Assert.AreEqual(1, state.InventoryOf(DefaultContent.CropMint),
+            Assert.AreEqual(_catalog.Crop(DefaultContent.CropMint).Yield,
+                            state.InventoryOf(DefaultContent.CropMint),
                             "Một chuyến đi thu đúng một ô.");
         }
 

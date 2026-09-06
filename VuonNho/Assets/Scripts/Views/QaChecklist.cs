@@ -95,6 +95,7 @@ namespace VuonNho.Views
             yield return RunProcessingChecks();
             yield return CheckWorkshopPresentation();
             yield return CheckRobotHarvestTrip();
+            yield return CheckCultivation();
             RunSettingsChecks();
 
             Finish();
@@ -382,6 +383,186 @@ namespace VuonNho.Views
                            " ở (" + _session.Simulation.PlotXMm(target) + ", " +
                            _session.Simulation.PlotZMm(target) + ")");
             yield return null;
+        }
+
+
+        // ---------------------------------------------------------------- canh tac
+
+        /// <summary>
+        /// Bon he canh tac: do phi, co dai, sau benh, thoi vu.
+        ///
+        /// EditMode da chung minh tung luat mot. Cho nay do thu khac: nguoi choi co **nhin thay**
+        /// va **lam duoc gi** khong — con so co len HUD khong, nut cham soc co doi trang thai
+        /// khong, va manh dat trong canh 3D co doi theo khong.
+        /// </summary>
+        IEnumerator CheckCultivation()
+        {
+            Section("Canh tác: độ phì, cỏ, sâu bệnh, thời vụ");
+
+            var balance = _session.Catalog.Balance;
+
+            // Moi lenh cua GameSession commit bang cach thay ca GameState bang mot ban sao moi,
+            // nen KHONG duoc giu lai bien plot qua mot lenh. Doc lai qua Plot(0) moi lan.
+            Plot(0).Weeds = 0;
+            Plot(0).Fertility = 100;
+            Plot(0).Phase = PlotPhase.Empty;
+            Plot(0).CurrentCropId = null;
+
+            // --- do phi tru khi gieo, va tu hoi len den tran tu nhien chu khong hon
+            int before = Plot(0).Fertility;
+            var planted = _session.Plant(0, DefaultContent.CropMint);
+            Check("Gieo một vụ thì trừ độ phì của ô",
+                  planted.Success && Plot(0).Fertility == before - balance.PlantFertilityCost,
+                  planted.Success ? before + " → " + Plot(0).Fertility + " (trừ " + balance.PlantFertilityCost + ")"
+                                  : planted.FailureReason);
+
+            // De o trong truoc khi do phan tu hoi: o dang co cay se duoc thu roi gieo lai giua
+            // chung, va moi lan gieo lai tru them do phi — do vao do la do lan hai thu.
+            Plot(0).Phase = PlotPhase.Empty;
+            Plot(0).CurrentCropId = null;
+            Plot(0).NextCropId = null;
+            Plot(0).Fertility = 0;
+            _session.DebugAdvance(balance.FertilityRegenMs * (balance.NaturalFertilityCap + 20));
+            Check("Đất bỏ không tự hồi nhưng dừng ở trần tự nhiên",
+                  Plot(0).Fertility == balance.NaturalFertilityCap,
+                  Plot(0).Fertility + "/100, trần " + balance.NaturalFertilityCap);
+
+            // --- bon phan: mat xu, dat ve muc tot nhat
+            _session.DebugAddCoins(balance.CompostCost);
+            long coinsBefore = _session.State.Coins;
+            var composted = _session.Compost(0);
+            Check("Bón phân đưa đất về mức tốt nhất và trừ đúng tiền",
+                  composted.Success && Plot(0).Fertility == balance.CompostFertility &&
+                  _session.State.Coins == coinsBefore - balance.CompostCost,
+                  composted.Success ? "độ phì " + Plot(0).Fertility + ", còn " + _session.State.Coins + " xu"
+                                    : composted.FailureReason);
+            Check("Đất đang tốt thì không cho bón thêm", !_session.Compost(0).Success, null);
+
+            // --- co dai moc len, lam cham, va lam co xoa sach
+            Plot(0).Weeds = 0;
+            _session.DebugAdvance(balance.WeedGrowthMs * 120);
+            Check("Bỏ bê một lúc thì cỏ mọc kín ô", Plot(0).Weeds >= 90, Plot(0).Weeds + "/100");
+
+            long clean = _session.Simulation.GrowthMsFor(_session.State, DefaultContent.CropMint);
+            long weedy = Cultivation.GrowthWithWeeds(balance, clean, Plot(0).Weeds);
+            Check("Cỏ dại làm cây lớn chậm hơn hẳn", weedy > clean, clean + " ms → " + weedy + " ms");
+
+            var weeded = _session.ClearWeeds(0);
+            Check("Làm cỏ xoá sạch cỏ của ô", weeded.Success && Plot(0).Weeds == 0,
+                  weeded.Success ? Plot(0).Weeds + "/100" : weeded.FailureReason);
+
+            // --- sau benh: tri duoc, va o sach thi khong cho tri
+            Plot(0).PestActive = true;
+            _session.DebugAddCoins(balance.PestTreatmentCost);
+            coinsBefore = _session.State.Coins;
+            var treated = _session.TreatPest(0);
+            Check("Trị được sâu bệnh và trừ đúng tiền",
+                  treated.Success && !Plot(0).PestActive &&
+                  _session.State.Coins == coinsBefore - balance.PestTreatmentCost,
+                  treated.Success ? "còn " + _session.State.Coins + " xu" : treated.FailureReason);
+            Check("Ô không có sâu thì không cho trị", !_session.TreatPest(0).Success, null);
+
+            // --- thoi vu: cay trai vu thu it hon han
+            var jasmine = _session.Catalog.Crop(DefaultContent.CropJasmine);
+            int inSeason = Cultivation.YieldFor(balance, jasmine, 100, true);
+            int offSeason = Cultivation.YieldFor(balance, jasmine, 100, false);
+            Check("Trồng trái vụ thu ít hơn trồng đúng vụ", offSeason < inSeason,
+                  inSeason + " → " + offSeason + " đơn vị");
+            Check("Mùa suy ra được từ đồng hồ mô phỏng", true,
+                  "đang là mùa " +
+                  GameHud.SeasonName(Cultivation.SeasonAt(balance, _session.State.SimulationTimeMs)));
+
+            // --- HUD: popup o phai noi ra ca bon con so va cho bam duoc
+            _hud.OpenPlotPopup(0);
+            yield return null;
+            yield return null;
+
+            var popup = _hud.transform.Find("PlotPopup");
+            var groundText = popup != null ? TextAt(popup, "Ground") : null;
+            Check("Popup ô hiện độ phì, cỏ và mùa",
+                  groundText != null && groundText.text.Contains("Độ phì") &&
+                  groundText.text.Contains("cỏ") && groundText.text.Contains("mùa"),
+                  groundText != null ? groundText.text : "không tìm thấy dòng tình trạng đất");
+
+            var careRow = popup != null ? popup.Find("CareRow") : null;
+            bool hasCareButtons = careRow != null && careRow.Find("Weed") != null &&
+                                  careRow.Find("Compost") != null && popup.Find("Treat") != null;
+            Check("Popup ô có đủ ba nút chăm sóc", hasCareButtons, null);
+
+            // O sach sau thi nut tri sau bien mat han, de popup khong cao them mot hang vo ich.
+            var treat = popup != null ? popup.Find("Treat") : null;
+            Check("Ô sạch sâu bệnh thì không có nút trị sâu",
+                  treat != null && !treat.gameObject.activeSelf,
+                  treat == null ? "không tìm thấy nút" : "activeSelf = " + treat.gameObject.activeSelf);
+
+            // Co sau thi nut phai hien ra ngay, chu khong doi mo lai popup.
+            Plot(0).PestActive = true;
+            _hud.Refresh();
+            yield return null;
+            Check("Ô có sâu bệnh thì nút trị sâu hiện ra",
+                  treat != null && treat.gameObject.activeSelf, null);
+            Plot(0).PestActive = false;
+            _hud.Refresh();
+            yield return null;
+
+            if (popup != null) CheckTextOverflow("popup ô", popup as RectTransform);
+            _hud.ClosePlotPopup();
+            yield return null;
+
+            // --- the mua tren thanh tren
+            var topBar = _hud.transform.Find("TopBar");
+            var seasonChip = topBar != null ? topBar.Find("SeasonChip") : null;
+            var seasonText = seasonChip != null ? TextAt(seasonChip, "Season/Value") : null;
+            Check("Thanh trên hiện mùa hiện tại và thời gian còn lại",
+                  seasonText != null && seasonText.text.StartsWith("Mùa "),
+                  seasonText != null ? seasonText.text : "không tìm thấy thẻ mùa");
+
+            // --- canh 3D: co dai va sau benh phai nhin thay duoc tren o dat
+            var view = PlotViewFor(0);
+            if (view == null)
+            {
+                Check("Cỏ dại và sâu bệnh hiện ra trên ô đất", false, "Không tìm thấy PlotView của ô 1.");
+                yield break;
+            }
+
+            Plot(0).Weeds = 100;
+            Plot(0).PestActive = true;
+            yield return null;
+            yield return null;
+            bool weedShown = view.WeedTufts != null && view.WeedTufts.gameObject.activeSelf;
+            bool pestShown = view.PestBadge != null && view.PestBadge.activeSelf;
+            Check("Ô đầy cỏ và có sâu thì thấy được ngay trong vườn", weedShown && pestShown,
+                  "cỏ " + weedShown + ", sâu " + pestShown);
+
+            Plot(0).Weeds = 0;
+            Plot(0).PestActive = false;
+            yield return null;
+            yield return null;
+            Check("Làm cỏ trị sâu xong thì dấu hiệu biến mất",
+                  (view.WeedTufts == null || !view.WeedTufts.gameObject.activeSelf) &&
+                  (view.PestBadge == null || !view.PestBadge.activeSelf), null);
+            yield return null;
+        }
+
+        /// <summary>O dat doc lai tu phien hien tai: lenh nao commit cung thay ca GameState.</summary>
+        PlotState Plot(int plotId)
+        {
+            return _session.State.Plot(plotId);
+        }
+
+        static Text TextAt(Transform root, string path)
+        {
+            var found = root.Find(path);
+            return found != null ? found.GetComponent<Text>() : null;
+        }
+
+        PlotView PlotViewFor(int plotId)
+        {
+            if (_bootstrap == null || _bootstrap.Plots == null) return null;
+            for (int i = 0; i < _bootstrap.Plots.Length; i++)
+                if (_bootstrap.Plots[i] != null && _bootstrap.Plots[i].PlotId == plotId)
+                    return _bootstrap.Plots[i];
+            return null;
         }
 
         // ---------------------------------------------------------------- camera va nhan vat
@@ -924,7 +1105,8 @@ namespace VuonNho.Views
                 DefaultContent.UpgradeBrewSpeed2,
                 DefaultContent.UpgradeGrowthSpeed2,
                 DefaultContent.UpgradeLemongrass,
-                DefaultContent.UpgradeJasmine
+                DefaultContent.UpgradeJasmine,
+                DefaultContent.UpgradePestControl
             };
 
             foreach (string upgradeId in route)
@@ -991,10 +1173,10 @@ namespace VuonNho.Views
             // Vuon vua duoc gieo lai nen kho rong; tien them cho toi khi may thuc su co me chay,
             // roi moi luu. Neu khong cho, bai kiem se phu thuoc vao nhip balance dang dung.
             int settle = 0;
-            while (!_session.State.Machine.BatchRunning && settle++ < 60)
+            while (!_session.State.Machine.BatchRunning && settle++ < 600)
             {
                 _session.DebugAdvance(1000);
-                if (settle % 10 == 0) yield return null;
+                if (settle % 20 == 0) yield return null;
             }
             yield return null;
 
@@ -1002,7 +1184,12 @@ namespace VuonNho.Views
             for (int i = 0; i < _session.State.Plots.Count; i++)
                 if (_session.State.Plot(i).Phase == PlotPhase.Growing) anyGrowing = true;
             Check("Có cây đang lớn lúc lưu", anyGrowing, null);
-            Check("Máy đang pha lúc lưu", _session.State.Machine.BatchRunning, null);
+            var brewing = _session.Catalog.Recipe(_session.State.Machine.SelectedRecipeId);
+            Check("Máy đang pha lúc lưu", _session.State.Machine.BatchRunning,
+                  brewing == null ? "chưa chọn công thức nào"
+                                  : "công thức " + brewing.DisplayName + ", kho còn " +
+                                    _session.State.InventoryOf(brewing.InputCropId) + "/" +
+                                    brewing.InputCount + " nguyên liệu");
 
             // Suspend dat checkpoint ve hien tai roi luu, giong luc nguoi choi thoat game.
             _session.Suspend();

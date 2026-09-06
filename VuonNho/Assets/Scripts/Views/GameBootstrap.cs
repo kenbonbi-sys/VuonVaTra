@@ -553,6 +553,15 @@ namespace VuonNho.Views
 
         public void OnBatchStarted(string recipeId, long atMs) { }
         public void OnBatchCompleted(string recipeId, long coins, long atMs) { }
+        /// <summary>
+        /// Sau benh xuat hien giua vu. Bao ngay va bao ro o nao: vu nay se ve khong neu de yen,
+        /// nhung nguoi choi con kip vao o do de tri.
+        /// </summary>
+        public void OnPestAppeared(int plotId, string cropId, long atMs)
+        {
+            if (Hud != null) Hud.ShowToast("Ô " + (plotId + 1) + " có sâu bệnh. Không trị thì mất trắng vụ này.");
+        }
+
         public void OnStationStarted(string stageId, string cropId, long atMs) { }
         public void OnStationCompleted(string stageId, string cropId, int amount, long atMs) { }
         public void OnWagesPaid(long coins, int paid, int unpaid, long atMs) { }

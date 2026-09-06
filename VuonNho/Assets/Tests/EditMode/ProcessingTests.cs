@@ -14,6 +14,9 @@ namespace VuonNho.Tests
         ContentCatalog _catalog;
         FarmSimulation _simulation;
 
+        int StageInput { get { return _catalog.Stages[0].InputCount; } }
+        int PackedInput { get { return _catalog.Recipe(DefaultContent.RecipeMint).PackedInputCount; } }
+
         [SetUp]
         public void SetUp()
         {
@@ -47,7 +50,7 @@ namespace VuonNho.Tests
         {
             var state = TestKit.NewState(_catalog);
             TestKit.OpenWholeChain(state, _catalog, _catalog.Stages.Count);
-            state.AddInventory(DefaultContent.CropMint, 2);
+            state.AddInventory(DefaultContent.CropMint, StageInput);
 
             _simulation.AdvanceTo(state, 600000);
 
@@ -68,12 +71,12 @@ namespace VuonNho.Tests
             state.Machine.SelectedRecipeId = null;
             // Chi mua may dau tien.
             state.Station(DefaultStages.Wither).Owned = true;
-            state.AddInventory(DefaultContent.CropMint, 4);
+            state.AddInventory(DefaultContent.CropMint, StageInput * 2);
 
             _simulation.AdvanceTo(state, 300000);
 
             Assert.AreEqual(0, state.InventoryOf(DefaultContent.CropMint));
-            Assert.AreEqual(4, state.InventoryOf(
+            Assert.AreEqual(StageInput * 2, state.InventoryOf(
                 ProcessChain.ItemId(DefaultContent.CropMint, ProcessChain.SuffixWithered)),
                 "Hang phai dung lai ngay sau chang da mua.");
         }
@@ -150,11 +153,11 @@ namespace VuonNho.Tests
         public void QuayTraUuTienTraDongGoiVaTraNhieuXuHon()
         {
             var raw = TestKit.NewState(_catalog);
-            raw.AddInventory(DefaultContent.CropMint, 2);
+            raw.AddInventory(DefaultContent.CropMint, StageInput);
             _simulation.AdvanceTo(raw, 60000);
 
             var packed = TestKit.NewState(_catalog);
-            packed.AddInventory(Packed(DefaultContent.CropMint), 2);
+            packed.AddInventory(Packed(DefaultContent.CropMint), PackedInput);
             _simulation.AdvanceTo(packed, 60000);
 
             Assert.Greater(packed.Coins, raw.Coins,
@@ -166,7 +169,7 @@ namespace VuonNho.Tests
         {
             var state = TestKit.NewState(_catalog);
             Assert.AreEqual(0, state.OwnedStationCount());
-            state.AddInventory(DefaultContent.CropMint, 6);
+            state.AddInventory(DefaultContent.CropMint, StageInput);
 
             _simulation.AdvanceTo(state, 120000);
 

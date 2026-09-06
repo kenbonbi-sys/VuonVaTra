@@ -37,6 +37,13 @@ namespace VuonNho.Core
         public const string UpgradeBrewSpeed2 = "upgrade_brew_speed_2";
         public const string UpgradeLemongrass = "upgrade_unlock_lemongrass";
         public const string UpgradeJasmine = "upgrade_unlock_jasmine";
+        public const string UpgradePestControl = "upgrade_pest_control";
+
+        // Mat na mua, theo dung thu tu cua enum Season.
+        public const int SeasonMaskXuan = 1 << (int)Season.Xuan;
+        public const int SeasonMaskHa = 1 << (int)Season.Ha;
+        public const int SeasonMaskThu = 1 << (int)Season.Thu;
+        public const int SeasonMaskDong = 1 << (int)Season.Dong;
 
         public static ContentCatalog Create()
         {
@@ -50,27 +57,31 @@ namespace VuonNho.Core
                 new CropDefinition
                 {
                     Id = CropMint, DisplayName = "Bạc hà", BaseGrowthMs = 8000,
-                    Yield = 1, RawSellPrice = 2, UnlockUpgradeId = null, SortOrder = 0
+                    Yield = 4, RawSellPrice = 2, UnlockUpgradeId = null, SortOrder = 0
                 },
                 new CropDefinition
                 {
                     Id = CropChamomile, DisplayName = "Cúc", BaseGrowthMs = 16000,
-                    Yield = 1, RawSellPrice = 5, UnlockUpgradeId = UpgradeChamomile, SortOrder = 1
+                    Yield = 4, RawSellPrice = 5, UnlockUpgradeId = UpgradeChamomile, SortOrder = 1,
+                    SeasonMask = SeasonMaskXuan | SeasonMaskThu
                 },
                 new CropDefinition
                 {
                     Id = CropStrawberry, DisplayName = "Dâu", BaseGrowthMs = 26000,
-                    Yield = 1, RawSellPrice = 9, UnlockUpgradeId = UpgradeStrawberry, SortOrder = 2
+                    Yield = 4, RawSellPrice = 9, UnlockUpgradeId = UpgradeStrawberry, SortOrder = 2,
+                    SeasonMask = SeasonMaskXuan | SeasonMaskHa
                 },
                 new CropDefinition
                 {
                     Id = CropLemongrass, DisplayName = "Sả", BaseGrowthMs = 40000,
-                    Yield = 1, RawSellPrice = 14, UnlockUpgradeId = UpgradeLemongrass, SortOrder = 3
+                    Yield = 4, RawSellPrice = 14, UnlockUpgradeId = UpgradeLemongrass, SortOrder = 3,
+                    SeasonMask = SeasonMaskHa | SeasonMaskThu
                 },
                 new CropDefinition
                 {
                     Id = CropJasmine, DisplayName = "Nhài", BaseGrowthMs = 60000,
-                    Yield = 1, RawSellPrice = 22, UnlockUpgradeId = UpgradeJasmine, SortOrder = 4
+                    Yield = 4, RawSellPrice = 22, UnlockUpgradeId = UpgradeJasmine, SortOrder = 4,
+                    SeasonMask = SeasonMaskHa
                 }
             };
 
@@ -80,33 +91,33 @@ namespace VuonNho.Core
             {
                 new RecipeDefinition
                 {
-                    Id = RecipeMint, DisplayName = "Trà bạc hà", InputCropId = CropMint, InputCount = 2,
+                    Id = RecipeMint, DisplayName = "Trà bạc hà", InputCropId = CropMint, InputCount = 8,
                     BaseBrewMs = 4000, OutputCoins = 6, UnlockUpgradeId = null, SortOrder = 0,
-                    PackedInputCount = 2, PackedOutputCoins = 30
+                    PackedInputCount = 8, PackedOutputCoins = 30
                 },
                 new RecipeDefinition
                 {
-                    Id = RecipeChamomile, DisplayName = "Trà hoa cúc", InputCropId = CropChamomile, InputCount = 2,
+                    Id = RecipeChamomile, DisplayName = "Trà hoa cúc", InputCropId = CropChamomile, InputCount = 8,
                     BaseBrewMs = 6000, OutputCoins = 16, UnlockUpgradeId = UpgradeChamomile, SortOrder = 1,
-                    PackedInputCount = 2, PackedOutputCoins = 80
+                    PackedInputCount = 8, PackedOutputCoins = 80
                 },
                 new RecipeDefinition
                 {
-                    Id = RecipeStrawberry, DisplayName = "Trà dâu", InputCropId = CropStrawberry, InputCount = 2,
+                    Id = RecipeStrawberry, DisplayName = "Trà dâu", InputCropId = CropStrawberry, InputCount = 8,
                     BaseBrewMs = 9000, OutputCoins = 30, UnlockUpgradeId = UpgradeStrawberry, SortOrder = 2,
-                    PackedInputCount = 2, PackedOutputCoins = 150
+                    PackedInputCount = 8, PackedOutputCoins = 150
                 },
                 new RecipeDefinition
                 {
-                    Id = RecipeLemongrass, DisplayName = "Trà sả", InputCropId = CropLemongrass, InputCount = 2,
+                    Id = RecipeLemongrass, DisplayName = "Trà sả", InputCropId = CropLemongrass, InputCount = 8,
                     BaseBrewMs = 13000, OutputCoins = 52, UnlockUpgradeId = UpgradeLemongrass, SortOrder = 3,
-                    PackedInputCount = 2, PackedOutputCoins = 260
+                    PackedInputCount = 8, PackedOutputCoins = 260
                 },
                 new RecipeDefinition
                 {
-                    Id = RecipeJasmine, DisplayName = "Trà nhài", InputCropId = CropJasmine, InputCount = 2,
+                    Id = RecipeJasmine, DisplayName = "Trà nhài", InputCropId = CropJasmine, InputCount = 8,
                     BaseBrewMs = 18000, OutputCoins = 86, UnlockUpgradeId = UpgradeJasmine, SortOrder = 4,
-                    PackedInputCount = 2, PackedOutputCoins = 430
+                    PackedInputCount = 8, PackedOutputCoins = 430
                 }
             };
 
@@ -186,6 +197,13 @@ namespace VuonNho.Core
                     RequiresUpgradeId = UpgradeStrawberry,
                     Description = "Cho chọn cây sả và trà sả.",
                     SortOrder = 9
+                },
+                new UpgradeDefinition
+                {
+                    Id = UpgradePestControl, DisplayName = "Phòng trừ sinh học", Cost = 640,
+                    Kind = UpgradeKind.PestControl, IntValue = 45,
+                    Description = "Thiên địch và tỉa tán: sâu bệnh chỉ còn 45% số vụ.",
+                    RequiresUpgradeId = UpgradeRobot, SortOrder = 25
                 },
                 new UpgradeDefinition
                 {

@@ -376,8 +376,32 @@ namespace VuonNho.EditorTools
                 view.ReadyBadgeRenderer = badge.GetComponent<Renderer>();
             }
 
+            // --- co dai: bon bui o bon goc o, ca cum to nho theo luong co
+            var weeds = new GameObject("WeedTufts");
+            weeds.transform.SetParent(visualRoot.transform, false);
+            weeds.transform.localPosition = new Vector3(0f, 0.17f, 0f);
+            // Phai to bang mot phan dang ke cua o. Bui co bang dot ngon tay thi o do phan giai
+            // 1366 px chi con vai diem anh, va ca he co dai coi nhu vo hinh voi nguoi choi.
+            float reach = skin.PlotSize * 0.32f;
+            for (int corner = 0; corner < 4; corner++)
+            {
+                float x = (corner == 0 || corner == 3) ? -reach : reach;
+                float z = (corner < 2) ? -reach : reach;
+                Primitive(PrimitiveType.Cube, weeds.transform, "Weed_" + corner,
+                          new Vector3(x, 0.17f, z), new Vector3(0.20f, 0.34f, 0.20f), "Weed")
+                    .transform.localRotation = Quaternion.Euler(0f, corner * 24f, corner % 2 == 0 ? 14f : -14f);
+            }
+            view.WeedTufts = weeds.transform;
+            weeds.SetActive(false);
+
+            // --- dau hieu sau benh, dung canh dau hieu chin nen hai thu khong de len nhau
+            var pest = Primitive(PrimitiveType.Sphere, badgeAnchor.transform, "PestBadge",
+                                 new Vector3(0.34f, 0f, 0f), new Vector3(0.26f, 0.26f, 0.26f), "Pest");
+            view.PestBadge = pest;
+
             SetActive(view.SeedlingVisual, false);
             SetActive(view.ReadyBadge, false);
+            SetActive(view.PestBadge, false);
             var harvest = new GameObject("HarvestFeedback");
             harvest.transform.SetParent(plotRoot.transform, false);
             for (int i = 0; i < 3; i++)
@@ -1054,6 +1078,8 @@ namespace VuonNho.EditorTools
                 case "CropMint": return GardenPalette.CropBody(DefaultContent.CropMint);
                 case "CropChamomile": return GardenPalette.CropBody(DefaultContent.CropChamomile);
                 case "CropStrawberry": return GardenPalette.CropBody(DefaultContent.CropStrawberry);
+                case "Weed": return GardenPalette.Weed;
+                case "Pest": return GardenPalette.Pest;
                 case "ProductionIdle": return GardenPalette.TextMuted;
                 default: return Color.magenta;
             }

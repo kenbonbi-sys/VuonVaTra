@@ -119,7 +119,7 @@ namespace VuonNho.Core
                     Id = Wither, DisplayName = "Làm héo", MachineName = "Máng làm héo",
                     Description = "Quạt gió rút bớt nước, lá mềm lại để vò không nát.",
                     InputSuffix = ProcessChain.SuffixFresh, OutputSuffix = ProcessChain.SuffixWithered,
-                    InputCount = 2, OutputCount = 2, BaseProcessMs = 6000,
+                    InputCount = 8, OutputCount = 8, BaseProcessMs = 6000,
                     Cost = 200, SortOrder = 0
                 },
                 new ProcessStageDefinition
@@ -127,7 +127,7 @@ namespace VuonNho.Core
                     Id = Fix, DisplayName = "Diệt men", MachineName = "Máy sao diệt men",
                     Description = "Sao nóng để dừng oxy hoá, giữ màu và hương.",
                     InputSuffix = ProcessChain.SuffixWithered, OutputSuffix = ProcessChain.SuffixFixed,
-                    InputCount = 2, OutputCount = 2, BaseProcessMs = 8000,
+                    InputCount = 8, OutputCount = 8, BaseProcessMs = 8000,
                     Cost = 420, SortOrder = 1
                 },
                 new ProcessStageDefinition
@@ -135,7 +135,7 @@ namespace VuonNho.Core
                     Id = Roll, DisplayName = "Vò và tạo hình", MachineName = "Máy vò trà",
                     Description = "Làm dập tế bào cho dịch trà rướm ra, xoăn mép lá.",
                     InputSuffix = ProcessChain.SuffixFixed, OutputSuffix = ProcessChain.SuffixRolled,
-                    InputCount = 2, OutputCount = 2, BaseProcessMs = 10000,
+                    InputCount = 8, OutputCount = 8, BaseProcessMs = 10000,
                     Cost = 760, SortOrder = 2
                 },
                 new ProcessStageDefinition
@@ -143,7 +143,7 @@ namespace VuonNho.Core
                     Id = Oxidise, DisplayName = "Lên men", MachineName = "Phòng lên men",
                     Description = "Ủ trong nhiệt ẩm kiểm soát để ra màu và vị đặc trưng.",
                     InputSuffix = ProcessChain.SuffixRolled, OutputSuffix = ProcessChain.SuffixOxidised,
-                    InputCount = 2, OutputCount = 2, BaseProcessMs = 14000,
+                    InputCount = 8, OutputCount = 8, BaseProcessMs = 14000,
                     Cost = 1200, SortOrder = 3
                 },
                 new ProcessStageDefinition
@@ -151,7 +151,7 @@ namespace VuonNho.Core
                     Id = Dry, DisplayName = "Sấy khô", MachineName = "Máy sấy băng tải",
                     Description = "Hạ độ ẩm xuống mức bảo quản được.",
                     InputSuffix = ProcessChain.SuffixOxidised, OutputSuffix = ProcessChain.SuffixDried,
-                    InputCount = 2, OutputCount = 2, BaseProcessMs = 12000,
+                    InputCount = 8, OutputCount = 8, BaseProcessMs = 12000,
                     Cost = 1800, SortOrder = 4
                 },
                 new ProcessStageDefinition
@@ -159,7 +159,7 @@ namespace VuonNho.Core
                     Id = Pack, DisplayName = "Phân loại và đóng gói", MachineName = "Máy sàng và đóng gói",
                     Description = "Sàng bỏ tạp chất, ướp hương rồi đóng kín khí.",
                     InputSuffix = ProcessChain.SuffixDried, OutputSuffix = ProcessChain.SuffixPacked,
-                    InputCount = 2, OutputCount = 2, BaseProcessMs = 10000,
+                    InputCount = 8, OutputCount = 8, BaseProcessMs = 10000,
                     Cost = 2600, SortOrder = 5
                 }
             };

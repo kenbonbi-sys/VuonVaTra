@@ -54,7 +54,12 @@ namespace VuonNho.Views
         GameObject _offlinePopup;
         GameObject _blockedPanel;
 
+        Text _seasonLabel;
         Text _plotPopupTitle;
+        Text _plotPopupGround;
+        Button _weedButton;
+        Button _compostButton;
+        Button _treatButton;
         Text _plotPopupState;
         Text _offlineText;
         GameObject _offlineMachineRow;
@@ -244,12 +249,40 @@ namespace VuonNho.Views
                                           TextAnchor.MiddleLeft, GardenPalette.TextCoin, true);
             _coinsLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
 
+            // The mua nam ngay canh chip xu vi hai con so nay doc cung nhau: xu la thu da co,
+            // mua la thu quyet dinh vu sap gieo duoc bao nhieu.
+            var seasonChip = UiFactory.Panel(topBar.transform, "SeasonChip", GardenPalette.PanelSoft,
+                                             UiFactory.RadiusControl);
+            var seasonRect = UiFactory.Rect(seasonChip.gameObject);
+            seasonRect.anchorMin = new Vector2(0f, 0.5f);
+            seasonRect.anchorMax = new Vector2(0f, 0.5f);
+            seasonRect.pivot = new Vector2(0f, 0.5f);
+            seasonRect.anchoredPosition = new Vector2(UiFactory.EdgeMargin + 152f, 0f);
+            // 216 px: do duoc "Mua xuan · 240 s" can 142 px chu, cong glyph, khoang cach va
+            // hai ben le. Hep hon la chu tran ra khoi the.
+            seasonRect.sizeDelta = new Vector2(216f, 40f);
+
+            var seasonRow = UiFactory.Node(seasonChip.transform, "Season");
+            UiFactory.Stretch(UiFactory.Rect(seasonRow), Vector2.zero, Vector2.one,
+                              new Vector2(14f, 0f), new Vector2(-14f, 0f));
+            var seasonLayout = UiFactory.HorizontalList(seasonRow, 8f, new RectOffset(0, 0, 0, 0));
+            seasonLayout.childAlignment = TextAnchor.MiddleLeft;
+            seasonLayout.childForceExpandWidth = false;
+            seasonLayout.childForceExpandHeight = false;
+
+            var seasonSymbol = UiFactory.Symbol(seasonRow.transform, "SeasonSymbol",
+                                                UiFactory.Symbols.Schedule, UiFactory.IconSizeRow);
+            seasonSymbol.color = GardenPalette.TextMuted;
+            _seasonLabel = UiFactory.Label(seasonRow.transform, "Value", "", UiFactory.FontSizeBody,
+                                           TextAnchor.MiddleLeft, GardenPalette.TextPrimary, true);
+            _seasonLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
+
             // Muc tieu la loi nhac, khong phai tieu de: de mo hon chip xu ben trai.
             _goalLabel = UiFactory.Label(topBar.transform, "Goal", "", UiFactory.FontSizeBody,
                                          TextAnchor.MiddleLeft, GardenPalette.TextMuted);
             _goalLabel.verticalOverflow = VerticalWrapMode.Truncate;
             UiFactory.Stretch(UiFactory.Rect(_goalLabel.gameObject), new Vector2(0f, 0f), new Vector2(1f, 1f),
-                              new Vector2(176f, 0f), new Vector2(-728f, 0f));
+                              new Vector2(400f, 0f), new Vector2(-728f, 0f));
 
             // Nam nut deu nhau: nut rong nhat la "Nang cap" can khoang 140 px khi co ca icon lan
             // chu. "Xuong" ngan hon han nen ca day duoc 712 px la du. Hep hon la chu bi xuong dong.
@@ -1093,7 +1126,9 @@ namespace VuonNho.Views
             rect.anchorMax = new Vector2(0f, 0f);
             rect.pivot = new Vector2(0f, 0f);
             rect.anchoredPosition = new Vector2(UiFactory.EdgeMargin, UiFactory.EdgeMargin);
-            rect.sizeDelta = new Vector2(340f, 0f);
+            // 360 px de hai nut cham soc dung vua mot hang: hep hon thi "Bón phân · 40" bi
+            // xuong dong va ca hang cao gap doi.
+            rect.sizeDelta = new Vector2(360f, 0f);
             UiFactory.VerticalList(panel.gameObject, 8f, new RectOffset(16, 16, 16, 16));
             var fitter = panel.gameObject.AddComponent<ContentSizeFitter>();
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
@@ -1103,6 +1138,39 @@ namespace VuonNho.Views
                                               TextAnchor.MiddleLeft, GardenPalette.TextPrimary);
             _plotPopupState = UiFactory.Label(panel.transform, "State", "", UiFactory.FontSizeBody,
                                               TextAnchor.UpperLeft, GardenPalette.TextMuted);
+
+            // Tinh trang manh dat nam TREN danh sach cay, vi ca nang suat lan thoi gian cua vu deu
+            // duoc chot ngay luc gieo: doc xong moi con so nay roi hay chon gieo gi.
+            _plotPopupGround = UiFactory.Label(panel.transform, "Ground", "", UiFactory.FontSizeMeta,
+                                               TextAnchor.UpperLeft, GardenPalette.TextMuted);
+
+            // Hai viec lam thuong xuyen dung chung mot hang. Popup nay o man hinh 768 px da cao
+            // gan het chieu doc; moi hang them vao la mot hang de len the trang thai may.
+            var careRow = UiFactory.Node(panel.transform, "CareRow");
+            var careLayout = UiFactory.HorizontalList(careRow, 6f, new RectOffset(0, 0, 0, 0));
+            careLayout.childForceExpandHeight = false;
+            careRow.AddComponent<LayoutElement>().minHeight = UiFactory.ButtonHeight;
+
+            _weedButton = UiFactory.TextButton(careRow.transform, "Weed", "Làm cỏ", delegate
+            {
+                if (_selectedPlotId < 0) return;
+                Run(_session.ClearWeeds(_selectedPlotId));
+            }, UiFactory.ButtonStyle.Quiet);
+
+            _compostButton = UiFactory.TextButton(careRow.transform, "Compost", "Bón phân", delegate
+            {
+                if (_selectedPlotId < 0) return;
+                Run(_session.Compost(_selectedPlotId));
+            }, UiFactory.ButtonStyle.Quiet, symbol: UiFactory.Symbols.LocalAtm);
+
+            // Nut tri sau chi ton tai khi o dang co sau: khong co sau thi no bien mat han chu
+            // khong nam do o dang tat, va popup lay lai duoc mot hang.
+            _treatButton = UiFactory.TextButton(panel.transform, "Treat", "Trị sâu bệnh", delegate
+            {
+                if (_selectedPlotId < 0) return;
+                Run(_session.TreatPest(_selectedPlotId));
+            }, UiFactory.ButtonStyle.Primary, symbol: UiFactory.Symbols.LocalAtm);
+            _treatButton.gameObject.SetActive(false);
 
             foreach (var crop in _session.Catalog.Crops)
             {
@@ -1320,6 +1388,10 @@ namespace VuonNho.Views
             var catalog = _session.Catalog;
 
             _coinsLabel.text = state.Coins.ToString();
+            var season = Cultivation.SeasonAt(catalog.Balance, state.SimulationTimeMs);
+            long untilNextSeason = Cultivation.NextSeasonChangeMs(catalog.Balance, state.SimulationTimeMs) -
+                                   state.SimulationTimeMs;
+            _seasonLabel.text = "Mùa " + SeasonName(season) + " · " + Seconds(untilNextSeason) + " s";
             _goalLabel.text = GoalText(TutorialGuide.CurrentStep(state, catalog), state, catalog);
             RefreshWorkshop();
 
@@ -1575,12 +1647,63 @@ namespace VuonNho.Views
             return unitsPerMinuteFromField >= unitsPerMinuteMachineCanUse;
         }
 
+        /// <summary>
+        /// Tinh trang manh dat va ba viec cham soc.
+        ///
+        /// Nut nao khong lam duoc gi thi tat va noi thang ly do ngay tren nhan: "Dat con tot" doc
+        /// ra nhanh hon mot cai nut bam vao khong thay gi xay ra.
+        /// </summary>
+        void RefreshPlotCare(GameState state, ContentCatalog catalog, PlotState plot)
+        {
+            var balance = catalog.Balance;
+            string ground = "Độ phì " + plot.Fertility + "/100 · cỏ " + plot.Weeds + "/100 · mùa " +
+                            SeasonName(Cultivation.SeasonAt(balance, state.SimulationTimeMs));
+            if (plot.PestActive) ground += "  ·  ĐANG CÓ SÂU BỆNH";
+            _plotPopupGround.text = ground;
+            _plotPopupGround.color = plot.PestActive ? GardenPalette.StateWarn : GardenPalette.TextMuted;
+
+            bool canWeed = plot.Unlocked && plot.Weeds > 0;
+            UiFactory.SetButtonCaption(_weedButton, plot.Weeds > 0 ? "Làm cỏ" : "Sạch cỏ");
+            UiFactory.SetButtonState(_weedButton, canWeed
+                ? UiFactory.ButtonState.Normal : UiFactory.ButtonState.Disabled);
+
+            bool wantsCompost = plot.Unlocked && plot.Fertility < balance.CompostFertility;
+            bool affordCompost = state.Coins >= balance.CompostCost;
+            UiFactory.SetButtonCaption(_compostButton,
+                !wantsCompost ? "Đất còn tốt"
+                : affordCompost ? "Bón phân · " + balance.CompostCost
+                : "Thiếu " + (balance.CompostCost - state.Coins));
+            UiFactory.SetButtonSymbolVisible(_compostButton, wantsCompost);
+            UiFactory.SetButtonState(_compostButton, wantsCompost && affordCompost
+                ? UiFactory.ButtonState.Normal : UiFactory.ButtonState.Disabled);
+
+            bool affordTreat = state.Coins >= balance.PestTreatmentCost;
+            _treatButton.gameObject.SetActive(plot.Unlocked && plot.PestActive);
+            UiFactory.SetButtonCaption(_treatButton, affordTreat
+                ? "Trị sâu bệnh · " + balance.PestTreatmentCost
+                : "Thiếu " + (balance.PestTreatmentCost - state.Coins));
+            UiFactory.SetButtonState(_treatButton, affordTreat
+                ? UiFactory.ButtonState.Normal : UiFactory.ButtonState.Disabled);
+        }
+
+        public static string SeasonName(Season season)
+        {
+            switch (season)
+            {
+                case Season.Ha: return "hạ";
+                case Season.Thu: return "thu";
+                case Season.Dong: return "đông";
+                default: return "xuân";
+            }
+        }
+
         void RefreshPlotPopup(GameState state, ContentCatalog catalog)
         {
             var plot = state.Plot(_selectedPlotId);
             if (plot == null) { ClosePlotPopup(); return; }
 
             _plotPopupTitle.text = "Ô " + (plot.PlotId + 1);
+            RefreshPlotCare(state, catalog, plot);
 
             string info;
             if (!plot.Unlocked)
@@ -1612,8 +1735,19 @@ namespace VuonNho.Views
                 bool selectable = unlocked && plot.Unlocked;
                 bool isNext = plot.NextCropId == row.CropId;
 
-                string caption = crop.DisplayName + " — " + Seconds(_session.Simulation.GrowthMsFor(state, crop.Id)) + " s";
+                // Hai con so cua vu deu duoc chot NGAY luc gieo, nen nut phai noi truoc ca hai:
+                // bao lau moi chin (co da tinh vao) va thu duoc bao nhieu (do phi va thoi vu da
+                // tinh vao). Bam roi moi biet minh vua gieo trai vu la qua muon.
+                var season = Cultivation.SeasonAt(catalog.Balance, state.SimulationTimeMs);
+                bool inSeason = Cultivation.IsInSeason(crop, season);
+                long growthMs = Cultivation.GrowthWithWeeds(catalog.Balance,
+                                                            _session.Simulation.GrowthMsFor(state, crop.Id),
+                                                            plot.Weeds);
+                int yield = Cultivation.YieldFor(catalog.Balance, crop, plot.Fertility, inSeason);
+
+                string caption = crop.DisplayName + " — " + Seconds(growthMs) + " s · " + yield + " đơn vị";
                 if (!unlocked) caption += " (chưa mở khóa)";
+                else if (!inSeason) caption += " · trái vụ";
                 else if (isNext) caption += " · vụ tiếp theo";
                 UiFactory.SetButtonCaption(row.Choose, caption);
                 UiFactory.SetButtonState(row.Choose, !selectable

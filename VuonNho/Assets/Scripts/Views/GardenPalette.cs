@@ -17,6 +17,12 @@ namespace VuonNho.Views
         public static readonly Color Grass = new Color(0.42f, 0.62f, 0.35f);
         public static readonly Color Soil = new Color(0.45f, 0.34f, 0.25f);
         public static readonly Color SoilLocked = new Color(0.30f, 0.28f, 0.26f);
+        /// <summary>Dat da bac mau: nhat va xam hon dat tot, nhin la biet can bon.</summary>
+        public static readonly Color SoilPoor = new Color(0.62f, 0.55f, 0.45f);
+        /// <summary>Co dai — xanh vang, khac han xanh cua cay trong.</summary>
+        public static readonly Color Weed = new Color(0.55f, 0.62f, 0.24f);
+        /// <summary>Dau hieu sau benh tren o dat.</summary>
+        public static readonly Color Pest = new Color(0.62f, 0.24f, 0.20f);
         public static readonly Color Cream = new Color(0.94f, 0.90f, 0.80f);
         public static readonly Color Wood = new Color(0.55f, 0.40f, 0.27f);
         public static readonly Color Coin = new Color(0.95f, 0.78f, 0.25f);

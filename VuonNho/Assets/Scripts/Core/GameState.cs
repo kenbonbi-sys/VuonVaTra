@@ -25,6 +25,24 @@ namespace VuonNho.Core
         /// <summary>Yield da chot luc gieo, khong doc lai catalog khi thu.</summary>
         public int PendingYield;
 
+        /// <summary>Do phi cua dat, 0..100. Gieo thi tru, bon phan thi hoi.</summary>
+        public int Fertility;
+
+        /// <summary>Co dai, 0..100. Cang nhieu cay lon cang cham.</summary>
+        public int Weeds;
+
+        /// <summary>Moc da cong don co dai va do phi toi. Giu de tinh mot lan thay vi tick tung giay.</summary>
+        public long WeedsUpdatedAtMs;
+        public long FertilityUpdatedAtMs;
+
+        /// <summary>So vu da gieo tren o nay. Lam dau vao cho lich sau benh, nen phai nam trong save.</summary>
+        public int CycleIndex;
+
+        /// <summary>Vu dang chay co dinh sau benh khong, va no lo ra luc nao.</summary>
+        public bool PestPending;
+        public bool PestActive;
+        public long PestAtMs;
+
         public PlotState Clone()
         {
             return (PlotState)MemberwiseClone();
@@ -113,6 +131,13 @@ namespace VuonNho.Core
         /// </summary>
         public int StaffedWorkers;
 
+        /// <summary>
+        /// Hat giong cho lich sau benh cua van nay. Nam trong save de mot van choi lai tu file cu
+        /// gap dung nhung vu sau benh nhu lan truoc — sau benh phai la mot luat, khong phai mot
+        /// cai xuc xac lac lai moi lan mo game.
+        /// </summary>
+        public long PestSeed;
+
         /// <summary>Moc tra luong tiep theo, theo thoi gian mo phong.</summary>
         public long NextPayrollAtMs;
 
@@ -142,6 +167,7 @@ namespace VuonNho.Core
                 TutorialStep = 0,
                 SaveRevision = 1,
                 RobotUnlocked = false,
+                PestSeed = nowUtcMs,
                 RobotXMm = catalog.Balance.RobotCenterXMm,
                 RobotZMm = catalog.Balance.RobotCenterZMm,
                 RobotTargetPlotId = -1
@@ -158,7 +184,9 @@ namespace VuonNho.Core
                     NextCropId = null,
                     StartAtMs = 0,
                     FinishAtMs = 0,
-                    PendingYield = 0
+                    PendingYield = 0,
+                    Fertility = 100,
+                    Weeds = 0
                 });
             }
 
@@ -253,6 +281,7 @@ namespace VuonNho.Core
                 TutorialStep = TutorialStep,
                 SaveRevision = SaveRevision,
                 RobotUnlocked = RobotUnlocked,
+                PestSeed = PestSeed,
                 RobotXMm = RobotXMm,
                 RobotZMm = RobotZMm,
                 RobotTargetPlotId = RobotTargetPlotId,

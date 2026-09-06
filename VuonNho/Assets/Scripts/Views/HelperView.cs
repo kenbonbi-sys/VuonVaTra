@@ -145,6 +145,7 @@ namespace VuonNho.Views
         public void OnPlanted(int plotId, string cropId, long atMs) { }
         public void OnBatchStarted(string recipeId, long atMs) { }
         public void OnBatchCompleted(string recipeId, long coins, long atMs) { }
+        public void OnPestAppeared(int plotId, string cropId, long atMs) { }
         public void OnStationStarted(string stageId, string cropId, long atMs) { }
         public void OnStationCompleted(string stageId, string cropId, int amount, long atMs) { }
         public void OnWagesPaid(long coins, int paid, int unpaid, long atMs) { }

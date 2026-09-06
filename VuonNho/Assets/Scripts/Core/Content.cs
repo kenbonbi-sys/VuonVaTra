@@ -14,6 +14,14 @@ namespace VuonNho.Core
         /// <summary>Null = mo san tu dau.</summary>
         public string UnlockUpgradeId;
         public int SortOrder;
+
+        /// <summary>
+        /// Mua hop de trong, moi bit mot mua theo <see cref="Season"/>. 0 = mua nao cung duoc.
+        ///
+        /// Bac ha de tinh nen khong khai bao gi: nguoi choi moi vao game khong nen vap ngay vao
+        /// mot cai luat ma ho chua co cach nao doc ra.
+        /// </summary>
+        public int SeasonMask;
     }
 
     public sealed class RecipeDefinition
@@ -44,7 +52,9 @@ namespace VuonNho.Core
         UnlockCrop,
         ExpandPlots,
         GrowthSpeed,
-        BrewSpeed
+        BrewSpeed,
+        /// <summary>Phong tru sinh hoc. IntValue = ty le sau benh CON LAI, tinh bang phan tram.</summary>
+        PestControl
     }
 
     public sealed class UpgradeDefinition
@@ -97,6 +107,41 @@ namespace VuonNho.Core
         public int RobotCenterZMm = 400;
         public int RobotKeepOutHalfWidthMm = 700;
         public int RobotKeepOutHalfDepthMm = 700;
+
+        // --- canh tac: dat, co dai, sau benh, thoi vu
+        /// <summary>Do phi tru di moi lan gieo. 100 do phi = muoi vu neu khong bon gi them.</summary>
+        public int PlantFertilityCost = 4;
+        /// <summary>
+        /// Dat tu hoi bao lau mot diem do phi.
+        ///
+        /// Phai nhanh hon **luong rut ra moi giay** cua nhip gieo, khong phai chi nhanh hon mot
+        /// chut: bac ha rut 4 diem moi 9 giay, tuc 0,44 diem mot giay. Cham hon con so do thi do
+        /// phi tut ve 0 va NaturalFertilityCap tro thanh vo nghia — dat khong bao gio cham toi no.
+        /// Nhanh hon thi dat dung o dung muc tran, va tran moi la thu quyet dinh san luong
+        /// ma thanh mot cai doc: gieo lien tuc rut nhanh hon hoi thi khong co cach nao giu dat tot.
+        /// Tu hoi chi len toi NaturalFertilityCap — muon cao hon phai bon, va do la cho tien di ra.
+        /// </summary>
+        public long FertilityRegenMs = 2000;
+        /// <summary>Tu hoi chi len toi day. Muon cao hon phai bon — do la cho tien di ra.</summary>
+        public int NaturalFertilityCap = 45;
+        /// <summary>Gia mot lan bon phan huu co, va do phi sau khi bon.</summary>
+        public long CompostCost = 40;
+        public int CompostFertility = 100;
+
+        /// <summary>Co moc them mot diem sau moi quang nay, tren moi o da mo.</summary>
+        public long WeedGrowthMs = 40000;
+        /// <summary>Co day thi cay lon cham hon bay nhieu phan tram.</summary>
+        public int FullWeedGrowthPenaltyPercent = 60;
+
+        /// <summary>Bao nhieu phan tram so vu dinh sau benh.</summary>
+        public int PestChancePercent = 20;
+        /// <summary>Gia mot lan phong tru sinh hoc.</summary>
+        public long PestTreatmentCost = 28;
+
+        /// <summary>Mot mua dai bao lau, tinh bang thoi gian mo phong.</summary>
+        public long SeasonLengthMs = 240000;
+        /// <summary>Trong trai vu thi chi con bay nhieu phan tram nang suat.</summary>
+        public int OffSeasonYieldPercent = 50;
 
         // --- robot thu hoach
         /// <summary>Toc do robot di trong vuon, milimet moi giay.</summary>
@@ -300,6 +345,10 @@ namespace VuonNho.Core
             {
                 if (c.BaseGrowthMs <= 0) throw new ContentValidationException("Thoi gian lon phai duong: " + c.Id);
                 if (c.Yield <= 0) throw new ContentValidationException("Yield phai duong: " + c.Id);
+                // Do phi chia theo phan tram roi lam tron xuong. Yield qua nho thi ca thang do phi
+                // don ve cung mot con so, va he do phi tro thanh vo hinh voi nguoi choi.
+                if (c.Yield < 4)
+                    throw new ContentValidationException("Yield phai tu 4 tro len de do phi co y nghia: " + c.Id);
                 if (c.RawSellPrice < 0) throw new ContentValidationException("Gia ban tho am: " + c.Id);
                 if (c.UnlockUpgradeId != null && !_upgrades.ContainsKey(c.UnlockUpgradeId))
                     throw new ContentValidationException("Cay tro toi nang cap khong ton tai: " + c.Id);
@@ -325,6 +374,21 @@ namespace VuonNho.Core
                     throw new ContentValidationException(
                         "Tra dong goi khong tra hon tra tu la tuoi thi khong ai xay day chuyen: " + r.Id);
             }
+
+            if (Balance.PlantFertilityCost < 0 || Balance.CompostCost < 0 || Balance.PestTreatmentCost < 0)
+                throw new ContentValidationException("Gia canh tac am.");
+            if (Balance.FertilityRegenMs <= 0 || Balance.WeedGrowthMs <= 0 || Balance.SeasonLengthMs <= 0)
+                throw new ContentValidationException("Chu ky canh tac phai duong.");
+            if (Balance.NaturalFertilityCap < 0 || Balance.NaturalFertilityCap > 100)
+                throw new ContentValidationException("Tran do phi tu hoi phai nam trong 0..100.");
+            if (Balance.CompostFertility <= 0 || Balance.CompostFertility > 100)
+                throw new ContentValidationException("Do phi sau khi bon phai nam trong 1..100.");
+            if (Balance.PestChancePercent < 0 || Balance.PestChancePercent > 100)
+                throw new ContentValidationException("Ty le sau benh phai nam trong 0..100.");
+            if (Balance.OffSeasonYieldPercent < 0 || Balance.OffSeasonYieldPercent > 100)
+                throw new ContentValidationException("Nang suat trai vu phai nam trong 0..100.");
+            if (Balance.FullWeedGrowthPenaltyPercent < 0)
+                throw new ContentValidationException("Phat co dai am.");
 
             if (Balance.RobotSpeedMmPerSecond <= 0)
                 throw new ContentValidationException("Toc do robot phai duong.");

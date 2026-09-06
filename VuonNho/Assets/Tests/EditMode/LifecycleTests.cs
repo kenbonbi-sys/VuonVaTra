@@ -264,7 +264,8 @@ namespace VuonNho.Tests
 
             Assert.IsTrue(first.Success, first.FailureReason);
             Assert.IsFalse(second.Success, "Lan bam thu hai khong duoc thu them.");
-            Assert.AreEqual(1, _session.State.InventoryOf(DefaultContent.CropMint));
+            Assert.AreEqual(_session.Catalog.Crop(DefaultContent.CropMint).Yield,
+                            _session.State.InventoryOf(DefaultContent.CropMint));
         }
 
         [Test]
@@ -303,12 +304,13 @@ namespace VuonNho.Tests
         [Test]
         public void NguyenLieuDaVaoMeThiKhongConTrongKhoDeBanTay()
         {
-            _session.State.AddInventory(DefaultContent.CropMint, 3);
+            int input = _session.Catalog.Recipe(DefaultContent.RecipeMint).InputCount;
+            _session.State.AddInventory(DefaultContent.CropMint, input + 1);
             _session.SelectRecipe(DefaultContent.RecipeMint);
 
             Assert.IsTrue(_session.State.Machine.BatchRunning);
             Assert.AreEqual(1, _session.State.InventoryOf(DefaultContent.CropMint),
-                            "Hai bac ha da bi tru khi me bat dau.");
+                            "Nguyen lieu cua me da bi tru khi me bat dau.");
         }
 
         [Test]

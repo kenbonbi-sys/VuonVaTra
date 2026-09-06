@@ -92,6 +92,49 @@ Nhân vật đi thẳng, không tìm đường: vườn là một mảnh đất 
 và không có animation clip — hai chân là hai nhóm mesh với gốc xoay ở hông, nhịp chân tính theo
 quãng đường đã đi nên chân luôn chạm đất đúng nhịp dù tốc độ có đổi.
 
+## Canh tác
+
+Một ô đất không chỉ có "trống" và "đang lớn". Nó còn bốn con số, và bốn con số đó là chỗ người
+chơi thật sự ra quyết định:
+
+| Hệ | Con số | Nó bóp cái gì |
+|---|---|---|
+| Đất | độ phì 0–100 | **thu được bao nhiêu** |
+| Cỏ dại | cỏ 0–100 | **lớn nhanh hay chậm** |
+| Sâu bệnh | có / không | **mất trắng vụ hay không** |
+| Thời vụ | xuân · hạ · thu · đông | **thu được bao nhiêu** (trái vụ còn 50%) |
+
+Bốn hệ **cố ý đổ vào bốn chỗ khác nhau** thay vì cùng bóp một chỗ. Nhìn một ô đang kém là đọc ra
+ngay nó thiếu cái gì; ba hệ cùng làm giảm sản lượng thì không ai biết vì sao.
+
+**Cả hai con số của một vụ đều được chốt ngay lúc gieo**, không tính lại lúc thu. Bón phân giữa vụ
+không cứu được vụ đang chạy, nên phải lo đất **trước** khi gieo — và nút bón phân từ chối thẳng khi
+đất còn tốt, để người chơi biết điều đó mà không phải mất tiền học. Popup ô vì vậy hiện độ phì, cỏ
+và mùa **ở trên** danh sách cây, còn mỗi nút cây nói sẵn vụ này sẽ mất bao lâu và cho mấy đơn vị.
+
+- **Độ phì** tụt 4 điểm mỗi lần gieo và tự hồi 1 điểm mỗi 2 giây, nhưng **chỉ tự hồi tới 45**. Muốn
+  cao hơn phải bón — đó là chỗ tiền đi ra. Tốc độ hồi phải nhanh hơn nhịp gieo, nếu không độ phì
+  dính đáy và cái trần kia không còn ý nghĩa gì: nó thành cái bẫy chứ không phải một lựa chọn.
+- **Cỏ dại** mọc 1 điểm mỗi 40 giây, ô đầy cỏ làm cây lớn chậm hơn 60%. Làm cỏ **không tốn xu** —
+  cái giá của nó là một vòng người chơi đi qua từng ô.
+- **Sâu bệnh** đánh 20% số vụ, hiện ra ở quãng 25–75% của vụ và báo bằng toast kèm số ô. Không trị
+  thì vụ đó về không. Nâng cấp "Phòng trừ sinh học" hạ tỉ lệ xuống 45% mức cũ.
+- **Thời vụ** đổi mỗi 4 phút mô phỏng. Bạc hà trồng được quanh năm (cây mở đầu, không nên dạy luật
+  mới ngay phút thứ nhất); cúc xuân–thu, dâu xuân–hạ, sả hạ–thu, nhài chỉ mùa hạ.
+
+Cả bốn đều là **hàm thuần tuý trên số nguyên** trong `Cultivation`, bám vào `SimulationTimeMs` chứ
+không phải đồng hồ thật, và sâu bệnh bốc từ một hash viết tay chứ không phải `Random`. Nhờ vậy bù
+offline không cần một dòng luật riêng nào: chạy bù chỉ là `AdvanceTo` một bước dài, và cây **chết
+được trong lúc người chơi vắng mặt** đúng như khi họ đang ngồi xem. Phần cỏ và độ phì cộng dồn theo
+**bước nguyên** nên vắng một đêm cũng tốn đúng bằng vắng một giây.
+
+Đo được: **vườn bỏ bê còn 42% thu nhập của vườn chăm kỹ** (324 so với 780 xu trong mười phút mô
+phỏng). Có một bài test giữ tỉ lệ đó trong khoảng 25–60% — thấp hơn thì bỏ một buổi là về tay
+trắng, cao hơn thì chăm hay không cũng thế và cả bốn hệ chỉ là trang trí.
+
+Trong vườn: **đất bạc màu nhạt đi**, ô nhiều cỏ mọc bụi cỏ vàng ở bốn góc, ô có sâu đeo một dấu đỏ
+cạnh dấu chín. Ba thứ này đọc được từ xa nên không phải mở popup từng ô mới biết vườn đang thế nào.
+
 ## Dây chuyền chế biến trà
 
 Giữa **thu hoạch** và **quầy trà** có sáu công đoạn, đúng thứ tự nghề làm trà thật:
@@ -99,12 +142,12 @@ Giữa **thu hoạch** và **quầy trà** có sáu công đoạn, đúng thứ 
 | # | Công đoạn | Máy | Vào → ra |
 |---|---|---|---|
 | 1 | Thu hoạch | ô đất + robot | — → lá tươi |
-| 2 | Làm héo | Máng làm héo | 2 lá tươi → 2 lá héo |
-| 3 | Diệt men | Máy sao diệt men | 2 lá héo → 2 lá đã diệt men |
-| 4 | Vò và tạo hình | Máy vò trà | 2 lá đã diệt men → 2 lá đã vò |
-| 5 | Lên men | Phòng lên men | 2 lá đã vò → 2 lá đã lên men |
-| 6 | Sấy khô | Máy sấy băng tải | 2 lá đã lên men → 2 trà khô |
-| 7 | Phân loại và đóng gói | Máy sàng và đóng gói | 2 trà khô → 2 trà đóng gói |
+| 2 | Làm héo | Máng làm héo | 8 lá tươi → 8 lá héo |
+| 3 | Diệt men | Máy sao diệt men | 8 lá héo → 8 lá đã diệt men |
+| 4 | Vò và tạo hình | Máy vò trà | 8 lá đã diệt men → 8 lá đã vò |
+| 5 | Lên men | Phòng lên men | 8 lá đã vò → 8 lá đã lên men |
+| 6 | Sấy khô | Máy sấy băng tải | 8 lá đã lên men → 8 trà khô |
+| 7 | Phân loại và đóng gói | Máy sàng và đóng gói | 8 trà khô → 8 trà đóng gói |
 | 8 | Phân phối | quầy trà | trà đóng gói → xu |
 
 **Dây chuyền là đường nâng thu nhập, không phải cái cổng chặn đường.** Quầy trà ưu tiên trà đã
@@ -227,7 +270,16 @@ lại thư mục cũ và game sẽ mở ra một vườn mới.
 
 Toàn bộ số của balance v0 (mục 5 kế hoạch) nằm trong `Assets/Scripts/Core/DefaultContent.cs` và
 `BalanceConfig`. Đổi số ở đó rồi chạy lại test là đủ; validator từ chối id trùng/không tồn tại,
-thời gian không dương, giá âm, yield không dương.
+thời gian không dương, giá âm, yield dưới 4.
+
+**Yield tối thiểu là 4, không phải 1.** Độ phì nhân vào sản lượng, nên một cây chỉ cho 1 đơn vị thì
+cả thang độ phì 0–100 chỉ còn hai bậc: 0 hoặc 1. Yield của mọi cây đã nhân bốn và số nguyên liệu
+một mẻ cũng nhân bốn, nên kinh tế ở độ phì đầy **không đổi một xu nào** — chỉ có độ phân giải là
+đủ để bón phân thấy được kết quả.
+
+Bài test cân bằng chạy **hai kịch bản** chứ không một: vườn chăm kỹ giữ trần (0.85–1.02 lần công
+thức), vườn bỏ bê giữ sàn (25–60% của vườn chăm kỹ). Một kịch bản không phân biệt được "cân bằng
+đúng" với "cả bốn hệ canh tác không nối vào đâu cả".
 
 ## Thay asset — GardenSkin
 
@@ -359,7 +411,7 @@ Hai điều đã làm hỏng một lượt chụp và sẽ làm hỏng lượt s
 - **Mốc A** — vòng chơi, save/offline/lifecycle, HUD, 83 test, hai bản build.
 - **L01 + B02** — 13 model Blender (gồm sả và nhài), 9 material, 5 cue âm thanh, prefab và
   GardenSkin đã điền đủ. Xem [Docs/Art/L01-B02.md](Docs/Art/L01-B02.md).
-- **Checklist mục 10** — 148 test logic + 128 mục kiểm trong bản build, hai độ phân giải.
+- **Checklist mục 10** — 149 test logic + 149 mục kiểm trong bản build, hai độ phân giải.
   Xem [Docs/QA-moc-A.md](Docs/QA-moc-A.md).
 - **Hướng v1** — đổi tên, siết nhịp, thêm sả/nhài, pha 2 trang trí.
   Xem [Docs/Huong-di-v1.md](Docs/Huong-di-v1.md).
@@ -373,6 +425,11 @@ Hai điều đã làm hỏng một lượt chụp và sẽ làm hỏng lượt s
 - **Dây chuyền chế biến trà** — sáu công đoạn giữa thu hoạch và quầy trà, sáu máy, thợ ăn lương.
   Xem mục [Dây chuyền chế biến trà](#dây-chuyền-chế-biến-trà). Save lên schema 3; save cũ mở
   được và vào với dây chuyền trống.
+- **Robot đi thu từng ô** — cây chín nằm chờ tới lượt thay vì bốc hơi tức thì; mất khoảng 12%
+  thu nhập và đó là quãng người chơi nhìn thấy. Xem mục [Robot thu hoạch](#robot-thu-hoạch).
+- **Canh tác** — độ phì, cỏ dại, sâu bệnh và thời vụ, kèm ba việc chăm sóc trong popup ô và ba
+  dấu hiệu đọc được từ xa trong vườn. Vườn bỏ bê còn 42% thu nhập của vườn chăm kỹ. Xem mục
+  [Canh tác](#canh-tác). Save lên schema 5; save cũ mở được với đất tốt và không cỏ.
 
 ## Còn lại
 
