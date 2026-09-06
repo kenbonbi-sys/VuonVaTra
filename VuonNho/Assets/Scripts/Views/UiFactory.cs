@@ -514,6 +514,22 @@ namespace VuonNho.Views
             return layout;
         }
 
+        /// <summary>
+        /// Luoi o co dinh so cot. Dung cho tui do: mat hang nao cung mot co o, va vi tri cua o
+        /// on dinh giua hai lan mo nen nguoi choi nho duoc cho ma khong phai doc lai tung dong.
+        /// </summary>
+        public static GridLayoutGroup Grid(GameObject target, Vector2 cellSize, float spacing, int columns)
+        {
+            var layout = target.AddComponent<GridLayoutGroup>();
+            layout.cellSize = cellSize;
+            layout.spacing = new Vector2(spacing, spacing);
+            layout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+            layout.constraintCount = columns;
+            layout.childAlignment = TextAnchor.UpperLeft;
+            layout.padding = new RectOffset(0, 0, 0, 0);
+            return layout;
+        }
+
         public static HorizontalLayoutGroup HorizontalList(GameObject target, float spacing, RectOffset padding)
         {
             var layout = target.AddComponent<HorizontalLayoutGroup>();

@@ -346,6 +346,7 @@ namespace VuonNho.Views
             yield return CheckSolidDecorations(character);
             yield return CheckSolidScenery(character);
             yield return CheckPlacementPreview();
+            yield return CheckInventoryGrid();
 
             // Diem ngoai vuon phai bi keo ve trong bo chu khong bi bo qua: mot cu bam hut van
             // phai dan den mot buoc di co nghia.
@@ -359,6 +360,43 @@ namespace VuonNho.Views
 
             // Tra nhan vat ve cho cu de anh chup sau bo kiem tra van dung bo cuc quen thuoc.
             character.Teleport(start);
+        }
+
+        /// <summary>
+        /// Tui do kieu o: mot o cho moi mat hang, ke ca hang trung gian cua day chuyen. Dem o
+        /// chu khong chi mo bang ra xem: thieu o nghia la co mon nam trong kho ma khong cho nao
+        /// tren man hinh ke ra no, va loi do khong bao gi ca.
+        /// </summary>
+        IEnumerator CheckInventoryGrid()
+        {
+            _hud.OpenPanelByName("inventory");
+            yield return null;
+            yield return null;
+
+            var surface = FindOpenSurface("inventory");
+            if (surface == null)
+            {
+                Check("Túi đồ có một ô cho mỗi mặt hàng", false, "Không mở được bảng Kho.");
+                yield break;
+            }
+
+            int expected = _session.Catalog.Items.Count;
+            int found = 0;
+            foreach (var child in surface.GetComponentsInChildren<Transform>(true))
+                if (child.name.StartsWith("Slot_", System.StringComparison.Ordinal)) found++;
+
+            Check("Túi đồ có một ô cho mỗi mặt hàng", found == expected,
+                  found + " ô / " + expected + " mặt hàng");
+
+            // O chi tiet phai theo o dang chon, va no nam ngoai vung cuon nen luon nhin thay duoc.
+            var footer = surface.Find("Footer/Detail/TitleRow/Name");
+            var footerText = footer != null ? footer.GetComponent<UnityEngine.UI.Text>() : null;
+            Check("Ô chi tiết nằm dưới đáy và không trống",
+                  footerText != null && !string.IsNullOrEmpty(footerText.text),
+                  footerText != null ? footerText.text : "không tìm thấy Footer/Detail");
+
+            CloseSurface("inventory");
+            yield return null;
         }
 
         /// <summary>

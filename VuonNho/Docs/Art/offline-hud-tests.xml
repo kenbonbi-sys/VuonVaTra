@@ -1,0 +1,766 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="113" result="Passed" total="113" passed="113" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:46Z" duration="0.8629736">
+  <test-suite type="TestSuite" id="1000" name="Vuon va Tra" fullname="Vuon va Tra" runstate="Runnable" testcasecount="113" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:46Z" duration="0.862974" total="113" passed="113" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1024" name="VuonNho.Tests.ArtEditor.dll" fullname="C:/Users/PC/Desktop/Game/VuonNho/Library/ScriptAssemblies/VuonNho.Tests.ArtEditor.dll" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.093047" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="32652" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1025" name="VuonNho" fullname="VuonNho" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.092145" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1026" name="Tests" fullname="VuonNho.Tests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.091787" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1027" name="ArtEditor" fullname="VuonNho.Tests.ArtEditor" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.091516" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1009" name="GardenArtImporterTests" fullname="VuonNho.Tests.ArtEditor.GardenArtImporterTests" classname="VuonNho.Tests.ArtEditor.GardenArtImporterTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.090648" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1010" name="CalibrationAcceptsOneMetreBottomPivotAndUnityAxes" fullname="VuonNho.Tests.ArtEditor.GardenArtImporterTests.CalibrationAcceptsOneMetreBottomPivotAndUnityAxes" methodname="CalibrationAcceptsOneMetreBottomPivotAndUnityAxes" classname="VuonNho.Tests.ArtEditor.GardenArtImporterTests" runstate="Runnable" seed="918995114" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.031386" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1014" name="CalibrationRejectsCentredPivot" fullname="VuonNho.Tests.ArtEditor.GardenArtImporterTests.CalibrationRejectsCentredPivot" methodname="CalibrationRejectsCentredPivot" classname="VuonNho.Tests.ArtEditor.GardenArtImporterTests" runstate="Runnable" seed="1522846953" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.004659" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1017" name="CalibrationRejectsMirroredChildEvenWhenBoundsMatch" fullname="VuonNho.Tests.ArtEditor.GardenArtImporterTests.CalibrationRejectsMirroredChildEvenWhenBoundsMatch" methodname="CalibrationRejectsMirroredChildEvenWhenBoundsMatch" classname="VuonNho.Tests.ArtEditor.GardenArtImporterTests" runstate="Runnable" seed="1551562137" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.000908" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1015" name="CalibrationRejectsReversedFrontAxis" fullname="VuonNho.Tests.ArtEditor.GardenArtImporterTests.CalibrationRejectsReversedFrontAxis" methodname="CalibrationRejectsReversedFrontAxis" classname="VuonNho.Tests.ArtEditor.GardenArtImporterTests" runstate="Runnable" seed="1942342638" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.000540" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1013" name="CalibrationRejectsWrongExportUnits" fullname="VuonNho.Tests.ArtEditor.GardenArtImporterTests.CalibrationRejectsWrongExportUnits" classname="VuonNho.Tests.ArtEditor.GardenArtImporterTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.004097" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1011" name="CalibrationRejectsWrongExportUnits(0.01f)" fullname="VuonNho.Tests.ArtEditor.GardenArtImporterTests.CalibrationRejectsWrongExportUnits(0.01f)" methodname="CalibrationRejectsWrongExportUnits" classname="VuonNho.Tests.ArtEditor.GardenArtImporterTests" runstate="Runnable" seed="172910687" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.001080" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1012" name="CalibrationRejectsWrongExportUnits(100.0f)" fullname="VuonNho.Tests.ArtEditor.GardenArtImporterTests.CalibrationRejectsWrongExportUnits(100.0f)" methodname="CalibrationRejectsWrongExportUnits" classname="VuonNho.Tests.ArtEditor.GardenArtImporterTests" runstate="Runnable" seed="985293065" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.000264" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-case id="1016" name="CalibrationRejectsZUp" fullname="VuonNho.Tests.ArtEditor.GardenArtImporterTests.CalibrationRejectsZUp" methodname="CalibrationRejectsZUp" classname="VuonNho.Tests.ArtEditor.GardenArtImporterTests" runstate="Runnable" seed="774070625" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.000955" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1019" name="DecorationIdsMapToTheirModelNames" fullname="VuonNho.Tests.ArtEditor.GardenArtImporterTests.DecorationIdsMapToTheirModelNames" methodname="DecorationIdsMapToTheirModelNames" classname="VuonNho.Tests.ArtEditor.GardenArtImporterTests" runstate="Runnable" seed="809417826" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.001011" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1022" name="DecorationModelsFitInsideTheirFootprint" fullname="VuonNho.Tests.ArtEditor.GardenArtImporterTests.DecorationModelsFitInsideTheirFootprint" methodname="DecorationModelsFitInsideTheirFootprint" classname="VuonNho.Tests.ArtEditor.GardenArtImporterTests" runstate="Runnable" seed="630737571" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.016349" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1021" name="DecorationSlotsAppendOnceAndKeepArtistRows" fullname="VuonNho.Tests.ArtEditor.GardenArtImporterTests.DecorationSlotsAppendOnceAndKeepArtistRows" methodname="DecorationSlotsAppendOnceAndKeepArtistRows" classname="VuonNho.Tests.ArtEditor.GardenArtImporterTests" runstate="Runnable" seed="1533437456" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.006111" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1020" name="EveryDefaultDecorationHasAModel" fullname="VuonNho.Tests.ArtEditor.GardenArtImporterTests.EveryDefaultDecorationHasAModel" methodname="EveryDefaultDecorationHasAModel" classname="VuonNho.Tests.ArtEditor.GardenArtImporterTests" runstate="Runnable" seed="507571351" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.002068" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1023" name="ImportedCalibrationRetainsRealMetreBounds" fullname="VuonNho.Tests.ArtEditor.GardenArtImporterTests.ImportedCalibrationRetainsRealMetreBounds" methodname="ImportedCalibrationRetainsRealMetreBounds" classname="VuonNho.Tests.ArtEditor.GardenArtImporterTests" runstate="Runnable" seed="1290201706" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.002338" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1018" name="SkinFillPreservesArtistReferencesArrayIdentityOrderAndUnknownIds" fullname="VuonNho.Tests.ArtEditor.GardenArtImporterTests.SkinFillPreservesArtistReferencesArrayIdentityOrderAndUnknownIds" methodname="SkinFillPreservesArtistReferencesArrayIdentityOrderAndUnknownIds" classname="VuonNho.Tests.ArtEditor.GardenArtImporterTests" runstate="Runnable" seed="1160380592" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.002425" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+    <test-suite type="Assembly" id="1038" name="VuonNho.Tests.ArtViews.dll" fullname="C:/Users/PC/Desktop/Game/VuonNho/Library/ScriptAssemblies/VuonNho.Tests.ArtViews.dll" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:46Z" duration="0.526493" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="32652" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1039" name="VuonNho" fullname="VuonNho" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:46Z" duration="0.525172" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1040" name="Tests" fullname="VuonNho.Tests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:46Z" duration="0.524765" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1041" name="ArtViews" fullname="VuonNho.Tests.ArtViews" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:46Z" duration="0.524400" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1028" name="ArtViewTests" fullname="VuonNho.Tests.ArtViews.ArtViewTests" classname="VuonNho.Tests.ArtViews.ArtViewTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:46Z" duration="0.524026" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1033" name="ConfiguredClipIsPlayedAndRepeatedSameCueUsesOneVoice" fullname="VuonNho.Tests.ArtViews.ArtViewTests.ConfiguredClipIsPlayedAndRepeatedSameCueUsesOneVoice" methodname="ConfiguredClipIsPlayedAndRepeatedSameCueUsesOneVoice" classname="VuonNho.Tests.ArtViews.ArtViewTests" runstate="Runnable" seed="253046547" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:45Z" duration="0.027191" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1037" name="ConfiguredIconTurnsOnItsBoxInTheHud" fullname="VuonNho.Tests.ArtViews.ArtViewTests.ConfiguredIconTurnsOnItsBoxInTheHud" methodname="ConfiguredIconTurnsOnItsBoxInTheHud" classname="VuonNho.Tests.ArtViews.ArtViewTests" runstate="Runnable" seed="1342534419" result="Passed" start-time="2026-09-06 17:20:45Z" end-time="2026-09-06 17:20:46Z" duration="0.212040" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1034" name="FiveDifferentCuesStayWithinFourVoicesAndMuteStopsEveryVoice" fullname="VuonNho.Tests.ArtViews.ArtViewTests.FiveDifferentCuesStayWithinFourVoicesAndMuteStopsEveryVoice" methodname="FiveDifferentCuesStayWithinFourVoicesAndMuteStopsEveryVoice" classname="VuonNho.Tests.ArtViews.ArtViewTests" runstate="Runnable" seed="392467129" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.005867" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1036" name="HudBuildsAndKeepsTextWhenSkinHasNoIcon" fullname="VuonNho.Tests.ArtViews.ArtViewTests.HudBuildsAndKeepsTextWhenSkinHasNoIcon" methodname="HudBuildsAndKeepsTextWhenSkinHasNoIcon" classname="VuonNho.Tests.ArtViews.ArtViewTests" runstate="Runnable" seed="882892667" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.266789" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1031" name="NewSteamAnchorCapturesItsOwnRestTransform" fullname="VuonNho.Tests.ArtViews.ArtViewTests.NewSteamAnchorCapturesItsOwnRestTransform" methodname="NewSteamAnchorCapturesItsOwnRestTransform" classname="VuonNho.Tests.ArtViews.ArtViewTests" runstate="Runnable" seed="1695106358" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.002554" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1032" name="RenderingViewsCannotChangeSerializedGameProgress" fullname="VuonNho.Tests.ArtViews.ArtViewTests.RenderingViewsCannotChangeSerializedGameProgress" methodname="RenderingViewsCannotChangeSerializedGameProgress" classname="VuonNho.Tests.ArtViews.ArtViewTests" runstate="Runnable" seed="789462335" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.002776" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1035" name="SkinWithoutIconReturnsNullInsteadOfThrowing" fullname="VuonNho.Tests.ArtViews.ArtViewTests.SkinWithoutIconReturnsNullInsteadOfThrowing" methodname="SkinWithoutIconReturnsNullInsteadOfThrowing" classname="VuonNho.Tests.ArtViews.ArtViewTests" runstate="Runnable" seed="1663984076" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001137" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1030" name="SteamDoesNotDriftAndReturnsToRestBetweenBatches" fullname="VuonNho.Tests.ArtViews.ArtViewTests.SteamDoesNotDriftAndReturnsToRestBetweenBatches" methodname="SteamDoesNotDriftAndReturnsToRestBetweenBatches" classname="VuonNho.Tests.ArtViews.ArtViewTests" runstate="Runnable" seed="1775079438" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001183" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1029" name="SteamKeepsAuthoredNozzleOffsetScaleAndClickCollider" fullname="VuonNho.Tests.ArtViews.ArtViewTests.SteamKeepsAuthoredNozzleOffsetScaleAndClickCollider" methodname="SteamKeepsAuthoredNozzleOffsetScaleAndClickCollider" classname="VuonNho.Tests.ArtViews.ArtViewTests" runstate="Runnable" seed="1683937186" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001819" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+    <test-suite type="Assembly" id="1140" name="VuonNho.Tests.EditMode.dll" fullname="C:/Users/PC/Desktop/Game/VuonNho/Library/ScriptAssemblies/VuonNho.Tests.EditMode.dll" runstate="Runnable" testcasecount="91" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.234391" total="91" passed="91" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="32652" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1141" name="VuonNho" fullname="VuonNho" runstate="Runnable" testcasecount="91" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.226805" total="91" passed="91" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1142" name="Tests" fullname="VuonNho.Tests" runstate="Runnable" testcasecount="91" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.225826" total="91" passed="91" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1042" name="ChecklistTests" fullname="VuonNho.Tests.ChecklistTests" classname="VuonNho.Tests.ChecklistTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.030382" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1044" name="BalanceGiongNhauThiKhongBaoGiDuoc" fullname="VuonNho.Tests.ChecklistTests.BalanceGiongNhauThiKhongBaoGiDuoc" methodname="BalanceGiongNhauThiKhongBaoGiDuoc" classname="VuonNho.Tests.ChecklistTests" runstate="Runnable" seed="67736088" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.009357" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1047" name="CrashKhiDangMoBaoCaoQuayLaiThiKhongCongLaiTienCuaQuangNghiCu" fullname="VuonNho.Tests.ChecklistTests.CrashKhiDangMoBaoCaoQuayLaiThiKhongCongLaiTienCuaQuangNghiCu" methodname="CrashKhiDangMoBaoCaoQuayLaiThiKhongCongLaiTienCuaQuangNghiCu" classname="VuonNho.Tests.ChecklistTests" runstate="Runnable" seed="383396481" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.005089" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1045" name="DongHoTrongGameDungUtcNenDoiMuiGioKhongAnhHuong" fullname="VuonNho.Tests.ChecklistTests.DongHoTrongGameDungUtcNenDoiMuiGioKhongAnhHuong" methodname="DongHoTrongGameDungUtcNenDoiMuiGioKhongAnhHuong" classname="VuonNho.Tests.ChecklistTests" runstate="Runnable" seed="1072922789" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.002263" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1046" name="QuangNghiChiPhuThuocKhoangUtc" fullname="VuonNho.Tests.ChecklistTests.QuangNghiChiPhuThuocKhoangUtc" methodname="QuangNghiChiPhuThuocKhoangUtc" classname="VuonNho.Tests.ChecklistTests" runstate="Runnable" seed="1754692757" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.009546" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1043" name="SaveTaoBoiBalanceKhacVanNapDuocVaGiuGiaTriDaChot" fullname="VuonNho.Tests.ChecklistTests.SaveTaoBoiBalanceKhacVanNapDuocVaGiuGiaTriDaChot" methodname="SaveTaoBoiBalanceKhacVanNapDuocVaGiuGiaTriDaChot" classname="VuonNho.Tests.ChecklistTests" runstate="Runnable" seed="1397261948" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001385" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1048" name="TruocRobotNghiKhiCayDaChinThiVanChiLaChin" fullname="VuonNho.Tests.ChecklistTests.TruocRobotNghiKhiCayDaChinThiVanChiLaChin" methodname="TruocRobotNghiKhiCayDaChinThiVanChiLaChin" classname="VuonNho.Tests.ChecklistTests" runstate="Runnable" seed="2020811234" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001007" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1049" name="DecorationTests" fullname="VuonNho.Tests.DecorationTests" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" testcasecount="20" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.043650" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1050" name="ChuaDungXongFarmThiChuaTrangTriDuoc" fullname="VuonNho.Tests.DecorationTests.ChuaDungXongFarmThiChuaTrangTriDuoc" methodname="ChuaDungXongFarmThiChuaTrangTriDuoc" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="1192332319" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001600" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1060" name="DatDuocVaoKheGiuaBonODat" fullname="VuonNho.Tests.DecorationTests.DatDuocVaoKheGiuaBonODat" methodname="DatDuocVaoKheGiuaBonODat" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="1724916753" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.002287" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1052" name="DatMonTrangTriTruDungGiaVaGhiDungViTri" fullname="VuonNho.Tests.DecorationTests.DatMonTrangTriTruDungGiaVaGhiDungViTri" methodname="DatMonTrangTriTruDungGiaVaGhiDungViTri" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="60152557" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001116" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1063" name="DiChuyenCungChiuLuatVungCam" fullname="VuonNho.Tests.DecorationTests.DiChuyenCungChiuLuatVungCam" methodname="DiChuyenCungChiuLuatVungCam" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="1716515074" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.004355" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1056" name="DiChuyenMonDaDatKhongTonTien" fullname="VuonNho.Tests.DecorationTests.DiChuyenMonDaDatKhongTonTien" methodname="DiChuyenMonDaDatKhongTonTien" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="1464555337" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.006127" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1058" name="GocXoayDuocChuanHoaVeKhoang0Den359" fullname="VuonNho.Tests.DecorationTests.GocXoayDuocChuanHoaVeKhoang0Den359" methodname="GocXoayDuocChuanHoaVeKhoang0Den359" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="67478146" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000953" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1057" name="GoMonTrangTriHoanDuTien" fullname="VuonNho.Tests.DecorationTests.GoMonTrangTriHoanDuTien" methodname="GoMonTrangTriHoanDuTien" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="935324223" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001692" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1061" name="KhongDatDuocDeLenQuayTra" fullname="VuonNho.Tests.DecorationTests.KhongDatDuocDeLenQuayTra" methodname="KhongDatDuocDeLenQuayTra" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="1073195962" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000791" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1062" name="KhongDatDuocDeLenRobot" fullname="VuonNho.Tests.DecorationTests.KhongDatDuocDeLenRobot" methodname="KhongDatDuocDeLenRobot" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="1799766123" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000671" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1059" name="KhongDatDuocDeLenTamODat" fullname="VuonNho.Tests.DecorationTests.KhongDatDuocDeLenTamODat" methodname="KhongDatDuocDeLenTamODat" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="335420768" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000766" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1053" name="KhongDatDuocHaiMonChongLenNhau" fullname="VuonNho.Tests.DecorationTests.KhongDatDuocHaiMonChongLenNhau" methodname="KhongDatDuocHaiMonChongLenNhau" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="54905399" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000957" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1054" name="KhongDatDuocRaNgoaiKhuVuon" fullname="VuonNho.Tests.DecorationTests.KhongDatDuocRaNgoaiKhuVuon" methodname="KhongDatDuocRaNgoaiKhuVuon" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="2100484533" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000742" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1064" name="LoiGhiSaveThiKhongApDungViTriMoi" fullname="VuonNho.Tests.DecorationTests.LoiGhiSaveThiKhongApDungViTriMoi" methodname="LoiGhiSaveThiKhongApDungViTriMoi" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="996859991" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001320" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1065" name="LuoiODatKhongKhopSoOThiCatalogTuChoi" fullname="VuonNho.Tests.DecorationTests.LuoiODatKhongKhopSoOThiCatalogTuChoi" methodname="LuoiODatKhongKhopSoOThiCatalogTuChoi" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="2076610369" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001170" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1067" name="LuuRoiDocLaiGiuNguyenViTriTrangTri" fullname="VuonNho.Tests.DecorationTests.LuuRoiDocLaiGiuNguyenViTriTrangTri" methodname="LuuRoiDocLaiGiuNguyenViTriTrangTri" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="558687024" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001579" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1051" name="MoRobotThoiChuaDu_PhaiMoHetDat" fullname="VuonNho.Tests.DecorationTests.MoRobotThoiChuaDu_PhaiMoHetDat" methodname="MoRobotThoiChuaDu_PhaiMoHetDat" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="1043270111" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000749" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1068" name="SaveSchema1CuVanNapDuocVaCoDanhSachTrangTriRong" fullname="VuonNho.Tests.DecorationTests.SaveSchema1CuVanNapDuocVaCoDanhSachTrangTriRong" methodname="SaveSchema1CuVanNapDuocVaCoDanhSachTrangTriRong" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="1575902640" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000894" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1055" name="ThieuXuThiKhongDatDuoc" fullname="VuonNho.Tests.DecorationTests.ThieuXuThiKhongDatDuoc" methodname="ThieuXuThiKhongDatDuoc" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="2057850194" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000741" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1069" name="TrangTriCoIdLaLamSaveKhongHopLe" fullname="VuonNho.Tests.DecorationTests.TrangTriCoIdLaLamSaveKhongHopLe" methodname="TrangTriCoIdLaLamSaveKhongHopLe" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="997097707" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.004759" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1066" name="TrangTriKhongLamDoiKetQuaKinhTe" fullname="VuonNho.Tests.DecorationTests.TrangTriKhongLamDoiKetQuaKinhTe" methodname="TrangTriKhongLamDoiKetQuaKinhTe" classname="VuonNho.Tests.DecorationTests" runstate="Runnable" seed="1125756275" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.007121" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1070" name="LifecycleTests" fullname="VuonNho.Tests.LifecycleTests" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" testcasecount="19" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.062775" total="19" passed="19" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1084" name="BamThuHaiLanTrenCungMotOChiThuDuocMotLan" fullname="VuonNho.Tests.LifecycleTests.BamThuHaiLanTrenCungMotOChiThuDuocMotLan" methodname="BamThuHaiLanTrenCungMotOChiThuDuocMotLan" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="1589762710" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001460" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1087" name="BanThoCongTienDungGiaVaKhongLamAmKho" fullname="VuonNho.Tests.LifecycleTests.BanThoCongTienDungGiaVaKhongLamAmKho" methodname="BanThoCongTienDungGiaVaKhongLamAmKho" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="203587923" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001257" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1071" name="BonGioVaHaiMuoiBonGioChoCungPhanTienDo" fullname="VuonNho.Tests.LifecycleTests.BonGioVaHaiMuoiBonGioChoCungPhanTienDo" methodname="BonGioVaHaiMuoiBonGioChoCungPhanTienDo" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="1626630881" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.013247" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1078" name="ChinhGioLuiKhongTaoTienDoAmVaKhongLamHongState" fullname="VuonNho.Tests.LifecycleTests.ChinhGioLuiKhongTaoTienDoAmVaKhongLamHongState" methodname="ChinhGioLuiKhongTaoTienDoAmVaKhongLamHongState" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="99956586" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001998" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1079" name="ChinhGioTienVanBiChanBoiCap" fullname="VuonNho.Tests.LifecycleTests.ChinhGioTienVanBiChanBoiCap" methodname="ChinhGioTienVanBiChanBoiCap" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="1697618111" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.014953" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1083" name="DieuKienMoDauCanMoCucTruoc" fullname="VuonNho.Tests.LifecycleTests.DieuKienMoDauCanMoCucTruoc" methodname="DieuKienMoDauCanMoCucTruoc" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="636023070" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001363" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1073" name="GoiResumeNhieuLanChiCongTienMotLan" fullname="VuonNho.Tests.LifecycleTests.GoiResumeNhieuLanChiCongTienMotLan" methodname="GoiResumeNhieuLanChiCongTienMotLan" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="655903377" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001427" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1089" name="HuongDanTiepTucDungBuocSauKhiLoadLai" fullname="VuonNho.Tests.LifecycleTests.HuongDanTiepTucDungBuocSauKhiLoadLai" methodname="HuongDanTiepTucDungBuocSauKhiLoadLai" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="385437099" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001298" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1086" name="KhongChonDuocCayChuaMoKhoa" fullname="VuonNho.Tests.LifecycleTests.KhongChonDuocCayChuaMoKhoa" methodname="KhongChonDuocCayChuaMoKhoa" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="1660978344" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000662" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1085" name="KhongTrongDuocTrenODaKhoa" fullname="VuonNho.Tests.LifecycleTests.KhongTrongDuocTrenODaKhoa" methodname="KhongTrongDuocTrenODaKhoa" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="2083139388" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000446" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1082" name="MuaHaiLanCungMotNangCapChiTruTienMotLan" fullname="VuonNho.Tests.LifecycleTests.MuaHaiLanCungMotNangCapChiTruTienMotLan" methodname="MuaHaiLanCungMotNangCapChiTruTienMotLan" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="146761208" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000668" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1088" name="NguyenLieuDaVaoMeThiKhongConTrongKhoDeBanTay" fullname="VuonNho.Tests.LifecycleTests.NguyenLieuDaVaoMeThiKhongConTrongKhoDeBanTay" methodname="NguyenLieuDaVaoMeThiKhongConTrongKhoDeBanTay" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="942532719" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000816" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1072" name="PhanDuTrenCapKhongDuocNhanOLanMoTiepTheo" fullname="VuonNho.Tests.LifecycleTests.PhanDuTrenCapKhongDuocNhanOLanMoTiepTheo" methodname="PhanDuTrenCapKhongDuocNhanOLanMoTiepTheo" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="1929729296" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.004953" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1076" name="QuangNghiNganKhongHienBaoCaoNhungVanApDungTienDo" fullname="VuonNho.Tests.LifecycleTests.QuangNghiNganKhongHienBaoCaoNhungVanApDungTienDo" methodname="QuangNghiNganKhongHienBaoCaoNhungVanApDungTienDo" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="1193190937" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000915" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1074" name="SuspendHaiLanKhongLamDoiTienDo" fullname="VuonNho.Tests.LifecycleTests.SuspendHaiLanKhongLamDoiTienDo" methodname="SuspendHaiLanKhongLamDoiTienDo" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="2000548400" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000758" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1080" name="ThieuXuThiKhongMuaDuoc" fullname="VuonNho.Tests.LifecycleTests.ThieuXuThiKhongMuaDuoc" methodname="ThieuXuThiKhongMuaDuoc" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="1724433751" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.003699" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1081" name="TruocRobotThiCuaHangChiCoRobot" fullname="VuonNho.Tests.LifecycleTests.TruocRobotThiCuaHangChiCoRobot" methodname="TruocRobotThiCuaHangChiCoRobot" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="825209511" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000786" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1077" name="TruocRobotThiOfflineChiChoCayChinKhongThuThem" fullname="VuonNho.Tests.LifecycleTests.TruocRobotThiOfflineChiChoCayChinKhongThuThem" methodname="TruocRobotThiOfflineChiChoCayChinKhongThuThem" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="210253892" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001897" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1075" name="XemBaoCaoQuayLaiKhongCongThemTien" fullname="VuonNho.Tests.LifecycleTests.XemBaoCaoQuayLaiKhongCongThemTien" methodname="XemBaoCaoQuayLaiKhongCongThemTien" classname="VuonNho.Tests.LifecycleTests" runstate="Runnable" seed="170357491" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001321" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1090" name="ProcessingTests" fullname="VuonNho.Tests.ProcessingTests" classname="VuonNho.Tests.ProcessingTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.019612" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1106" name="ChoThoNghiKhongLamXuAmVaKhongHoanTien" fullname="VuonNho.Tests.ProcessingTests.ChoThoNghiKhongLamXuAmVaKhongHoanTien" methodname="ChoThoNghiKhongLamXuAmVaKhongHoanTien" classname="VuonNho.Tests.ProcessingTests" runstate="Runnable" seed="654421869" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001695" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1099" name="ChuaCoMayNaoThiVanBanDuocTraNhuCu" fullname="VuonNho.Tests.ProcessingTests.ChuaCoMayNaoThiVanBanDuocTraNhuCu" methodname="ChuaCoMayNaoThiVanBanDuocTraNhuCu" classname="VuonNho.Tests.ProcessingTests" runstate="Runnable" seed="1202799405" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000384" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1091" name="DayChuyenNoiLienTuLaTuoiToiTraDongGoi" fullname="VuonNho.Tests.ProcessingTests.DayChuyenNoiLienTuLaTuoiToiTraDongGoi" methodname="DayChuyenNoiLienTuLaTuoiToiTraDongGoi" classname="VuonNho.Tests.ProcessingTests" runstate="Runnable" seed="708356014" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000353" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1095" name="HetXuThiThoNghiChuKhongMatNguoi" fullname="VuonNho.Tests.ProcessingTests.HetXuThiThoNghiChuKhongMatNguoi" methodname="HetXuThiThoNghiChuKhongMatNguoi" classname="VuonNho.Tests.ProcessingTests" runstate="Runnable" seed="1812039097" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000865" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1094" name="ItThoHonSoMayThiKhongChayHetCungLuc" fullname="VuonNho.Tests.ProcessingTests.ItThoHonSoMayThiKhongChayHetCungLuc" methodname="ItThoHonSoMayThiKhongChayHetCungLuc" classname="VuonNho.Tests.ProcessingTests" runstate="Runnable" seed="687091729" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000251" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1103" name="KhongDuXuThiKhongMuaDuocMay" fullname="VuonNho.Tests.ProcessingTests.KhongDuXuThiKhongMuaDuocMay" methodname="KhongDuXuThiKhongMuaDuocMay" classname="VuonNho.Tests.ProcessingTests" runstate="Runnable" seed="1052859703" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000914" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1104" name="KhongMuaDuocMotCaiMayHaiLan" fullname="VuonNho.Tests.ProcessingTests.KhongMuaDuocMotCaiMayHaiLan" methodname="KhongMuaDuocMotCaiMayHaiLan" classname="VuonNho.Tests.ProcessingTests" runstate="Runnable" seed="1529024696" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000928" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1092" name="LaTuoiDiHetChuoiThanhTraDongGoi" fullname="VuonNho.Tests.ProcessingTests.LaTuoiDiHetChuoiThanhTraDongGoi" methodname="LaTuoiDiHetChuoiThanhTraDongGoi" classname="VuonNho.Tests.ProcessingTests" runstate="Runnable" seed="497327155" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000652" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1097" name="LuongBiTruDungBangSoThoTraDuoc" fullname="VuonNho.Tests.ProcessingTests.LuongBiTruDungBangSoThoTraDuoc" methodname="LuongBiTruDungBangSoThoTraDuoc" classname="VuonNho.Tests.ProcessingTests" runstate="Runnable" seed="1756643661" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000357" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1093" name="MayChuaMuaThiHangDungLaiODauChang" fullname="VuonNho.Tests.ProcessingTests.MayChuaMuaThiHangDungLaiODauChang" methodname="MayChuaMuaThiHangDungLaiODauChang" classname="VuonNho.Tests.ProcessingTests" runstate="Runnable" seed="1922823353" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000353" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1100" name="MotBuocDaiBangNhieuBuocNgan_CoDayChuyen" fullname="VuonNho.Tests.ProcessingTests.MotBuocDaiBangNhieuBuocNgan_CoDayChuyen" methodname="MotBuocDaiBangNhieuBuocNgan_CoDayChuyen" classname="VuonNho.Tests.ProcessingTests" runstate="Runnable" seed="266402637" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.004665" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1102" name="MuaMayVaThueThoTruTienDung" fullname="VuonNho.Tests.ProcessingTests.MuaMayVaThueThoTruTienDung" methodname="MuaMayVaThueThoTruTienDung" classname="VuonNho.Tests.ProcessingTests" runstate="Runnable" seed="665368260" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000924" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1098" name="QuayTraUuTienTraDongGoiVaTraNhieuXuHon" fullname="VuonNho.Tests.ProcessingTests.QuayTraUuTienTraDongGoiVaTraNhieuXuHon" methodname="QuayTraUuTienTraDongGoiVaTraNhieuXuHon" classname="VuonNho.Tests.ProcessingTests" runstate="Runnable" seed="1092205081" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000318" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1105" name="SaveCuKhongCoDayChuyenVanMoDuoc" fullname="VuonNho.Tests.ProcessingTests.SaveCuKhongCoDayChuyenVanMoDuoc" methodname="SaveCuKhongCoDayChuyenVanMoDuoc" classname="VuonNho.Tests.ProcessingTests" runstate="Runnable" seed="90029515" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000879" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1101" name="TickLeThapPhanGiayVanCungKetQua_CoDayChuyen" fullname="VuonNho.Tests.ProcessingTests.TickLeThapPhanGiayVanCungKetQua_CoDayChuyen" methodname="TickLeThapPhanGiayVanCungKetQua_CoDayChuyen" classname="VuonNho.Tests.ProcessingTests" runstate="Runnable" seed="552907708" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.002002" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1096" name="TraDuLuongThiDayChuyenChayLai" fullname="VuonNho.Tests.ProcessingTests.TraDuLuongThiDayChuyenChayLai" methodname="TraDuLuongThiDayChuyenChayLai" classname="VuonNho.Tests.ProcessingTests" runstate="Runnable" seed="989433373" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000464" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1107" name="SaveTests" fullname="VuonNho.Tests.SaveTests" classname="VuonNho.Tests.SaveTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.031113" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1116" name="CaHaiFileHongThiKhongTuTaoVuonMoi" fullname="VuonNho.Tests.SaveTests.CaHaiFileHongThiKhongTuTaoVuonMoi" methodname="CaHaiFileHongThiKhongTuTaoVuonMoi" classname="VuonNho.Tests.SaveTests" runstate="Runnable" seed="511447557" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000985" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1115" name="FileChinhHongThiLoadTuBackup" fullname="VuonNho.Tests.SaveTests.FileChinhHongThiLoadTuBackup" methodname="FileChinhHongThiLoadTuBackup" classname="VuonNho.Tests.SaveTests" runstate="Runnable" seed="146313563" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001141" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1118" name="GhiFileTaoBackupVaDocLaiDuoc" fullname="VuonNho.Tests.SaveTests.GhiFileTaoBackupVaDocLaiDuoc" methodname="GhiFileTaoBackupVaDocLaiDuoc" classname="VuonNho.Tests.SaveTests" runstate="Runnable" seed="2039496100" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.015836" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1109" name="HaiLanGhiCungStateChoCungChuoi" fullname="VuonNho.Tests.SaveTests.HaiLanGhiCungStateChoCungChuoi" methodname="HaiLanGhiCungStateChoCungChuoi" classname="VuonNho.Tests.SaveTests" runstate="Runnable" seed="2123825523" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000939" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1112" name="IdCayLaLamSaveKhongHopLe" fullname="VuonNho.Tests.SaveTests.IdCayLaLamSaveKhongHopLe" methodname="IdCayLaLamSaveKhongHopLe" classname="VuonNho.Tests.SaveTests" runstate="Runnable" seed="1105553739" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001109" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1114" name="JsonHongBiTuChoi" fullname="VuonNho.Tests.SaveTests.JsonHongBiTuChoi" methodname="JsonHongBiTuChoi" classname="VuonNho.Tests.SaveTests" runstate="Runnable" seed="1102004740" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000394" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1117" name="LoiGhiKhiMuaThiKhongTruTienVaChoThuLai" fullname="VuonNho.Tests.SaveTests.LoiGhiKhiMuaThiKhongTruTienVaChoThuLai" methodname="LoiGhiKhiMuaThiKhongTruTienVaChoThuLai" classname="VuonNho.Tests.SaveTests" runstate="Runnable" seed="1951607908" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000762" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1108" name="LuuRoiDocLaiGiuNguyenTrangThaiGiuaVuVaGiuaMe" fullname="VuonNho.Tests.SaveTests.LuuRoiDocLaiGiuNguyenTrangThaiGiuaVuVaGiuaMe" methodname="LuuRoiDocLaiGiuNguyenTrangThaiGiuaVuVaGiuaMe" classname="VuonNho.Tests.SaveTests" runstate="Runnable" seed="723873031" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000775" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1110" name="MoPhongTiepTuTrangThaiDaLuuChoKetQuaGiongKhongLuu" fullname="VuonNho.Tests.SaveTests.MoPhongTiepTuTrangThaiDaLuuChoKetQuaGiongKhongLuu" methodname="MoPhongTiepTuTrangThaiDaLuuChoKetQuaGiongKhongLuu" classname="VuonNho.Tests.SaveTests" runstate="Runnable" seed="309095215" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001064" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1111" name="SchemaMoiHonUngDungThiBaoLoi_KhongAmThamReset" fullname="VuonNho.Tests.SaveTests.SchemaMoiHonUngDungThiBaoLoi_KhongAmThamReset" methodname="SchemaMoiHonUngDungThiBaoLoi_KhongAmThamReset" classname="VuonNho.Tests.SaveTests" runstate="Runnable" seed="1490400450" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001446" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1113" name="SoAmTrongSaveBiTuChoi" fullname="VuonNho.Tests.SaveTests.SoAmTrongSaveBiTuChoi" methodname="SoAmTrongSaveBiTuChoi" classname="VuonNho.Tests.SaveTests" runstate="Runnable" seed="879096582" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000671" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1119" name="XoaHetRoiThiKhongConSave" fullname="VuonNho.Tests.SaveTests.XoaHetRoiThiKhongConSave" methodname="XoaHetRoiThiKhongConSave" classname="VuonNho.Tests.SaveTests" runstate="Runnable" seed="773453255" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.003520" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1120" name="SimulationTests" fullname="VuonNho.Tests.SimulationTests" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.036625" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1136" name="BanHetNguyenLieuKhiMayDangPhaThiMeHienTaiVanXong" fullname="VuonNho.Tests.SimulationTests.BanHetNguyenLieuKhiMayDangPhaThiMeHienTaiVanXong" methodname="BanHetNguyenLieuKhiMayDangPhaThiMeHienTaiVanXong" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" seed="91305668" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000631" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1131" name="BonOBacHaChayOnDinhChoDungMuoiXuMoiMe" fullname="VuonNho.Tests.SimulationTests.BonOBacHaChayOnDinhChoDungMuoiXuMoiMe" methodname="BonOBacHaChayOnDinhChoDungMuoiXuMoiMe" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" seed="1964459929" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000564" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1123" name="CayChinDungThoiDiemDeadline" fullname="VuonNho.Tests.SimulationTests.CayChinDungThoiDiemDeadline" methodname="CayChinDungThoiDiemDeadline" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" seed="713666837" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000297" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1133" name="DoiCayGiuaVuChiApDungTuVuSau" fullname="VuonNho.Tests.SimulationTests.DoiCayGiuaVuChiApDungTuVuSau" methodname="DoiCayGiuaVuChiApDungTuVuSau" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" seed="8254303" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000357" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1134" name="DoiCongThucGiuaMeThiMeHienTaiVanHoanThanhTruoc" fullname="VuonNho.Tests.SimulationTests.DoiCongThucGiuaMeThiMeHienTaiVanHoanThanhTruoc" methodname="DoiCongThucGiuaMeThiMeHienTaiVanHoanThanhTruoc" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" seed="1474050387" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000326" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1137" name="MayKhongTuDoiCongThucKhiThieuNguyenLieu" fullname="VuonNho.Tests.SimulationTests.MayKhongTuDoiCongThucKhiThieuNguyenLieu" methodname="MayKhongTuDoiCongThucKhiThieuNguyenLieu" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" seed="1532863666" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000257" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1124" name="MeMayCongXuDungMotLanTaiDeadline" fullname="VuonNho.Tests.SimulationTests.MeMayCongXuDungMotLanTaiDeadline" methodname="MeMayCongXuDungMotLanTaiDeadline" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" seed="546794209" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000394" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1121" name="MotBuoc30PhutBangNhieuBuocCongLai" fullname="VuonNho.Tests.SimulationTests.MotBuoc30PhutBangNhieuBuocCongLai" methodname="MotBuoc30PhutBangNhieuBuocCongLai" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" seed="1337514445" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.002165" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1135" name="MuaTocDoGiuaChuKyKhongDoiDeadlineDangChay" fullname="VuonNho.Tests.SimulationTests.MuaTocDoGiuaChuKyKhongDoiDeadlineDangChay" methodname="MuaTocDoGiuaChuKyKhongDoiDeadlineDangChay" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" seed="1008579226" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000789" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1132" name="NhieuSuKienCungTimestampChoKetQuaOnDinh" fullname="VuonNho.Tests.SimulationTests.NhieuSuKienCungTimestampChoKetQuaOnDinh" methodname="NhieuSuKienCungTimestampChoKetQuaOnDinh" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" seed="794426021" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000827" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1138" name="OKhoaKhongNhanLenhTrongVaKhongDuocRobotDungToi" fullname="VuonNho.Tests.SimulationTests.OKhoaKhongNhanLenhTrongVaKhongDuocRobotDungToi" methodname="OKhoaKhongNhanLenhTrongVaKhongDuocRobotDungToi" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" seed="1061848344" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000348" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1139" name="ONgungGieoKhiKhongConLuaChonCay" fullname="VuonNho.Tests.SimulationTests.ONgungGieoKhiKhongConLuaChonCay" methodname="ONgungGieoKhiKhongConLuaChonCay" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" seed="683729572" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000256" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-suite type="ParameterizedMethod" id="1130" name="SauRobotKhopVoiMoPhongOnline" fullname="VuonNho.Tests.SimulationTests.SauRobotKhopVoiMoPhongOnline" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.017671" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1126" name="SauRobotKhopVoiMoPhongOnline(0)" fullname="VuonNho.Tests.SimulationTests.SauRobotKhopVoiMoPhongOnline(0)" methodname="SauRobotKhopVoiMoPhongOnline" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" seed="1348152688" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000413" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1127" name="SauRobotKhopVoiMoPhongOnline(60000)" fullname="VuonNho.Tests.SimulationTests.SauRobotKhopVoiMoPhongOnline(60000)" methodname="SauRobotKhopVoiMoPhongOnline" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" seed="2146528940" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000238" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1128" name="SauRobotKhopVoiMoPhongOnline(300000)" fullname="VuonNho.Tests.SimulationTests.SauRobotKhopVoiMoPhongOnline(300000)" methodname="SauRobotKhopVoiMoPhongOnline" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" seed="2066149148" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000431" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1129" name="SauRobotKhopVoiMoPhongOnline(14400000)" fullname="VuonNho.Tests.SimulationTests.SauRobotKhopVoiMoPhongOnline(14400000)" methodname="SauRobotKhopVoiMoPhongOnline" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" seed="1797240210" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.015841" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-case id="1122" name="TickLeThapPhanGiayVanCungKetQua" fullname="VuonNho.Tests.SimulationTests.TickLeThapPhanGiayVanCungKetQua" methodname="TickLeThapPhanGiayVanCungKetQua" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" seed="1726305803" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.001093" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1125" name="TruocRobotKhongTuThuVaKhongGieoThem" fullname="VuonNho.Tests.SimulationTests.TruocRobotKhongTuThuVaKhongGieoThem" methodname="TruocRobotKhongTuThuVaKhongGieoThem" classname="VuonNho.Tests.SimulationTests" runstate="Runnable" seed="1674424203" result="Passed" start-time="2026-09-06 17:20:46Z" end-time="2026-09-06 17:20:46Z" duration="0.000397" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: C:/Users/PC/AppData/LocalLow/Vuon va Tra/Vuon va Tra\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

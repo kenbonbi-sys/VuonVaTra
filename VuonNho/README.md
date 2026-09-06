@@ -269,6 +269,11 @@ Vài quy ước đã áp dụng, giữ nguyên khi thêm màn hình mới:
   `preferredHeight`.
 - **Popup bắt buộc trả lời** (`BuildModal`) luôn có lớp scrim phủ cả màn hình, vừa để tách khỏi
   vườn vừa để chặn click xuống đất. Toast thì ngược lại: `raycastTarget = false` để không nuốt click.
+- **Kho là lưới ô kiểu túi đồ,** không phải danh sách thẻ. Mỗi mặt hàng một ô cùng cỡ, xếp theo
+  từng cây: lá tươi rồi sáu chặng chế biến của chính cây đó. Ô trống vẫn hiện (làm mờ) để vị trí
+  của từng món không đổi giữa hai lần mở. Ô chi tiết neo ở đáy panel, **ngoài vùng cuộn**, và cả
+  túi chỉ có một bộ nút bán — "Bán hết" không hoàn tác được nên càng ít chỗ bấm nhầm càng tốt,
+  và nó nhẹ hơn "Bán 1" một bậc.
 - **Nút muốn vừa bằng chữ thì phải gọi `UiFactory.HugContent`,** không đủ nếu chỉ tắt
   `childForceExpandWidth` của layout group cha. Nhãn bên trong nút được đặt `flexibleWidth = 1`
   để chữ căn được giữa khi nút bị kéo rộng; layout group của nút lại báo `flexibleWidth` của
