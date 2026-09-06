@@ -76,12 +76,27 @@ Kỹ thuật:
 - Model lấy từ `GardenSkin.Decorations`; ô nào chưa có prefab thì rơi về primitive, đúng cách bộ
   art hiện tại đang làm với cây và quầy.
 
-### Giới hạn đã biết của pha 2
+### Vùng cấm đặt
 
-Core chỉ chặn đặt ra ngoài khu vườn và đặt chồng lên món khác. **Nó không chặn đặt đè lên ô đất
-hay quầy trà** — trong game thì click vào ô đất bị chính collider của ô nuốt trước nên hiếm khi
-xảy ra, nhưng vẫn đặt sát mép được. Chưa xử lý vì trang trí không ảnh hưởng gameplay; nếu thấy
-xấu khi chơi thì thêm vùng cấm vào `CanPlaceDecoration`.
+`CanPlaceDecoration` từ chối bốn thứ: ra ngoài khu vườn, chồng lên món khác, **trùm lên ô đất**,
+và **vướng quầy trà hay robot**. Hình tròn bán kính `FootprintMm` của món sắp đặt không được chạm
+vào hình chữ nhật cấm nào; lý do trả về nói rõ vướng thứ gì. Lệnh đặt và lệnh di chuyển dùng chung
+đúng hàm này, không có luật thứ hai ở đâu cả.
+
+Bố cục vườn nằm trong `BalanceConfig` dưới dạng **milimet nguyên** (số cột, số hàng, khoảng cách
+tâm ô, cạnh ô, tâm và nửa kích thước vùng cấm của quầy trà và robot); `GardenLayout` trong Core
+tính ra danh sách hình chữ nhật từ đó. Vùng cấm quanh ô đất hẹp hơn cạnh ô thật một viền 10 cm mỗi
+bên, nên **khe giữa bốn ô vẫn lát được phiến đá và chậu hoa**, còn ghế gỗ và bảng hiệu thì không.
+
+Đây là hai nguồn sự thật — Core không đọc được `GardenSkin`, mà scene thì dựng theo `GardenSkin`.
+Nên `SceneFactory` đối chiếu lại lúc dựng scene: lệch khoảng cách ô, cạnh ô, số hàng/cột, hay vị
+trí ô đầu, ô cuối, quầy trà, robot thì `Debug.LogWarning` nói rõ lệch bao nhiêu milimet.
+`ContentCatalog.Validate` cũng chặn cấu hình vô lý (cột × hàng phải bằng `MaximumPlots`).
+
+Còn lại: save cũ có món đang nằm đè lên ô đất **vẫn nạp được bình thường** — `SaveSerializer` chỉ
+kiểm khu vườn chứ không kiểm vùng cấm. Siết chỗ này phải làm migration, không phải thêm một dòng
+`if`. Và người chơi vẫn chưa **thấy trước** chỗ cấm: chưa có preview khi rê chuột, chỉ có toast từ
+chối sau khi bấm.
 
 ## Hướng mở tiếp
 

@@ -23,6 +23,16 @@ namespace VuonNho.Views
         public GameObject Prefab;
     }
 
+    [Serializable]
+    public sealed class IconSkinEntry
+    {
+        [Tooltip("Id icon: id cây (crop_mint...), id trang trí (deco_bench...), hoặc plot/seedling/helper/station.")]
+        public string Id;
+
+        [Tooltip("Ảnh vuông 256 × 256. Để trống thì HUD hiện chữ như cũ.")]
+        public Sprite Icon;
+    }
+
     /// <summary>
     /// Bo hinh anh cua khu vuon. SceneFactory dung prefab o day khi co, khong co thi tu rot ve
     /// primitive cua moc A. Chi chua art va kich thuoc, khong chua luat choi.
@@ -33,6 +43,12 @@ namespace VuonNho.Views
     [CreateAssetMenu(menuName = "Vườn Nhỏ/Garden Skin", fileName = "GardenSkin")]
     public sealed class GardenSkin : ScriptableObject
     {
+        // Bon id icon khong gan voi cay hay mon trang tri nao.
+        public const string IconPlot = "plot";
+        public const string IconSeedling = "seedling";
+        public const string IconHelper = "helper";
+        public const string IconStation = "station";
+
         [Header("Kích thước — quy chuẩn mục 3 tài liệu asset")]
         [Tooltip("Khoảng cách tâm hai ô liền nhau, mét.")]
         public float PlotSpacing = 1.6f;
@@ -86,6 +102,9 @@ namespace VuonNho.Views
         [Header("Trang trí — pha 2")]
         public DecorationSkinEntry[] Decorations = new DecorationSkinEntry[0];
 
+        [Header("Icon HUD — để trống thì HUD chỉ có chữ")]
+        public IconSkinEntry[] Icons = new IconSkinEntry[0];
+
         [Header("Âm thanh — để trống dùng cue tổng hợp sẵn")]
         public AudioClip ClickClip;
         public AudioClip PlantClip;
@@ -115,6 +134,16 @@ namespace VuonNho.Views
                 if (Decorations[i] != null &&
                     string.Equals(Decorations[i].DecorationId, decorationId, StringComparison.Ordinal))
                     return Decorations[i].Prefab;
+            return null;
+        }
+
+        /// <summary>Chua nhap anh thi tra ve null — HUD phai chay duoc khi khong co icon nao.</summary>
+        public Sprite IconFor(string id)
+        {
+            if (Icons == null || string.IsNullOrEmpty(id)) return null;
+            for (int i = 0; i < Icons.Length; i++)
+                if (Icons[i] != null && string.Equals(Icons[i].Id, id, StringComparison.Ordinal))
+                    return Icons[i].Icon;
             return null;
         }
 

@@ -1,11 +1,43 @@
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.UI;
 using VuonNho.Core;
 using VuonNho.Views;
 
 namespace VuonNho.Tests.ArtViews
 {
+    /// <summary>Dong ho dung yen. TestKit nam o assembly khac nen phai co ban rieng o day.</summary>
+    sealed class StoppedClock : IClock
+    {
+        public long UtcNowMs { get { return 1000000000000L; } }
+        public long MonotonicMs { get { return 0L; } }
+    }
+
+    /// <summary>Khong co file save nao: Initialize di thang vao StartNewGame.</summary>
+    sealed class MemoryRepository : ISaveRepository
+    {
+        string _json;
+
+        public bool HasSave { get { return _json != null; } }
+
+        public IList<SaveCandidate> LoadCandidates()
+        {
+            return new List<SaveCandidate>();
+        }
+
+        public void Save(string json)
+        {
+            _json = json;
+        }
+
+        public void DeleteAll()
+        {
+            _json = null;
+        }
+    }
+
     public sealed class ArtViewTests
     {
         GameObject _root;
@@ -194,6 +226,139 @@ namespace VuonNho.Tests.ArtViews
             player.Enabled = false;
             Assert.IsTrue(sources.All(source => source.volume == 0f && !source.isPlaying));
             Assert.AreEqual(0, PlayerPrefs.GetInt(SfxPlayer.VolumePrefKey, 1));
+        }
+
+        // ---------------------------------------------------------------- rot ve khi thieu icon
+
+        static Sprite MakeSprite(out Texture2D texture)
+        {
+            texture = new Texture2D(4, 4, TextureFormat.RGBA32, false);
+            texture.Apply();
+            var sprite = Sprite.Create(texture, new Rect(0f, 0f, 4f, 4f), new Vector2(0.5f, 0.5f));
+            sprite.name = "ICO_Test";
+            return sprite;
+        }
+
+        static GameSession NewSession()
+        {
+            var session = new GameSession(DefaultContent.Create(), new StoppedClock(),
+                                          new MemoryRepository(), null, "art-test");
+            Assert.AreEqual(LoadOutcome.NewGame, session.Initialize());
+            return session;
+        }
+
+        /// <summary>HUD phai nam duoi mot RectTransform: Canvas khong song tren Transform thuong.</summary>
+        static GameHud NewHud(GameObject parent)
+        {
+            var go = new GameObject("Canvas", typeof(RectTransform), typeof(Canvas));
+            go.transform.SetParent(parent.transform, false);
+            return go.AddComponent<GameHud>();
+        }
+
+        [Test]
+        public void SkinWithoutIconReturnsNullInsteadOfThrowing()
+        {
+            var skin = ScriptableObject.CreateInstance<GardenSkin>();
+            Texture2D texture = null;
+            Sprite sprite = null;
+            try
+            {
+                // Mang rong la trang thai mac dinh cua mot GardenSkin moi tao.
+                Assert.IsNull(skin.IconFor(DefaultContent.CropMint));
+
+                skin.Icons = null;
+                Assert.IsNull(skin.IconFor(DefaultContent.CropMint));
+                Assert.IsNull(skin.IconFor(null));
+                Assert.IsNull(skin.IconFor(""));
+
+                sprite = MakeSprite(out texture);
+                skin.Icons = new IconSkinEntry[]
+                {
+                    null,
+                    new IconSkinEntry { Id = DefaultContent.CropChamomile, Icon = null },
+                    new IconSkinEntry { Id = DefaultContent.CropMint, Icon = sprite }
+                };
+
+                // Phan tu null giua mang khong duoc lam nem.
+                Assert.AreSame(sprite, skin.IconFor(DefaultContent.CropMint));
+                Assert.IsNull(skin.IconFor(DefaultContent.CropChamomile));
+                Assert.IsNull(skin.IconFor("khong_co_id_nay"));
+                Assert.IsNull(skin.IconFor(null));
+            }
+            finally
+            {
+                if (sprite != null) Object.DestroyImmediate(sprite);
+                if (texture != null) Object.DestroyImmediate(texture);
+                Object.DestroyImmediate(skin);
+            }
+        }
+
+        [Test]
+        public void HudBuildsAndKeepsTextWhenSkinHasNoIcon()
+        {
+            var skin = ScriptableObject.CreateInstance<GardenSkin>();
+            GameObject secondRoot = null;
+            try
+            {
+                var hud = NewHud(_root);
+                hud.Bind(NewSession(), skin);
+
+                var images = _root.GetComponentsInChildren<Image>(true);
+                for (int i = 0; i < images.Length; i++)
+                {
+                    string name = images[i].gameObject.name;
+                    if (name != "Icon" && name != "MachineIcon") continue;
+                    // O anh rong ma van bat se ve mot o trang dac giua HUD.
+                    Assert.IsFalse(images[i].gameObject.activeSelf,
+                                   "O icon " + name + " phai tu tat khi khong co sprite.");
+                }
+
+                var texts = _root.GetComponentsInChildren<Text>(true);
+                Assert.IsTrue(texts.Any(label => label.text.Contains("Bạc hà")),
+                              "Mat icon thi nhan chu phai con nguyen.");
+                Assert.IsTrue(texts.Any(label => label.text.Contains("xu")));
+
+                // Skin null la duong rot ve cuoi cung, cung khong duoc nem.
+                secondRoot = new GameObject("ArtViewTestNullSkin");
+                var nullSkinHud = NewHud(secondRoot);
+                Assert.DoesNotThrow(delegate { nullSkinHud.Bind(NewSession(), null); });
+            }
+            finally
+            {
+                if (secondRoot != null) Object.DestroyImmediate(secondRoot);
+                Object.DestroyImmediate(skin);
+            }
+        }
+
+        [Test]
+        public void ConfiguredIconTurnsOnItsBoxInTheHud()
+        {
+            var skin = ScriptableObject.CreateInstance<GardenSkin>();
+            Texture2D texture = null;
+            Sprite sprite = null;
+            try
+            {
+                sprite = MakeSprite(out texture);
+                skin.Icons = new IconSkinEntry[]
+                {
+                    new IconSkinEntry { Id = DefaultContent.CropMint, Icon = sprite }
+                };
+
+                var hud = NewHud(_root);
+                hud.Bind(NewSession(), skin);
+
+                var images = _root.GetComponentsInChildren<Image>(true);
+                bool shown = images.Any(image => image.gameObject.name == "Icon" &&
+                                                 image.gameObject.activeSelf &&
+                                                 image.sprite == sprite);
+                Assert.IsTrue(shown, "Co sprite thi it nhat mot o icon phai bat len.");
+            }
+            finally
+            {
+                if (sprite != null) Object.DestroyImmediate(sprite);
+                if (texture != null) Object.DestroyImmediate(texture);
+                Object.DestroyImmediate(skin);
+            }
         }
     }
 }

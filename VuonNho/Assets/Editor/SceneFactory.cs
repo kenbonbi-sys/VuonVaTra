@@ -51,6 +51,7 @@ namespace VuonNho.EditorTools
             ProjectSetup.Configure();
             var skin = LoadOrCreateSkin();
             var catalog = DefaultContent.Create();
+            WarnIfLayoutDiffers(skin, catalog);
 
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
@@ -249,10 +250,8 @@ namespace VuonNho.EditorTools
                 for (int column = 0; column < Columns; column++)
                 {
                     int plotId = row * Columns + column;
-                    var position = new Vector3((column - (Columns - 1) * 0.5f) * skin.PlotSpacing,
-                                               0f,
-                                               (row - 1) * skin.PlotSpacing);
-                    views.Add(BuildPlot(root.transform, plotId, position, skin, catalog));
+                    views.Add(BuildPlot(root.transform, plotId, PlotPosition(skin, column, row),
+                                        skin, catalog));
                 }
             }
             return views;
@@ -403,7 +402,7 @@ namespace VuonNho.EditorTools
         static MachineView BuildTeaStation(GardenSkin skin)
         {
             var root = new GameObject("TeaStationRoot");
-            root.transform.position = new Vector3(0f, 0f, (Rows - 1) * 0.5f * skin.PlotSpacing + 2.6f);
+            root.transform.position = StationPosition(skin);
 
             var collider = root.AddComponent<BoxCollider>();
             collider.center = new Vector3(0f, 0.6f, 0f);
@@ -463,8 +462,7 @@ namespace VuonNho.EditorTools
         static HelperView BuildHelper(GardenSkin skin)
         {
             var root = new GameObject("HelperRoot");
-            root.transform.position = new Vector3(-((Columns - 1) * 0.5f * skin.PlotSpacing + 2.0f),
-                                                 0f, 0.25f * skin.PlotSpacing);
+            root.transform.position = HelperPosition(skin);
 
             var view = root.AddComponent<HelperView>();
 
@@ -631,6 +629,90 @@ namespace VuonNho.EditorTools
 
             canvasGo.AddComponent<GraphicRaycaster>();
             return canvasGo.AddComponent<GameHud>();
+        }
+
+        // ---------------------------------------------------------------- bo cuc vuon
+
+        /// <summary>Vi tri tam mot o dat trong scene. Cot can giua, hang dem tu hang giua.</summary>
+        static Vector3 PlotPosition(GardenSkin skin, int column, int row)
+        {
+            return new Vector3((column - (Columns - 1) * 0.5f) * skin.PlotSpacing,
+                               0f,
+                               (row - 1) * skin.PlotSpacing);
+        }
+
+        /// <summary>Quay tra dung sau luong cay, can giua theo truc X.</summary>
+        static Vector3 StationPosition(GardenSkin skin)
+        {
+            return new Vector3(0f, 0f, (Rows - 1) * 0.5f * skin.PlotSpacing + 2.6f);
+        }
+
+        /// <summary>Robot dung ben trai luong cay.</summary>
+        static Vector3 HelperPosition(GardenSkin skin)
+        {
+            return new Vector3(-((Columns - 1) * 0.5f * skin.PlotSpacing + 2.0f),
+                               0f, 0.25f * skin.PlotSpacing);
+        }
+
+        /// <summary>
+        /// Doi chieu so cua GardenSkin voi bo cuc ma Core dung de chan dat trang tri.
+        /// Hai nguon su that ma im lang la cai bay, nen lech cho nao thi noi ro lech bao nhieu.
+        /// </summary>
+        static void WarnIfLayoutDiffers(GardenSkin skin, ContentCatalog catalog)
+        {
+            var balance = catalog.Balance;
+            var differences = new List<string>();
+
+            AddDifference(differences, "PlotSpacing",
+                          Mathf.RoundToInt(skin.PlotSpacing * 1000f), balance.PlotSpacingMm);
+            AddDifference(differences, "PlotSize",
+                          Mathf.RoundToInt(skin.PlotSize * 1000f), balance.PlotEdgeMm);
+            AddDifference(differences, "so cot", Columns, balance.GardenColumns);
+            AddDifference(differences, "so hang", Rows, balance.GardenRows);
+
+            // So ca o dau lan o cuoi: cong thuc hang o day dem tu hang giua chu khong can giua
+            // nhu cot, hai cach chi trung nhau khi Rows = 3.
+            if (Columns == balance.GardenColumns && Rows == balance.GardenRows)
+            {
+                var first = PlotPosition(skin, 0, 0);
+                var last = PlotPosition(skin, Columns - 1, Rows - 1);
+                AddDifference(differences, "o dau X",
+                              Mathf.RoundToInt(first.x * 1000f), GardenLayout.PlotCenterXMm(balance, 0));
+                AddDifference(differences, "o dau Z",
+                              Mathf.RoundToInt(first.z * 1000f), GardenLayout.PlotCenterZMm(balance, 0));
+                AddDifference(differences, "o cuoi X",
+                              Mathf.RoundToInt(last.x * 1000f),
+                              GardenLayout.PlotCenterXMm(balance, Columns - 1));
+                AddDifference(differences, "o cuoi Z",
+                              Mathf.RoundToInt(last.z * 1000f),
+                              GardenLayout.PlotCenterZMm(balance, Rows - 1));
+            }
+
+            var station = StationPosition(skin);
+            AddDifference(differences, "quay tra X",
+                          Mathf.RoundToInt(station.x * 1000f), balance.StationCenterXMm);
+            AddDifference(differences, "quay tra Z",
+                          Mathf.RoundToInt(station.z * 1000f), balance.StationCenterZMm);
+
+            var helper = HelperPosition(skin);
+            AddDifference(differences, "robot X",
+                          Mathf.RoundToInt(helper.x * 1000f), balance.RobotCenterXMm);
+            AddDifference(differences, "robot Z",
+                          Mathf.RoundToInt(helper.z * 1000f), balance.RobotCenterZMm);
+
+            if (differences.Count == 0) return;
+
+            Debug.LogWarning("[VuonNho] GardenSkin lech voi BalanceConfig: " +
+                             string.Join("; ", differences.ToArray()) +
+                             ". Core dang chan dat trang tri theo so cua BalanceConfig " +
+                             "nen luat se khong khop scene.");
+        }
+
+        static void AddDifference(List<string> differences, string label, int sceneValue, int balanceValue)
+        {
+            if (sceneValue == balanceValue) return;
+            differences.Add(label + " scene " + sceneValue + " vs balance " + balanceValue +
+                            " (lech " + (sceneValue - balanceValue) + ")");
         }
 
         // ---------------------------------------------------------------- tien ich

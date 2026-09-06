@@ -83,6 +83,7 @@ namespace VuonNho.Core
         readonly ISaveRepository _repository;
         readonly ITestLogger _logger;
         readonly string _buildId;
+        readonly List<GardenRect> _keepOutRects;
 
         GameState _state;
         LifecyclePhase _phase = LifecyclePhase.Suspended;
@@ -122,6 +123,8 @@ namespace VuonNho.Core
             _repository = repository;
             _logger = logger;
             _buildId = buildId ?? "dev";
+            // Bo cuc vuon khong doi trong ca phien nen tinh mot lan.
+            _keepOutRects = GardenLayout.KeepOutRects(catalog.Balance);
             _simulation = new FarmSimulation(catalog);
             _simulation.AddListener(this);
         }
@@ -603,6 +606,26 @@ namespace VuonNho.Core
                 return false;
             }
 
+            // Vat can co dinh cua vuon: kiem truoc vi no re hon vong duoi va bao loi cu the hon.
+            for (int i = 0; i < _keepOutRects.Count; i++)
+            {
+                var rect = _keepOutRects[i];
+                if (!GardenLayout.Touches(rect, xMm, zMm, definition.FootprintMm)) continue;
+                switch (rect.Kind)
+                {
+                    case GardenBlockKind.Plot:
+                        reason = "Trùm lên ô đất.";
+                        break;
+                    case GardenBlockKind.Station:
+                        reason = "Vướng quán trà.";
+                        break;
+                    default:
+                        reason = "Vướng robot.";
+                        break;
+                }
+                return false;
+            }
+
             for (int i = 0; i < _state.Decorations.Count; i++)
             {
                 if (i == ignoreIndex) continue;
@@ -655,7 +678,10 @@ namespace VuonNho.Core
             return commit;
         }
 
-        /// <summary>Di chuyen mon da dat. Khong ton tien nen khong can transaction rieng.</summary>
+        /// <summary>
+        /// Di chuyen mon da dat. Khong ton tien nhung van clone roi moi commit giong moi lenh khac,
+        /// de loi ghi khong de lai mot vi tri moi chua duoc luu.
+        /// </summary>
         public CommandResult MoveDecoration(int index, int xMm, int zMm, int rotationDeg)
         {
             EnsureCurrent();
@@ -667,12 +693,17 @@ namespace VuonNho.Core
             if (!CanPlaceDecoration(placed.DefinitionId, xMm, zMm, index, out reason))
                 return CommandResult.Fail(reason);
 
-            placed.XMm = xMm;
-            placed.ZMm = zMm;
-            placed.RotationDeg = NormalizeRotation(rotationDeg);
-            _dirty = true;
-            RaiseChanged();
-            return CommandResult.Ok();
+            var working = _state.Clone();
+            var moving = working.Decorations[index];
+            moving.XMm = xMm;
+            moving.ZMm = zMm;
+            moving.RotationDeg = NormalizeRotation(rotationDeg);
+
+            var commit = CommitWithSave(working, "Chưa lưu được vị trí mới, hãy thử lại.");
+            if (!commit.Success) return commit;
+
+            Log("decoration_moved", "definitionId", placed.DefinitionId);
+            return commit;
         }
 
         /// <summary>

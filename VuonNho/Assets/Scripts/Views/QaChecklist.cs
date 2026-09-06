@@ -283,6 +283,15 @@ namespace VuonNho.Views
         {
             Section("Giao diện ở " + Screen.width + " × " + Screen.height);
 
+            // Popup cho offline khong bao gio tu dong lai; neu no con mo thi scrim cua no la vat
+            // trung raycast tren cung va moi phep do UI phia sau se do nham scrim.
+            DismissOfflinePopupIfOpen();
+            yield return null;
+
+            CheckGardenClickReachable();
+            yield return CheckModalHasEscape("OfflineModal");
+            yield return CheckModalHasEscape("BlockedModal");
+
             string[] panels = { "inventory", "upgrade", "decorate", "settings", "plot" };
             foreach (string panelName in panels)
             {
@@ -296,14 +305,154 @@ namespace VuonNho.Views
 
                 CheckTextOverflow(panelName, opened);
                 CheckBlocksClicks(panelName, opened);
+                // Phai do truoc khi bam nut dong that: sau do be mat khong con tren man hinh nua.
                 CheckDoesNotCoverTopBar(panelName, opened);
+                CheckButtonReceivesClick(panelName, opened);
 
-                if (panelName == "plot") _hud.ClosePlotPopup();
-                else _hud.OpenPanelByName(panelName);   // goi lai la dong
+                CloseSurface(panelName);
                 yield return null;
             }
 
             CheckTextOverflow("HUD", _hud.transform as RectTransform);
+        }
+
+        void DismissOfflinePopupIfOpen()
+        {
+            var modal = _hud.transform.Find("OfflineModal");
+            if (modal == null || !modal.gameObject.activeInHierarchy) return;
+
+            Canvas.ForceUpdateCanvases();
+            var buttonTransform = modal.Find("Card/Continue");
+            var button = buttonTransform != null ? buttonTransform.GetComponent<Button>() : null;
+            string detail;
+            bool clicked = TryClickButton(button, out detail);
+            bool acknowledged = _session.State.PendingOfflineSummary == null ||
+                                _session.State.PendingOfflineSummary.Seen;
+            Check("Đóng báo cáo offline bằng nút Tiếp tục và xác nhận báo cáo",
+                  clicked && !modal.gameObject.activeInHierarchy && acknowledged, detail);
+        }
+
+        /// <summary>
+        /// Bat tam modal de kiem loi thoat co the nhan pointer qua scrim. Khong bam cac hanh
+        /// dong thoat game/reset; sau phep do tra lai dung trang thai hien thi truoc do.
+        /// </summary>
+        IEnumerator CheckModalHasEscape(string modalName)
+        {
+            var modal = _hud.transform.Find(modalName);
+            if (modal == null)
+            {
+                Check("Modal " + modalName + " có lối thoát bấm được", false, "Không tìm thấy modal.");
+                yield break;
+            }
+
+            bool wasActive = modal.gameObject.activeSelf;
+            var reachable = new List<string>();
+            var failures = new List<string>();
+
+            modal.gameObject.SetActive(true);
+            var card = modal.Find("Card") as RectTransform;
+            if (card != null) LayoutRebuilder.ForceRebuildLayoutImmediate(card);
+            Canvas.ForceUpdateCanvases();
+
+            // Canvas chi dung xong hinh hoc o cuoi khung hinh. Do ngay trong khung hinh vua bat
+            // modal thi moi phep do deu tra ve "khong co gi" va bao nham la modal hong.
+            yield return null;
+
+            foreach (var button in modal.GetComponentsInChildren<Button>(false))
+            {
+                if (!IsModalEscape(button)) continue;
+                string detail;
+                if (ButtonIsReachable(button, out detail)) reachable.Add(Path(button.transform));
+                else failures.Add(detail);
+            }
+
+            Check("Modal " + modalName + " có lối thoát bấm được", reachable.Count > 0,
+                  reachable.Count > 0 ? string.Join(", ", reachable.ToArray())
+                  : failures.Count > 0 ? string.Join("; ", failures.ToArray())
+                  : "Không có nút Tiếp tục/Đóng/Cài đặt/Thoát trong modal.");
+
+            modal.gameObject.SetActive(wasActive);
+            Canvas.ForceUpdateCanvases();
+            yield return null;
+        }
+
+        static bool IsModalEscape(Button button)
+        {
+            string name = button.name.ToLowerInvariant();
+            if (name == "continue" || name.Contains("close") || name.Contains("settings") ||
+                name == "back" || name == "quit" || name == "exit") return true;
+            var caption = button.GetComponentInChildren<Text>(true);
+            string text = caption != null ? caption.text.Trim() : "";
+            return text == "Tiếp tục" || text == "Đóng" || text == "Cài đặt" ||
+                   text == "Thoát" || text == "Thoát game";
+        }
+
+        void CheckButtonReceivesClick(string surface, RectTransform panel)
+        {
+            string buttonName = surface == "plot" ? "ClosePopup" : "Close";
+            Button close = null;
+            foreach (var candidate in panel.GetComponentsInChildren<Button>(false))
+                if (candidate.name == buttonName) { close = candidate; break; }
+
+            string detail;
+            bool clicked = TryClickButton(close, out detail);
+            Check("Nút đóng nhận click thật và đóng bề mặt " + surface,
+                  clicked && !panel.gameObject.activeInHierarchy, detail);
+        }
+
+        bool ButtonIsReachable(Button button, out string detail)
+        {
+            detail = "Không tìm thấy nút.";
+            if (button == null) return false;
+            detail = Path(button.transform) + ": nút không hoạt động hoặc không tương tác được.";
+            if (!button.isActiveAndEnabled || !button.IsInteractable()) return false;
+            var rect = button.transform as RectTransform;
+            if (rect == null || rect.rect.width <= 1f || rect.rect.height <= 1f) return false;
+            var point = ScreenCenterOf(rect);
+            detail = Path(button.transform) + ": tâm nút nằm ngoài màn hình.";
+            if (point.x < 0f || point.x >= Screen.width || point.y < 0f || point.y >= Screen.height) return false;
+            var probe = ProbeClick(point, false);
+            var handler = probe.UiTarget != null
+                ? ExecuteEvents.GetEventHandler<IPointerClickHandler>(probe.UiTarget) : null;
+            bool reached = probe.BlockedByUi && probe.GardenTarget == null && handler == button.gameObject;
+            detail = Path(button.transform) + "; graphic trên cùng: " +
+                     (probe.UiTarget != null ? Path(probe.UiTarget.transform) : "không có") +
+                     "; click handler: " + (handler != null ? Path(handler.transform) : "không có");
+            return reached;
+        }
+
+        bool TryClickButton(Button button, out string detail)
+        {
+            if (!ButtonIsReachable(button, out detail)) return false;
+            var point = ScreenCenterOf(button.transform as RectTransform);
+            var probe = ProbeClick(point, true);
+            var handler = probe.UiTarget != null
+                ? ExecuteEvents.GetEventHandler<IPointerClickHandler>(probe.UiTarget) : null;
+            if (handler != button.gameObject) return false;
+
+            var pointer = new PointerEventData(EventSystem.current)
+            {
+                position = point,
+                pressPosition = point,
+                button = PointerEventData.InputButton.Left,
+                pointerPress = handler,
+                rawPointerPress = probe.UiTarget,
+                pointerEnter = probe.UiTarget,
+                eligibleForClick = true,
+                clickCount = 1
+            };
+            return ExecuteEvents.Execute(handler, pointer, ExecuteEvents.pointerClickHandler);
+        }
+
+        /// <summary>
+        /// Chi dong khi be mat con mo. Nut dong that o muc kiem tren co the da dong no roi,
+        /// ma OpenPanelByName la lenh bat/tat nen goi vo dieu kien se mo lai chinh panel do.
+        /// </summary>
+        void CloseSurface(string panelName)
+        {
+            if (FindOpenSurface(panelName) == null) return;
+            if (panelName == "plot") _hud.ClosePlotPopup();
+            else _hud.OpenPanelByName(panelName);   // goi lai la dong
         }
 
         RectTransform FindOpenSurface(string panelName)
@@ -348,24 +497,149 @@ namespace VuonNho.Views
                   offenders.Count == 0 ? labels.Length + " nhãn" : string.Join("; ", offenders.ToArray()));
         }
 
-        /// <summary>Click len panel phai bi UI chan, khong duoc truyen xuong dat.</summary>
+        /// <summary>
+        /// Click len panel phai bi UI chan, khong duoc truyen xuong dat. Khong dem graphic mot cach
+        /// gian tiep nua: bom mot pointer that qua ExecuteEvents roi khang dinh dung chot ma
+        /// GameBootstrap.HandleClick dua vao, va khang dinh nhanh Physics.Raycast xuong vuon
+        /// khong he chay.
+        /// </summary>
         void CheckBlocksClicks(string surface, RectTransform panel)
         {
             var eventSystem = EventSystem.current;
             if (eventSystem == null)
             {
-                Check("Click trên " + surface + " không xuyên xuống vườn", false, "Không có EventSystem.");
+                Check("Click trên " + surface + " bị UI chặn, không xuống tới vườn", false,
+                      "Không có EventSystem.");
                 return;
             }
 
-            var center = panel.TransformPoint(panel.rect.center);
-            var screenPoint = RectTransformUtility.WorldToScreenPoint(null, center);
-            var pointer = new PointerEventData(eventSystem) { position = screenPoint };
+            var probe = ProbeClick(ScreenCenterOf(panel), true);
+            bool insidePanel = probe.UiTarget != null && probe.UiTarget.transform.IsChildOf(panel);
+            bool ok = probe.BlockedByUi && insidePanel && probe.GardenTarget == null;
+
+            var detail = new StringBuilder();
+            detail.Append("UI nhận click: ").Append(probe.UiTarget != null ? probe.UiTarget.name : "không có");
+            if (probe.UiTarget != null && !insidePanel) detail.Append(" (nằm ngoài bề mặt đang kiểm)");
+            detail.Append("; đối tượng nhận sự kiện pointer: ")
+                  .Append(probe.Handler != null ? probe.Handler.name : "không có");
+            detail.Append("; nếu không chặn sẽ trúng ")
+                  .Append(probe.BehindUi != null ? probe.BehindUi.name : "phía sau không có gì trong vườn");
+            if (probe.GardenTarget != null)
+                detail.Append("; click ĐÃ lọt xuống ").Append(probe.GardenTarget.name);
+
+            Check("Click trên " + surface + " bị UI chặn, không xuống tới vườn", ok, detail.ToString());
+        }
+
+        /// <summary>Ket qua mot lan bom click that: ai nhan, co bi chan khong, phia sau la gi.</summary>
+        sealed class ClickProbe
+        {
+            public GameObject UiTarget;      // graphic tren cung duoi con tro
+            public GameObject Handler;       // doi tuong that su nhan su kien pointer
+            public bool BlockedByUi;         // dung bang thu ma IsPointerOverGameObject tra ve
+            public GameObject GardenTarget;  // collider vuon ma HandleClick se cham, null neu bi chan
+            public GameObject BehindUi;      // collider nam sau UI, chi de ghi vao bao cao
+        }
+
+        /// <summary>
+        /// Lam lai dung chuoi quyet dinh cua GameBootstrap.HandleClick.
+        ///
+        /// Khong dat duoc vi tri chuot that tu code quan ly, ma EventSystem.IsPointerOverGameObject()
+        /// lai doc pointerEnter cua con tro chuot that. Nen o day dung lai chot chan bang chinh
+        /// truong ma no doc: RaycastAll roi gan pointerEnter = hits[0].gameObject, dung cach
+        /// StandaloneInputModule.HandlePointerExitAndEnter lam.
+        /// </summary>
+        ClickProbe ProbeClick(Vector2 screenPoint, bool deliverEvents)
+        {
+            var probe = new ClickProbe();
+            var eventSystem = EventSystem.current;
+            if (eventSystem == null) return probe;
+
+            var pointer = new PointerEventData(eventSystem);
+            pointer.position = screenPoint;
+            pointer.button = PointerEventData.InputButton.Left;
+
             var hits = new List<RaycastResult>();
             eventSystem.RaycastAll(pointer, hits);
 
-            Check("Click trên " + surface + " không xuyên xuống vườn", hits.Count > 0,
-                  hits.Count > 0 ? "UI nhận click: " + hits[0].gameObject.name : "không có graphic nào chặn");
+            if (hits.Count > 0)
+            {
+                pointer.pointerCurrentRaycast = hits[0];
+                pointer.pointerPressRaycast = hits[0];
+                pointer.pointerEnter = hits[0].gameObject;
+                probe.UiTarget = hits[0].gameObject;
+
+                if (deliverEvents)
+                {
+                    // Chi enter/down/up. Khong bom pointerClick o giua panel: cho do co the roi
+                    // trung "Thoát game" hoac "Xóa tiến độ" va giet ca lan QA.
+                    ExecuteEvents.ExecuteHierarchy(probe.UiTarget, pointer, ExecuteEvents.pointerEnterHandler);
+                    probe.Handler = ExecuteEvents.ExecuteHierarchy(probe.UiTarget, pointer,
+                                                                   ExecuteEvents.pointerDownHandler);
+                    ExecuteEvents.ExecuteHierarchy(probe.UiTarget, pointer, ExecuteEvents.pointerUpHandler);
+                }
+            }
+
+            probe.BlockedByUi = pointer.pointerEnter != null;
+            probe.BehindUi = RaycastGarden(screenPoint);
+            // Dung thu tu short-circuit y het HandleClick: bi chan thi tia vat ly khong he duoc ban.
+            if (!probe.BlockedByUi) probe.GardenTarget = probe.BehindUi;
+            return probe;
+        }
+
+        /// <summary>Chinh nhanh Physics.Raycast ma HandleClick chay khi click khong bi UI chan.</summary>
+        GameObject RaycastGarden(Vector2 screenPoint)
+        {
+            var camera = _bootstrap.GameCamera != null ? _bootstrap.GameCamera : Camera.main;
+            if (camera == null) return null;
+
+            RaycastHit hit;
+            if (!Physics.Raycast(camera.ScreenPointToRay(screenPoint), out hit, 500f)) return null;
+            return hit.collider != null ? hit.collider.gameObject : null;
+        }
+
+        /// <summary>Canvas la ScreenSpaceOverlay nen camera phai la null khi doi ra toa do man hinh.</summary>
+        static Vector2 ScreenCenterOf(RectTransform rect)
+        {
+            return RectTransformUtility.WorldToScreenPoint(null, rect.TransformPoint(rect.rect.center));
+        }
+
+        /// <summary>
+        /// Muc doi chung cho muc chan click o tren: neu khong o dat nao bam toi duoc thi "bi chan"
+        /// chang chung minh dieu gi — co the chi vi camera khong nham vao vuon. Goi khi chua mo panel.
+        /// </summary>
+        void CheckGardenClickReachable()
+        {
+            var camera = _bootstrap.GameCamera != null ? _bootstrap.GameCamera : Camera.main;
+            if (camera == null)
+            {
+                Check("Click ngoài panel vẫn xuống được vườn", false, "Không tìm thấy camera.");
+                return;
+            }
+
+            string reached = null;
+            int blockedByUi = 0;
+            int noCollider = 0;
+
+            if (_bootstrap.Plots != null)
+            {
+                for (int i = 0; i < _bootstrap.Plots.Length && reached == null; i++)
+                {
+                    var view = _bootstrap.Plots[i];
+                    if (view == null) continue;
+
+                    var screen = camera.WorldToScreenPoint(view.transform.position);
+                    var probe = ProbeClick(new Vector2(screen.x, screen.y), false);
+                    if (probe.BlockedByUi) { blockedByUi++; continue; }
+                    if (probe.GardenTarget == null ||
+                        probe.GardenTarget.GetComponentInParent<PlotView>() == null) { noCollider++; continue; }
+                    reached = probe.GardenTarget.name;
+                }
+            }
+
+            Check("Click ngoài panel vẫn xuống được vườn", reached != null,
+                  reached != null
+                      ? "click trúng " + reached
+                      : blockedByUi + " ô bị UI che, " + noCollider + " ô không có collider nhận tia");
         }
 
         void CheckDoesNotCoverTopBar(string surface, RectTransform panel)

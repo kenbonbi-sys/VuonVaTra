@@ -41,9 +41,20 @@ MonoBehaviour:
   RockPrefabs:
   - {fileID: 4235597646367451874, guid: e885a356e15556d43ac95c1ac7e880a6, type: 3}
   FencePostPrefab: {fileID: 6951799199227941517, guid: 66c5b8cd8232a46429bb1b50bffe7408, type: 3}
-  BodyFont: {fileID: 12800000, guid: 347e6edb228d9574eb5afa1b605b23a9, type: 3}
-  DisplayFont: {fileID: 12800000, guid: 9165cc9b77a80114f8508d27a1bcf94c, type: 3}
-  Decorations: []
+  BodyFont: {fileID: 12800000, guid: c81b22a3c28842d4e9f53a503b9a67cd, type: 3}
+  DisplayFont: {fileID: 12800000, guid: fe03f323c413bed41a5e83af1dfcf72f, type: 3}
+  Decorations:
+  - DecorationId: deco_stone_path
+    Prefab: {fileID: 5234116885264319880, guid: 5ec2eb70fd8968d4f96ea8bae3b9086a, type: 3}
+  - DecorationId: deco_planter
+    Prefab: {fileID: 7857162784859354755, guid: a84e376711cede04ca06b803e7b2ded6, type: 3}
+  - DecorationId: deco_lantern
+    Prefab: {fileID: 7531074801190901344, guid: cf7aaa03a23814d4b9753df80b2322dd, type: 3}
+  - DecorationId: deco_bench
+    Prefab: {fileID: 7849703948220688348, guid: a841c11b3e4fefc4caec13ad41885f2a, type: 3}
+  - DecorationId: deco_signboard
+    Prefab: {fileID: 8671852737939986871, guid: bc41d528fb36d9e459c5ea514c8c9866, type: 3}
+  Icons: []
   ClickClip: {fileID: 8300000, guid: 7ac12812b94628142871a3f1fbe0cc02, type: 3}
   PlantClip: {fileID: 8300000, guid: 1d95b701d19a30741aa19e000e546fe6, type: 3}
   HarvestClip: {fileID: 8300000, guid: b4ac2cfe9f5a015469473d1d2a7b63f9, type: 3}

@@ -32,6 +32,11 @@ namespace VuonNho.Views
         public const int RadiusTrack = 5;
         public const int RadiusDot = 6;
 
+        /// <summary>Canh o icon: 24 px cho dong danh sach va nut, 32 px cho the may pha.</summary>
+        public const float IconSizeRow = 32f;
+        public const float IconSizeCard = 48f;
+        public const float IconSizePreview = 56f;
+
         static Font _font;
         static Font _bodyFont;
         static Font _displayFont;
@@ -181,6 +186,49 @@ namespace VuonNho.Views
             return label;
         }
 
+        // ---------------------------------------------------------------- icon
+
+        /// <summary>
+        /// O vuong chua mot icon. Khong co sprite thi o bi tat han — layout group bo qua con da
+        /// tat nen bo cuc y het luc HUD chua co anh nao, khong de lai lo trong.
+        /// </summary>
+        public static Image Icon(Transform parent, string name, Sprite sprite, float size)
+        {
+            var go = Node(parent, name);
+            var image = go.AddComponent<Image>();
+            image.sprite = sprite;
+            image.color = GardenPalette.IconTint;
+            image.preserveAspect = true;
+            image.raycastTarget = false;
+
+            var rect = Rect(go);
+            rect.sizeDelta = new Vector2(size, size);
+
+            // Chi dat be ngang/cao cua chinh o anh; khong dong vao dong nao co chu.
+            var layout = go.AddComponent<LayoutElement>();
+            layout.preferredWidth = size;
+            layout.preferredHeight = size;
+            layout.flexibleWidth = 0f;
+            layout.flexibleHeight = 0f;
+
+            go.SetActive(sprite != null);
+            return image;
+        }
+
+        public static void SetIcon(Image icon, Sprite sprite)
+        {
+            SetIcon(icon, sprite, GardenPalette.IconTint);
+        }
+
+        /// <summary>Het anh thi o tu tat de bo cuc tro lai dung nhu khi chua co icon.</summary>
+        public static void SetIcon(Image icon, Sprite sprite, Color tint)
+        {
+            if (icon == null) return;
+            icon.sprite = sprite;
+            icon.color = tint;
+            icon.gameObject.SetActive(sprite != null);
+        }
+
         // ---------------------------------------------------------------- nut
 
         public enum ButtonStyle
@@ -199,11 +247,16 @@ namespace VuonNho.Views
             Disabled,
         }
 
+        /// <summary>
+        /// icon la tham so cuoi va co gia tri mac dinh, nen moi cho goi cu van dung nguyen ven.
+        /// Khong truyen icon thi nut duoc dung y het truoc day, tung dong mot.
+        /// </summary>
         public static Button TextButton(Transform parent, string name, string caption, UnityAction onClick,
-                                        ButtonStyle style = ButtonStyle.Primary)
+                                        ButtonStyle style = ButtonStyle.Primary, Sprite icon = null)
         {
             var go = Node(parent, name);
             var baseColor = style == ButtonStyle.Primary ? GardenPalette.ButtonNormal : GardenPalette.ButtonQuiet;
+            var baseTextColor = style == ButtonStyle.Primary ? GardenPalette.TextOnPrimary : GardenPalette.TextPrimary;
 
             var image = go.AddComponent<Image>();
             image.color = baseColor;
@@ -222,12 +275,12 @@ namespace VuonNho.Views
             // Image.color giu mau that; ColorBlock chi con lam sang/toi khi ro chuot va bam.
             // disabledColor phai la trang, neu khong nut tat bi lam toi hai lan.
             var colors = button.colors;
-            colors.normalColor = new Color(0.90f, 0.90f, 0.90f, 1f);
-            colors.highlightedColor = Color.white;
+            colors.normalColor = Color.white;
+            colors.highlightedColor = new Color(0.94f, 0.97f, 0.90f, 1f);
             colors.pressedColor = new Color(0.72f, 0.72f, 0.72f, 1f);
             colors.selectedColor = Color.white;
             colors.disabledColor = Color.white;
-            colors.fadeDuration = 0.08f;
+            colors.fadeDuration = 0.14f;
             button.colors = colors;
 
             // Game chi dung chuot. Khong tat navigation thi phim Space bam lai nut vua click.
@@ -239,16 +292,37 @@ namespace VuonNho.Views
 
             // Nhan nam trong layout group chu khong stretch cung: chu tieng Viet dai xuong hai
             // dong thi nut cao them thay vi de chu tran ra ngoai nen.
-            var padded = VerticalList(go, 0f, new RectOffset(10, 10, 4, 4));
-            padded.childAlignment = TextAnchor.MiddleCenter;
-
-            var label = Label(go.transform, "Label", caption, FontSizeBody, TextAnchor.MiddleCenter,
+            Text label;
+            Image iconImage = null;
+            if (icon == null)
+            {
+                var padded = VerticalList(go, 0f, new RectOffset(10, 10, 4, 4));
+                padded.childAlignment = TextAnchor.MiddleCenter;
+                label = Label(go.transform, "Label", caption, FontSizeBody, TextAnchor.MiddleCenter,
                               GardenPalette.TextPrimary, true);
+            }
+            else
+            {
+                // Co icon thi icon dung truoc, chu chay tu trai sang: hai thu thanh mot khoi doc duoc.
+                // childForceExpandHeight phai tat, neu khong o anh bi keo cao bang ca nut.
+                var row = HorizontalList(go, 8f, new RectOffset(10, 10, 4, 4));
+                row.childAlignment = TextAnchor.MiddleLeft;
+                row.childForceExpandWidth = false;
+                row.childForceExpandHeight = false;
+                iconImage = Icon(go.transform, "Icon", icon, IconSizeRow);
+                label = Label(go.transform, "Label", caption, FontSizeBody, TextAnchor.MiddleLeft,
+                              GardenPalette.TextPrimary, true);
+                var labelFlex = label.gameObject.AddComponent<LayoutElement>();
+                labelFlex.flexibleWidth = 1f;
+            }
 
             var cache = go.AddComponent<UiButtonStyle>();
             cache.Background = image;
             cache.Caption = label;
+            cache.Icon = iconImage;
             cache.BaseColor = baseColor;
+            cache.BaseTextColor = baseTextColor;
+            label.color = baseTextColor;
 
             // Chi dat san 44 px. Khong dat preferredHeight, neu khong no de len chieu cao
             // that ma layout group vua tinh duoc tu nhan.
@@ -272,19 +346,23 @@ namespace VuonNho.Views
 
             Color fill;
             Color text;
+            Color iconTint;
             switch (state)
             {
                 case ButtonState.Selected:
                     fill = GardenPalette.ButtonActive;
                     text = GardenPalette.TextPrimary;
+                    iconTint = GardenPalette.IconTint;
                     break;
                 case ButtonState.Disabled:
                     fill = GardenPalette.ButtonDisabled;
                     text = GardenPalette.TextDisabled;
+                    iconTint = GardenPalette.IconMuted;
                     break;
                 default:
                     fill = cache != null ? cache.BaseColor : GardenPalette.ButtonNormal;
-                    text = GardenPalette.TextPrimary;
+                    text = cache != null ? cache.BaseTextColor : GardenPalette.TextOnPrimary;
+                    iconTint = GardenPalette.IconTint;
                     break;
             }
 
@@ -292,6 +370,7 @@ namespace VuonNho.Views
             if (cache == null) return;
             if (cache.Background != null) cache.Background.color = fill;
             if (cache.Caption != null) cache.Caption.color = text;
+            if (cache.Icon != null) cache.Icon.color = iconTint;
         }
 
         public static void SetInteractable(Button button, bool interactable)

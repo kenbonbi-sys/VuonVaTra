@@ -13,6 +13,10 @@ namespace VuonNho.Tests
         MemorySaveRepository _repository;
         GameSession _session;
 
+        // Cho trong o phia truoc luoi o dat: khong cham o dat, quay tra hay robot.
+        const int FreeXMm = 0;
+        const int FreeZMm = -4000;
+
         [SetUp]
         public void SetUp()
         {
@@ -36,7 +40,7 @@ namespace VuonNho.Tests
             Assert.IsFalse(_session.DecoratingUnlocked);
 
             _session.State.Coins = 100000;
-            var result = _session.PlaceDecoration(DefaultDecorations.Planter, 0, 2000, 0);
+            var result = _session.PlaceDecoration(DefaultDecorations.Planter, FreeXMm, FreeZMm, 0);
 
             Assert.IsFalse(result.Success);
             Assert.AreEqual(0, _session.State.Decorations.Count);
@@ -65,7 +69,7 @@ namespace VuonNho.Tests
             long before = _session.State.Coins;
             long cost = _session.Catalog.Decoration(DefaultDecorations.Bench).Cost;
 
-            var result = _session.PlaceDecoration(DefaultDecorations.Bench, -1500, 2400, 90);
+            var result = _session.PlaceDecoration(DefaultDecorations.Bench, -1500, FreeZMm, 90);
 
             Assert.IsTrue(result.Success, result.FailureReason);
             Assert.AreEqual(before - cost, _session.State.Coins);
@@ -74,7 +78,7 @@ namespace VuonNho.Tests
             var placed = _session.State.Decorations[0];
             Assert.AreEqual(DefaultDecorations.Bench, placed.DefinitionId);
             Assert.AreEqual(-1500, placed.XMm);
-            Assert.AreEqual(2400, placed.ZMm);
+            Assert.AreEqual(FreeZMm, placed.ZMm);
             Assert.AreEqual(90, placed.RotationDeg);
         }
 
@@ -82,14 +86,14 @@ namespace VuonNho.Tests
         public void KhongDatDuocHaiMonChongLenNhau()
         {
             CompleteSetupPhase();
-            Assert.IsTrue(_session.PlaceDecoration(DefaultDecorations.Bench, 0, 3000, 0).Success);
+            Assert.IsTrue(_session.PlaceDecoration(DefaultDecorations.Bench, FreeXMm, FreeZMm, 0).Success);
 
-            var overlapping = _session.PlaceDecoration(DefaultDecorations.Bench, 100, 3000, 0);
+            var overlapping = _session.PlaceDecoration(DefaultDecorations.Bench, FreeXMm + 100, FreeZMm, 0);
             Assert.IsFalse(overlapping.Success);
             Assert.AreEqual(1, _session.State.Decorations.Count);
 
             // Ra du xa thi dat duoc.
-            var apart = _session.PlaceDecoration(DefaultDecorations.Bench, 3000, 3000, 0);
+            var apart = _session.PlaceDecoration(DefaultDecorations.Bench, 3000, FreeZMm, 0);
             Assert.IsTrue(apart.Success, apart.FailureReason);
             Assert.AreEqual(2, _session.State.Decorations.Count);
         }
@@ -111,7 +115,7 @@ namespace VuonNho.Tests
             CompleteSetupPhase();
             _session.State.Coins = 0;
 
-            var result = _session.PlaceDecoration(DefaultDecorations.Signboard, 0, 3000, 0);
+            var result = _session.PlaceDecoration(DefaultDecorations.Signboard, FreeXMm, FreeZMm, 0);
             Assert.IsFalse(result.Success);
             Assert.AreEqual(0, _session.State.Decorations.Count);
         }
@@ -120,10 +124,10 @@ namespace VuonNho.Tests
         public void DiChuyenMonDaDatKhongTonTien()
         {
             CompleteSetupPhase();
-            Assert.IsTrue(_session.PlaceDecoration(DefaultDecorations.Lantern, 0, 3000, 0).Success);
+            Assert.IsTrue(_session.PlaceDecoration(DefaultDecorations.Lantern, FreeXMm, FreeZMm, 0).Success);
             long afterPlacing = _session.State.Coins;
 
-            var moved = _session.MoveDecoration(0, 2000, 3000, 180);
+            var moved = _session.MoveDecoration(0, 2000, FreeZMm, 180);
             Assert.IsTrue(moved.Success, moved.FailureReason);
             Assert.AreEqual(afterPlacing, _session.State.Coins, "Di chuyen khong duoc tinh tien.");
             Assert.AreEqual(2000, _session.State.Decorations[0].XMm);
@@ -135,7 +139,7 @@ namespace VuonNho.Tests
         {
             CompleteSetupPhase();
             long before = _session.State.Coins;
-            Assert.IsTrue(_session.PlaceDecoration(DefaultDecorations.Signboard, 0, 3000, 0).Success);
+            Assert.IsTrue(_session.PlaceDecoration(DefaultDecorations.Signboard, FreeXMm, FreeZMm, 0).Success);
             Assert.Less(_session.State.Coins, before);
 
             Assert.IsTrue(_session.RemoveDecoration(0).Success);
@@ -147,8 +151,104 @@ namespace VuonNho.Tests
         public void GocXoayDuocChuanHoaVeKhoang0Den359()
         {
             CompleteSetupPhase();
-            Assert.IsTrue(_session.PlaceDecoration(DefaultDecorations.Planter, 0, 3000, -90).Success);
+            Assert.IsTrue(_session.PlaceDecoration(DefaultDecorations.Planter, FreeXMm, FreeZMm, -90).Success);
             Assert.AreEqual(270, _session.State.Decorations[0].RotationDeg);
+        }
+
+        // ---- vung cam quanh o dat, quay tra, robot ---------------------------------------
+
+        [Test]
+        public void KhongDatDuocDeLenTamODat()
+        {
+            CompleteSetupPhase();
+            long before = _session.State.Coins;
+
+            // (-800, 0) la tam o dat cot 1 hang 1 theo bo cuc trong BalanceConfig.
+            var result = _session.PlaceDecoration(DefaultDecorations.Planter, -800, 0, 0);
+
+            Assert.IsFalse(result.Success);
+            StringAssert.Contains("ô đất", result.FailureReason);
+            Assert.AreEqual(0, _session.State.Decorations.Count);
+            Assert.AreEqual(before, _session.State.Coins, "Dat truot thi khong duoc tru tien.");
+        }
+
+        [Test]
+        public void DatDuocVaoKheGiuaBonODat()
+        {
+            CompleteSetupPhase();
+
+            // (0, 800) la giao diem cua bon o. Ghe go qua to nen khong lot,
+            // nhung phien da thi vua khe.
+            string reason;
+            Assert.IsFalse(_session.CanPlaceDecoration(DefaultDecorations.Bench, 0, 800, -1, out reason));
+            StringAssert.Contains("ô đất", reason);
+
+            var result = _session.PlaceDecoration(DefaultDecorations.StonePath, 0, 800, 0);
+            Assert.IsTrue(result.Success, result.FailureReason);
+            Assert.AreEqual(1, _session.State.Decorations.Count);
+        }
+
+        [Test]
+        public void KhongDatDuocDeLenQuayTra()
+        {
+            CompleteSetupPhase();
+
+            var result = _session.PlaceDecoration(DefaultDecorations.Lantern, 0, 4200, 0);
+
+            Assert.IsFalse(result.Success);
+            StringAssert.Contains("quán trà", result.FailureReason);
+            Assert.AreEqual(0, _session.State.Decorations.Count);
+        }
+
+        [Test]
+        public void KhongDatDuocDeLenRobot()
+        {
+            CompleteSetupPhase();
+
+            var result = _session.PlaceDecoration(DefaultDecorations.Lantern, -4400, 400, 0);
+
+            Assert.IsFalse(result.Success);
+            StringAssert.Contains("robot", result.FailureReason);
+            Assert.AreEqual(0, _session.State.Decorations.Count);
+        }
+
+        [Test]
+        public void DiChuyenCungChiuLuatVungCam()
+        {
+            CompleteSetupPhase();
+            Assert.IsTrue(_session.PlaceDecoration(DefaultDecorations.Lantern, FreeXMm, FreeZMm, 0).Success);
+
+            var moved = _session.MoveDecoration(0, -800, 0, 0);
+
+            Assert.IsFalse(moved.Success, "Di chuyen phai chiu dung luat cua lenh dat.");
+            StringAssert.Contains("ô đất", moved.FailureReason);
+            Assert.AreEqual(FreeXMm, _session.State.Decorations[0].XMm);
+            Assert.AreEqual(FreeZMm, _session.State.Decorations[0].ZMm);
+        }
+
+        [Test]
+        public void LoiGhiSaveThiKhongApDungViTriMoi()
+        {
+            CompleteSetupPhase();
+            Assert.IsTrue(_session.PlaceDecoration(DefaultDecorations.Lantern, FreeXMm, FreeZMm, 0).Success);
+
+            _repository.FailNextSave = true;
+            var moved = _session.MoveDecoration(0, 2000, FreeZMm, 180);
+
+            Assert.IsFalse(moved.Success);
+            Assert.AreEqual(FreeXMm, _session.State.Decorations[0].XMm,
+                            "Ghi hong thi vi tri cu phai con nguyen.");
+            Assert.AreEqual(FreeZMm, _session.State.Decorations[0].ZMm);
+            Assert.AreEqual(0, _session.State.Decorations[0].RotationDeg);
+        }
+
+        [Test]
+        public void LuoiODatKhongKhopSoOThiCatalogTuChoi()
+        {
+            Assert.Throws<ContentValidationException>(delegate
+            {
+                DefaultContent.Create(new BalanceConfig { GardenColumns = 5 });
+            });
         }
 
         // ---- thuan tham my ---------------------------------------------------------------
@@ -188,8 +288,8 @@ namespace VuonNho.Tests
         public void LuuRoiDocLaiGiuNguyenViTriTrangTri()
         {
             CompleteSetupPhase();
-            Assert.IsTrue(_session.PlaceDecoration(DefaultDecorations.Bench, -1500, 2400, 90).Success);
-            Assert.IsTrue(_session.PlaceDecoration(DefaultDecorations.Lantern, 2600, -1800, 270).Success);
+            Assert.IsTrue(_session.PlaceDecoration(DefaultDecorations.Bench, -1500, FreeZMm, 90).Success);
+            Assert.IsTrue(_session.PlaceDecoration(DefaultDecorations.Lantern, 2600, FreeZMm, 270).Success);
             _session.SaveNow();
 
             var reopened = new GameSession(TestKit.Catalog(), _clock, _repository, new RecordingLogger(), "test");
@@ -198,7 +298,7 @@ namespace VuonNho.Tests
             Assert.AreEqual(2, reopened.State.Decorations.Count);
             Assert.AreEqual(DefaultDecorations.Bench, reopened.State.Decorations[0].DefinitionId);
             Assert.AreEqual(-1500, reopened.State.Decorations[0].XMm);
-            Assert.AreEqual(2400, reopened.State.Decorations[0].ZMm);
+            Assert.AreEqual(FreeZMm, reopened.State.Decorations[0].ZMm);
             Assert.AreEqual(90, reopened.State.Decorations[0].RotationDeg);
             Assert.AreEqual(2600, reopened.State.Decorations[1].XMm);
             Assert.AreEqual(270, reopened.State.Decorations[1].RotationDeg);
@@ -233,7 +333,7 @@ namespace VuonNho.Tests
         public void TrangTriCoIdLaLamSaveKhongHopLe()
         {
             CompleteSetupPhase();
-            Assert.IsTrue(_session.PlaceDecoration(DefaultDecorations.Bench, 0, 3000, 0).Success);
+            Assert.IsTrue(_session.PlaceDecoration(DefaultDecorations.Bench, FreeXMm, FreeZMm, 0).Success);
             string json = _session.Serialize(_session.State)
                 .Replace(DefaultDecorations.Bench, "deco_khong_ton_tai");
 

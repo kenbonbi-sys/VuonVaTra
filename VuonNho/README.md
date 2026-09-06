@@ -1,11 +1,12 @@
-# Vườn Nhỏ: Quán Trà — mốc A
+# Vườn và Trà
 
-Bản triển khai mốc A của [Kế hoạch MVP](../Ke-hoach-MVP-Vuon-Nho.md). Vòng chơi
-**chọn cây → gieo → cây lớn → thu → máy pha → tự bán → mua nâng cấp** chạy được từ đầu đến cuối
-bằng primitive Unity, có save/offline/lifecycle và bộ test logic.
+Tên trong [kế hoạch MVP](../Ke-hoach-MVP-Vuon-Nho.md) là *Vườn Nhỏ: Quán Trà*; hướng v1 đổi thành
+**Vườn và Trà** và đó là tên đang nằm trong `PlayerSettings`, nên cũng là tên thư mục save.
+Lý do đổi: [Docs/Huong-di-v1.md](Docs/Huong-di-v1.md).
 
-Bộ asset mốc B (11 model Blender, 7 icon, 5 cue âm thanh tự ghi) **chưa có** — đó là việc tay
-người, xem mục "Còn lại" bên dưới.
+Vòng chơi **chọn cây → gieo → cây lớn → thu → máy pha → tự bán → mua nâng cấp** chạy được từ đầu
+đến cuối, có save/offline/lifecycle và bộ test logic. Art đã thay xong bằng model Blender tự sinh
+(mốc L01/B02); phần còn thiếu nằm ở mục "Còn lại" cuối trang.
 
 - Unity **6000.6.0f1**, URP 17.6.0, uGUI 2.6.0, Test Framework 1.8.0 (đều là bản đi kèm editor,
   không cần tải thêm).
@@ -86,7 +87,11 @@ tiền thêm lần nào.
 
 ### Save
 
-`%USERPROFILE%\AppData\LocalLow\Vuon Nho\Vuon Nho - Quan Tra\`
+`%USERPROFILE%\AppData\LocalLow\Vuon va Tra\Vuon va Tra\`
+
+Thư mục lấy theo `companyName`/`productName` trong `ProjectSettings`, đặt bởi menu
+"1. Thiết lập project". Đổi hai tên đó là **đổi chỗ save của người đang chơi** — save cũ nằm
+lại thư mục cũ và game sẽ mở ra một vườn mới.
 
 - `vuon-nho-save.json` — file chính, `vuon-nho-save.backup.json` — bản tốt trước đó.
 - Ghi file tạm → đọc lại kiểm tra → `File.Replace` để thay file chính và giữ backup.
@@ -115,8 +120,8 @@ nhiêu chỗ.
 |---|---|---|
 | `SoilPrefab` | Mặt đất một ô | Không gán `LockedOverlayPrefab` thì ô khóa được tô màu tối bằng renderer đầu tiên tìm thấy |
 | `LockedOverlayPrefab` | Hình riêng cho ô chưa mở | Hiện đè lên ô khóa |
-| `SeedlingPrefab` | Mầm chung cho cả 3 cây | |
-| `Crops[].MaturePrefab` | Cây trưởng thành, mỗi loại một model | Đúng "1 mầm chung + 3 cây trưởng thành" của tài liệu asset |
+| `SeedlingPrefab` | Mầm chung cho cả 5 cây | |
+| `Crops[].MaturePrefab` | Cây trưởng thành, mỗi loại một model | Tài liệu asset viết "1 mầm chung + 3 cây"; v1 thêm sả và nhài nên thành 5 |
 | `ReadyBadgePrefab` | Dấu hiệu cây chín | Nổi ở độ cao 1,15 m trên ô |
 | `StationPrefab` | Cụm quán trà kèm máy | Đặt con tên `StatusAnchor` và `SteamAnchor` để có đèn trạng thái và hơi nước |
 | `RobotPrefab` | Robot nổi | Đặt con tên `Face` để mặt đổi màu khi robot thức |
@@ -178,7 +183,7 @@ Vài quy ước đã áp dụng, giữ nguyên khi thêm màn hình mới:
 | Unity Input System | `Input` cũ + `StandaloneInputModule` | Input System không đi kèm editor, phải tải về; input đi qua đúng một chỗ (`GameBootstrap.HandleClick`) nên đổi sau là một file |
 | TextMeshPro | `UnityEngine.UI.Text` + font hệ thống | TMP cần import Essentials thủ công; dấu tiếng Việt đã kiểm bằng chuỗi đủ dấu và hiển thị đúng trong build |
 | ScriptableObject cho nội dung tĩnh | Class C# thuần trong Core | Giữ Core không phụ thuộc UnityEngine để test chạy độc lập; chuyển sang SO chỉ cần một lớp adapter |
-| Nội dung mốc A gọn hơn | Đã có sẵn cả 3 cây, 12 ô, 7 nâng cấp, bán thô | Là dữ liệu, không tốn công code thêm; mốc B chỉ còn phần hình ảnh |
+| Nội dung mốc A gọn hơn | Đã có sẵn 5 cây, 12 ô, 11 nâng cấp, bán thô | Là dữ liệu, không tốn công code thêm. Số cây và nâng cấp là của thang v1, không phải v0 |
 
 Âm thanh: 5 cue được **tổng hợp bằng sóng ngay trong game** (`SfxPlayer`), không phụ thuộc file.
 Đây là bản tạm để có phản hồi; mốc B thay bằng bản tự ghi nếu cần.

@@ -77,15 +77,20 @@ namespace VuonNho.ArtQa
             Directory.CreateDirectory(Path.Combine(output, "models"));
             Directory.CreateDirectory(Path.Combine(output, "icons"));
 
+            // Moi prefab trong danh sach deu duoc chup ca model lan icon; rieng cube calibration
+            // (i == Models.Length) chi chup model. Prefab chua ton tai thi bo qua, khong dung lai.
             for (int i = 0; i <= Models.Length; i++)
             {
                 var prefab = i == Models.Length ? Calibration : Models[i];
                 if (prefab == null) continue;
                 var instance = Instantiate(prefab);
+                // Match the facing used by SceneFactory; these model roots are identity in the asset.
+                if (prefab.name == "PF_Helper") instance.transform.rotation = Quaternion.Euler(0f, 135f, 0f);
+                else if (prefab.name == "PF_TeaStation") instance.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
                 Frame(instance);
                 yield return new WaitForEndOfFrame();
                 WriteTexture(rt, Path.Combine(output, "models", prefab.name + ".png"));
-                if (i < 7)
+                if (i < Models.Length)
                 {
                     Camera.targetTexture = null;
                     var iconRt = new RenderTexture(256, 256, 24, RenderTextureFormat.ARGB32);

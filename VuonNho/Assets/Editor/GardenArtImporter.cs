@@ -26,10 +26,13 @@ namespace VuonNho.EditorTools
         {
             "#A8BC78", "#4F7B50", "#916447", "#B88858", "#F2E3BE", "#303C32", "#E9BF5C", "#D97672", "#81B8AB"
         };
+        // New names go at the END of both arrays: Run pairs them by index and
+        // ValidateCalibrationAndMint reads MaximumDimensions[2] for Mint.
         static readonly string[] ModelNames =
         {
             "Plot", "Seedling", "Mint", "Chamomile", "Strawberry", "Lemongrass", "Jasmine",
-            "Helper", "TeaStation", "BackgroundTree", "Bush", "Fence", "Rock"
+            "Helper", "TeaStation", "BackgroundTree", "Bush", "Fence", "Rock",
+            "StonePath", "Planter", "Lantern", "Bench", "Signboard"
         };
         static readonly Vector3[] MaximumDimensions =
         {
@@ -38,8 +41,34 @@ namespace VuonNho.EditorTools
             new Vector3(1.15f, 1f, 1.15f), new Vector3(1.15f, 1f, 1.15f),
             new Vector3(1.2f, 1.5f, 1.2f), new Vector3(3.4f, 2.3f, 1.9f),
             new Vector3(3f, 4f, 3f), new Vector3(1.8f, 1.4f, 1.8f),
-            new Vector3(1.8f, 1.3f, .5f), new Vector3(1.5f, 1f, 1.5f)
+            new Vector3(1.8f, 1.3f, .5f), new Vector3(1.5f, 1f, 1.5f),
+            new Vector3(.44f, .30f, .44f), new Vector3(.52f, .80f, .52f),
+            new Vector3(.44f, 1.30f, .44f), new Vector3(1.04f, 1f, 1.04f),
+            new Vector3(.84f, 1.40f, .84f)
         };
+        static readonly string[] DecorationIds =
+        {
+            DefaultDecorations.StonePath, DefaultDecorations.Planter, DefaultDecorations.Lantern,
+            DefaultDecorations.Bench, DefaultDecorations.Signboard
+        };
+        static readonly string[] DecorationModels =
+        {
+            "StonePath", "Planter", "Lantern", "Bench", "Signboard"
+        };
+        // The gameplay camera sits at Euler(35,-45,0) and looks toward (-X,+Z), while a model's
+        // authored front is Blender +Y = Unity +Z, and GameBootstrap always places a decoration
+        // with rotationDeg 0. Bench and signboard therefore need the same facing yaw SceneFactory
+        // gives the robot, or they show the player their back.
+        const float DecorationFacingYaw = 135f;
+
+        /// <summary>Model name for a decoration id; null for ids an artist added by hand.</summary>
+        public static string DecorationModelName(string decorationId)
+        {
+            for (int i = 0; i < DecorationIds.Length; i++)
+                if (string.Equals(DecorationIds[i], decorationId, StringComparison.Ordinal))
+                    return DecorationModels[i];
+            return null;
+        }
 
         [Serializable]
         public sealed class CalibrationInspection
@@ -176,7 +205,8 @@ namespace VuonNho.EditorTools
                     report.sceneRebuilt = true;
                 }
                 report.passed = true;
-                Debug.Log("[VuonNho Art] Calibration + 11 models passed. Existing prefabs and non-empty GardenSkin slots preserved. " + ReportPath);
+                Debug.Log("[VuonNho Art] Calibration + " + ModelNames.Length +
+                          " models passed. Existing prefabs and non-empty GardenSkin slots preserved. " + ReportPath);
             }
             catch (Exception error)
             {
@@ -376,6 +406,9 @@ namespace VuonNho.EditorTools
             {
                 var visual = new GameObject("VisualRoot");
                 visual.transform.SetParent(root.transform, false);
+                // The yaw has to live on VisualRoot: DecorationLayer forces the wrapper root back to
+                // identity on every rebuild, so a yaw stored there would be wiped at runtime.
+                visual.transform.localRotation = Quaternion.Euler(0f, VisualYawFor(name), 0f);
                 // Nest the original model prefab: reexport updates geometry without replacing wrappers.
                 var instance = PrefabUtility.InstantiatePrefab(model, visual.transform) as GameObject;
                 if (instance == null) throw new InvalidOperationException("Unable to instantiate " + name);
@@ -384,6 +417,12 @@ namespace VuonNho.EditorTools
                 return saved;
             }
             finally { Object.DestroyImmediate(root); }
+        }
+
+        /// <summary>Only a decoration with an authored front needs a facing yaw; everything else stays at 0.</summary>
+        static float VisualYawFor(string name)
+        {
+            return name == "Bench" || name == "Signboard" ? DecorationFacingYaw : 0f;
         }
 
         /// <summary>Only known IDs are matched; arrays, order, custom entries and existing references survive.</summary>
@@ -397,6 +436,8 @@ namespace VuonNho.EditorTools
             FillOptions(ref skin.TreePrefabs, prefabs["BackgroundTree"], "TreePrefabs", filled);
             FillOptions(ref skin.BushPrefabs, prefabs["Bush"], "BushPrefabs", filled);
             FillOptions(ref skin.RockPrefabs, prefabs["Rock"], "RockPrefabs", filled);
+            // Before the early return below: a skin with no crop rows still deserves its decorations.
+            FillDecorationSlots(skin, prefabs, filled);
             if (skin.Crops == null) return;
             foreach (var crop in skin.Crops)
             {
@@ -421,6 +462,41 @@ namespace VuonNho.EditorTools
         {
             if (slots == null || slots.Length == 0) { slots = new[] { prefab }; filled.Add(name + "[0]"); return; }
             for (int i = 0; i < slots.Length; i++) Fill(ref slots[i], prefab, name + "[" + i + "]", filled);
+        }
+
+        /// <summary>
+        /// Nothing generates decoration rows, so an id the skin has never seen is appended.
+        /// An id already present keeps whatever prefab the artist put there.
+        /// </summary>
+        static void FillDecorationSlots(GardenSkin skin, IDictionary<string, GameObject> prefabs, List<string> filled)
+        {
+            var entries = new List<DecorationSkinEntry>(skin.Decorations ?? new DecorationSkinEntry[0]);
+            bool added = false;
+            for (int i = 0; i < DecorationIds.Length; i++)
+            {
+                GameObject prefab;
+                // TryGetValue, not the indexer: a missing model is skipped, never thrown over.
+                if (!prefabs.TryGetValue(DecorationModels[i], out prefab) || prefab == null) continue;
+                int found = -1;
+                for (int j = 0; j < entries.Count; j++)
+                    if (entries[j] != null && string.Equals(entries[j].DecorationId, DecorationIds[i], StringComparison.Ordinal))
+                    {
+                        found = j;
+                        break;
+                    }
+                if (found < 0)
+                {
+                    entries.Add(new DecorationSkinEntry { DecorationId = DecorationIds[i], Prefab = prefab });
+                    filled.Add(DecorationIds[i]);
+                    added = true;
+                }
+                else
+                {
+                    DecorationSkinEntry row = entries[found];
+                    Fill(ref row.Prefab, prefab, DecorationIds[i], filled);
+                }
+            }
+            if (added) skin.Decorations = entries.ToArray();
         }
 
         static GameObject LoadOrCreateUtilityPrefab(string name, Dictionary<string, Material> materials, GardenSkin skin, ImportReport report)

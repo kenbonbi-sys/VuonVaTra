@@ -64,6 +64,30 @@ namespace VuonNho.Core
         /// <summary>Nua canh khu vuc duoc phep dat trang tri, milimet.</summary>
         public int GardenHalfExtentMm = 8000;
 
+        // --- Bo cuc vuon, milimet. Phai khop voi GardenSkin ben Unity; SceneFactory doi
+        // chieu lai luc dung scene va canh bao neu hai nguon so lech nhau.
+        public int GardenColumns = 4;
+        public int GardenRows = 3;
+        /// <summary>Khoang cach tam hai o dat lien nhau.</summary>
+        public int PlotSpacingMm = 1600;
+        /// <summary>Canh mat dat cua mot o.</summary>
+        public int PlotEdgeMm = 1400;
+        /// <summary>
+        /// Canh vung cam quanh mot o dat. Nho hon canh o that mot vien 10 cm moi ben,
+        /// de con lat duoc phien da vao khe giua bon o.
+        /// </summary>
+        public int PlotKeepOutEdgeMm = 1200;
+        /// <summary>Tam quay tra va nua kich thuoc vung cam quanh no, lay theo mai quay.</summary>
+        public int StationCenterXMm = 0;
+        public int StationCenterZMm = 4200;
+        public int StationKeepOutHalfWidthMm = 1700;
+        public int StationKeepOutHalfDepthMm = 900;
+        /// <summary>Tam robot va nua kich thuoc vung cam quanh no.</summary>
+        public int RobotCenterXMm = -4400;
+        public int RobotCenterZMm = 400;
+        public int RobotKeepOutHalfWidthMm = 700;
+        public int RobotKeepOutHalfDepthMm = 700;
+
         // Toc do cay x0,8 -> 4/5. Toc do may x0,5 -> 1/2.
         public int GrowthSpeedNumerator = 4;
         public int GrowthSpeedDenominator = 5;
@@ -167,6 +191,24 @@ namespace VuonNho.Core
             if (Balance.OfflineCapMs <= 0) throw new ContentValidationException("OfflineCapMs phai duong.");
             if (Balance.GardenHalfExtentMm <= 0)
                 throw new ContentValidationException("GardenHalfExtentMm phai duong.");
+            if (Balance.GardenColumns <= 0 || Balance.GardenRows <= 0)
+                throw new ContentValidationException("So cot va so hang o dat phai duong.");
+            if (Balance.GardenColumns * Balance.GardenRows != Balance.MaximumPlots)
+                throw new ContentValidationException("Luoi o dat khong khop MaximumPlots.");
+            if (Balance.PlotSpacingMm <= 0 || Balance.PlotEdgeMm <= 0)
+                throw new ContentValidationException("Kich thuoc o dat phai duong.");
+            if (Balance.PlotEdgeMm > Balance.PlotSpacingMm)
+                throw new ContentValidationException("Canh o dat lon hon khoang cach tam o.");
+            if (Balance.PlotKeepOutEdgeMm <= 0 || Balance.PlotKeepOutEdgeMm > Balance.PlotEdgeMm)
+                throw new ContentValidationException("Vung cam quanh o dat khong hop le.");
+            if (Balance.StationKeepOutHalfWidthMm <= 0 || Balance.StationKeepOutHalfDepthMm <= 0)
+                throw new ContentValidationException("Vung cam quanh quay tra phai duong.");
+            if (Balance.RobotKeepOutHalfWidthMm <= 0 || Balance.RobotKeepOutHalfDepthMm <= 0)
+                throw new ContentValidationException("Vung cam quanh robot phai duong.");
+            // Khu dat trang tri phai chua het luoi o dat, khong thi co o nam ngoai vung kiem tra.
+            if (GardenLayout.GridHalfWidthMm(Balance) > Balance.GardenHalfExtentMm ||
+                GardenLayout.GridHalfDepthMm(Balance) > Balance.GardenHalfExtentMm)
+                throw new ContentValidationException("Khu vuon khong chua het luoi o dat.");
             if (Balance.GrowthSpeedDenominator <= 0 || Balance.GrowthSpeedNumerator <= 0)
                 throw new ContentValidationException("He so toc do cay khong hop le.");
             if (Balance.BrewSpeedDenominator <= 0 || Balance.BrewSpeedNumerator <= 0)

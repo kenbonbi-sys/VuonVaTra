@@ -863,6 +863,272 @@
       ],
       "license": "Original project art; no third-party model or texture inputs.",
       "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_StonePath": {
+      "assetId": "D01",
+      "name": "SM_StonePath",
+      "source": "SourceArt/Blender/SM_StonePath.blend",
+      "export": "Assets/Art/Models/SM_StonePath.fbx",
+      "triangles": 236,
+      "renderers": 1,
+      "materials": [
+        "M_Cream",
+        "M_Soil"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.16994,
+          -0.12196,
+          0.0
+        ],
+        "max": [
+          0.15916,
+          0.1169,
+          0.118
+        ]
+      },
+      "dimensionsUnityMetres": [
+        0.3291,
+        0.118,
+        0.23886
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "StonePathMesh",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Cream",
+            "M_Soil"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required.",
+      "lastExportMode": "Existing edited source; source file left unchanged."
+    },
+    "SM_Planter": {
+      "assetId": "D02",
+      "name": "SM_Planter",
+      "source": "SourceArt/Blender/SM_Planter.blend",
+      "export": "Assets/Art/Models/SM_Planter.fbx",
+      "triangles": 984,
+      "renderers": 1,
+      "materials": [
+        "M_Cream",
+        "M_Leaf",
+        "M_Red",
+        "M_Soil",
+        "M_Wood",
+        "M_Yellow"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.165,
+          -0.165,
+          0.0
+        ],
+        "max": [
+          0.165,
+          0.165,
+          0.474
+        ]
+      },
+      "dimensionsUnityMetres": [
+        0.33,
+        0.474,
+        0.33
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "PlanterMesh",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Wood",
+            "M_Cream",
+            "M_Soil",
+            "M_Leaf",
+            "M_Red",
+            "M_Yellow"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required.",
+      "lastExportMode": "Existing edited source; source file left unchanged."
+    },
+    "SM_Lantern": {
+      "assetId": "D03",
+      "name": "SM_Lantern",
+      "source": "SourceArt/Blender/SM_Lantern.blend",
+      "export": "Assets/Art/Models/SM_Lantern.fbx",
+      "triangles": 448,
+      "renderers": 1,
+      "materials": [
+        "M_Cream",
+        "M_Dark",
+        "M_Wood",
+        "M_Yellow"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.15,
+          -0.15,
+          0.0
+        ],
+        "max": [
+          0.15,
+          0.15,
+          1.12
+        ]
+      },
+      "dimensionsUnityMetres": [
+        0.3,
+        1.12,
+        0.3
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "LanternMesh",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Dark",
+            "M_Wood",
+            "M_Yellow",
+            "M_Cream"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_Bench": {
+      "assetId": "D04",
+      "name": "SM_Bench",
+      "source": "SourceArt/Blender/SM_Bench.blend",
+      "export": "Assets/Art/Models/SM_Bench.fbx",
+      "triangles": 1188,
+      "renderers": 1,
+      "materials": [
+        "M_Dark",
+        "M_Wood"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.46,
+          -0.205,
+          0.0
+        ],
+        "max": [
+          0.46,
+          0.195,
+          0.75
+        ]
+      },
+      "dimensionsUnityMetres": [
+        0.92,
+        0.75,
+        0.4
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "BenchMesh",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Wood",
+            "M_Dark"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_Signboard": {
+      "assetId": "D05",
+      "name": "SM_Signboard",
+      "source": "SourceArt/Blender/SM_Signboard.blend",
+      "export": "Assets/Art/Models/SM_Signboard.fbx",
+      "triangles": 592,
+      "renderers": 1,
+      "materials": [
+        "M_Accent",
+        "M_Cream",
+        "M_Wood"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.37,
+          -0.0475,
+          0.0
+        ],
+        "max": [
+          0.37,
+          0.079,
+          0.99
+        ]
+      },
+      "dimensionsUnityMetres": [
+        0.74,
+        0.99,
+        0.1265
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "SignboardMesh",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Wood",
+            "M_Cream",
+            "M_Accent"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
     }
   }
 }

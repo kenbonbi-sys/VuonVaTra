@@ -1,5 +1,5 @@
 {
-    "utc": "2026-09-06T04:56:17.0328497Z",
+    "utc": "2026-09-06T09:55:38.0588376Z",
     "unityVersion": "6000.6.0f1",
     "preset": "FBX static; globalScale 1; Convert Units on; Bake Axis Conversion on; imported normals; hierarchy preserved; no animation, cameras, lights or colliders",
     "passed": true,
@@ -333,9 +333,137 @@
                 "M_Cream"
             ],
             "errors": []
+        },
+        {
+            "name": "StonePath",
+            "path": "Assets/Art/Models/SM_StonePath.fbx",
+            "guid": "2923ac59bf3c2e3bc0100097f22528ce",
+            "size": {
+                "x": 0.32909727096557617,
+                "y": 0.11800000071525574,
+                "z": 0.238864004611969
+            },
+            "center": {
+                "x": -0.005392789840698242,
+                "y": 0.05900000035762787,
+                "z": -0.002528086304664612
+            },
+            "triangles": 236,
+            "renderers": 1,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Cream",
+                "M_Soil"
+            ],
+            "errors": []
+        },
+        {
+            "name": "Planter",
+            "path": "Assets/Art/Models/SM_Planter.fbx",
+            "guid": "5e1fdcbc1d2de53678add9dc234286e3",
+            "size": {
+                "x": 0.33000001311302185,
+                "y": 0.4739999771118164,
+                "z": 0.33000001311302185
+            },
+            "center": {
+                "x": 0.0,
+                "y": 0.2369999885559082,
+                "z": 0.0
+            },
+            "triangles": 984,
+            "renderers": 1,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Wood",
+                "M_Cream",
+                "M_Soil",
+                "M_Leaf",
+                "M_Red",
+                "M_Yellow"
+            ],
+            "errors": []
+        },
+        {
+            "name": "Lantern",
+            "path": "Assets/Art/Models/SM_Lantern.fbx",
+            "guid": "438988bcc198477309965241b4c5f26c",
+            "size": {
+                "x": 0.30000001192092896,
+                "y": 1.1200000047683716,
+                "z": 0.30000001192092896
+            },
+            "center": {
+                "x": 0.0,
+                "y": 0.5600000023841858,
+                "z": 0.0
+            },
+            "triangles": 448,
+            "renderers": 1,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Dark",
+                "M_Wood",
+                "M_Yellow",
+                "M_Cream"
+            ],
+            "errors": []
+        },
+        {
+            "name": "Bench",
+            "path": "Assets/Art/Models/SM_Bench.fbx",
+            "guid": "ee18eecada92b807989e11f8cfa8daa3",
+            "size": {
+                "x": 0.9200000166893005,
+                "y": 0.75,
+                "z": 0.4000000059604645
+            },
+            "center": {
+                "x": 0.0,
+                "y": 0.375,
+                "z": -0.004999995231628418
+            },
+            "triangles": 1188,
+            "renderers": 1,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Wood",
+                "M_Dark"
+            ],
+            "errors": []
+        },
+        {
+            "name": "Signboard",
+            "path": "Assets/Art/Models/SM_Signboard.fbx",
+            "guid": "1fdee48fd9e323e7748eedd7fa204c66",
+            "size": {
+                "x": 0.7400000095367432,
+                "y": 0.9900000095367432,
+                "z": 0.1264999955892563
+            },
+            "center": {
+                "x": 0.0,
+                "y": 0.4950000047683716,
+                "z": 0.01574999839067459
+            },
+            "triangles": 592,
+            "renderers": 1,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Wood",
+                "M_Cream",
+                "M_Accent"
+            ],
+            "errors": []
         }
     ],
-    "createdPrefabs": [],
+    "createdPrefabs": [
+        "Assets/Art/Prefabs/PF_StonePath.prefab",
+        "Assets/Art/Prefabs/PF_Planter.prefab",
+        "Assets/Art/Prefabs/PF_Lantern.prefab",
+        "Assets/Art/Prefabs/PF_Bench.prefab",
+        "Assets/Art/Prefabs/PF_Signboard.prefab"
+    ],
     "preservedPrefabs": [
         "Assets/Art/Prefabs/PF_Plot.prefab",
         "Assets/Art/Prefabs/PF_Seedling.prefab",
@@ -351,6 +479,12 @@
         "Assets/Art/Prefabs/PF_Fence.prefab",
         "Assets/Art/Prefabs/PF_Rock.prefab"
     ],
-    "filledSlots": [],
+    "filledSlots": [
+        "deco_stone_path",
+        "deco_planter",
+        "deco_lantern",
+        "deco_bench",
+        "deco_signboard"
+    ],
     "errors": []
 }

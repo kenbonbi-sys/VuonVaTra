@@ -21,6 +21,8 @@ namespace VuonNho.Views
         const float SidePanelWidth = 360f;
 
         GameSession _session;
+        /// <summary>Nguon icon. Co the null: HUD phai chay duoc khi chua co bo icon nao.</summary>
+        GardenSkin _skin;
 
         Text _coinsLabel;
         Text _goalLabel;
@@ -28,6 +30,7 @@ namespace VuonNho.Views
         Image _machineDot;
         Image _machineBarFill;
         Image _machineBarTrack;
+        Image _machineIcon;
 
         Button _inventoryButton;
         Button _upgradeButton;
@@ -69,6 +72,7 @@ namespace VuonNho.Views
         sealed class InventoryRow
         {
             public string CropId;
+            public Image Icon;
             public Text Name;
             public Text Meta;
             public Button SellOne;
@@ -98,12 +102,20 @@ namespace VuonNho.Views
             public Button Select;
         }
 
-        public void Bind(GameSession session)
+        public void Bind(GameSession session, GardenSkin skin)
         {
             _session = session;
+            // Truyen skin truoc BuildUi: nhieu o icon duoc dat ngay luc dung UI.
+            _skin = skin;
             BuildUi();
             _session.StateChanged += Refresh;
             Refresh();
+        }
+
+        /// <summary>Khong co skin hay khong co anh thi tra ve null va HUD giu nguyen chu.</summary>
+        Sprite IconFor(string id)
+        {
+            return _skin != null ? _skin.IconFor(id) : null;
         }
 
         void OnDestroy()
@@ -167,7 +179,7 @@ namespace VuonNho.Views
             chipRect.sizeDelta = new Vector2(176f, 40f);
 
             _coinsLabel = UiFactory.Label(coinChip.transform, "Coins", "0 xu", UiFactory.FontSizeTitle,
-                                          TextAnchor.MiddleLeft, GardenPalette.Coin, true);
+                                          TextAnchor.MiddleLeft, GardenPalette.TextCoin, true);
             UiFactory.Stretch(UiFactory.Rect(_coinsLabel.gameObject), Vector2.zero, Vector2.one,
                               new Vector2(14f, 0f), new Vector2(-14f, 0f));
 
@@ -210,27 +222,38 @@ namespace VuonNho.Views
             cardRect.anchorMax = new Vector2(0f, 1f);
             cardRect.pivot = new Vector2(0f, 1f);
             cardRect.anchoredPosition = new Vector2(UiFactory.EdgeMargin, -ContentTop);
-            cardRect.sizeDelta = new Vector2(560f, 60f);
+            cardRect.sizeDelta = new Vector2(464f, 88f);
 
             var dot = UiFactory.Panel(card.transform, "MachineDot", MachineView.StatusIdle, UiFactory.RadiusDot);
             var dotRect = UiFactory.Rect(dot.gameObject);
             dotRect.anchorMin = new Vector2(0f, 1f);
             dotRect.anchorMax = new Vector2(0f, 1f);
             dotRect.pivot = new Vector2(0f, 1f);
-            dotRect.anchoredPosition = new Vector2(UiFactory.EdgeMargin, -14f);
+            dotRect.anchoredPosition = new Vector2(432f, -16f);
             dotRect.sizeDelta = new Vector2(12f, 12f);
             _machineDot = dot;
 
+            // Neo o mep phai the, khong nam trong layout group nao. Nhan may la MiddleLeft va
+            // HorizontalWrapMode.Overflow nen o nay khong xe dich mot chu nao.
+            _machineIcon = UiFactory.Icon(card.transform, "MachineIcon", null, UiFactory.IconSizeCard);
+            var machineIconRect = UiFactory.Rect(_machineIcon.gameObject);
+            machineIconRect.anchorMin = new Vector2(0f, 1f);
+            machineIconRect.anchorMax = new Vector2(0f, 1f);
+            machineIconRect.pivot = new Vector2(0f, 1f);
+            machineIconRect.anchoredPosition = new Vector2(UiFactory.EdgeMargin, -18f);
+            machineIconRect.sizeDelta = new Vector2(UiFactory.IconSizeCard, UiFactory.IconSizeCard);
+
             _machineLabel = UiFactory.Label(card.transform, "MachineLabel", "", UiFactory.FontSizeBody,
                                             TextAnchor.MiddleLeft, GardenPalette.TextPrimary);
-            _machineLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
+            _machineLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
+            // Hai dong chu 18 px voi lineSpacing 1,15 can 52 px; chua 50 px thi dong duoi bi cat.
             UiFactory.Stretch(UiFactory.Rect(_machineLabel.gameObject), new Vector2(0f, 1f), new Vector2(1f, 1f),
-                              new Vector2(36f, -32f), new Vector2(-UiFactory.EdgeMargin, -8f));
+                              new Vector2(80f, -62f), new Vector2(-40f, -6f));
 
             Image machineFill;
             var track = UiFactory.ProgressBar(card.transform, "MachineBar", MachineView.StatusRunning, out machineFill);
             UiFactory.Stretch(UiFactory.Rect(track.gameObject), new Vector2(0f, 0f), new Vector2(1f, 0f),
-                              new Vector2(UiFactory.EdgeMargin, 14f), new Vector2(-UiFactory.EdgeMargin, 26f));
+                              new Vector2(80f, 14f), new Vector2(-UiFactory.EdgeMargin, 22f));
             _machineBarFill = machineFill;
             _machineBarTrack = track;
         }
@@ -271,7 +294,7 @@ namespace VuonNho.Views
             var viewport = UiFactory.Node(panel.transform, "Viewport");
             UiFactory.Stretch(UiFactory.Rect(viewport), Vector2.zero, Vector2.one,
                               new Vector2(UiFactory.EdgeMargin, UiFactory.EdgeMargin),
-                              new Vector2(-UiFactory.EdgeMargin, -72f));
+                              new Vector2(-26f, -72f));
             viewport.AddComponent<RectMask2D>();
 
             var content = UiFactory.Node(viewport.transform, "Body");
@@ -293,6 +316,18 @@ namespace VuonNho.Views
             scroll.movementType = ScrollRect.MovementType.Clamped;
             scroll.scrollSensitivity = 30f;
 
+            var rail = UiFactory.Panel(panel.transform, "ScrollRail", GardenPalette.PanelSoft, 3);
+            UiFactory.Stretch(UiFactory.Rect(rail.gameObject), new Vector2(1f, 0f), Vector2.one,
+                new Vector2(-13f, 20f), new Vector2(-7f, -76f));
+            var thumb = UiFactory.Panel(rail.transform, "Thumb", GardenPalette.ButtonNormal, 3);
+            UiFactory.Stretch(UiFactory.Rect(thumb.gameObject), Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            var scrollbar = rail.gameObject.AddComponent<Scrollbar>();
+            scrollbar.handleRect = UiFactory.Rect(thumb.gameObject);
+            scrollbar.targetGraphic = thumb;
+            scrollbar.direction = Scrollbar.Direction.BottomToTop;
+            scroll.verticalScrollbar = scrollbar;
+            scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
+
             body = content.transform;
             return panel.gameObject;
         }
@@ -307,8 +342,21 @@ namespace VuonNho.Views
                 UiFactory.VerticalList(card.gameObject, 6f, new RectOffset(12, 12, 10, 10));
 
                 var row = new InventoryRow { CropId = cropId };
-                row.Name = UiFactory.Label(card.transform, "Name", crop.DisplayName, UiFactory.FontSizeRowTitle,
+
+                // Icon dung truoc ten cay. KHONG dat minHeight cho hang nay: chua co anh thi
+                // chieu cao hang phai bang dung chieu cao cai nhan nhu truoc.
+                var titleRow = UiFactory.Node(card.transform, "TitleRow");
+                var titleLayout = UiFactory.HorizontalList(titleRow, 8f, new RectOffset(0, 0, 0, 0));
+                titleLayout.childAlignment = TextAnchor.MiddleLeft;
+                titleLayout.childForceExpandWidth = false;
+                titleLayout.childForceExpandHeight = false;
+
+                row.Icon = UiFactory.Icon(titleRow.transform, "Icon", IconFor(cropId), UiFactory.IconSizeCard);
+                row.Name = UiFactory.Label(titleRow.transform, "Name", crop.DisplayName, UiFactory.FontSizeRowTitle,
                                            TextAnchor.MiddleLeft, GardenPalette.TextPrimary);
+                var nameFlex = row.Name.gameObject.AddComponent<LayoutElement>();
+                nameFlex.flexibleWidth = 1f;
+
                 row.Meta = UiFactory.Label(card.transform, "Meta", "", UiFactory.FontSizeMeta,
                                            TextAnchor.MiddleLeft, GardenPalette.TextMuted);
 
@@ -333,8 +381,10 @@ namespace VuonNho.Views
             foreach (var recipe in _session.Catalog.Recipes)
             {
                 string recipeId = recipe.Id;
+                // Khong co ICO_Recipe*, va cay dau vao moi la thu can nhan ra nhanh o the cong thuc.
                 var button = UiFactory.TextButton(body, "Recipe_" + recipeId, recipe.DisplayName,
-                                                  delegate { Run(_session.SelectRecipe(recipeId)); });
+                                                  delegate { Run(_session.SelectRecipe(recipeId)); },
+                                                  UiFactory.ButtonStyle.Primary, IconFor(recipe.InputCropId));
                 _recipeRows.Add(new RecipeRow { RecipeId = recipeId, Select = button });
             }
         }
@@ -358,6 +408,12 @@ namespace VuonNho.Views
                 titleRowLayout.minHeight = 26f;
 
                 var row = new UpgradeRow { UpgradeId = upgradeId, Card = card };
+                string upgradeIconId = upgrade.Kind == UpgradeKind.UnlockCrop ? upgrade.TargetId
+                    : upgrade.Kind == UpgradeKind.UnlockRobot ? GardenSkin.IconHelper
+                    : upgrade.Kind == UpgradeKind.ExpandPlots ? GardenSkin.IconPlot
+                    : upgrade.Kind == UpgradeKind.GrowthSpeed ? GardenSkin.IconSeedling : GardenSkin.IconStation;
+                titleLayout.childForceExpandHeight = false;
+                UiFactory.Icon(titleRow.transform, "Icon", IconFor(upgradeIconId), UiFactory.IconSizeRow);
 
                 row.Title = UiFactory.Label(titleRow.transform, "Title", upgrade.DisplayName,
                                             UiFactory.FontSizeRowTitle, TextAnchor.MiddleLeft,
@@ -366,7 +422,7 @@ namespace VuonNho.Views
                 titleFlex.flexibleWidth = 1f;
 
                 row.Cost = UiFactory.Label(titleRow.transform, "Cost", "", UiFactory.FontSizeRowTitle,
-                                           TextAnchor.MiddleRight, GardenPalette.Coin);
+                                           TextAnchor.MiddleRight, GardenPalette.TextCoin);
                 row.Cost.horizontalOverflow = HorizontalWrapMode.Overflow;
                 var costWidth = row.Cost.gameObject.AddComponent<LayoutElement>();
                 costWidth.preferredWidth = 88f;
@@ -398,26 +454,36 @@ namespace VuonNho.Views
         void BuildDecorationRows(Transform body)
         {
             var note = UiFactory.Label(body, "Note",
-                                       "Trang trí chỉ để nhìn cho vui — không đổi năng suất. " +
-                                       "Gỡ ra được hoàn đủ xu nên cứ thử thoải mái.",
+                                       "Chọn một món rồi đặt quanh vườn. Gỡ đồ để nhận lại đủ xu.",
                                        UiFactory.FontSizeMeta, TextAnchor.UpperLeft, GardenPalette.TextMuted);
             var noteLayout = note.gameObject.AddComponent<LayoutElement>();
-            noteLayout.minHeight = 60f;
+            noteLayout.minHeight = 44f;
 
             foreach (var decoration in _session.Catalog.Decorations)
             {
                 string decorationId = decoration.Id;
 
-                var rowGo = UiFactory.Node(body, "Row_" + decorationId);
+                var rowGo = UiFactory.Panel(body, "Row_" + decorationId, GardenPalette.PanelSoft,
+                    UiFactory.RadiusControl).gameObject;
                 var rowLayout = rowGo.AddComponent<LayoutElement>();
-                rowLayout.minHeight = 118f;
-                UiFactory.VerticalList(rowGo, 4f, new RectOffset(0, 0, 0, 8));
+                rowLayout.minHeight = 116f;
+                UiFactory.VerticalList(rowGo, 8f, new RectOffset(12, 12, 12, 12));
 
-                var label = UiFactory.Label(rowGo.transform, "Label", decoration.DisplayName,
+                // Icon tinh, khong doi theo trang thai, nen khong can giu tham chieu.
+                var titleRow = UiFactory.Node(rowGo.transform, "TitleRow");
+                var titleLayout = UiFactory.HorizontalList(titleRow, 8f, new RectOffset(0, 0, 0, 0));
+                titleLayout.childAlignment = TextAnchor.UpperLeft;
+                titleLayout.childForceExpandWidth = false;
+                titleLayout.childForceExpandHeight = false;
+
+                UiFactory.Icon(titleRow.transform, "Icon", IconFor(decorationId), UiFactory.IconSizePreview);
+                var label = UiFactory.Label(titleRow.transform, "Label", decoration.DisplayName,
                                             UiFactory.FontSizeMeta, TextAnchor.UpperLeft,
                                             GardenPalette.TextPrimary);
+                // Van la minHeight tren chinh cai nhan: nhan nay chua ba dong chu tieng Viet.
                 var labelLayout = label.gameObject.AddComponent<LayoutElement>();
                 labelLayout.minHeight = 56f;
+                labelLayout.flexibleWidth = 1f;
 
                 var choose = UiFactory.TextButton(rowGo.transform, "Choose", "Chọn",
                                                   delegate { BeginPlacing(decorationId); });
@@ -471,7 +537,7 @@ namespace VuonNho.Views
                 else if (!affordable) text += "\nThiếu " + (decoration.Cost - state.Coins) + " xu.";
                 row.Label.text = text;
 
-                UiFactory.SetButtonCaption(row.Choose, isPlacing ? "Đang đặt…" : "Chọn");
+                UiFactory.SetButtonCaption(row.Choose, isPlacing ? "Đang đặt…" : "Đặt vào vườn");
                 UiFactory.SetButtonState(row.Choose, !affordable
                     ? UiFactory.ButtonState.Disabled
                     : (isPlacing ? UiFactory.ButtonState.Selected : UiFactory.ButtonState.Normal));
@@ -488,8 +554,7 @@ namespace VuonNho.Views
         void BuildSettingsRows(Transform body)
         {
             UiFactory.Label(body, "Note",
-                            "Bản dựng mốc A dùng khối primitive. Dữ liệu test được ghi cục bộ, " +
-                            "không gửi ra ngoài.",
+                            "Tùy chỉnh âm thanh, quản lý tiến độ và xuất dữ liệu chơi thử.",
                             UiFactory.FontSizeMeta, TextAnchor.UpperLeft, GardenPalette.TextMuted);
 
             // Trang thai am thanh nam trong PlayerPrefs, phai doc that chu khong doan la dang bat.
@@ -599,7 +664,7 @@ namespace VuonNho.Views
                 {
                     if (_selectedPlotId < 0) return;
                     Run(_session.SetNextCrop(_selectedPlotId, cropId));
-                });
+                }, UiFactory.ButtonStyle.Primary, IconFor(cropId));
                 _cropChoiceRows.Add(new CropChoiceRow { CropId = cropId, Choose = button });
             }
 
@@ -662,7 +727,7 @@ namespace VuonNho.Views
             Transform card;
             var container = BuildModal("BlockedModal", out card, new Vector2(600f, 360f));
 
-            var accent = UiFactory.Panel(card, "Accent", new Color(0.85f, 0.35f, 0.30f));
+            var accent = UiFactory.Panel(card, "Accent", GardenPalette.ButtonDanger);
             UiFactory.Stretch(UiFactory.Rect(accent.gameObject), new Vector2(0f, 1f), new Vector2(1f, 1f),
                               new Vector2(0f, -4f), new Vector2(0f, 0f));
 
@@ -675,7 +740,22 @@ namespace VuonNho.Views
                                            TextAnchor.UpperLeft, GardenPalette.TextPrimary);
             _blockedText.lineSpacing = 1.25f;
             UiFactory.Stretch(UiFactory.Rect(_blockedText.gameObject), Vector2.zero, Vector2.one,
-                              new Vector2(24f, 24f), new Vector2(-24f, -78f));
+                              new Vector2(24f, 82f), new Vector2(-24f, -78f));
+
+            var actions = UiFactory.Node(card, "Actions");
+            UiFactory.Stretch(UiFactory.Rect(actions), Vector2.zero, new Vector2(1f, 0f),
+                new Vector2(24f, 20f), new Vector2(-24f, 64f));
+            UiFactory.HorizontalList(actions, 12f, new RectOffset(0, 0, 0, 0));
+            UiFactory.TextButton(actions.transform, "Settings", "Mở cài đặt", delegate
+            {
+                container.SetActive(false);
+                TogglePanel(_settingsPanel);
+            });
+            UiFactory.TextButton(actions.transform, "Quit", "Thoát game", delegate
+            {
+                var bootstrap = FindAnyObjectByType<GameBootstrap>();
+                if (bootstrap != null) bootstrap.QuitGame();
+            }, UiFactory.ButtonStyle.Quiet);
 
             return container;
         }
@@ -767,12 +847,13 @@ namespace VuonNho.Views
                                                      : (selected != null ? selected.DisplayName : "trà");
                 long remaining = state.Machine.BatchFinishAtMs - state.SimulationTimeMs;
                 if (remaining < 0) remaining = 0;
-                _machineLabel.text = "Máy đang pha " + runningName +
-                                     " — còn " + Seconds(remaining) + " s, được " +
-                                     state.Machine.BatchOutputCoins + " xu";
+                _machineLabel.text = "Đang pha " + runningName +
+                                     "\nCòn " + Seconds(remaining) + " giây · " +
+                                     state.Machine.BatchOutputCoins + " xu / mẻ";
                 _machineDot.color = MachineView.StatusRunning;
                 _machineBarTrack.color = GardenPalette.TrackEmpty;
                 _machineBarFill.color = MachineView.StatusRunning;
+                UiFactory.SetIcon(_machineIcon, MachineIcon(running != null ? running : selected));
                 UiFactory.SetProgress(_machineBarFill, MachineView.BatchProgress(state));
                 return;
             }
@@ -789,23 +870,34 @@ namespace VuonNho.Views
                 long missingAmount;
                 if (_session.Simulation.TryGetMissingInput(state, out missingCropId, out missingAmount))
                 {
-                    _machineLabel.text = "Máy chờ: thiếu " + missingAmount + " " +
-                                         catalog.Crop(missingCropId).DisplayName +
-                                         " cho " + selected.DisplayName;
+                    _machineLabel.text = selected.DisplayName + " · Đang chờ\nCần thêm " + missingAmount + " " +
+                                         catalog.Crop(missingCropId).DisplayName;
                     status = MachineView.StatusWaiting;
                 }
                 else
                 {
-                    _machineLabel.text = "Máy sẵn sàng với " + selected.DisplayName;
+                    _machineLabel.text = selected.DisplayName + "\nMáy sẵn sàng";
                     status = MachineView.StatusIdle;
                 }
             }
 
             _machineDot.color = status;
+            UiFactory.SetIcon(_machineIcon, MachineIcon(selected));
             // Ranh luon toi: to mau ranh khi chua co me nao chay lam thanh rong trong nhu da day.
             _machineBarTrack.color = GardenPalette.TrackEmpty;
             _machineBarFill.color = status;
             UiFactory.SetProgress(_machineBarFill, 0f);
+        }
+
+        /// <summary>Icon may: cay dang duoc pha, khong co thi den icon quan tra, het thi de trong.</summary>
+        Sprite MachineIcon(RecipeDefinition recipe)
+        {
+            if (recipe != null)
+            {
+                var cropIcon = IconFor(recipe.InputCropId);
+                if (cropIcon != null) return cropIcon;
+            }
+            return IconFor(GardenSkin.IconStation);
         }
 
         void RefreshInventoryPanel(GameState state, ContentCatalog catalog)
@@ -824,6 +916,8 @@ namespace VuonNho.Views
 
                 row.Name.text = crop.DisplayName + ": " + amount;
                 row.Name.color = unlocked ? GardenPalette.TextPrimary : GardenPalette.TextMuted;
+                if (row.Icon != null)
+                    row.Icon.color = unlocked ? GardenPalette.IconTint : GardenPalette.IconMuted;
 
                 string meta = crop.RawSellPrice + " xu/đơn vị";
                 if (usedByMachine) meta += "  ·  máy đang dùng";
@@ -871,7 +965,7 @@ namespace VuonNho.Views
                 row.Title.text = upgrade.DisplayName;
                 row.Title.color = bought ? GardenPalette.TextMuted : GardenPalette.TextPrimary;
                 row.Cost.text = upgrade.Cost + " xu";
-                row.Cost.color = bought ? GardenPalette.TextMuted : GardenPalette.Coin;
+                row.Cost.color = bought ? GardenPalette.TextMuted : GardenPalette.TextCoin;
                 row.Description.text = upgrade.Description;
                 row.Card.color = bought ? GardenPalette.PanelSoftMuted : GardenPalette.PanelSoft;
 

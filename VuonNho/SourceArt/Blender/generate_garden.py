@@ -44,6 +44,8 @@ ASSET_IDS = {
     "SM_TeaStation": "A07", "SM_BackgroundTree": "A08", "SM_Bush": "A09",
     "SM_Fence": "A10", "SM_Rock": "A11", "SM_CalibrationCube": "CAL01",
     "SM_Lemongrass": "A12", "SM_Jasmine": "A13",
+    "SM_StonePath": "D01", "SM_Planter": "D02", "SM_Lantern": "D03",
+    "SM_Bench": "D04", "SM_Signboard": "D05",
 }
 SEED = 60206
 MATERIALS = {}
@@ -484,6 +486,125 @@ def rock(root):
     join([obj], "RockMesh", root)
 
 
+def taper(name, center, bottom_radius, top_radius, height, material, segments=12):
+    """A straight tapered tube with flat caps: pot walls and lamp roofs.
+
+    Built the same way berry() is, so the winding is fixed by recalc_face_normals
+    inside mesh_object(). Cheaper than a beveled cylinder and it keeps the flat
+    toy shading; pass bottom_radius > top_radius for a roof.
+    """
+    half = height * .5
+    vertices = []
+    for z_offset, radius in ((-half, bottom_radius), (half, top_radius)):
+        for i in range(segments):
+            a = 2 * math.pi * i / segments
+            vertices.append((center[0] + math.cos(a) * radius,
+                             center[1] + math.sin(a) * radius,
+                             center[2] + z_offset))
+    faces = []
+    for i in range(segments):
+        j = (i + 1) % segments
+        faces.append((i, j, j + segments, i + segments))
+    faces.append(tuple(reversed(range(segments))))
+    faces.append(tuple(segments + i for i in range(segments)))
+    return mesh_object(name, vertices, faces, material)
+
+
+# --- Trang tri pha 2 -------------------------------------------------------
+# Ban kinh chiem cho la mot DUONG TRON trong GameSession, nen moi mon phai thoa
+# sqrt(max|x|^2 + max|y|^2) <= FootprintMm/1000 do tu PIVOT, chat hon la chi bo
+# hop bao vao 2 x FootprintMm. Cac mon co mat truoc dat mat do o Blender +Y.
+
+
+def stone_path(root):
+    """Phien da: one flat flagstone with two pebbles; footprint radius .22 m."""
+    rng = random.Random(SEED + 21)
+    slab = cylinder("Phien da", (0, 0, .0425), .155, .085, "M_Cream", 12, .018)
+    # Bop det theo truc Y roi rung tung dinh. He so luon <= 1 nen vien da chi thu
+    # vao, khong bao gio phinh ra ngoai ban kinh chiem cho.
+    for vertex in slab.data.vertices:
+        x, y, z = vertex.co
+        factor = rng.uniform(.88, 1.)
+        vertex.co = (x * 1.10 * factor, y * .81 * factor, z)
+    parts = [slab,
+             sphere("Soi lon", (.088, .052, .093), (.076, .062, .050), "M_Soil", 8, 4),
+             sphere("Soi nho", (-.101, -.046, .091), (.062, .055, .046), "M_Soil", 8, 4)]
+    join(parts, "StonePathMesh", root)
+
+
+def planter(root):
+    """Chau hoa: a tapered pot with a cream rim and three small red blooms."""
+    parts = [taper("Than chau", (0, 0, .16), .125, .155, .32, "M_Wood", 12),
+             cylinder("Vanh chau", (0, 0, .335), .165, .05, "M_Cream", 12, .012),
+             cylinder("Dat trong chau", (0, 0, .360), .145, .02, "M_Soil", 12, 0)]
+    for i, degrees in enumerate([35, 155, 275]):
+        angle = math.radians(degrees)
+        center = (.070 * math.cos(angle), .070 * math.sin(angle), .400 + (i % 2) * .045)
+        parts.append(stem("Canh hoa", (center[0] * .35, center[1] * .35, .35), center, .014))
+        for j in range(4):
+            petal = 2 * math.pi * j / 4 + .4 * i
+            start = (center[0] + .022 * math.cos(petal),
+                     center[1] + .022 * math.sin(petal), center[2])
+            parts.append(leaf("Canh hoa do", start, .078, .052, petal, -.008,
+                              "M_Red", .022, rings=2))
+        parts.append(sphere("Nhuy hoa", (center[0], center[1], center[2] + .014),
+                            (.040, .040, .030), "M_Yellow", 8, 4))
+    for i, degrees in enumerate([95, 215, 335]):
+        angle = math.radians(degrees)
+        base = (.048 * math.cos(angle), .048 * math.sin(angle), .355)
+        parts.append(leaf("La chau %d" % (i + 1), base, .105, .070, angle, .050,
+                          thickness=.024, rings=3))
+    join(parts, "PlanterMesh", root)
+
+
+def lantern(root):
+    """Den long: a warm paper lamp on a short post, symmetric about its axis.
+
+    Co y doi xung quanh truc: den khong co mat truoc nen khong can bu goc trong prefab.
+    """
+    parts = [cube("De coc", (0, 0, .035), (.20, .20, .07), "M_Dark", .02, 2),
+             cube("Coc go", (0, 0, .42), (.085, .085, .84), "M_Wood", .02, 2),
+             cube("Than den", (0, 0, .88), (.22, .22, .24), "M_Yellow", .03, 2)]
+    for x in (-.104, .104):
+        for y in (-.104, .104):
+            parts.append(cube("Nep khung", (x, y, .88), (.028, .028, .25), "M_Dark", 0))
+    parts.append(taper("Mai den", (0, 0, 1.03), .15, .062, .06, "M_Dark", 8))
+    parts.append(sphere("Chop den", (0, 0, 1.085), (.07, .07, .07), "M_Cream", 8, 4))
+    join(parts, "LanternMesh", root)
+
+
+def bench(root):
+    """Ghe go: three seat slats over four legs, with the backrest at -Y.
+
+    Mat ngoi huong +Y theo dung quy uoc mat truoc cua bo asset.
+    """
+    parts = []
+    for y in (-.14, 0., .14):
+        parts.append(cube("Nan mat ghe", (0, y, .40), (.92, .11, .06), "M_Wood", .018, 2))
+    for x in (-.40, .40):
+        for y in (-.145, .145):
+            parts.append(cube("Chan ghe", (x, y, .19), (.075, .075, .38), "M_Dark", .02, 2))
+        parts.append(cube("Cot tua", (x, -.175, .58), (.075, .06, .34), "M_Dark", .02, 2))
+    for z in (.58, .70):
+        parts.append(cube("Nan tua", (0, -.175, z), (.92, .05, .10), "M_Wood", .015, 2))
+    join(parts, "BenchMesh", root)
+
+
+def signboard(root):
+    """Bang hieu: a shop board on two posts; the reading face is at +Y."""
+    parts = []
+    for x in (-.32, .32):
+        parts.append(cube("Coc bang", (x, 0, .475), (.07, .07, .95), "M_Wood", .02, 2))
+        parts.append(cube("Mu coc", (x, 0, .965), (.095, .095, .05), "M_Cream", .02, 1))
+    parts.append(cube("Bang go", (0, 0, .80), (.70, .075, .34), "M_Cream", .03, 2))
+    for z in (.645, .955):
+        parts.append(cube("Nep vien", (0, 0, z), (.74, .085, .05), "M_Accent", .015, 1))
+    # Hinh chen tra nho han ra o mat +Y de doc duoc tu goc camera cua game.
+    parts.append(stem("Chen tra", (0, .034, .80), (0, .078, .80), .085, "M_Accent", 12))
+    parts.append(sphere("Quai chen", (.104, .058, .80), (.055, .042, .076), "M_Accent", 8, 4))
+    join(parts, "SignboardMesh", root)
+
+
 def calibration(root):
     join([cube("Metre cube", (0, 0, .5), (1, 1, 1), "M_Cream", 0)], "CalibrationCube", root)
     # Quy uoc cua bo asset: mat truoc nam o Blender +Y, sang Unity thanh +Z.
@@ -501,6 +622,10 @@ BUILDERS = {
     "SM_TeaStation": tea_station, "SM_BackgroundTree": background_tree,
     "SM_Bush": bush, "SM_Fence": fence, "SM_Rock": rock,
     "SM_CalibrationCube": calibration,
+    # Them o cuoi de list(BUILDERS).index() cua 14 asset cu khong doi: tai xuat
+    # lai bat ky mon nao trong so do van ra dung ket qua cu.
+    "SM_StonePath": stone_path, "SM_Planter": planter, "SM_Lantern": lantern,
+    "SM_Bench": bench, "SM_Signboard": signboard,
 }
 
 

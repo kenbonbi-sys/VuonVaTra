@@ -1,6 +1,7 @@
 using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using VuonNho.Core;
 using VuonNho.Infrastructure;
 
@@ -27,7 +28,19 @@ namespace VuonNho.Views
         SfxPlayer _sfx;
         bool _blocked;
         /// <summary>Cu click de dua cua so ve foreground khong duoc tinh la thao tac trong vuon.</summary>
-        int _ignoreClicksUntilFrame;
+        /// <summary>
+        /// Cu click chi de dua cua so len foreground khong duoc tinh la thao tac trong game —
+        /// ke ca thao tac tren UI. Chan theo thoi gian chu khong theo khung hinh, vi su kien
+        /// chuot cua he dieu hanh co the toi sau callback focus mot vai khung hinh.
+        /// </summary>
+        const float IgnoreClicksAfterFocusSeconds = 0.25f;
+        float _ignoreClicksUntilTime;
+        GraphicRaycaster _hudRaycaster;
+
+        bool ClicksAreBlocked
+        {
+            get { return Time.unscaledTime < _ignoreClicksUntilTime; }
+        }
 
         /// <summary>Pha 2: id mon dang cho dat, va che do go. Ca hai la trang thai cua UI, khong vao save.</summary>
         string _placingDecorationId;
@@ -73,7 +86,13 @@ namespace VuonNho.Views
 
             // Phai dat truoc Bind: HUD dung toan bo nhan ngay trong Bind.
             if (Skin != null) UiFactory.SetFonts(Skin.BodyFont, Skin.DisplayFont);
-            if (Hud != null) Hud.Bind(_session);
+            if (Hud != null)
+            {
+                Hud.Bind(_session, Skin);
+                _hudRaycaster = Hud.GetComponent<GraphicRaycaster>();
+            }
+            // Cu click mo game cung khong duoc tinh: chan ngay tu khung hinh dau.
+            _ignoreClicksUntilTime = Time.unscaledTime + IgnoreClicksAfterFocusSeconds;
             if (Decorations != null) Decorations.Bind(_session);
 
             var outcome = _session.Initialize();
@@ -116,6 +135,10 @@ namespace VuonNho.Views
         {
             if (_session == null || _blocked || _session.State == null) return;
 
+            // Tat raycaster cua HUD trong khoang cho, neu khong cu click lay focus se bam
+            // trung nut dang nam duoi con tro — bao cao quay lai bi dong ngay khi vua hien.
+            if (_hudRaycaster != null) _hudRaycaster.enabled = !ClicksAreBlocked;
+
             _session.Tick();
             RenderScene();
             if (Decorations != null) Decorations.RefreshIfChanged();
@@ -145,7 +168,7 @@ namespace VuonNho.Views
             }
 
             if (!Input.GetMouseButtonDown(0)) return;
-            if (Time.frameCount <= _ignoreClicksUntilFrame) return;
+            if (ClicksAreBlocked) return;
             // Click len UI khong truyen xuong dat.
             if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
 
@@ -281,7 +304,7 @@ namespace VuonNho.Views
                 _session.Suspend();
                 return;
             }
-            _ignoreClicksUntilFrame = Time.frameCount + 1;
+            _ignoreClicksUntilTime = Time.unscaledTime + IgnoreClicksAfterFocusSeconds;
             _session.ResumeFromBackground();
         }
 
