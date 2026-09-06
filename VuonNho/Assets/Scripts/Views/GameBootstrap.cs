@@ -22,6 +22,7 @@ namespace VuonNho.Views
         public GardenSkin Skin;
         public CameraRig Rig;
         public CharacterView Character;
+        public ClickMarker Marker;
 
         GameSession _session;
         FileSaveRepository _repository;
@@ -260,6 +261,10 @@ namespace VuonNho.Views
             if (!Physics.Raycast(camera.ScreenPointToRay(screenPosition), out hit, 500f)) return false;
             WalkCommandCount++;
             Character.WalkTo(hit.point);
+
+            // Bao lai o DICH chu khong o cho con tro: bam ra ngoai vuon thi nhan vat dung o mep,
+            // va vong tron phai nam dung cho no se dung chu khong noi mot chuyen khac.
+            if (Marker != null) Marker.Show(Character.Destination);
             return true;
         }
 

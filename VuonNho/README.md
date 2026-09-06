@@ -19,7 +19,7 @@ Vòng chơi **chọn cây → gieo → cây lớn → thu → máy pha → tự 
 | Chuột trái vào ô đất, vào máy, vào nút | Thao tác như cũ |
 | Giữ chuột trái rồi kéo | Kéo màn hình đi xem chỗ khác |
 | Lăn chuột | Phóng to / thu nhỏ, bám vào điểm dưới con trỏ |
-| Chuột phải xuống đất | Nhân vật đi tới đó |
+| Chuột phải xuống đất | Nhân vật đi tới đó, có vòng tròn báo lại chỗ vừa bấm |
 | Chuột phải khi đang đặt / gỡ đồ trang trí | Thoát chế độ đó (không đi) |
 
 Hai điều đáng biết vì chúng ràng buộc nhau:
@@ -30,6 +30,12 @@ Hai điều đáng biết vì chúng ràng buộc nhau:
 - **Chuột phải vẫn là đường thoát khỏi chế độ đặt/gỡ đồ.** Đó là lối ra duy nhất người chơi đã
   quen; cho nhân vật đi lúc đó sẽ cướp mất nó. Chỉ khi không ở trong chế độ nào thì chuột phải
   mới là lệnh đi.
+
+Vòng tròn báo lại (`ClickMarker`) **vẽ đè lên mọi thứ trong vườn**, không kiểm tra độ sâu. Nó
+nằm sát mặt đất mà luống cây cao 17 cm và chiếm gần hết khu giữa — chỗ người chơi bấm nhiều nhất
+— nên nếu để kiểm tra độ sâu thì bấm vào luống sẽ không được báo lại gì. Vòng tròn hiện ở **đích**
+chứ không ở chỗ con trỏ: bấm ra ngoài vườn thì nhân vật dừng ở mép, và vòng tròn phải nằm đúng
+chỗ nó sẽ dừng.
 
 Nhân vật đi thẳng, không tìm đường: vườn là một mảnh đất phẳng không có vật cản. Không có xương
 và không có animation clip — hai chân là hai nhóm mesh với gốc xoay ở hông, nhịp chân tính theo
@@ -88,7 +94,7 @@ Tách mô phỏng khỏi hiển thị đúng như mục 8 của kế hoạch. `A
 |---|---|---|
 | `VuonNho.Core` | `GameState`, `FarmSimulation`, `GameSession`, `ContentCatalog`, `SaveSerializer`, `TutorialGuide`, JSON | **C# thuần, không tham chiếu UnityEngine** |
 | `VuonNho.Infrastructure` | `FileSaveRepository`, `SystemClock`, `FileTestLogger` | Core + UnityEngine |
-| `VuonNho.Views` | `GameBootstrap`, `PlotView`, `MachineView`, `HelperView`, `CharacterView`, `CameraRig`, `GameHud`, `GardenSkin`, `SfxPlayer`, `QaScreenshot` | Core + Infrastructure |
+| `VuonNho.Views` | `GameBootstrap`, `PlotView`, `MachineView`, `HelperView`, `CharacterView`, `CameraRig`, `ClickMarker`, `GameHud`, `GardenSkin`, `SfxPlayer`, `QaScreenshot` | Core + Infrastructure |
 | `VuonNho.Editor` | `SceneFactory`, `ProjectSetup`, `BuildTool`, `SceneCapture` | Editor-only |
 
 `GameState` là nguồn sự thật duy nhất cho tiền, kho, timer và mở khóa. View dựng lại được mà
@@ -196,7 +202,8 @@ Vài quy ước đã áp dụng, giữ nguyên khi thêm màn hình mới:
 - **Popup bắt buộc trả lời** (`BuildModal`) luôn có lớp scrim phủ cả màn hình, vừa để tách khỏi
   vườn vừa để chặn click xuống đất. Toast thì ngược lại: `raycastTarget = false` để không nuốt click.
 
-Ảnh chụp QA: `-vuonnho-open-panel` nhận `inventory`, `upgrade`, `settings` và `plot` (mở popup ô 1).
+Ảnh chụp QA: `-vuonnho-open-panel` nhận `inventory`, `upgrade`, `settings`, `decorate` và `plot`
+(mở popup ô 1).
 Ảnh tham chiếu của HUD hiện tại nằm ở `Docs/screenshots/`, chụp từ bản build chứ không phải editor.
 
 ## Khác với kế hoạch — đã cân nhắc
@@ -221,6 +228,11 @@ tra hình ảnh thật, chụp từ chính bản build:
 Build\VuonNho-dev\VuonNho.exe -screen-fullscreen 0 -screen-width 1366 -screen-height 768 -vuonnho-screenshot "C:\anh.png" -vuonnho-screenshot-delay 4 -vuonnho-open-panel upgrade -vuonnho-screenshot-seed
 ```
 
+`-vuonnho-screenshot-walk "x,z"` gửi một lệnh đi tới điểm (x, z) rồi chụp sau 0,15 giây, để ảnh
+bắt được cả vòng tròn báo lại lẫn nhân vật đang dở bước. Nó đi qua đúng đường mà chuột thật đi
+(`GameBootstrap.TryWalkCommand`) chứ không gọi thẳng `WalkTo`: ảnh chụp phải là ảnh của thứ người
+chơi sẽ thấy.
+
 `-vuonnho-screenshot-seed` tua vườn tới lúc đã mở đủ 12 ô và mua hết nâng cấp trước khi chụp, nên
 ảnh tài liệu cho thấy một khu vườn có thứ để nhìn thay vì bốn ô đất trống. Nó mua theo đúng thứ
 tự catalog — thứ tự đó đã thỏa điều kiện mở khóa của từng mục — nên không chép lại lộ trình của
@@ -238,14 +250,15 @@ Hai điều đã làm hỏng một lượt chụp và sẽ làm hỏng lượt s
 - **Mốc A** — vòng chơi, save/offline/lifecycle, HUD, 83 test, hai bản build.
 - **L01 + B02** — 13 model Blender (gồm sả và nhài), 9 material, 5 cue âm thanh, prefab và
   GardenSkin đã điền đủ. Xem [Docs/Art/L01-B02.md](Docs/Art/L01-B02.md).
-- **Checklist mục 10** — 97 test logic + 83 mục kiểm trong bản build, hai độ phân giải.
+- **Checklist mục 10** — 97 test logic + 85 mục kiểm trong bản build, hai độ phân giải.
   Xem [Docs/QA-moc-A.md](Docs/QA-moc-A.md).
 - **Hướng v1** — đổi tên, siết nhịp, thêm sả/nhài, pha 2 trang trí.
   Xem [Docs/Huong-di-v1.md](Docs/Huong-di-v1.md).
 - **Font** — National Park, sáu weight, kèm giấy phép OFL.
 - **Điều khiển camera và nhân vật** — lăn chuột để zoom, giữ trái để kéo màn hình, chuột phải để
-  ra lệnh cho nhân vật đi. Xem mục [Điều khiển](#điều-khiển). 12 mục kiểm chạy trong bản build vì
-  cả ba đều cần camera thật và nhiều frame thật, không kiểm được bằng test EditMode.
+  ra lệnh cho nhân vật đi, và một vòng tròn dưới đất báo lại chỗ vừa bấm. Xem mục
+  [Điều khiển](#điều-khiển). 14 mục kiểm chạy trong bản build vì cả bốn đều cần camera thật và
+  nhiều frame thật, không kiểm được bằng test EditMode.
 
 ## Còn lại
 

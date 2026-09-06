@@ -176,7 +176,9 @@ namespace VuonNho.Views
             chipRect.anchorMax = new Vector2(0f, 0.5f);
             chipRect.pivot = new Vector2(0f, 0.5f);
             chipRect.anchoredPosition = new Vector2(UiFactory.EdgeMargin, 0f);
-            chipRect.sizeDelta = new Vector2(176f, 40f);
+            // Bo chu "xu" thi chip hep lai dung bang the, khong de lai khoang trong: 144 px van
+            // du cho so tam chu so, bang dung so cho ma phien ban co chu "xu" cho duoc.
+            chipRect.sizeDelta = new Vector2(144f, 40f);
 
             var coinRow = UiFactory.Node(coinChip.transform, "Coins");
             UiFactory.Stretch(UiFactory.Rect(coinRow), Vector2.zero, Vector2.one,
@@ -191,7 +193,8 @@ namespace VuonNho.Views
                                               UiFactory.Symbols.LocalAtm, UiFactory.IconSizeRow);
             coinSymbol.color = GardenPalette.TextCoin;
 
-            _coinsLabel = UiFactory.Label(coinRow.transform, "Value", "0 xu", UiFactory.FontSizeTitle,
+            // Da co icon tien dung canh thi chu "xu" chi la nhan lap lai.
+            _coinsLabel = UiFactory.Label(coinRow.transform, "Value", "0", UiFactory.FontSizeTitle,
                                           TextAnchor.MiddleLeft, GardenPalette.TextCoin, true);
             _coinsLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
 
@@ -200,7 +203,7 @@ namespace VuonNho.Views
                                          TextAnchor.MiddleLeft, GardenPalette.TextMuted);
             _goalLabel.verticalOverflow = VerticalWrapMode.Truncate;
             UiFactory.Stretch(UiFactory.Rect(_goalLabel.gameObject), new Vector2(0f, 0f), new Vector2(1f, 1f),
-                              new Vector2(208f, 0f), new Vector2(-612f, 0f));
+                              new Vector2(176f, 0f), new Vector2(-612f, 0f));
 
             // Bon nut deu nhau: nut rong nhat la "Nang cap" can khoang 140 px khi co ca icon
             // lan chu, nen ca day phai duoc 596 px. Hep hon la chu bi xuong dong.
@@ -846,7 +849,7 @@ namespace VuonNho.Views
             var state = _session.State;
             var catalog = _session.Catalog;
 
-            _coinsLabel.text = state.Coins + " xu";
+            _coinsLabel.text = state.Coins.ToString();
             _goalLabel.text = GoalText(TutorialGuide.CurrentStep(state, catalog), state, catalog);
 
             RefreshMachineCard(state);

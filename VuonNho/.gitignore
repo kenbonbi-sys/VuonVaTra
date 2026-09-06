@@ -35,6 +35,7 @@ build.log
 test.log
 import.log
 artqa.log
+scene.log
 results.xml
 test-results.xml
 

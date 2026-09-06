@@ -18,10 +18,14 @@ namespace VuonNho.Views
         public const string DelayArgument = "-vuonnho-screenshot-delay";
         public const string PanelArgument = "-vuonnho-open-panel";
         public const string SeedArgument = "-vuonnho-screenshot-seed";
+        public const string WalkArgument = "-vuonnho-screenshot-walk";
 
         string _outputPath;
         string _panelName;
         bool _seed;
+        bool _hasWalkPoint;
+        Vector3 _walkPoint;
+        bool _walked;
         float _delaySeconds = 5f;
         float _captureAt = -1f;
         bool _captured;
@@ -40,6 +44,8 @@ namespace VuonNho.Views
                     _panelName = arguments[i + 1];
                 else if (arguments[i] == SeedArgument)
                     _seed = true;
+                else if (arguments[i] == WalkArgument && i + 1 < arguments.Length)
+                    _hasWalkPoint = TryParsePoint(arguments[i + 1], out _walkPoint);
             }
 
             if (string.IsNullOrEmpty(_outputPath))
@@ -70,6 +76,16 @@ namespace VuonNho.Views
                 if (hud != null) hud.OpenPanelByName(_panelName);
                 _panelName = null;
                 return;   // cho mot frame de panel kip dung xong
+            }
+
+            if (_hasWalkPoint && !_walked)
+            {
+                _walked = true;
+                SendWalkCommand();
+                // Cho mot nhip ngan roi moi chup: vong tron van con ro, ma nhan vat da roi cho
+                // va dang do buoc — anh chup ke duoc ca hai nua cua chuyen nay.
+                _captureAt = Time.realtimeSinceStartup + 0.15f;
+                return;
             }
 
             _captured = true;
@@ -144,6 +160,36 @@ namespace VuonNho.Views
             Debug.Log("[VuonNho] Da tua vuon: " + session.State.UnlockedPlotCount() + " o, " +
                       session.State.Coins + " xu.");
             if (hud != null) hud.Refresh();
+        }
+
+        /// <summary>
+        /// Gia lap mot cu bam chuot phai xuong diem (x, z) trong vuon, de anh tai lieu bat duoc
+        /// nhan vat dang di va vong tron bao lai. Di qua dung duong ma chuot that di, khong goi
+        /// thang WalkTo: anh chup phai la anh cua thu nguoi choi se thay.
+        /// </summary>
+        void SendWalkCommand()
+        {
+            var bootstrap = FindAnyObjectByType<GameBootstrap>();
+            if (bootstrap == null) return;
+            var camera = bootstrap.GameCamera != null ? bootstrap.GameCamera : Camera.main;
+            if (camera == null) return;
+
+            var screen = camera.WorldToScreenPoint(_walkPoint);
+            if (!bootstrap.TryWalkCommand(new Vector3(screen.x, screen.y, 0f)))
+                Debug.LogWarning("[VuonNho] Lenh di khong toi noi: tia khong cham vuon o diem da cho.");
+        }
+
+        /// <summary>Doc "x,z" tren dong lenh thanh mot diem tren mat dat.</summary>
+        static bool TryParsePoint(string text, out Vector3 point)
+        {
+            point = Vector3.zero;
+            if (string.IsNullOrEmpty(text)) return false;
+            var parts = text.Split(',');
+            if (parts.Length != 2) return false;
+            float x, z;
+            if (!float.TryParse(parts[0], out x) || !float.TryParse(parts[1], out z)) return false;
+            point = new Vector3(x, 0f, z);
+            return true;
         }
 
         static void PlantEveryEmptyPlot(GameSession session)

@@ -192,11 +192,27 @@ namespace VuonNho.Views
             var groundScreen = (_bootstrap.GameCamera != null ? _bootstrap.GameCamera : Camera.main)
                 .WorldToScreenPoint(groundPoint);
             int routedBefore = _bootstrap.WalkCommandCount;
+            if (_bootstrap.Marker != null) _bootstrap.Marker.Hide();
             bool routed = _bootstrap.TryWalkCommand(new Vector3(groundScreen.x, groundScreen.y, 0f));
             Check("Chuột phải xuống đất thành lệnh đi",
                   routed && _bootstrap.WalkCommandCount == routedBefore + 1 && character.IsWalking,
                   routed ? null : "tia không chạm vườn hoặc lệnh bị chặn");
             character.Teleport(character.transform.position);
+
+            // Vong tron bao lai cu bam. Khong co no thi mot cu bam hut nhin y het mot cu bam
+            // khong an, nen day la muc kiem chu khong phai chuyen trang tri.
+            var marker = _bootstrap.Marker;
+            Check("Chỗ vừa bấm có vòng tròn báo lại", marker != null && marker.IsShowing,
+                  marker == null ? "GameBootstrap.Marker chưa được gán."
+                                 : marker.IsShowing ? null : "vòng tròn không hiện");
+
+            if (marker != null)
+            {
+                float deadline = Time.unscaledTime + marker.Duration + 1f;
+                while (marker.IsShowing && Time.unscaledTime < deadline) yield return null;
+                Check("Vòng tròn tự tắt chứ không nằm lại", !marker.IsShowing,
+                      "sau " + marker.Duration.ToString("0.00") + " s");
+            }
             yield return null;
 
             // Chuot that cua nguoi dung van bam duoc vao cua so trong luc chay, va moi cu chuot

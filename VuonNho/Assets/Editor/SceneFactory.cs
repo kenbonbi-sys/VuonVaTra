@@ -20,6 +20,7 @@ namespace VuonNho.EditorTools
         public const string ScenePath = "Assets/Scenes/Garden.unity";
         public const string MaterialFolder = "Assets/Settings/Materials";
         public const string SkinPath = "Assets/Settings/GardenSkin.asset";
+        public const string MarkerMaterialPath = MaterialFolder + "/M_ClickMarker.mat";
 
         const int Columns = 4;
         const int Rows = 3;
@@ -63,6 +64,7 @@ namespace VuonNho.EditorTools
             var machine = BuildTeaStation(skin);
             var helper = BuildHelper(skin);
             var character = BuildCharacter(skin, catalog);
+            var marker = BuildClickMarker();
             BuildProps(skin);
 
             var decorations = BuildDecorationLayer(skin);
@@ -76,6 +78,7 @@ namespace VuonNho.EditorTools
             bootstrap.Machine = machine;
             bootstrap.Helper = helper;
             bootstrap.Character = character;
+            bootstrap.Marker = marker;
             bootstrap.Rig = camera.GetComponent<CameraRig>();
             bootstrap.Plots = plots.ToArray();
             bootstrap.Decorations = decorations;
@@ -503,6 +506,37 @@ namespace VuonNho.EditorTools
             var legRight = FindDeep(art.transform, "LegRight");
             if (legRight != null) view.LegRight = legRight;
             return view;
+        }
+
+        /// <summary>Vong tron bao lai cu bam chuot phai. Mesh dung trong code nen khong can prefab.</summary>
+        static ClickMarker BuildClickMarker()
+        {
+            var go = new GameObject("ClickMarker");
+            var marker = go.AddComponent<ClickMarker>();
+            marker.RingMaterial = LoadOrCreateMarkerMaterial();
+            return marker;
+        }
+
+        /// <summary>
+        /// Vat lieu cua vanh. Dung UI/Default vi no cho phep dat ZTest bang unity_GUIZTestMode —
+        /// <see cref="ClickMarker"/> dat gia tri do luc chay, xem ly do o day.
+        ///
+        /// Ton tai thanh asset chu khong chi la Shader.Find luc chay: mot shader khong duoc asset
+        /// nao tham chieu co the bi loai khoi ban build, va loi do chi lo ra trong build chu
+        /// khong trong editor.
+        /// </summary>
+        static Material LoadOrCreateMarkerMaterial()
+        {
+            var existing = AssetDatabase.LoadAssetAtPath<Material>(MarkerMaterialPath);
+            if (existing != null) return existing;
+
+            var shader = Shader.Find("UI/Default");
+            if (shader == null) return null;
+
+            var material = new Material(shader) { name = "M_ClickMarker" };
+            Directory.CreateDirectory(Path.GetDirectoryName(MarkerMaterialPath));
+            AssetDatabase.CreateAsset(material, MarkerMaterialPath);
+            return material;
         }
 
         static HelperView BuildHelper(GardenSkin skin)
