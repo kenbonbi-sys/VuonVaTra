@@ -81,27 +81,32 @@ namespace VuonNho.Core
                 new RecipeDefinition
                 {
                     Id = RecipeMint, DisplayName = "Trà bạc hà", InputCropId = CropMint, InputCount = 2,
-                    BaseBrewMs = 4000, OutputCoins = 6, UnlockUpgradeId = null, SortOrder = 0
+                    BaseBrewMs = 4000, OutputCoins = 6, UnlockUpgradeId = null, SortOrder = 0,
+                    PackedInputCount = 2, PackedOutputCoins = 30
                 },
                 new RecipeDefinition
                 {
                     Id = RecipeChamomile, DisplayName = "Trà hoa cúc", InputCropId = CropChamomile, InputCount = 2,
-                    BaseBrewMs = 6000, OutputCoins = 16, UnlockUpgradeId = UpgradeChamomile, SortOrder = 1
+                    BaseBrewMs = 6000, OutputCoins = 16, UnlockUpgradeId = UpgradeChamomile, SortOrder = 1,
+                    PackedInputCount = 2, PackedOutputCoins = 80
                 },
                 new RecipeDefinition
                 {
                     Id = RecipeStrawberry, DisplayName = "Trà dâu", InputCropId = CropStrawberry, InputCount = 2,
-                    BaseBrewMs = 9000, OutputCoins = 30, UnlockUpgradeId = UpgradeStrawberry, SortOrder = 2
+                    BaseBrewMs = 9000, OutputCoins = 30, UnlockUpgradeId = UpgradeStrawberry, SortOrder = 2,
+                    PackedInputCount = 2, PackedOutputCoins = 150
                 },
                 new RecipeDefinition
                 {
                     Id = RecipeLemongrass, DisplayName = "Trà sả", InputCropId = CropLemongrass, InputCount = 2,
-                    BaseBrewMs = 13000, OutputCoins = 52, UnlockUpgradeId = UpgradeLemongrass, SortOrder = 3
+                    BaseBrewMs = 13000, OutputCoins = 52, UnlockUpgradeId = UpgradeLemongrass, SortOrder = 3,
+                    PackedInputCount = 2, PackedOutputCoins = 260
                 },
                 new RecipeDefinition
                 {
                     Id = RecipeJasmine, DisplayName = "Trà nhài", InputCropId = CropJasmine, InputCount = 2,
-                    BaseBrewMs = 18000, OutputCoins = 86, UnlockUpgradeId = UpgradeJasmine, SortOrder = 4
+                    BaseBrewMs = 18000, OutputCoins = 86, UnlockUpgradeId = UpgradeJasmine, SortOrder = 4,
+                    PackedInputCount = 2, PackedOutputCoins = 430
                 }
             };
 
@@ -192,7 +197,8 @@ namespace VuonNho.Core
                 }
             };
 
-            return new ContentCatalog(balance, crops, recipes, upgrades, DefaultDecorations.Create());
+            return new ContentCatalog(balance, crops, recipes, upgrades,
+                                      DefaultDecorations.Create(), DefaultStages.Create());
         }
     }
 }

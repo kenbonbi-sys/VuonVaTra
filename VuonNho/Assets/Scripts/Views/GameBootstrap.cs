@@ -24,6 +24,7 @@ namespace VuonNho.Views
         public CharacterView Character;
         public ClickMarker Marker;
         public PlacementPreview Preview;
+        public StationView[] Stations;
 
         GameSession _session;
         FileSaveRepository _repository;
@@ -159,6 +160,9 @@ namespace VuonNho.Views
                     if (Plots[i] != null) Plots[i].Render(state, _session.Simulation);
             }
             if (Machine != null) Machine.Render(state, _session.Simulation);
+            if (Stations != null)
+                for (int i = 0; i < Stations.Length; i++)
+                    if (Stations[i] != null) Stations[i].Render(state);
             if (Helper != null) Helper.Render(state);
         }
 
@@ -533,6 +537,9 @@ namespace VuonNho.Views
 
         public void OnBatchStarted(string recipeId, long atMs) { }
         public void OnBatchCompleted(string recipeId, long coins, long atMs) { }
+        public void OnStationStarted(string stageId, string cropId, long atMs) { }
+        public void OnStationCompleted(string stageId, string cropId, int amount, long atMs) { }
+        public void OnWagesPaid(long coins, int paid, int unpaid, long atMs) { }
 
         PlotView FindPlotView(int plotId)
         {

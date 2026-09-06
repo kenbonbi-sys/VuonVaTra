@@ -36,6 +36,8 @@ namespace VuonNho.Core
         public string SelectedRecipeId;
         public bool BatchRunning;
         public string BatchRecipeId;
+        /// <summary>Me nay pha tu tra da dong goi hay tu la tuoi. Chi de HUD noi dung chuyen.</summary>
+        public bool BatchFromPacked;
         public long BatchStartAtMs;
         public long BatchFinishAtMs;
         /// <summary>Xu duoc chot luc bat dau me, khong tinh lai khi hoan thanh.</summary>
@@ -96,6 +98,23 @@ namespace VuonNho.Core
         public readonly Dictionary<string, long> Inventory = new Dictionary<string, long>(StringComparer.Ordinal);
         public readonly List<PlotState> Plots = new List<PlotState>();
         public MachineState Machine = new MachineState();
+
+        /// <summary>Mot phan tu cho moi cong doan trong catalog, ke ca may chua mua.</summary>
+        public readonly List<StationState> Stations = new List<StationState>();
+
+        /// <summary>So tho da thue. Moi tho chay duoc mot may cung luc.</summary>
+        public int HiredWorkers;
+
+        /// <summary>
+        /// So tho **tra duoc luong** cua ky hien tai. It hon so da thue khi trong tui khong du xu.
+        ///
+        /// Giu rieng khoi HiredWorkers de het tien khong lam mat nguoi: tho van con day, chi la
+        /// ky nay khong ai chay may. Tra duoc luong ky sau la day chuyen chay lai ngay.
+        /// </summary>
+        public int StaffedWorkers;
+
+        /// <summary>Moc tra luong tiep theo, theo thoi gian mo phong.</summary>
+        public long NextPayrollAtMs;
         public readonly HashSet<string> UnlockedCropIds = new HashSet<string>(StringComparer.Ordinal);
         public readonly HashSet<string> UnlockedRecipeIds = new HashSet<string>(StringComparer.Ordinal);
         public readonly Dictionary<string, int> UpgradeLevels = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -131,10 +150,14 @@ namespace VuonNho.Core
             }
 
             foreach (var crop in catalog.Crops)
-            {
-                state.Inventory[crop.Id] = 0;
                 if (crop.UnlockUpgradeId == null) state.UnlockedCropIds.Add(crop.Id);
-            }
+
+            // Ke ca hang trung gian: kho co du dong ngay tu dau thi HUD khong phai phan biet
+            // "chua co mon nay" voi "co 0 mon nay".
+            foreach (var itemId in catalog.Items) state.Inventory[itemId] = 0;
+
+            foreach (var stage in catalog.Stages)
+                state.Stations.Add(new StationState { StageId = stage.Id, Owned = false });
 
             foreach (var recipe in catalog.Recipes)
                 if (recipe.UnlockUpgradeId == null) state.UnlockedRecipeIds.Add(recipe.Id);
@@ -148,18 +171,41 @@ namespace VuonNho.Core
             return state;
         }
 
-        public long InventoryOf(string cropId)
+        public long InventoryOf(string itemId)
         {
             long value;
-            return Inventory.TryGetValue(cropId, out value) ? value : 0;
+            return Inventory.TryGetValue(itemId, out value) ? value : 0;
         }
 
-        public void AddInventory(string cropId, long amount)
+        public void AddInventory(string itemId, long amount)
         {
-            long current = InventoryOf(cropId);
+            long current = InventoryOf(itemId);
             long next = current + amount;
-            if (next < 0) throw new InvalidOperationException("Kho khong duoc am: " + cropId);
-            Inventory[cropId] = next;
+            if (next < 0) throw new InvalidOperationException("Kho khong duoc am: " + itemId);
+            Inventory[itemId] = next;
+        }
+
+        public StationState Station(string stageId)
+        {
+            for (int i = 0; i < Stations.Count; i++)
+                if (Stations[i].StageId == stageId) return Stations[i];
+            return null;
+        }
+
+        public int OwnedStationCount()
+        {
+            int count = 0;
+            for (int i = 0; i < Stations.Count; i++)
+                if (Stations[i].Owned) count++;
+            return count;
+        }
+
+        public int RunningStationCount()
+        {
+            int count = 0;
+            for (int i = 0; i < Stations.Count; i++)
+                if (Stations[i].Running) count++;
+            return count;
         }
 
         public int UpgradeLevel(string upgradeId)
@@ -194,6 +240,9 @@ namespace VuonNho.Core
                 TutorialStep = TutorialStep,
                 SaveRevision = SaveRevision,
                 RobotUnlocked = RobotUnlocked,
+                HiredWorkers = HiredWorkers,
+                StaffedWorkers = StaffedWorkers,
+                NextPayrollAtMs = NextPayrollAtMs,
                 Machine = Machine.Clone(),
                 PendingOfflineSummary = PendingOfflineSummary == null ? null : PendingOfflineSummary.Clone()
             };
@@ -203,6 +252,7 @@ namespace VuonNho.Core
             foreach (var id in UnlockedRecipeIds) copy.UnlockedRecipeIds.Add(id);
             foreach (var pair in UpgradeLevels) copy.UpgradeLevels[pair.Key] = pair.Value;
             for (int i = 0; i < Decorations.Count; i++) copy.Decorations.Add(Decorations[i].Clone());
+            for (int i = 0; i < Stations.Count; i++) copy.Stations.Add(Stations[i].Clone());
             return copy;
         }
     }

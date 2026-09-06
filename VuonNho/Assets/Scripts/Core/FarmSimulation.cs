@@ -14,6 +14,9 @@ namespace VuonNho.Core
         void OnPlanted(int plotId, string cropId, long atMs);
         void OnBatchStarted(string recipeId, long atMs);
         void OnBatchCompleted(string recipeId, long coins, long atMs);
+        void OnStationStarted(string stageId, string cropId, long atMs);
+        void OnStationCompleted(string stageId, string cropId, int amount, long atMs);
+        void OnWagesPaid(long coins, int workersPaid, int workersUnpaid, long atMs);
     }
 
     /// <summary>
@@ -114,7 +117,11 @@ namespace VuonNho.Core
             ResolveAt(state, state.SimulationTimeMs);
         }
 
-        /// <summary>Thu tu co dinh tai mot timestamp: den han -> robot -> may.</summary>
+        /// <summary>
+        /// Thu tu co dinh tai mot timestamp: den han -> tra luong -> robot -> may che bien ->
+        /// quay tra. Thu tu nay la mot phan cua hop dong, khong phai tinh co: doi cho hai buoc
+        /// cho nhau la hai duong chay online va offline se cho ra hai ket qua khac nhau.
+        /// </summary>
         void ResolveAt(GameState state, long atMs)
         {
             state.SimulationTimeMs = atMs;
@@ -137,13 +144,38 @@ namespace VuonNho.Core
                 state.Coins += coins;
                 state.Machine.BatchRunning = false;
                 state.Machine.BatchRecipeId = null;
+                state.Machine.BatchFromPacked = false;
                 state.Machine.BatchOutputCoins = 0;
                 state.Machine.BatchStartAtMs = 0;
                 state.Machine.BatchFinishAtMs = 0;
                 NotifyBatchCompleted(recipeId, coins, atMs);
             }
 
-            // 2. Robot thu cac o Ready theo plotId roi gieo lai cay da chon.
+            // 2. May che bien den han: hang ra vao kho, may tro lai ranh.
+            for (int i = 0; i < state.Stations.Count; i++)
+            {
+                var station = state.Stations[i];
+                if (!station.Running || station.BatchFinishAtMs > atMs) continue;
+
+                ProcessStageDefinition stage;
+                if (!_catalog.TryGetStage(station.StageId, out stage)) { station.Running = false; continue; }
+
+                string cropId = station.BatchCropId;
+                int amount = station.BatchOutput;
+                state.AddInventory(ProcessChain.ItemId(cropId, stage.OutputSuffix), amount);
+                station.Running = false;
+                station.BatchCropId = null;
+                station.BatchOutput = 0;
+                station.BatchStartAtMs = 0;
+                station.BatchFinishAtMs = 0;
+                NotifyStationCompleted(stage.Id, cropId, amount, atMs);
+            }
+
+            // 3. Tra luong. Truoc khi bat dau me moi: so tho tra duoc luong quyet dinh bao nhieu
+            //    may duoc phep chay trong ky sap toi.
+            PayWagesIfDue(state, atMs);
+
+            // 4. Robot thu cac o Ready theo plotId roi gieo lai cay da chon.
             if (state.RobotUnlocked)
             {
                 for (int i = 0; i < state.Plots.Count; i++)
@@ -154,8 +186,101 @@ namespace VuonNho.Core
                 }
             }
 
-            // 3. May ranh va du nguyen lieu thi bat dau me moi.
+            // 5. May che bien ranh va du nguyen lieu thi bat dau me moi, theo thu tu day chuyen.
+            //    Uu tien chang dau: mot day chuyen dung o giua thi hang o dau se don lai, con
+            //    dung o dau thi ca day chuyen doi — nen dau vao phai duoc chay truoc.
+            TryStartStations(state, atMs);
+
+            // 6. Quay tra ranh va du nguyen lieu thi bat dau me moi.
             TryStartBatch(state, atMs);
+        }
+
+        /// <summary>
+        /// Tru luong cua ky vua qua va chot so tho se chay may trong ky toi.
+        ///
+        /// Khong du tien thi **khong ai bi mat**, chi la ky nay it nguoi chay may hon. Duoi so am
+        /// va sa thai tu dong deu la nhung cach lam nguoi choi mat thu ma ho khong bam vao dau ca.
+        /// </summary>
+        void PayWagesIfDue(GameState state, long atMs)
+        {
+            if (state.HiredWorkers <= 0)
+            {
+                state.StaffedWorkers = 0;
+                return;
+            }
+
+            long period = _catalog.Balance.PayrollPeriodMs;
+            if (state.NextPayrollAtMs <= 0) state.NextPayrollAtMs = atMs + period;
+            if (state.NextPayrollAtMs > atMs) return;
+
+            long wage = _catalog.Balance.WorkerWageCoins;
+            int paid = state.HiredWorkers;
+            if (wage > 0)
+            {
+                long affordable = state.Coins / wage;
+                if (affordable < paid) paid = (int)affordable;
+                state.Coins -= paid * wage;
+            }
+            state.StaffedWorkers = paid;
+            state.NextPayrollAtMs = atMs + period;
+            NotifyWagesPaid(paid * wage, paid, state.HiredWorkers - paid, atMs);
+        }
+
+        /// <summary>
+        /// Bat dau nhung me che bien co the bat dau. So may chay cung luc khong vuot qua so tho
+        /// tra duoc luong — do la cho "thieu nguoi" hien ra thanh mot cai may nam khong.
+        /// </summary>
+        public void TryStartStations(GameState state, long atMs)
+        {
+            int slots = state.StaffedWorkers * Workforce.StationsPerWorker - state.RunningStationCount();
+            if (slots <= 0) return;
+
+            for (int i = 0; i < _catalog.Stages.Count && slots > 0; i++)
+            {
+                var stage = _catalog.Stages[i];
+                var station = state.Station(stage.Id);
+                if (station == null || !station.Owned || station.Running) continue;
+
+                string cropId = ChooseCropFor(state, stage);
+                if (cropId == null) continue;
+
+                state.AddInventory(ProcessChain.ItemId(cropId, stage.InputSuffix), -stage.InputCount);
+                station.Running = true;
+                station.BatchCropId = cropId;
+                station.BatchOutput = stage.OutputCount;
+                station.BatchStartAtMs = atMs;
+                station.BatchFinishAtMs = atMs + ProcessMsFor(state, stage.Id);
+                slots--;
+                NotifyStationStarted(stage.Id, cropId, atMs);
+            }
+        }
+
+        /// <summary>
+        /// Cay nao dang don nhieu nhat o dau vao thi che bien cay do. Bang nhau thi lay cay dung
+        /// truoc trong catalog — hoa co dinh nen chay lai cung mot lich cho cung mot ket qua.
+        ///
+        /// Chon tu dong chu khong bat nguoi choi chon tung may: sau cai may nhan mot lua chon la
+        /// sau lan bam moi khi doi cay, ma quyet dinh do gan nhu luon la "cai nao dang nhieu nhat".
+        /// </summary>
+        public string ChooseCropFor(GameState state, ProcessStageDefinition stage)
+        {
+            string best = null;
+            long bestStock = 0;
+            for (int i = 0; i < _catalog.Crops.Count; i++)
+            {
+                string cropId = _catalog.Crops[i].Id;
+                long stock = state.InventoryOf(ProcessChain.ItemId(cropId, stage.InputSuffix));
+                if (stock < stage.InputCount) continue;
+                if (best == null || stock > bestStock) { best = cropId; bestStock = stock; }
+            }
+            return best;
+        }
+
+        public long ProcessMsFor(GameState state, string stageId)
+        {
+            // Nang cap toc do may ap dung cho ca day chuyen: mot bac "may nhanh hon" ma chi nhanh
+            // moi quay tra thi ve sau se thanh vo nghia.
+            return _catalog.ScaleBrew(_catalog.Stage(stageId).BaseProcessMs, BrewSpeedLevel(state));
         }
 
         public bool TryGetNextEventTime(GameState state, out long nextEventMs)
@@ -179,6 +304,26 @@ namespace VuonNho.Core
                 }
             }
 
+            for (int i = 0; i < state.Stations.Count; i++)
+            {
+                var station = state.Stations[i];
+                if (!station.Running) continue;
+                if (!found || station.BatchFinishAtMs < best)
+                {
+                    best = station.BatchFinishAtMs;
+                    found = true;
+                }
+            }
+
+            if (state.HiredWorkers > 0 && state.NextPayrollAtMs > 0)
+            {
+                if (!found || state.NextPayrollAtMs < best)
+                {
+                    best = state.NextPayrollAtMs;
+                    found = true;
+                }
+            }
+
             // Robot dang doi mot o Ready (vi du vua mua robot giua chung) cung la mot su kien tuc thi.
             if (state.RobotUnlocked)
             {
@@ -189,6 +334,15 @@ namespace VuonNho.Core
                     if (!found || now < best) { best = now; found = true; }
                     break;
                 }
+            }
+
+            // Mot cai may dang ranh ma da du nguyen lieu va du tho cung la su kien tuc thi. Dieu
+            // kien phai chat dung bang dieu kien de bat dau me: rong hon mot chut la vong lap su
+            // kien quay mai o cung mot moc thoi gian.
+            if (CanStartAnyStation(state) || CanStartBatchNow(state))
+            {
+                long now = state.SimulationTimeMs;
+                if (!found || now < best) { best = now; found = true; }
             }
 
             nextEventMs = best;
@@ -244,18 +398,98 @@ namespace VuonNho.Core
             RecipeDefinition recipe;
             if (!_catalog.TryGetRecipe(machine.SelectedRecipeId, out recipe)) return false;
             if (!state.UnlockedRecipeIds.Contains(recipe.Id)) return false;
-            if (state.InventoryOf(recipe.InputCropId) < recipe.InputCount) return false;
 
-            state.AddInventory(recipe.InputCropId, -recipe.InputCount);
+            bool packed = HasPackedInput(state, recipe);
+            string itemId = packed ? PackedItemFor(recipe) : recipe.InputCropId;
+            int count = packed ? recipe.PackedInputCount : recipe.InputCount;
+            long coins = packed ? recipe.PackedOutputCoins : recipe.OutputCoins;
+            if (state.InventoryOf(itemId) < count) return false;
+
+            state.AddInventory(itemId, -count);
             machine.BatchRunning = true;
             machine.BatchRecipeId = recipe.Id;
+            machine.BatchFromPacked = packed;
             machine.BatchStartAtMs = atMs;
             machine.BatchFinishAtMs = atMs + BrewMsFor(state, recipe.Id);
-            machine.BatchOutputCoins = recipe.OutputCoins;
+            machine.BatchOutputCoins = coins;
             NotifyBatchStarted(recipe.Id, atMs);
             return true;
         }
 
+        /// <summary>
+        /// Quay tra uu tien tra da qua het day chuyen. Co du thi pha bac do, khong thi quay ve la
+        /// tuoi nhu cu — day chuyen la duong nang thu nhap chu khong phai cai cong chan duong,
+        /// nen mot nguoi choi chua xay may nao van ban tra duoc nhu truoc.
+        /// </summary>
+        public bool HasPackedInput(GameState state, RecipeDefinition recipe)
+        {
+            if (recipe == null || recipe.PackedInputCount <= 0) return false;
+            string itemId = PackedItemFor(recipe);
+            return itemId != null && state.InventoryOf(itemId) >= recipe.PackedInputCount;
+        }
+
+        public string PackedItemFor(RecipeDefinition recipe)
+        {
+            string suffix = _catalog.PackedSuffix;
+            return suffix == null || recipe == null ? null : ProcessChain.ItemId(recipe.InputCropId, suffix);
+        }
+
+
+        /// <summary>
+        /// Quay tra co the bat dau me ngay bay gio khong.
+        ///
+        /// Truoc day viec bat dau me khong duoc tinh la mot su kien, nen mot kho day nguyen lieu
+        /// voi mot cai may dang ranh se nam yen cho toi khi co chuyen gi khac xay ra. Trong van
+        /// choi that thi luon co cay dang lon nen khong ai thay, nhung khi chay bu offline voi
+        /// vuon khong gieo gi thi quang nghi do bi mat trang.
+        /// </summary>
+        public bool CanStartBatchNow(GameState state)
+        {
+            if (state.Machine.BatchRunning) return false;
+
+            RecipeDefinition recipe;
+            if (!_catalog.TryGetRecipe(state.Machine.SelectedRecipeId, out recipe)) return false;
+            if (!state.UnlockedRecipeIds.Contains(recipe.Id)) return false;
+
+            bool packed = HasPackedInput(state, recipe);
+            string itemId = packed ? PackedItemFor(recipe) : recipe.InputCropId;
+            int count = packed ? recipe.PackedInputCount : recipe.InputCount;
+            return state.InventoryOf(itemId) >= count;
+        }
+
+        /// <summary>Co may nao co the bat dau ngay bay gio khong. Dung chung dieu kien voi TryStartStations.</summary>
+        public bool CanStartAnyStation(GameState state)
+        {
+            if (state.StaffedWorkers * Workforce.StationsPerWorker - state.RunningStationCount() <= 0)
+                return false;
+            for (int i = 0; i < _catalog.Stages.Count; i++)
+            {
+                var stage = _catalog.Stages[i];
+                var station = state.Station(stage.Id);
+                if (station == null || !station.Owned || station.Running) continue;
+                if (ChooseCropFor(state, stage) != null) return true;
+            }
+            return false;
+        }
+
+        void NotifyStationStarted(string stageId, string cropId, long atMs)
+        {
+            if (ListenersMuted) return;
+            for (int i = 0; i < _listeners.Count; i++) _listeners[i].OnStationStarted(stageId, cropId, atMs);
+        }
+
+        void NotifyStationCompleted(string stageId, string cropId, int amount, long atMs)
+        {
+            if (ListenersMuted) return;
+            for (int i = 0; i < _listeners.Count; i++)
+                _listeners[i].OnStationCompleted(stageId, cropId, amount, atMs);
+        }
+
+        void NotifyWagesPaid(long coins, int paid, int unpaid, long atMs)
+        {
+            if (ListenersMuted) return;
+            for (int i = 0; i < _listeners.Count; i++) _listeners[i].OnWagesPaid(coins, paid, unpaid, atMs);
+        }
 
         void NotifyCropReady(int plotId, string cropId, long atMs)
         {

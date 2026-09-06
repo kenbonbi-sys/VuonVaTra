@@ -26,8 +26,8 @@ namespace VuonNho.Core
 
     public sealed class SaveSnapshot
     {
-        /// <summary>2 = them danh sach trang tri cua pha 2.</summary>
-        public const int CurrentSchemaVersion = 2;
+        /// <summary>3 = them day chuyen che bien: may, tho, luong, va hang trung gian trong kho.</summary>
+        public const int CurrentSchemaVersion = 3;
 
         public int SchemaVersion = CurrentSchemaVersion;
         public string BalanceVersion;
@@ -57,15 +57,19 @@ namespace VuonNho.Core
             root.Set("coins", state.Coins);
             root.Set("tutorialStep", state.TutorialStep);
             root.Set("robotUnlocked", state.RobotUnlocked);
+            root.Set("hiredWorkers", state.HiredWorkers);
+            root.Set("staffedWorkers", state.StaffedWorkers);
+            root.Set("nextPayrollAtMs", state.NextPayrollAtMs);
 
-            // Thu tu theo catalog de hai lan ghi cung state cho cung chuoi byte.
+            // Thu tu theo catalog de hai lan ghi cung state cho cung chuoi byte. Danh sach nay
+            // gom ca hang trung gian cua day chuyen, khong chi la tuoi.
             var inventory = JsonValue.NewArray();
-            for (int i = 0; i < catalog.Crops.Count; i++)
+            for (int i = 0; i < catalog.Items.Count; i++)
             {
-                string cropId = catalog.Crops[i].Id;
+                string itemId = catalog.Items[i];
                 inventory.Add(JsonValue.NewObject()
-                    .Set("cropId", cropId)
-                    .Set("amount", state.InventoryOf(cropId)));
+                    .Set("itemId", itemId)
+                    .Set("amount", state.InventoryOf(itemId)));
             }
             root.Set("inventory", inventory);
 
@@ -89,9 +93,28 @@ namespace VuonNho.Core
                 .Set("selectedRecipeId", state.Machine.SelectedRecipeId)
                 .Set("batchRunning", state.Machine.BatchRunning)
                 .Set("batchRecipeId", state.Machine.BatchRecipeId)
+                .Set("batchFromPacked", state.Machine.BatchFromPacked)
                 .Set("batchStartAtMs", state.Machine.BatchStartAtMs)
                 .Set("batchFinishAtMs", state.Machine.BatchFinishAtMs)
                 .Set("batchOutputCoins", state.Machine.BatchOutputCoins));
+
+            // Thu tu theo catalog, khong theo thu tu trong state: mot may them vao giua day chuyen
+            // sau nay se khong lam xao tron ca file.
+            var stations = JsonValue.NewArray();
+            for (int i = 0; i < catalog.Stages.Count; i++)
+            {
+                var station = state.Station(catalog.Stages[i].Id);
+                if (station == null) continue;
+                stations.Add(JsonValue.NewObject()
+                    .Set("stageId", station.StageId)
+                    .Set("owned", station.Owned)
+                    .Set("running", station.Running)
+                    .Set("batchCropId", station.BatchCropId)
+                    .Set("batchOutput", station.BatchOutput)
+                    .Set("batchStartAtMs", station.BatchStartAtMs)
+                    .Set("batchFinishAtMs", station.BatchFinishAtMs));
+            }
+            root.Set("stations", stations);
 
             root.Set("unlockedCropIds", IdArray(catalog.Crops, state.UnlockedCropIds));
             root.Set("unlockedRecipeIds", RecipeIdArray(catalog.Recipes, state.UnlockedRecipeIds));
@@ -193,27 +216,38 @@ namespace VuonNho.Core
                 CheckpointUtcMs = root.GetLong("checkpointUtcMs", -1),
                 Coins = root.GetLong("coins", -1),
                 TutorialStep = root.GetInt("tutorialStep", 0),
-                RobotUnlocked = root.GetBool("robotUnlocked", false)
+                RobotUnlocked = root.GetBool("robotUnlocked", false),
+                HiredWorkers = root.GetInt("hiredWorkers", 0),
+                StaffedWorkers = root.GetInt("staffedWorkers", 0),
+                NextPayrollAtMs = root.GetLong("nextPayrollAtMs", 0)
             };
+
+            if (state.HiredWorkers < 0 || state.StaffedWorkers < 0 || state.NextPayrollAtMs < 0)
+                throw new SaveCorruptException("So tho hoac moc tra luong am.");
+            if (state.HiredWorkers > catalog.Balance.MaximumWorkers)
+                throw new SaveCorruptException("So tho vuot tran cau hinh.");
+            if (state.StaffedWorkers > state.HiredWorkers)
+                throw new SaveCorruptException("So tho dang lam nhieu hon so da thue.");
 
             if (state.SimulationTimeMs < 0) throw new SaveCorruptException("simulationTimeMs am hoac thieu.");
             if (state.CheckpointUtcMs < 0) throw new SaveCorruptException("checkpointUtcMs am hoac thieu.");
             if (state.Coins < 0) throw new SaveCorruptException("coins am.");
             if (state.TutorialStep < 0) throw new SaveCorruptException("tutorialStep am.");
 
-            foreach (var crop in catalog.Crops) state.Inventory[crop.Id] = 0;
+            foreach (var itemId in catalog.Items) state.Inventory[itemId] = 0;
 
+            var knownItems = new HashSet<string>(catalog.Items, StringComparer.Ordinal);
             var inventory = root.Require("inventory");
             for (int i = 0; i < inventory.Count; i++)
             {
                 var entry = inventory.Items[i];
-                string cropId = entry.GetStringOrNull("cropId");
+                // "cropId" la ten cu cua truong nay; save schema 2 tro ve truoc dung ten do.
+                string itemId = entry.GetStringOrNull("itemId") ?? entry.GetStringOrNull("cropId");
                 long amount = entry.GetLong("amount", -1);
-                CropDefinition crop;
-                if (!catalog.TryGetCrop(cropId, out crop))
-                    throw new SaveCorruptException("Kho co id cay khong ton tai: " + cropId);
-                if (amount < 0) throw new SaveCorruptException("So luong kho am: " + cropId);
-                state.Inventory[cropId] = amount;
+                if (itemId == null || !knownItems.Contains(itemId))
+                    throw new SaveCorruptException("Kho co mat hang khong ton tai: " + itemId);
+                if (amount < 0) throw new SaveCorruptException("So luong kho am: " + itemId);
+                state.Inventory[itemId] = amount;
             }
 
             var plots = root.Require("plots");
@@ -263,6 +297,7 @@ namespace VuonNho.Core
                 SelectedRecipeId = machine.GetStringOrNull("selectedRecipeId"),
                 BatchRunning = machine.GetBool("batchRunning", false),
                 BatchRecipeId = machine.GetStringOrNull("batchRecipeId"),
+                BatchFromPacked = machine.GetBool("batchFromPacked", false),
                 BatchStartAtMs = machine.GetLong("batchStartAtMs", -1),
                 BatchFinishAtMs = machine.GetLong("batchFinishAtMs", -1),
                 BatchOutputCoins = machine.GetLong("batchOutputCoins", -1)
@@ -281,6 +316,37 @@ namespace VuonNho.Core
                     throw new SaveCorruptException("Me dang chay tro toi cong thuc khong ton tai.");
                 if (state.Machine.BatchFinishAtMs < state.Machine.BatchStartAtMs)
                     throw new SaveCorruptException("Me dang chay co deadline nguoc.");
+            }
+
+            foreach (var stage in catalog.Stages)
+                state.Stations.Add(new StationState { StageId = stage.Id, Owned = false });
+
+            var stations = root.Require("stations");
+            for (int i = 0; i < stations.Count; i++)
+            {
+                var entry = stations.Items[i];
+                string stageId = entry.GetStringOrNull("stageId");
+                var station = state.Station(stageId);
+                if (station == null)
+                    throw new SaveCorruptException("May tro toi cong doan khong ton tai: " + stageId);
+
+                station.Owned = entry.GetBool("owned", false);
+                station.Running = entry.GetBool("running", false);
+                station.BatchCropId = entry.GetStringOrNull("batchCropId");
+                station.BatchOutput = entry.GetInt("batchOutput", -1);
+                station.BatchStartAtMs = entry.GetLong("batchStartAtMs", -1);
+                station.BatchFinishAtMs = entry.GetLong("batchFinishAtMs", -1);
+
+                if (station.BatchOutput < 0 || station.BatchStartAtMs < 0 || station.BatchFinishAtMs < 0)
+                    throw new SaveCorruptException("So am trong trang thai may " + stageId + ".");
+                if (station.Running)
+                {
+                    CropDefinition unusedCrop;
+                    if (!catalog.TryGetCrop(station.BatchCropId, out unusedCrop))
+                        throw new SaveCorruptException("Me dang chay tro toi cay khong ton tai: " + stageId);
+                    if (station.BatchFinishAtMs < station.BatchStartAtMs)
+                        throw new SaveCorruptException("Me dang chay co deadline nguoc: " + stageId);
+                }
             }
 
             ReadIdSet(root.Require("unlockedCropIds"), state.UnlockedCropIds, catalog, true);
@@ -390,6 +456,18 @@ namespace VuonNho.Core
             if (fromSchemaVersion == 1)
             {
                 if (!root.Has("decorations")) root.Set("decorations", JsonValue.NewArray());
+                fromSchemaVersion = 2;
+            }
+
+            // 2 -> 3: them day chuyen che bien. Save cu khong co may nao va khong co tho nao, ma
+            // do dung la trang thai ban dau cua he thong moi — nen mot danh sach rong la du.
+            // Kho cua save cu chi co la tuoi, va ten truong "cropId" van doc duoc o ban moi.
+            if (fromSchemaVersion == 2)
+            {
+                if (!root.Has("stations")) root.Set("stations", JsonValue.NewArray());
+                if (!root.Has("hiredWorkers")) root.Set("hiredWorkers", 0);
+                if (!root.Has("staffedWorkers")) root.Set("staffedWorkers", 0);
+                if (!root.Has("nextPayrollAtMs")) root.Set("nextPayrollAtMs", 0);
                 return root;
             }
 

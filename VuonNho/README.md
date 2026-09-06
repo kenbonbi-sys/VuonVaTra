@@ -4,8 +4,8 @@ Tên trong [kế hoạch MVP](../Ke-hoach-MVP-Vuon-Nho.md) là *Vườn Nhỏ: Q
 **Vườn và Trà** và đó là tên đang nằm trong `PlayerSettings`, nên cũng là tên thư mục save.
 Lý do đổi: [Docs/Huong-di-v1.md](Docs/Huong-di-v1.md).
 
-Vòng chơi **chọn cây → gieo → cây lớn → thu → máy pha → tự bán → mua nâng cấp** chạy được từ đầu
-đến cuối, có save/offline/lifecycle và bộ test logic. Art đã thay xong bằng model Blender tự sinh
+Vòng chơi **chọn cây → gieo → cây lớn → thu → chế biến → quầy trà → mua nâng cấp** chạy được từ
+đầu đến cuối, có save/offline/lifecycle và bộ test logic. Art đã thay xong bằng model Blender tự sinh
 (mốc L01/B02); phần còn thiếu nằm ở mục "Còn lại" cuối trang.
 
 - Unity **6000.6.0f1**, URP 17.6.0, uGUI 2.6.0, Test Framework 1.8.0 (đều là bản đi kèm editor,
@@ -71,6 +71,44 @@ Nhân vật đi thẳng, không tìm đường: vườn là một mảnh đất 
 và không có animation clip — hai chân là hai nhóm mesh với gốc xoay ở hông, nhịp chân tính theo
 quãng đường đã đi nên chân luôn chạm đất đúng nhịp dù tốc độ có đổi.
 
+## Dây chuyền chế biến trà
+
+Giữa **thu hoạch** và **quầy trà** có sáu công đoạn, đúng thứ tự nghề làm trà thật:
+
+| # | Công đoạn | Máy | Vào → ra |
+|---|---|---|---|
+| 1 | Thu hoạch | ô đất + robot | — → lá tươi |
+| 2 | Làm héo | Máng làm héo | 2 lá tươi → 2 lá héo |
+| 3 | Diệt men | Máy sao diệt men | 2 lá héo → 2 lá đã diệt men |
+| 4 | Vò và tạo hình | Máy vò trà | 2 lá đã diệt men → 2 lá đã vò |
+| 5 | Lên men | Phòng lên men | 2 lá đã vò → 2 lá đã lên men |
+| 6 | Sấy khô | Máy sấy băng tải | 2 lá đã lên men → 2 trà khô |
+| 7 | Phân loại và đóng gói | Máy sàng và đóng gói | 2 trà khô → 2 trà đóng gói |
+| 8 | Phân phối | quầy trà | trà đóng gói → xu |
+
+**Dây chuyền là đường nâng thu nhập, không phải cái cổng chặn đường.** Quầy trà ưu tiên trà đã
+đóng gói và trả **gấp năm**; không có thì nó quay về pha từ lá tươi như cũ. Nếu bắt phải có đủ sáu
+cái máy mới kiếm được đồng xu đầu tiên từ trà thì đoạn mở đầu sẽ dài và chậm mà không ai xin.
+
+### Thợ
+
+Thợ **không gắn vào một cái máy nào**: họ là trần cho số máy chạy cùng lúc, và máy nào chạy trước
+thì theo thứ tự dây chuyền — chặng đầu trước, vì dây chuyền dừng ở đầu thì cả dây phải đợi.
+
+- Thuê một lần bằng xu, rồi **ăn lương mỗi kỳ 60 giây** thời gian mô phỏng.
+- Không đủ xu trả lương thì **không ai bị mất**, chỉ là kỳ đó ít người chạy máy hơn. Trả đủ là họ
+  làm lại ngay. Cho xu âm hay sa thải tự động đều là cách làm người chơi mất thứ mà họ không bấm
+  vào đâu cả.
+- Ít thợ hơn số máy đang có thì máy cuối dây nằm không. Đọc được bằng mắt: **thợ đứng ngay cạnh
+  máy đang chạy**, máy nào không có ai đứng là máy đang nằm không.
+
+Máy nào chế biến cây nào là tự chọn: cây đang dồn nhiều nhất ở đầu vào. Bằng nhau thì lấy cây
+đứng trước trong catalog, nên chạy lại cùng một lịch cho cùng một kết quả. Sáu cái máy mà mỗi cái
+một ô chọn cây là sáu lần bấm mỗi khi đổi cây, cho một quyết định gần như luôn là "cái nào đang
+nhiều nhất".
+
+Số liệu nằm ở `DefaultStages` và `BalanceConfig` trong Core, không ở phía Unity.
+
 ## Mở và chạy
 
 ```bash
@@ -122,9 +160,9 @@ Tách mô phỏng khỏi hiển thị đúng như mục 8 của kế hoạch. `A
 
 | Assembly | Nội dung | Phụ thuộc |
 |---|---|---|
-| `VuonNho.Core` | `GameState`, `FarmSimulation`, `GameSession`, `ContentCatalog`, `SaveSerializer`, `TutorialGuide`, JSON | **C# thuần, không tham chiếu UnityEngine** |
+| `VuonNho.Core` | `GameState`, `FarmSimulation`, `GameSession`, `ContentCatalog`, `SaveSerializer`, `Processing`, `TutorialGuide`, JSON | **C# thuần, không tham chiếu UnityEngine** |
 | `VuonNho.Infrastructure` | `FileSaveRepository`, `SystemClock`, `FileTestLogger` | Core + UnityEngine |
-| `VuonNho.Views` | `GameBootstrap`, `PlotView`, `MachineView`, `HelperView`, `CharacterView`, `CameraRig`, `ClickMarker`, `PlacementPreview`, `WalkBlocker`, `GameHud`, `GardenSkin`, `SfxPlayer`, `QaScreenshot` | Core + Infrastructure |
+| `VuonNho.Views` | `GameBootstrap`, `PlotView`, `MachineView`, `HelperView`, `CharacterView`, `CameraRig`, `ClickMarker`, `PlacementPreview`, `WalkBlocker`, `StationView`, `GameHud`, `GardenSkin`, `SfxPlayer`, `QaScreenshot` | Core + Infrastructure |
 | `VuonNho.Editor` | `SceneFactory`, `ProjectSetup`, `BuildTool`, `SceneCapture` | Editor-only |
 
 `GameState` là nguồn sự thật duy nhất cho tiền, kho, timer và mở khóa. View dựng lại được mà
@@ -290,7 +328,7 @@ Hai điều đã làm hỏng một lượt chụp và sẽ làm hỏng lượt s
 - **Mốc A** — vòng chơi, save/offline/lifecycle, HUD, 83 test, hai bản build.
 - **L01 + B02** — 13 model Blender (gồm sả và nhài), 9 material, 5 cue âm thanh, prefab và
   GardenSkin đã điền đủ. Xem [Docs/Art/L01-B02.md](Docs/Art/L01-B02.md).
-- **Checklist mục 10** — 97 test logic + 94 mục kiểm trong bản build, hai độ phân giải.
+- **Checklist mục 10** — 113 test logic + 109 mục kiểm trong bản build, hai độ phân giải.
   Xem [Docs/QA-moc-A.md](Docs/QA-moc-A.md).
 - **Hướng v1** — đổi tên, siết nhịp, thêm sả/nhài, pha 2 trang trí.
   Xem [Docs/Huong-di-v1.md](Docs/Huong-di-v1.md).
@@ -301,6 +339,9 @@ Hai điều đã làm hỏng một lượt chụp và sẽ làm hỏng lượt s
   22 mục kiểm chạy trong bản build vì tất cả đều cần camera thật, va chạm thật và nhiều frame
   thật, không kiểm được bằng test EditMode.
 - **Icon cây** — bạc hà, cúc, dâu, sả, nhài. Hiện ở kho, bảng chọn cây và thẻ máy pha.
+- **Dây chuyền chế biến trà** — sáu công đoạn giữa thu hoạch và quầy trà, sáu máy, thợ ăn lương.
+  Xem mục [Dây chuyền chế biến trà](#dây-chuyền-chế-biến-trà). Save lên schema 3; save cũ mở
+  được và vào với dây chuyền trống.
 
 ## Còn lại
 

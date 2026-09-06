@@ -64,6 +64,7 @@ namespace VuonNho.EditorTools
             var machine = BuildTeaStation(skin);
             var helper = BuildHelper(skin);
             var character = BuildCharacter(skin, catalog);
+            var stations = BuildStations(skin, catalog);
             var marker = BuildClickMarker();
             var preview = BuildPlacementPreview(skin);
             BuildProps(skin);
@@ -81,6 +82,7 @@ namespace VuonNho.EditorTools
             bootstrap.Character = character;
             bootstrap.Marker = marker;
             bootstrap.Preview = preview;
+            bootstrap.Stations = stations.ToArray();
             bootstrap.Rig = camera.GetComponent<CameraRig>();
             bootstrap.Plots = plots.ToArray();
             bootstrap.Decorations = decorations;
@@ -509,6 +511,93 @@ namespace VuonNho.EditorTools
             var legRight = FindDeep(art.transform, "LegRight");
             if (legRight != null) view.LegRight = legRight;
             return view;
+        }
+
+        /// <summary>
+        /// San may o phia dong khu vuon: hai cot, ba hang, theo dung thu tu day chuyen tu bac
+        /// xuong nam. Dat ngoai khung nhin ban dau la co y — camera keo va zoom duoc roi, va de
+        /// san may chen vao giua vuon se lam mat cai bo cuc luong cay ma nguoi choi da quen.
+        /// </summary>
+        static readonly Vector3[] StationSpots =
+        {
+            new Vector3(5.4f, 0f, 3.0f), new Vector3(5.4f, 0f, 0.4f), new Vector3(5.4f, 0f, -2.2f),
+            new Vector3(7.9f, 0f, 3.0f), new Vector3(7.9f, 0f, 0.4f), new Vector3(7.9f, 0f, -2.2f)
+        };
+
+        static List<StationView> BuildStations(GardenSkin skin, ContentCatalog catalog)
+        {
+            var root = new GameObject("Stations");
+            var views = new List<StationView>();
+
+            for (int i = 0; i < catalog.Stages.Count; i++)
+            {
+                var stage = catalog.Stages[i];
+                var go = new GameObject("Station_" + stage.Id);
+                go.transform.SetParent(root.transform, false);
+                go.transform.localPosition = i < StationSpots.Length
+                    ? StationSpots[i]
+                    : new Vector3(5.4f + 2.5f * (i / 3), 0f, 3.0f - 2.6f * (i % 3));
+
+                var view = go.AddComponent<StationView>();
+                view.StageId = stage.Id;
+
+                var prefab = skin.StationPrefabFor(stage.Id);
+                GameObject art;
+                if (prefab != null)
+                {
+                    art = SpawnArt(prefab, go.transform, "VisualRoot", Vector3.zero);
+                    art.transform.localRotation = Quaternion.Euler(0f, StationFacingYaw, 0f);
+                }
+                else
+                {
+                    art = new GameObject("VisualRoot");
+                    art.transform.SetParent(go.transform, false);
+                    Primitive(PrimitiveType.Cube, art.transform, "Body",
+                              new Vector3(0f, 0.5f, 0f), new Vector3(1.2f, 0.5f, 0.8f), "Cream");
+                }
+                view.VisualRoot = art.transform;
+
+                // Collider gameplay tren wrapper, khong tren mesh — cung hop dong voi quay tra.
+                var collider = go.AddComponent<BoxCollider>();
+                Bounds bounds;
+                if (GardenArtImporter.TryGetBounds(art.transform, go.transform, out bounds))
+                {
+                    collider.center = bounds.center;
+                    collider.size = bounds.size;
+                }
+                else
+                {
+                    collider.center = new Vector3(0f, 0.6f, 0f);
+                    collider.size = new Vector3(1.6f, 1.2f, 1.2f);
+                }
+                go.AddComponent<WalkBlocker>();
+
+                view.WorkerRoot = BuildStationWorker(skin, go.transform).transform;
+                views.Add(view);
+            }
+
+            return views;
+        }
+
+        /// <summary>Tho dung ben canh may, quay mat ve phia nguoi choi nhu moi nhan vat khac.</summary>
+        static GameObject BuildStationWorker(GardenSkin skin, Transform parent)
+        {
+            var root = new GameObject("WorkerRoot");
+            root.transform.SetParent(parent, false);
+            root.transform.localPosition = new Vector3(0f, 0f, -1.15f);
+
+            if (skin.WorkerPrefab != null)
+            {
+                var art = SpawnArt(skin.WorkerPrefab, root.transform, "Visual", Vector3.zero);
+                art.transform.localRotation = Quaternion.Euler(0f, HelperFacingYaw, 0f);
+            }
+            else
+            {
+                Primitive(PrimitiveType.Capsule, root.transform, "Visual",
+                          new Vector3(0f, 0.7f, 0f), new Vector3(0.5f, 0.7f, 0.5f), "Accent");
+            }
+            root.SetActive(false);
+            return root;
         }
 
         /// <summary>Vong tron bao lai cu bam chuot phai. Mesh dung trong code nen khong can prefab.</summary>

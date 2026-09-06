@@ -24,6 +24,16 @@ namespace VuonNho.Views
     }
 
     [Serializable]
+    public sealed class StationSkinEntry
+    {
+        [Tooltip("Id công đoạn: stage_wither, stage_fix, stage_roll, stage_oxidise, stage_dry, stage_pack.")]
+        public string StageId;
+
+        [Tooltip("Model của máy. Pivot ở giữa chân, +Y lên, scale 1.")]
+        public GameObject Prefab;
+    }
+
+    [Serializable]
     public sealed class IconSkinEntry
     {
         [Tooltip("Id icon: id cây (crop_mint...), id trang trí (deco_bench...), hoặc plot/seedling/helper/station.")]
@@ -88,6 +98,13 @@ namespace VuonNho.Views
         [Tooltip("Nhân vật chính. Đặt con tên LegLeft và LegRight nếu muốn có bước đi.")]
         public GameObject CharacterPrefab;
 
+        [Tooltip("Thợ đứng máy. Cùng hợp đồng với nhân vật chính: con tên LegLeft và LegRight.")]
+        public GameObject WorkerPrefab;
+
+        [Header("Dây chuyền chế biến")]
+        [Tooltip("Máy cho từng công đoạn. Để trống thì máy đó dựng bằng primitive.")]
+        public StationSkinEntry[] Stations = new StationSkinEntry[0];
+
         [Header("Nền và props")]
         public GameObject GroundPrefab;
         public GameObject[] TreePrefabs = new GameObject[0];
@@ -144,6 +161,15 @@ namespace VuonNho.Views
         }
 
         /// <summary>Chua nhap anh thi tra ve null — HUD phai chay duoc khi khong co icon nao.</summary>
+        public GameObject StationPrefabFor(string stageId)
+        {
+            if (Stations == null || string.IsNullOrEmpty(stageId)) return null;
+            for (int i = 0; i < Stations.Length; i++)
+                if (Stations[i] != null && string.Equals(Stations[i].StageId, stageId, StringComparison.Ordinal))
+                    return Stations[i].Prefab;
+            return null;
+        }
+
         public Sprite IconFor(string id)
         {
             if (Icons == null || string.IsNullOrEmpty(id)) return null;

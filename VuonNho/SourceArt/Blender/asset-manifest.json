@@ -1231,6 +1231,436 @@
       ],
       "license": "Original project art; no third-party model or texture inputs.",
       "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_WitherTrough": {
+      "assetId": "P01",
+      "name": "SM_WitherTrough",
+      "source": "SourceArt/Blender/SM_WitherTrough.blend",
+      "export": "Assets/Art/Models/SM_WitherTrough.fbx",
+      "triangles": 1920,
+      "renderers": 1,
+      "materials": [
+        "M_Accent",
+        "M_Cream",
+        "M_Dark",
+        "M_Leaf",
+        "M_Wood"
+      ],
+      "boundsBlender": {
+        "min": [
+          -1.52,
+          -0.41,
+          0.0
+        ],
+        "max": [
+          1.1,
+          0.44,
+          0.73
+        ]
+      },
+      "dimensionsUnityMetres": [
+        2.62,
+        0.73,
+        0.85
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "WitherMesh",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Cream",
+            "M_Dark",
+            "M_Leaf",
+            "M_Wood",
+            "M_Accent"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_FixDrum": {
+      "assetId": "P02",
+      "name": "SM_FixDrum",
+      "source": "SourceArt/Blender/SM_FixDrum.blend",
+      "export": "Assets/Art/Models/SM_FixDrum.fbx",
+      "triangles": 2164,
+      "renderers": 1,
+      "materials": [
+        "M_Accent",
+        "M_Cream",
+        "M_Dark",
+        "M_Wood",
+        "M_Yellow"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.67,
+          -0.74819,
+          0.0
+        ],
+        "max": [
+          0.67,
+          0.65,
+          2.06
+        ]
+      },
+      "dimensionsUnityMetres": [
+        1.34,
+        2.06,
+        1.39819
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "FixMesh",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Wood",
+            "M_Dark",
+            "M_Accent",
+            "M_Cream",
+            "M_Yellow"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_RollTable": {
+      "assetId": "P03",
+      "name": "SM_RollTable",
+      "source": "SourceArt/Blender/SM_RollTable.blend",
+      "export": "Assets/Art/Models/SM_RollTable.fbx",
+      "triangles": 2104,
+      "renderers": 1,
+      "materials": [
+        "M_Accent",
+        "M_Cream",
+        "M_Dark",
+        "M_Leaf",
+        "M_Wood"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.6,
+          -0.6,
+          0.0
+        ],
+        "max": [
+          0.6,
+          0.6,
+          1.57
+        ]
+      },
+      "dimensionsUnityMetres": [
+        1.2,
+        1.57,
+        1.2
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "RollMesh",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Wood",
+            "M_Dark",
+            "M_Cream",
+            "M_Accent",
+            "M_Leaf"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_OxidationRack": {
+      "assetId": "P04",
+      "name": "SM_OxidationRack",
+      "source": "SourceArt/Blender/SM_OxidationRack.blend",
+      "export": "Assets/Art/Models/SM_OxidationRack.fbx",
+      "triangles": 1468,
+      "renderers": 1,
+      "materials": [
+        "M_Accent",
+        "M_Cream",
+        "M_Dark",
+        "M_Leaf",
+        "M_Wood"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.78,
+          -0.47,
+          0.02
+        ],
+        "max": [
+          0.78,
+          0.61,
+          2.08
+        ]
+      },
+      "dimensionsUnityMetres": [
+        1.56,
+        2.06,
+        1.08
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "OxidationMesh",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Cream",
+            "M_Wood",
+            "M_Dark",
+            "M_Leaf",
+            "M_Accent"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_Dryer": {
+      "assetId": "P05",
+      "name": "SM_Dryer",
+      "source": "SourceArt/Blender/SM_Dryer.blend",
+      "export": "Assets/Art/Models/SM_Dryer.fbx",
+      "triangles": 1680,
+      "renderers": 1,
+      "materials": [
+        "M_Accent",
+        "M_Cream",
+        "M_Dark",
+        "M_Wood"
+      ],
+      "boundsBlender": {
+        "min": [
+          -1.28674,
+          -0.43,
+          0.0
+        ],
+        "max": [
+          1.28674,
+          0.43,
+          1.79
+        ]
+      },
+      "dimensionsUnityMetres": [
+        2.57348,
+        1.79,
+        0.86
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "DryerMesh",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Accent",
+            "M_Dark",
+            "M_Cream",
+            "M_Wood"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_Packer": {
+      "assetId": "P06",
+      "name": "SM_Packer",
+      "source": "SourceArt/Blender/SM_Packer.blend",
+      "export": "Assets/Art/Models/SM_Packer.fbx",
+      "triangles": 1842,
+      "renderers": 1,
+      "materials": [
+        "M_Accent",
+        "M_Cream",
+        "M_Dark",
+        "M_Wood"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.62,
+          -0.48,
+          0.0
+        ],
+        "max": [
+          0.62,
+          0.48,
+          1.735
+        ]
+      },
+      "dimensionsUnityMetres": [
+        1.24,
+        1.735,
+        0.96
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "PackerMesh",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Cream",
+            "M_Dark",
+            "M_Accent",
+            "M_Wood"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_Worker": {
+      "assetId": "A15",
+      "name": "SM_Worker",
+      "source": "SourceArt/Blender/SM_Worker.blend",
+      "export": "Assets/Art/Models/SM_Worker.fbx",
+      "triangles": 1948,
+      "renderers": 5,
+      "materials": [
+        "M_Accent",
+        "M_Cream",
+        "M_Dark",
+        "M_Wood"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.3025,
+          -0.265,
+          0.0
+        ],
+        "max": [
+          0.3025,
+          0.375,
+          1.315
+        ]
+      },
+      "dimensionsUnityMetres": [
+        0.605,
+        1.315,
+        0.64
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "Body",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Cream",
+            "M_Accent",
+            "M_Wood"
+          ]
+        },
+        {
+          "name": "Hat",
+          "originBlender": [
+            0.0,
+            0.0,
+            1.15
+          ],
+          "materialSlots": [
+            "M_Accent"
+          ]
+        },
+        {
+          "name": "Head",
+          "originBlender": [
+            0.0,
+            0.0,
+            1.02
+          ],
+          "materialSlots": [
+            "M_Wood",
+            "M_Dark"
+          ]
+        },
+        {
+          "name": "LegLeft",
+          "originBlender": [
+            -0.1,
+            0.0,
+            0.44
+          ],
+          "materialSlots": [
+            "M_Dark"
+          ]
+        },
+        {
+          "name": "LegRight",
+          "originBlender": [
+            0.1,
+            0.0,
+            0.44
+          ],
+          "materialSlots": [
+            "M_Dark"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
     }
   }
 }

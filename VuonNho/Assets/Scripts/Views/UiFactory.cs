@@ -89,6 +89,9 @@ namespace VuonNho.Views
             public const string Check = "\ue668";
             public const string LocalAtm = "\ue53e";
             public const string Schedule = "\uefd6";
+            public const string Factory = "\uebbc";
+            public const string GroupAdd = "\ue7f0";
+            public const string PersonRemove = "\uef66";
         }
 
         /// <summary>

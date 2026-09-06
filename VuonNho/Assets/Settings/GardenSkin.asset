@@ -34,6 +34,20 @@ MonoBehaviour:
   StationPrefab: {fileID: 4186430695575864216, guid: 3c6a91b347ae393439f8bf32da3a7767, type: 3}
   RobotPrefab: {fileID: 7065989557344915967, guid: 73f5757dd801e484197da5d1a754c0b4, type: 3}
   CharacterPrefab: {fileID: 8704440418347989326, guid: f509f083f5c78484888fe88aa904c9c7, type: 3}
+  WorkerPrefab: {fileID: 1091929641350013105, guid: 9cbfb965babbf624d91d3c4b5dc80594, type: 3}
+  Stations:
+  - StageId: stage_wither
+    Prefab: {fileID: 5030645749919512235, guid: 49eb4c2e17a3e974c91a7f498a831435, type: 3}
+  - StageId: stage_fix
+    Prefab: {fileID: 786689780382231775, guid: 6fdcfad2b4ab1974caab329aafae4d6d, type: 3}
+  - StageId: stage_roll
+    Prefab: {fileID: 1684265456207932264, guid: ed5042ef31f92ed408789ca21ea1968a, type: 3}
+  - StageId: stage_oxidise
+    Prefab: {fileID: 3414412077308157182, guid: d1ef1c274fb1873479297f39fbff6cca, type: 3}
+  - StageId: stage_dry
+    Prefab: {fileID: 271731242143760236, guid: acaf9b31fd51c774a80156f5b9429d82, type: 3}
+  - StageId: stage_pack
+    Prefab: {fileID: 1011883162478975430, guid: 7b89b2ccf3728aa4593068bd85932708, type: 3}
   GroundPrefab: {fileID: 1978281551807286252, guid: 0cb8588d56f85064fa5dfd39faf5687c, type: 3}
   TreePrefabs:
   - {fileID: 6609403130369397503, guid: 9348ebb284524a940a8d2f0ca50877d8, type: 3}

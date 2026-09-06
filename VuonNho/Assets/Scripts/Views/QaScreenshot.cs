@@ -171,6 +171,8 @@ namespace VuonNho.Views
             // Mua het nang cap thi vua het xu va nhieu o vua thu xong dang de trong. Trong lai
             // roi chay them mot doan de co xu du tru, sau do trong lan cuoi va chi tua mot doan
             // ngan: anh chup can vuon dang len cay, khong phai vuon vua bi vet sach.
+            BuildWholeChain(session);
+
             PlantEveryEmptyPlot(session);
             session.DebugAdvance(300000);
             HarvestEveryReadyPlot(session);
@@ -220,6 +222,39 @@ namespace VuonNho.Views
             if (!float.TryParse(parts[0], out x) || !float.TryParse(parts[1], out z)) return false;
             point = new Vector3(x, 0f, z);
             return true;
+        }
+
+        /// <summary>
+        /// Xay ca day chuyen va thue du tho, de anh tai lieu co san may chu khong phai mot bai co
+        /// trong. Tua toi khi du tien tung buoc mot chu khong tang xu: anh chup phai la anh cua
+        /// mot van choi that.
+        /// </summary>
+        static void BuildWholeChain(GameSession session)
+        {
+            foreach (var stage in session.Catalog.Stages)
+            {
+                int guard = 0;
+                while (session.State.Coins < stage.Cost && guard++ < 4000)
+                {
+                    session.DebugAdvance(10000);
+                    HarvestEveryReadyPlot(session);
+                }
+                session.BuyStation(stage.Id);
+            }
+
+            for (int i = 0; i < session.Catalog.Stages.Count; i++)
+            {
+                int guard = 0;
+                while (session.State.Coins < session.Catalog.Balance.WorkerHireCost && guard++ < 4000)
+                {
+                    session.DebugAdvance(10000);
+                    HarvestEveryReadyPlot(session);
+                }
+                session.HireWorker();
+            }
+
+            Debug.Log("[VuonNho] Day chuyen: " + session.State.OwnedStationCount() + " may, " +
+                      session.State.HiredWorkers + " tho.");
         }
 
         static void PlantEveryEmptyPlot(GameSession session)

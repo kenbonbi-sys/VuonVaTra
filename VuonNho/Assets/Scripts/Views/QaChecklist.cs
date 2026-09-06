@@ -92,11 +92,103 @@ namespace VuonNho.Views
             yield return RunUiChecks();
             yield return RunOfflineAndPerf();
             yield return RunControlChecks();
+            yield return RunProcessingChecks();
             RunSettingsChecks();
 
             Finish();
         }
 
+
+        // ---------------------------------------------------------------- day chuyen che bien
+
+        /// <summary>
+        /// Day chuyen: mua du sau may, thue tho, va do xem la tuoi co di het chuoi ra thanh tra
+        /// dong goi khong. Do trong ban build chu khong chi trong test EditMode vi day la cho
+        /// Core, HUD va thoi gian that gap nhau.
+        /// </summary>
+        IEnumerator RunProcessingChecks()
+        {
+            Section("Dây chuyền chế biến trà");
+
+            var catalog = _session.Catalog;
+            Check("Có đủ sáu công đoạn giữa thu hoạch và quầy trà", catalog.Stages.Count == 6,
+                  catalog.Stages.Count + " công đoạn");
+
+            long needed = catalog.Balance.WorkerHireCost * catalog.Stages.Count;
+            foreach (var stage in catalog.Stages) needed += stage.Cost;
+            needed += 4000;   // du de tra luong trong luc do
+
+            int wait = 0;
+            while (_session.State.Coins < needed && wait++ < 4000)
+            {
+                _session.DebugAdvance(10000);
+                if (wait % 40 == 0) yield return null;
+            }
+            Check("Gom đủ xu để xây cả dây chuyền", _session.State.Coins >= needed,
+                  _session.State.Coins + " / " + needed + " xu");
+
+            bool boughtAll = true;
+            string firstFailure = null;
+            foreach (var stage in catalog.Stages)
+            {
+                var result = _session.BuyStation(stage.Id);
+                if (!result.Success) { boughtAll = false; firstFailure = stage.Id + ": " + result.FailureReason; }
+            }
+            Check("Mua được cả sáu máy", boughtAll && _session.State.OwnedStationCount() == 6,
+                  firstFailure ?? (_session.State.OwnedStationCount() + " máy"));
+
+            // Mua lai mot cai da co phai bi tu choi, khong phai tru tien lan hai.
+            long beforeRepeat = _session.State.Coins;
+            var repeat = _session.BuyStation(catalog.Stages[0].Id);
+            Check("Không mua được một cái máy hai lần",
+                  !repeat.Success && _session.State.Coins == beforeRepeat,
+                  repeat.FailureReason);
+
+            bool hiredAll = true;
+            for (int i = 0; i < catalog.Stages.Count; i++)
+                if (!_session.HireWorker().Success) hiredAll = false;
+            Check("Thuê đủ thợ cho tất cả các máy",
+                  hiredAll && _session.State.HiredWorkers == catalog.Stages.Count,
+                  _session.State.HiredWorkers + " thợ");
+
+            // Cho day chuyen chay. Do bang so tra dong goi da tung xuat hien chu khong bang so ton
+            // kho tai mot thoi diem: quay tra an tra dong goi ngay khi co, nen ton kho co the ve 0.
+            string packedSuffix = catalog.PackedSuffix;
+            long coinsBefore = _session.State.Coins;
+            bool sawPacked = false;
+            for (int step = 0; step < 240 && !sawPacked; step++)
+            {
+                _session.DebugAdvance(5000);
+                foreach (var crop in catalog.Crops)
+                    if (_session.State.InventoryOf(ProcessChain.ItemId(crop.Id, packedSuffix)) > 0)
+                        sawPacked = true;
+                if (step % 20 == 0) yield return null;
+            }
+            Check("Lá tươi đi hết chuỗi thành trà đóng gói", sawPacked,
+                  sawPacked ? null : "không thấy món nào ở cuối chuỗi");
+
+            // Luong bi tru that: chay them mot ky nua va doi chieu.
+            _session.DebugAdvance(catalog.Balance.PayrollPeriodMs);
+            yield return null;
+            Check("Thợ ăn lương và xu vẫn không âm", _session.State.Coins >= 0,
+                  _session.State.Coins + " xu, " + _session.State.StaffedWorkers + "/" +
+                  _session.State.HiredWorkers + " thợ đang làm");
+
+            Check("Xây dây chuyền xong vẫn kiếm được xu", _session.State.Coins > 0,
+                  "trước " + coinsBefore + ", sau " + _session.State.Coins);
+
+            // Bang xuong phai noi dung so may da mua.
+            _hud.OpenPanelByName("workshop");
+            yield return null;
+            yield return null;
+            var surface = FindOpenSurface("workshop");
+            Check("Bảng Xưởng mở được và có đủ hàng", surface != null &&
+                  surface.GetComponentsInChildren<UnityEngine.UI.Text>(true).Length > 0,
+                  surface == null ? "không mở được bảng" : null);
+            if (surface != null) CheckTextOverflow("workshop", surface);
+            CloseSurface("workshop");
+            yield return null;
+        }
 
         // ---------------------------------------------------------------- camera va nhan vat
 
@@ -705,7 +797,7 @@ namespace VuonNho.Views
             yield return CheckOfflineCtaFitsItsText();
             yield return CheckModalHasEscape("BlockedModal");
 
-            string[] panels = { "inventory", "upgrade", "decorate", "settings", "plot" };
+            string[] panels = { "inventory", "upgrade", "decorate", "workshop", "settings", "plot" };
             foreach (string panelName in panels)
             {
                 _hud.OpenPanelByName(panelName);
@@ -931,6 +1023,7 @@ namespace VuonNho.Views
                 case "upgrade": wanted = "UpgradePanel"; break;
                 case "settings": wanted = "SettingsPanel"; break;
                 case "decorate": wanted = "DecoratePanel"; break;
+                case "workshop": wanted = "WorkshopPanel"; break;
                 default: wanted = "PlotPopup"; break;
             }
             var found = _hud.transform.Find(wanted);

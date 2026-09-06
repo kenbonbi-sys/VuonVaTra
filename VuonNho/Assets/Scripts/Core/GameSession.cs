@@ -570,6 +570,139 @@ namespace VuonNho.Core
             return CommandResult.Ok();
         }
 
+        // ---------------------------------------------------------------- day chuyen che bien
+
+        public bool CanBuyStation(string stageId, out string reason)
+        {
+            reason = null;
+            ProcessStageDefinition stage;
+            if (!_catalog.TryGetStage(stageId, out stage))
+            {
+                reason = "Không có công đoạn này.";
+                return false;
+            }
+            var station = _state.Station(stageId);
+            if (station == null)
+            {
+                reason = "Không có công đoạn này.";
+                return false;
+            }
+            if (station.Owned)
+            {
+                reason = "Đã mua.";
+                return false;
+            }
+            if (_state.Coins < stage.Cost)
+            {
+                reason = "Thiếu " + (stage.Cost - _state.Coins) + " xu.";
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Mua mot cai may. Mua theo thu tu nao cung duoc: mua may o giua day chuyen truoc thi no
+        /// nam khong cho toi khi co may dung truoc no, va do la mot bai hoc nguoi choi tu rut ra
+        /// nhanh hon la mot cai nut bi khoa khong noi ly do.
+        /// </summary>
+        public CommandResult BuyStation(string stageId)
+        {
+            EnsureCurrent();
+            string reason;
+            if (!CanBuyStation(stageId, out reason)) return CommandResult.Fail(reason);
+
+            var stage = _catalog.Stage(stageId);
+            var working = _state.Clone();
+            working.Coins -= stage.Cost;
+            var station = working.Station(stageId);
+            station.Owned = true;
+
+            return Commit(working, "station_bought", "stageId", stage.Id, "cost", stage.Cost.ToString());
+        }
+
+        public bool CanHireWorker(out string reason)
+        {
+            reason = null;
+            if (_state.HiredWorkers >= _catalog.Balance.MaximumWorkers)
+            {
+                reason = "Đã đủ thợ cho tất cả các máy.";
+                return false;
+            }
+            if (_state.Coins < _catalog.Balance.WorkerHireCost)
+            {
+                reason = "Thiếu " + (_catalog.Balance.WorkerHireCost - _state.Coins) + " xu.";
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Thue mot tho. Tho khong gan vao may nao ca: ho la mot cai tran cho so may chay cung
+        /// luc, va may nao chay truoc thi theo thu tu day chuyen.
+        /// </summary>
+        public CommandResult HireWorker()
+        {
+            EnsureCurrent();
+            string reason;
+            if (!CanHireWorker(out reason)) return CommandResult.Fail(reason);
+
+            var working = _state.Clone();
+            working.Coins -= _catalog.Balance.WorkerHireCost;
+            working.HiredWorkers += 1;
+
+            // Nguoi dau tien mo so luong. Ky dau tinh tu bay gio chu khong tu moc 0, neu khong
+            // nguoi choi vua thue xong da bi tru mot ky luong ma chua ai lam gi.
+            if (working.NextPayrollAtMs <= working.SimulationTimeMs)
+                working.NextPayrollAtMs = working.SimulationTimeMs + _catalog.Balance.PayrollPeriodMs;
+
+            // Tho moi lam viec ngay trong ky nay; luong cua ho tinh o ky tra luong sap toi.
+            working.StaffedWorkers = working.HiredWorkers;
+
+            return Commit(working, "worker_hired", "hired", working.HiredWorkers.ToString());
+        }
+
+        /// <summary>Cho mot tho nghi. Khong hoan tien thue — tien do da tra cho viec da lam roi.</summary>
+        public CommandResult FireWorker()
+        {
+            EnsureCurrent();
+            if (_state.HiredWorkers <= 0) return CommandResult.Fail("Không còn thợ nào.");
+
+            var working = _state.Clone();
+            working.HiredWorkers -= 1;
+            if (working.StaffedWorkers > working.HiredWorkers) working.StaffedWorkers = working.HiredWorkers;
+
+            return Commit(working, "worker_fired", "hired", working.HiredWorkers.ToString());
+        }
+
+        /// <summary>
+        /// Mot giao dich: mo phong tren ban sao, luu xong roi moi dua state moi ra UI. Giong het
+        /// duong ma <see cref="Purchase"/> di, tach ra de ba lenh moi khong chep lai bon lan.
+        /// </summary>
+        CommandResult Commit(GameState working, string eventName, params string[] fields)
+        {
+            _simulation.ListenersMuted = true;
+            try { _simulation.ResolveImmediate(working); }
+            finally { _simulation.ListenersMuted = false; }
+
+            working.SaveRevision = _state.SaveRevision + 1;
+            try
+            {
+                _repository.Save(Serialize(working));
+            }
+            catch (Exception error)
+            {
+                RaiseDiagnostic("Khong luu duoc: " + error.Message);
+                return CommandResult.Fail("Chưa lưu được tiến độ, hãy thử lại.");
+            }
+
+            _state = working;
+            _lastSaveMonotonicMs = _clock.MonotonicMs;
+            _dirty = false;
+            Log(eventName, fields);
+            RaiseChanged();
+            return CommandResult.Ok();
+        }
+
         // ---------------------------------------------------------------- trang tri (pha 2)
 
         /// <summary>Pha 2 chi mo sau khi nguoi choi da dung xong farm o pha 1.</summary>
@@ -828,6 +961,14 @@ namespace VuonNho.Core
             }
         }
 
+        void ISimulationListener.OnStationStarted(string stageId, string cropId, long atMs) { }
+        void ISimulationListener.OnStationCompleted(string stageId, string cropId, int amount, long atMs) { }
+        void ISimulationListener.OnWagesPaid(long coins, int paid, int unpaid, long atMs)
+        {
+            if (unpaid > 0)
+                RaiseDiagnostic("Khong du xu tra luong: " + unpaid + " tho nghi trong ky nay.");
+        }
+
         void ISimulationListener.OnBatchCompleted(string recipeId, long coins, long atMs)
         {
             _dirty = true;
@@ -851,6 +992,16 @@ namespace VuonNho.Core
         {
             var handler = Diagnostic;
             if (handler != null) handler(message);
+        }
+
+        /// <summary>Chi dung cho test va cong cu dev: them xu ma khong di qua duong kiem tra nao.</summary>
+        public void DebugAddCoins(long amount)
+        {
+            if (amount == 0) return;
+            _state.Coins += amount;
+            if (_state.Coins < 0) _state.Coins = 0;
+            _dirty = true;
+            RaiseChanged();
         }
 
         /// <summary>Chi dung cho test va cong cu dev: tua thoi gian mo phong.</summary>

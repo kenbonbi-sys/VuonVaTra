@@ -103,6 +103,15 @@ namespace VuonNho.Tests
             return session;
         }
 
+        /// <summary>Mo het day chuyen va thue du tho, de test khong phai lap lai sau lenh mua.</summary>
+        public static void OpenWholeChain(GameState state, ContentCatalog catalog, int workers)
+        {
+            for (int i = 0; i < state.Stations.Count; i++) state.Stations[i].Owned = true;
+            state.HiredWorkers = workers;
+            state.StaffedWorkers = workers;
+            state.NextPayrollAtMs = state.SimulationTimeMs + catalog.Balance.PayrollPeriodMs;
+        }
+
         /// <summary>Gieo cay cho moi o da mo, dung cho cac bai test khong quan tam thao tac UI.</summary>
         public static void PlantAllUnlocked(GameState state, FarmSimulation simulation, string cropId)
         {
@@ -125,10 +134,12 @@ namespace VuonNho.Tests
             builder.Append(";coins=").Append(state.Coins);
             builder.Append(";robot=").Append(state.RobotUnlocked ? 1 : 0);
 
+            // Ca hang trung gian cua day chuyen, khong chi la tuoi: neu chu ky nay bo qua chung
+            // thi moi bai test ve tinh nhat quan thoi gian se khong con nhin thay day chuyen.
             builder.Append(";inv=");
-            for (int i = 0; i < catalog.Crops.Count; i++)
-                builder.Append(catalog.Crops[i].Id).Append(':')
-                       .Append(state.InventoryOf(catalog.Crops[i].Id)).Append(',');
+            for (int i = 0; i < catalog.Items.Count; i++)
+                builder.Append(catalog.Items[i]).Append(':')
+                       .Append(state.InventoryOf(catalog.Items[i])).Append(',');
 
             builder.Append(";plots=");
             for (int i = 0; i < state.Plots.Count; i++)
@@ -151,6 +162,24 @@ namespace VuonNho.Tests
                    .Append(machine.BatchStartAtMs).Append('|')
                    .Append(machine.BatchFinishAtMs).Append('|')
                    .Append(machine.BatchOutputCoins);
+
+            builder.Append(";workers=").Append(state.HiredWorkers).Append('|')
+                   .Append(state.StaffedWorkers).Append('|')
+                   .Append(state.NextPayrollAtMs);
+
+            builder.Append(";stations=");
+            for (int i = 0; i < catalog.Stages.Count; i++)
+            {
+                var station = state.Station(catalog.Stages[i].Id);
+                if (station == null) { builder.Append("-,"); continue; }
+                builder.Append(station.StageId).Append('|')
+                       .Append(station.Owned ? 1 : 0).Append('|')
+                       .Append(station.Running ? 1 : 0).Append('|')
+                       .Append(station.BatchCropId ?? "-").Append('|')
+                       .Append(station.BatchOutput).Append('|')
+                       .Append(station.BatchStartAtMs).Append('|')
+                       .Append(station.BatchFinishAtMs).Append(',');
+            }
 
             builder.Append(";upgrades=");
             for (int i = 0; i < catalog.Upgrades.Count; i++)

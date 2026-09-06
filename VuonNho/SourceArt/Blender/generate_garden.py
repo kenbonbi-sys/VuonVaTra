@@ -46,7 +46,9 @@ ASSET_IDS = {
     "SM_Lemongrass": "A12", "SM_Jasmine": "A13",
     "SM_StonePath": "D01", "SM_Planter": "D02", "SM_Lantern": "D03",
     "SM_Bench": "D04", "SM_Signboard": "D05",
-    "SM_Gardener": "A14",
+    "SM_Gardener": "A14", "SM_Worker": "A15",
+    "SM_WitherTrough": "P01", "SM_FixDrum": "P02", "SM_RollTable": "P03",
+    "SM_OxidationRack": "P04", "SM_Dryer": "P05", "SM_Packer": "P06",
 }
 SEED = 60206
 MATERIALS = {}
@@ -448,6 +450,161 @@ def gardener(root):
     join(hat, "Hat", root, (0, 0, 1.15))
 
 
+
+# ---------------------------------------------------------------- day chuyen che bien
+#
+# Sau cai may giua thu hoach va quay tra. Moi may deu theo cung mot cong thuc hinh khoi:
+# mot than may vuong, mot chi tiet noi ro no lam gi, va mot mang mau M_Accent de nguoi choi
+# nhan ra day la mot cai may chu khong phai do trang tri. Mat truoc o Blender +Y.
+
+
+def machine_base(parts, width, depth, height, material="M_Cream"):
+    """Than may va bon chan. Cai khung chung de sau cai may cung mot ho nha."""
+    parts.append(cube("Body", (0, 0, height * .5 + .12), (width, depth, height), material, .05, 3))
+    for x in (-width * .40, width * .40):
+        for y in (-depth * .36, depth * .36):
+            parts.append(cube("Leg", (x, y, .06), (.10, .10, .12), "M_Dark", .012, 2))
+    return parts
+
+
+def wither_trough(root):
+    """Mang lam heo: mang dai nong, quat gio o mot dau, la trai mot lop."""
+    parts = machine_base([], 2.20, .82, .46)
+    parts.append(cube("Trough lining", (0, 0, .60), (2.02, .66, .10), "M_Dark", .02, 2))
+    parts.append(cube("Leaf bed", (0, 0, .655), (1.94, .60, .05), "M_Leaf", .015, 2))
+    for x in (-.62, 0, .62):
+        parts.append(cube("Rim rail", (x, 0, .70), (.06, .70, .06), "M_Wood", .012, 2))
+    # Quat gio: vo tron va ba canh, dat o dau mang.
+    parts.append(cylinder("Fan housing", (-1.22, 0, .46), .30, .34, "M_Accent", 16, .03))
+    parts.append(cylinder("Fan hub", (-1.40, 0, .46), .07, .06, "M_Dark", 12, .01))
+    for angle in (0, 120, 240):
+        a = math.radians(angle)
+        parts.append(cube("Fan blade", (-1.40, .16 * math.cos(a), .46 + .16 * math.sin(a)),
+                          (.05, .20, .09), "M_Cream", .01, 2))
+    parts.append(cube("Panel", (0, .42, .52), (.34, .04, .20), "M_Accent", .02, 2))
+    join(parts, "WitherMesh", root)
+
+
+def fix_drum(root):
+    """May sao diet men: tang quay nam ngang tren lo, ong khoi boc len."""
+    parts = machine_base([], 1.34, 1.00, .40, "M_Wood")
+    # Tang quay: hinh tru nam ngang, tao boi cylinder xoay 90 do quanh truc X.
+    drum = cylinder("Drum", (0, 0, .95), .42, 1.18, "M_Accent", 20, .03)
+    drum.rotation_euler = (math.radians(90), 0, 0)
+    parts.append(drum)
+    for y in (-.62, .62):
+        cap = cylinder("Drum cap", (0, y, .95), .44, .06, "M_Cream", 20, .01)
+        cap.rotation_euler = (math.radians(90), 0, 0)
+        parts.append(cap)
+    parts.append(cylinder("Crank", (.56, -.70, .95), .05, .26, "M_Dark", 10, .01))
+    parts.append(cube("Firebox", (0, 0, .30), (1.00, .74, .34), "M_Dark", .03, 2))
+    parts.append(cube("Fire glow", (0, .38, .30), (.42, .04, .18), "M_Yellow", .02, 2))
+    parts.append(cylinder("Chimney", (-.50, -.28, 1.52), .10, .96, "M_Dark", 12, .015))
+    parts.append(cylinder("Chimney cap", (-.50, -.28, 2.02), .16, .08, "M_Cream", 12, .012))
+    join(parts, "FixMesh", root)
+
+
+def roll_table(root):
+    """May vo tra: mam tron xoay, tay ep tu tren xuong."""
+    parts = machine_base([], 1.10, 1.10, .38, "M_Wood")
+    parts.append(cylinder("Table", (0, 0, .62), .58, .14, "M_Cream", 24, .02))
+    parts.append(cylinder("Table rim", (0, 0, .70), .60, .05, "M_Accent", 24, .012))
+    parts.append(cylinder("Leaf heap", (0, 0, .74), .34, .09, "M_Leaf", 16, .02))
+    # Tay ep: cot dung, canh tay ngang, dia ep.
+    parts.append(cube("Press column", (-.52, 0, 1.06), (.16, .16, 1.02), "M_Dark", .02, 2))
+    parts.append(cube("Press arm", (-.16, 0, 1.50), (.86, .16, .14), "M_Dark", .02, 2))
+    parts.append(cylinder("Press plate", (.16, 0, 1.32), .30, .12, "M_Accent", 20, .02))
+    parts.append(cylinder("Press shaft", (.16, 0, 1.44), .06, .22, "M_Cream", 10, .01))
+    join(parts, "RollMesh", root)
+
+
+def oxidation_rack(root):
+    """Phong len men: tu ke ba tang, cua kinh, dong ho nhiet am."""
+    parts = []
+    parts.append(cube("Cabinet", (0, 0, 1.00), (1.46, .86, 1.94), "M_Cream", .05, 3))
+    parts.append(cube("Cabinet top", (0, 0, 2.02), (1.56, .94, .12), "M_Wood", .03, 2))
+    for x in (-.62, .62):
+        parts.append(cube("Corner post", (x, 0, 1.00), (.10, .90, 1.96), "M_Wood", .02, 2))
+    # Ba tang khay, nhin thay qua mat truoc mo.
+    for z in (.52, 1.02, 1.52):
+        parts.append(cube("Tray", (0, .06, z), (1.22, .70, .07), "M_Dark", .015, 2))
+        parts.append(cube("Tray leaves", (0, .06, z + .07), (1.12, .62, .07), "M_Leaf", .015, 2))
+    parts.append(cube("Glass door", (0, .445, 1.06), (1.18, .04, 1.60), "M_Accent", .02, 2))
+    parts.append(cylinder("Gauge", (0, .48, 1.86), .13, .05, "M_Cream", 16, .01))
+    parts.append(cube("Gauge needle", (0, .51, 1.88), (.02, .02, .09), "M_Dark", 0, 1))
+    join(parts, "OxidationMesh", root)
+
+
+def dryer(root):
+    """May say bang tai: thung say dai, bang tai chay xuyen qua, hoi nong boc len."""
+    parts = machine_base([], 2.00, .86, .74, "M_Accent")
+    parts.append(cube("Hot box", (0, 0, .92), (1.60, .78, .34), "M_Cream", .04, 3))
+    parts.append(cube("Vent slot", (0, .40, .92), (1.20, .04, .10), "M_Dark", .015, 2))
+    # Bang tai nho ra hai dau than may.
+    for x in (-1.16, 1.16):
+        parts.append(cylinder("Roller", (x, 0, .52), .13, .74, "M_Dark", 14, .012))
+        parts[-1].rotation_euler = (math.radians(90), 0, 0)
+    parts.append(cube("Belt", (0, 0, .52), (2.40, .68, .06), "M_Dark", .015, 2))
+    parts.append(cube("Dried tea", (.80, 0, .58), (.50, .52, .07), "M_Wood", .015, 2))
+    parts.append(cylinder("Steam pipe", (-.74, -.30, 1.36), .09, .54, "M_Cream", 12, .012))
+    parts.append(sphere("Steam puff", (-.74, -.30, 1.70), (.24, .22, .18), "M_Cream", 10, 5))
+    join(parts, "DryerMesh", root)
+
+
+def packer(root):
+    """May sang va dong goi: phieu rot o tren, tui tra xep o duoi."""
+    parts = machine_base([], 1.24, .96, .60, "M_Cream")
+    parts.append(cube("Sieve deck", (0, 0, .82), (1.14, .86, .16), "M_Dark", .02, 2))
+    parts.append(cube("Sieve mesh", (0, 0, .90), (1.02, .74, .04), "M_Accent", .012, 2))
+    # Phieu rot hinh non cut, dung cone rong o tren.
+    hopper = cone("Hopper", (0, 0, 1.36), .46, .72, "M_Accent", 16)
+    hopper.rotation_euler = (math.radians(180), 0, 0)
+    parts.append(hopper)
+    parts.append(cylinder("Hopper rim", (0, 0, 1.70), .47, .07, "M_Wood", 16, .012))
+    parts.append(cylinder("Chute", (0, 0, .96), .11, .22, "M_Dark", 12, .01))
+    # Tui tra da dong, xep thanh dong ben canh.
+    for i, (x, y, z) in enumerate(((.44, .30, .16), (.44, -.02, .16), (.40, .14, .40))):
+        parts.append(cube("Tea pouch", (x, y, z), (.30, .22, .30), "M_Wood", .03, 2))
+        parts.append(cube("Pouch label", (x, y + .12, z + .04), (.16, .02, .12), "M_Cream", .012, 2))
+    join(parts, "PackerMesh", root)
+
+
+def worker(root):
+    """Tho che bien: cung dang nguoi voi nguoi lam vuon, khac mu va mau tap de.
+
+    Dung lai dung bo khoi cua gardener chu khong dung mot dang nguoi thu hai: hai kieu
+    nguoi trong cung mot khu vuon nhin ra ngay la hai bo art khac nhau.
+    """
+    hip_z = .44
+    legs = {}
+    for side, x in (("LegLeft", -.10), ("LegRight", .10)):
+        legs[side] = [cube("Trouser", (x, 0, .225), (.155, .17, .43), "M_Dark", .035, 2),
+                      cube("Shoe", (x, .045, .045), (.175, .255, .09), "M_Dark", .024, 2)]
+    torso = [cube("Shirt", (0, 0, .68), (.40, .27, .50), "M_Cream", .07, 3),
+             cube("Apron", (0, .15, .615), (.33, .035, .40), "M_Accent", .04, 2),
+             cube("Apron strap left", (-.10, .142, .855), (.055, .03, .10), "M_Accent", 0),
+             cube("Apron strap right", (.10, .142, .855), (.055, .03, .10), "M_Accent", 0),
+             cylinder("Neck", (0, 0, .935), .058, .085, "M_Wood", 8, 0)]
+    for x in (-.245, .245):
+        torso.append(cube("Sleeve", (x, 0, .755), (.115, .135, .30), "M_Cream", .045, 2))
+        torso.append(cube("Forearm", (x, .015, .545), (.095, .11, .16), "M_Wood", .035, 2))
+        torso.append(sphere("Hand", (x, .03, .455), (.115, .115, .105), "M_Wood", 8, 4))
+    head = [sphere("Head", (0, 0, 1.045), (.30, .285, .30), "M_Wood", 12, 6, True),
+            sphere("Hair", (0, -.045, 1.055), (.305, .255, .29), "M_Dark", 10, 5, True),
+            cube("Fringe", (0, .108, 1.125), (.245, .085, .085), "M_Dark", .03, 2)]
+    for x in (-.068, .068):
+        head.append(cube("Eye", (x, .132, 1.045), (.036, .03, .058), "M_Dark", 0))
+    head.append(cube("Smile", (0, .142, .965), (.062, .025, .018), "M_Dark", 0))
+    # Mu luoi trai thay non la: nhin tu tren cao van doc ra ngay day la nguoi khac.
+    hat = [cylinder("Cap crown", (0, 0, 1.235), .265, .16, "M_Accent", 16, .03),
+           cube("Cap peak", (0, .245, 1.175), (.34, .26, .05), "M_Accent", .02, 2)]
+    join(legs["LegLeft"], "LegLeft", root, (-.10, 0, hip_z))
+    join(legs["LegRight"], "LegRight", root, (.10, 0, hip_z))
+    join(torso, "Body", root)
+    join(head, "Head", root, (0, 0, 1.02))
+    join(hat, "Hat", root, (0, 0, 1.15))
+
+
 def tea_station(root):
     parts = []
     # Three metres wide, simple closed masses, clear mint/cream shop silhouette.
@@ -672,7 +829,9 @@ BUILDERS = {
     # lai bat ky mon nao trong so do van ra dung ket qua cu.
     "SM_StonePath": stone_path, "SM_Planter": planter, "SM_Lantern": lantern,
     "SM_Bench": bench, "SM_Signboard": signboard,
-    "SM_Gardener": gardener,
+    "SM_Gardener": gardener, "SM_Worker": worker,
+    "SM_WitherTrough": wither_trough, "SM_FixDrum": fix_drum, "SM_RollTable": roll_table,
+    "SM_OxidationRack": oxidation_rack, "SM_Dryer": dryer, "SM_Packer": packer,
 }
 
 

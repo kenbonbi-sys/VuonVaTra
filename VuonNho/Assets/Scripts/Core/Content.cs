@@ -26,6 +26,16 @@ namespace VuonNho.Core
         public long OutputCoins;
         public string UnlockUpgradeId;
         public int SortOrder;
+
+        /// <summary>
+        /// Bac thu hai cua cung cong thuc: pha tu tra da qua het day chuyen thay vi tu la tuoi.
+        ///
+        /// Day chuyen la duong **nang thu nhap**, khong phai mot cai cong chan duong. Neu quay
+        /// tra chi nhan tra da dong goi thi nguoi choi moi phai mua sau cai may truoc khi kiem
+        /// duoc dong xu dau tien tu tra — mot doan mo dau dai va cham ma khong ai xin.
+        /// </summary>
+        public int PackedInputCount;
+        public long PackedOutputCoins;
     }
 
     public enum UpgradeKind
@@ -88,6 +98,16 @@ namespace VuonNho.Core
         public int RobotKeepOutHalfWidthMm = 700;
         public int RobotKeepOutHalfDepthMm = 700;
 
+        // --- tho che bien
+        /// <summary>Gia thue mot tho. Tra mot lan luc thue.</summary>
+        public long WorkerHireCost = 300;
+        /// <summary>Luong mot tho cho moi ky tra luong.</summary>
+        public long WorkerWageCoins = 12;
+        /// <summary>Bao lau tra luong mot lan, tinh bang thoi gian mo phong.</summary>
+        public long PayrollPeriodMs = 60000;
+        /// <summary>Tran so tho thue duoc. Bang so may, thue them nua cung khong chay them may nao.</summary>
+        public int MaximumWorkers = 6;
+
         // Toc do cay x0,8 -> 4/5. Toc do may x0,5 -> 1/2.
         public int GrowthSpeedNumerator = 4;
         public int GrowthSpeedDenominator = 5;
@@ -112,18 +132,33 @@ namespace VuonNho.Core
         readonly Dictionary<string, RecipeDefinition> _recipes = new Dictionary<string, RecipeDefinition>(StringComparer.Ordinal);
         readonly Dictionary<string, UpgradeDefinition> _upgrades = new Dictionary<string, UpgradeDefinition>(StringComparer.Ordinal);
         readonly Dictionary<string, DecorationDefinition> _decorations = new Dictionary<string, DecorationDefinition>(StringComparer.Ordinal);
+        readonly Dictionary<string, ProcessStageDefinition> _stages = new Dictionary<string, ProcessStageDefinition>(StringComparer.Ordinal);
 
         public readonly List<CropDefinition> Crops = new List<CropDefinition>();
         public readonly List<RecipeDefinition> Recipes = new List<RecipeDefinition>();
         public readonly List<UpgradeDefinition> Upgrades = new List<UpgradeDefinition>();
         public readonly List<DecorationDefinition> Decorations = new List<DecorationDefinition>();
+
+        /// <summary>Sau cong doan che bien, theo dung thu tu day chuyen.</summary>
+        public readonly List<ProcessStageDefinition> Stages = new List<ProcessStageDefinition>();
+
+        /// <summary>
+        /// Moi ten mat hang co the nam trong kho, theo mot thu tu co dinh: la tuoi cua tung cay,
+        /// roi tung chang che bien cua cay do.
+        ///
+        /// Co danh sach nay thi save ghi kho theo mot thu tu on dinh — hai lan ghi cung mot state
+        /// cho ra cung mot chuoi byte — va HUD khong phai tu doan ra ten mat hang trung gian.
+        /// </summary>
+        public readonly List<string> Items = new List<string>();
+
         public BalanceConfig Balance { get; private set; }
 
         public ContentCatalog(BalanceConfig balance,
                               IEnumerable<CropDefinition> crops,
                               IEnumerable<RecipeDefinition> recipes,
                               IEnumerable<UpgradeDefinition> upgrades,
-                              IEnumerable<DecorationDefinition> decorations = null)
+                              IEnumerable<DecorationDefinition> decorations = null,
+                              IEnumerable<ProcessStageDefinition> stages = null)
         {
             if (balance == null) throw new ContentValidationException("BalanceConfig khong duoc null.");
             Balance = balance;
@@ -131,11 +166,25 @@ namespace VuonNho.Core
             foreach (var r in recipes) AddRecipe(r);
             foreach (var u in upgrades) AddUpgrade(u);
             if (decorations != null) foreach (var d in decorations) AddDecoration(d);
+            if (stages != null) foreach (var g in stages) AddStage(g);
             Decorations.Sort((a, b) => a.SortOrder.CompareTo(b.SortOrder));
             Crops.Sort((a, b) => a.SortOrder.CompareTo(b.SortOrder));
             Recipes.Sort((a, b) => a.SortOrder.CompareTo(b.SortOrder));
             Upgrades.Sort((a, b) => a.SortOrder.CompareTo(b.SortOrder));
+            Stages.Sort((a, b) => a.SortOrder.CompareTo(b.SortOrder));
+            BuildItemList();
             Validate();
+        }
+
+        void BuildItemList()
+        {
+            Items.Clear();
+            for (int i = 0; i < Crops.Count; i++)
+            {
+                Items.Add(Crops[i].Id);
+                for (int j = 0; j < Stages.Count; j++)
+                    Items.Add(ProcessChain.ItemId(Crops[i].Id, Stages[j].OutputSuffix));
+            }
         }
 
         void AddCrop(CropDefinition c)
@@ -168,6 +217,33 @@ namespace VuonNho.Core
             if (_decorations.ContainsKey(d.Id)) throw new ContentValidationException("Trung id trang tri: " + d.Id);
             _decorations.Add(d.Id, d);
             Decorations.Add(d);
+        }
+
+        void AddStage(ProcessStageDefinition g)
+        {
+            if (g == null || string.IsNullOrEmpty(g.Id)) throw new ContentValidationException("Cong doan thieu id.");
+            if (_stages.ContainsKey(g.Id)) throw new ContentValidationException("Trung id cong doan: " + g.Id);
+            _stages.Add(g.Id, g);
+            Stages.Add(g);
+        }
+
+        public bool TryGetStage(string id, out ProcessStageDefinition stage)
+        {
+            stage = null;
+            return id != null && _stages.TryGetValue(id, out stage);
+        }
+
+        public ProcessStageDefinition Stage(string id)
+        {
+            ProcessStageDefinition g;
+            if (!TryGetStage(id, out g)) throw new ContentValidationException("Khong co cong doan: " + id);
+            return g;
+        }
+
+        /// <summary>Duoi ten cua chang cuoi cung — mat hang ma quay tra tra gia cao.</summary>
+        public string PackedSuffix
+        {
+            get { return Stages.Count == 0 ? null : Stages[Stages.Count - 1].OutputSuffix; }
         }
 
         public bool TryGetDecoration(string id, out DecorationDefinition decoration)
@@ -237,6 +313,38 @@ namespace VuonNho.Core
                     throw new ContentValidationException("Cong thuc tro toi nang cap khong ton tai: " + r.Id);
                 if (ScaleBrew(r.BaseBrewMs, 1) <= 0)
                     throw new ContentValidationException("Toc do may lam chu ky bang 0: " + r.Id);
+                if (r.PackedInputCount < 0 || r.PackedOutputCoins < 0)
+                    throw new ContentValidationException("Bac tra dong goi am: " + r.Id);
+                if (r.PackedInputCount > 0 && r.PackedOutputCoins <= r.OutputCoins)
+                    throw new ContentValidationException(
+                        "Tra dong goi khong tra hon tra tu la tuoi thi khong ai xay day chuyen: " + r.Id);
+            }
+
+            if (Balance.WorkerHireCost < 0 || Balance.WorkerWageCoins < 0)
+                throw new ContentValidationException("Gia thue hoac luong tho am.");
+            if (Balance.PayrollPeriodMs <= 0)
+                throw new ContentValidationException("Ky tra luong phai duong.");
+            if (Balance.MaximumWorkers < 0)
+                throw new ContentValidationException("Tran so tho am.");
+
+            // Day chuyen phai noi lien: dau vao cua chang sau dung bang dau ra cua chang truoc.
+            // Dut mot mat xich thi mot cai may se khong bao gio nhan duoc nguyen lieu, va loi do
+            // khong bao gi ca — no chi hien ra thanh mot cai may nam khong mai mai.
+            string expected = ProcessChain.SuffixFresh;
+            foreach (var g in Stages)
+            {
+                if (g.BaseProcessMs <= 0)
+                    throw new ContentValidationException("Thoi gian che bien phai duong: " + g.Id);
+                if (g.InputCount <= 0 || g.OutputCount <= 0)
+                    throw new ContentValidationException("So luong vao/ra phai duong: " + g.Id);
+                if (g.Cost < 0) throw new ContentValidationException("Gia may am: " + g.Id);
+                if (string.IsNullOrEmpty(g.OutputSuffix))
+                    throw new ContentValidationException("Chang phai nha ra mat hang khac la tuoi: " + g.Id);
+                if (!string.Equals(g.InputSuffix ?? "", expected, StringComparison.Ordinal))
+                    throw new ContentValidationException(
+                        "Day chuyen dut o " + g.Id + ": cho dau vao \"" + expected +
+                        "\" nhung nhan \"" + (g.InputSuffix ?? "") + "\".");
+                expected = g.OutputSuffix;
             }
 
             foreach (var d in Decorations)

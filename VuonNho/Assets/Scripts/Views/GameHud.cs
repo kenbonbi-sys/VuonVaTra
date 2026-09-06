@@ -57,6 +57,26 @@ namespace VuonNho.Views
         Text _plotPopupTitle;
         Text _plotPopupState;
         Text _offlineText;
+        GameObject _workshopPanel;
+        Button _workshopButton;
+        Text _workerSummary;
+        Text _workerWarning;
+        Button _hireButton;
+        Button _fireButton;
+
+        /// <summary>Mot hang trong bang xuong, ung voi mot cong doan.</summary>
+        sealed class StationRow
+        {
+            public string StageId;
+            public Image Card;
+            public Text Title;
+            public Text Cost;
+            public Text Flow;
+            public Text Status;
+            public Button Buy;
+        }
+
+        readonly List<StationRow> _stationRows = new List<StationRow>();
         Text _offlineCapText;
         Text _blockedText;
         Text _toastLabel;
@@ -144,6 +164,9 @@ namespace VuonNho.Views
             _decoratePanel = BuildSidePanel("DecoratePanel", "Trang trí khu vườn", out body);
             BuildDecorationRows(body);
 
+            _workshopPanel = BuildSidePanel("WorkshopPanel", "Xưởng chế biến trà", out body);
+            BuildWorkshopRows(body);
+
             _settingsPanel = BuildSidePanel("SettingsPanel", "Cài đặt và công cụ test", out body);
             BuildSettingsRows(body);
 
@@ -155,6 +178,7 @@ namespace VuonNho.Views
             BuildToast();
 
             _decoratePanel.SetActive(false);
+            _workshopPanel.SetActive(false);
             _inventoryPanel.SetActive(false);
             _upgradePanel.SetActive(false);
             _settingsPanel.SetActive(false);
@@ -204,13 +228,13 @@ namespace VuonNho.Views
                                          TextAnchor.MiddleLeft, GardenPalette.TextMuted);
             _goalLabel.verticalOverflow = VerticalWrapMode.Truncate;
             UiFactory.Stretch(UiFactory.Rect(_goalLabel.gameObject), new Vector2(0f, 0f), new Vector2(1f, 1f),
-                              new Vector2(176f, 0f), new Vector2(-612f, 0f));
+                              new Vector2(176f, 0f), new Vector2(-728f, 0f));
 
-            // Bon nut deu nhau: nut rong nhat la "Nang cap" can khoang 140 px khi co ca icon
-            // lan chu, nen ca day phai duoc 596 px. Hep hon la chu bi xuong dong.
+            // Nam nut deu nhau: nut rong nhat la "Nang cap" can khoang 140 px khi co ca icon lan
+            // chu. "Xuong" ngan hon han nen ca day duoc 712 px la du. Hep hon la chu bi xuong dong.
             var topButtons = UiFactory.Node(topBar.transform, "Buttons");
             UiFactory.Stretch(UiFactory.Rect(topButtons), new Vector2(1f, 0f), new Vector2(1f, 1f),
-                              new Vector2(-596f, 10f), new Vector2(-UiFactory.EdgeMargin, -10f));
+                              new Vector2(-712f, 10f), new Vector2(-UiFactory.EdgeMargin, -10f));
             UiFactory.HorizontalList(topButtons, 8f, new RectOffset(0, 0, 0, 0));
 
             _inventoryButton = UiFactory.TextButton(topButtons.transform, "InventoryButton", "Kho",
@@ -225,6 +249,10 @@ namespace VuonNho.Views
                                                    delegate { TogglePanel(_decoratePanel); },
                                                    UiFactory.ButtonStyle.Quiet,
                                                    symbol: UiFactory.Symbols.FormatPaint);
+            _workshopButton = UiFactory.TextButton(topButtons.transform, "WorkshopButton", "Xưởng",
+                                                   delegate { TogglePanel(_workshopPanel); },
+                                                   UiFactory.ButtonStyle.Quiet,
+                                                   symbol: UiFactory.Symbols.Factory);
             _settingsButton = UiFactory.TextButton(topButtons.transform, "SettingsButton", "Cài đặt",
                                                    delegate { TogglePanel(_settingsPanel); },
                                                    UiFactory.ButtonStyle.Quiet,
@@ -408,6 +436,212 @@ namespace VuonNho.Views
                                                   delegate { Run(_session.SelectRecipe(recipeId)); },
                                                   UiFactory.ButtonStyle.Primary, IconFor(recipe.InputCropId));
                 _recipeRows.Add(new RecipeRow { RecipeId = recipeId, Select = button });
+            }
+        }
+
+        /// <summary>
+        /// Bang xuong: mot khoi tho o tren, roi moi cong doan mot hang theo dung thu tu day
+        /// chuyen. Thu tu la thong tin: nguoi choi doc tu tren xuong la thay la tra di duong nao.
+        /// </summary>
+        void BuildWorkshopRows(Transform body)
+        {
+            var note = UiFactory.Label(body, "Note",
+                                       "Lá tươi đi qua sáu công đoạn rồi mới thành trà đóng gói. " +
+                                       "Quầy trà trả cao hơn hẳn cho trà đã đóng gói.",
+                                       UiFactory.FontSizeMeta, TextAnchor.UpperLeft, GardenPalette.TextMuted);
+            note.gameObject.AddComponent<LayoutElement>().minHeight = 44f;
+
+            var staff = UiFactory.Panel(body, "Staff", GardenPalette.PanelSoft, UiFactory.RadiusControl);
+            UiFactory.VerticalList(staff.gameObject, 6f, new RectOffset(12, 12, 10, 10));
+            staff.gameObject.AddComponent<LayoutElement>().minHeight = 120f;
+
+            _workerSummary = UiFactory.Label(staff.transform, "Summary", "", UiFactory.FontSizeRowTitle,
+                                             TextAnchor.MiddleLeft, GardenPalette.TextPrimary);
+            _workerWarning = UiFactory.Label(staff.transform, "Warning", "", UiFactory.FontSizeMeta,
+                                             TextAnchor.UpperLeft, GardenPalette.StateWarn);
+
+            var staffButtons = UiFactory.Node(staff.transform, "StaffButtons");
+            var staffLayout = UiFactory.HorizontalList(staffButtons, 8f, new RectOffset(0, 0, 0, 0));
+            staffLayout.childForceExpandHeight = false;
+            _hireButton = UiFactory.TextButton(staffButtons.transform, "Hire", "Thuê thợ",
+                                               delegate { Run(_session.HireWorker()); },
+                                               UiFactory.ButtonStyle.Primary,
+                                               symbol: UiFactory.Symbols.GroupAdd);
+            _fireButton = UiFactory.TextButton(staffButtons.transform, "Fire", "Cho nghỉ",
+                                               delegate { Run(_session.FireWorker()); },
+                                               UiFactory.ButtonStyle.Quiet,
+                                               symbol: UiFactory.Symbols.PersonRemove);
+
+            foreach (var stage in _session.Catalog.Stages)
+            {
+                string stageId = stage.Id;
+
+                var card = UiFactory.Panel(body, "Row_" + stageId, GardenPalette.PanelSoft, UiFactory.RadiusControl);
+                UiFactory.VerticalList(card.gameObject, 6f, new RectOffset(12, 12, 10, 10));
+                card.gameObject.AddComponent<LayoutElement>().minHeight = 104f;
+
+                var titleRow = UiFactory.Node(card.transform, "TitleRow");
+                var titleLayout = UiFactory.HorizontalList(titleRow, 8f, new RectOffset(0, 0, 0, 0));
+                titleLayout.childForceExpandWidth = false;
+                titleLayout.childForceExpandHeight = false;
+                titleRow.AddComponent<LayoutElement>().minHeight = 26f;
+
+                var row = new StationRow { StageId = stageId, Card = card };
+
+                row.Title = UiFactory.Label(titleRow.transform, "Title", stage.DisplayName,
+                                            UiFactory.FontSizeRowTitle, TextAnchor.MiddleLeft,
+                                            GardenPalette.TextPrimary);
+                row.Title.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
+
+                row.Cost = UiFactory.CoinValue(titleRow.transform, "Cost", UiFactory.FontSizeRowTitle,
+                                               UiFactory.IconSizeRow, TextAnchor.MiddleRight);
+                var costWidth = row.Cost.transform.parent.gameObject.AddComponent<LayoutElement>();
+                costWidth.preferredWidth = 96f;
+                costWidth.minWidth = 96f;
+                costWidth.flexibleWidth = 0f;
+
+                row.Flow = UiFactory.Label(card.transform, "Flow", "", UiFactory.FontSizeMeta,
+                                           TextAnchor.UpperLeft, GardenPalette.TextMuted);
+                row.Status = UiFactory.Label(card.transform, "Status", "", UiFactory.FontSizeMeta,
+                                             TextAnchor.UpperLeft, GardenPalette.TextMuted);
+
+                row.Buy = UiFactory.TextButton(card.transform, "Buy", "Mua máy",
+                                               delegate
+                {
+                    var result = _session.BuyStation(stageId);
+                    Run(result);
+                    if (result.Success)
+                    {
+                        var sfx = FindAnyObjectByType<SfxPlayer>();
+                        if (sfx != null) sfx.PlayUnlock();
+                    }
+                },
+                                               symbol: UiFactory.Symbols.ShoppingCart);
+                _stationRows.Add(row);
+            }
+        }
+
+        /// <summary>Ten mat hang o mot chang, vi du "Bạc hà héo". Dung o dong luu luong cua hang.</summary>
+        string ItemName(string cropId, string suffix)
+        {
+            string cropName = _session.Catalog.Crop(cropId).DisplayName;
+            if (string.IsNullOrEmpty(suffix)) return cropName + " tươi";
+            switch (suffix)
+            {
+                case ProcessChain.SuffixWithered: return cropName + " héo";
+                case ProcessChain.SuffixFixed: return cropName + " đã diệt men";
+                case ProcessChain.SuffixRolled: return cropName + " đã vò";
+                case ProcessChain.SuffixOxidised: return cropName + " đã lên men";
+                case ProcessChain.SuffixDried: return cropName + " khô";
+                case ProcessChain.SuffixPacked: return "Trà " + cropName.ToLowerInvariant() + " đóng gói";
+                default: return cropName;
+            }
+        }
+
+        /// <summary>Tong ton kho cua mot chang, cong het moi loai cay.</summary>
+        long StockAt(string suffix)
+        {
+            long total = 0;
+            foreach (var crop in _session.Catalog.Crops)
+                total += _session.State.InventoryOf(ProcessChain.ItemId(crop.Id, suffix));
+            return total;
+        }
+
+        void RefreshWorkshop()
+        {
+            if (_workshopPanel == null || !_workshopPanel.activeSelf) return;
+
+            var state = _session.State;
+            var balance = _session.Catalog.Balance;
+
+            _workerSummary.text = "Thợ: " + state.HiredWorkers + " / " + balance.MaximumWorkers +
+                                  " · lương " + balance.WorkerWageCoins + " xu mỗi thợ, " +
+                                  (balance.PayrollPeriodMs / 1000) + " giây một kỳ";
+
+            int owned = state.OwnedStationCount();
+            string warning = null;
+            if (state.StaffedWorkers < state.HiredWorkers)
+                warning = "Kỳ này không đủ xu trả lương: " + (state.HiredWorkers - state.StaffedWorkers) +
+                          " thợ đang nghỉ. Trả đủ là họ làm lại ngay.";
+            else if (owned > state.HiredWorkers)
+                warning = "Có " + owned + " máy nhưng chỉ " + state.HiredWorkers +
+                          " thợ, nên " + (owned - state.HiredWorkers) + " máy nằm không.";
+            _workerWarning.gameObject.SetActive(warning != null);
+            if (warning != null) _workerWarning.text = warning;
+
+            string hireReason;
+            bool canHire = _session.CanHireWorker(out hireReason);
+            UiFactory.SetButtonCaption(_hireButton, canHire
+                ? "Thuê thợ · " + balance.WorkerHireCost + " xu"
+                : hireReason);
+            UiFactory.SetButtonState(_hireButton, canHire
+                ? UiFactory.ButtonState.Normal : UiFactory.ButtonState.Disabled);
+            UiFactory.SetButtonState(_fireButton, state.HiredWorkers > 0
+                ? UiFactory.ButtonState.Normal : UiFactory.ButtonState.Disabled);
+
+            for (int i = 0; i < _stationRows.Count; i++)
+            {
+                var row = _stationRows[i];
+                var stage = _session.Catalog.Stage(row.StageId);
+                var station = state.Station(row.StageId);
+
+                row.Flow.text = stage.MachineName + " · " +
+                                stage.InputCount + " " + StageName(stage.InputSuffix) + " → " +
+                                stage.OutputCount + " " + StageName(stage.OutputSuffix) +
+                                "   (kho " + StockAt(stage.InputSuffix) + " → " +
+                                StockAt(stage.OutputSuffix) + ")";
+
+                if (station == null || !station.Owned)
+                {
+                    row.Cost.text = stage.Cost.ToString();
+                    row.Cost.transform.parent.gameObject.SetActive(true);
+                    row.Buy.gameObject.SetActive(true);
+                    string reason;
+                    bool can = _session.CanBuyStation(row.StageId, out reason);
+                    UiFactory.SetButtonState(row.Buy, can
+                        ? UiFactory.ButtonState.Normal : UiFactory.ButtonState.Disabled);
+                    UiFactory.SetButtonCaption(row.Buy, can ? "Mua máy" : reason);
+                    row.Status.text = stage.Description;
+                    row.Status.color = GardenPalette.TextMuted;
+                    continue;
+                }
+
+                row.Cost.transform.parent.gameObject.SetActive(false);
+                row.Buy.gameObject.SetActive(false);
+
+                if (station.Running)
+                {
+                    long remaining = station.BatchFinishAtMs - state.SimulationTimeMs;
+                    if (remaining < 0) remaining = 0;
+                    row.Status.text = "Đang chạy " + ItemName(station.BatchCropId, stage.InputSuffix) +
+                                      " · còn " + WholeTime(remaining);
+                    row.Status.color = GardenPalette.StateOk;
+                }
+                else if (state.StaffedWorkers <= state.RunningStationCount())
+                {
+                    row.Status.text = "Không có thợ đứng máy.";
+                    row.Status.color = GardenPalette.StateWarn;
+                }
+                else
+                {
+                    row.Status.text = "Chờ đủ " + stage.InputCount + " " + StageName(stage.InputSuffix) + ".";
+                    row.Status.color = GardenPalette.TextMuted;
+                }
+            }
+        }
+
+        /// <summary>Ten chung cua mot chang, khong gan voi cay nao.</summary>
+        static string StageName(string suffix)
+        {
+            switch (suffix)
+            {
+                case ProcessChain.SuffixWithered: return "lá héo";
+                case ProcessChain.SuffixFixed: return "lá đã diệt men";
+                case ProcessChain.SuffixRolled: return "lá đã vò";
+                case ProcessChain.SuffixOxidised: return "lá đã lên men";
+                case ProcessChain.SuffixDried: return "trà khô";
+                case ProcessChain.SuffixPacked: return "trà đóng gói";
+                default: return "lá tươi";
             }
         }
 
@@ -875,6 +1109,7 @@ namespace VuonNho.Views
 
             _coinsLabel.text = state.Coins.ToString();
             _goalLabel.text = GoalText(TutorialGuide.CurrentStep(state, catalog), state, catalog);
+            RefreshWorkshop();
 
             RefreshMachineCard(state);
 
@@ -1186,6 +1421,7 @@ namespace VuonNho.Views
             else if (panelName == "inventory") TogglePanel(_inventoryPanel);
             else if (panelName == "settings") TogglePanel(_settingsPanel);
             else if (panelName == "decorate") TogglePanel(_decoratePanel);
+            else if (panelName == "workshop") TogglePanel(_workshopPanel);
             else if (panelName == "plot") OpenPlotPopup(0);
         }
 
@@ -1196,6 +1432,7 @@ namespace VuonNho.Views
             _upgradePanel.SetActive(false);
             _settingsPanel.SetActive(false);
             _decoratePanel.SetActive(false);
+            _workshopPanel.SetActive(false);
             panel.SetActive(willOpen);
             if (panel != _decoratePanel) CancelDecorationMode();
             if (!willOpen) return;

@@ -33,7 +33,8 @@ namespace VuonNho.EditorTools
         {
             "Plot", "Seedling", "Mint", "Chamomile", "Strawberry", "Lemongrass", "Jasmine",
             "Helper", "TeaStation", "BackgroundTree", "Bush", "Fence", "Rock",
-            "StonePath", "Planter", "Lantern", "Bench", "Signboard", "Gardener"
+            "StonePath", "Planter", "Lantern", "Bench", "Signboard", "Gardener", "Worker",
+            "WitherTrough", "FixDrum", "RollTable", "OxidationRack", "Dryer", "Packer"
         };
         static readonly Vector3[] MaximumDimensions =
         {
@@ -45,7 +46,11 @@ namespace VuonNho.EditorTools
             new Vector3(1.8f, 1.3f, .5f), new Vector3(1.5f, 1f, 1.5f),
             new Vector3(.44f, .30f, .44f), new Vector3(.52f, .80f, .52f),
             new Vector3(.44f, 1.30f, .44f), new Vector3(1.04f, 1f, 1.04f),
-            new Vector3(.84f, 1.40f, .84f), new Vector3(.9f, 1.6f, .9f)
+            new Vector3(.84f, 1.40f, .84f), new Vector3(.9f, 1.6f, .9f),
+            new Vector3(.9f, 1.6f, .9f),
+            new Vector3(2.9f, 1.3f, 1.2f), new Vector3(1.7f, 2.3f, 1.7f),
+            new Vector3(1.5f, 1.9f, 1.5f), new Vector3(1.9f, 2.3f, 1.4f),
+            new Vector3(2.9f, 2.1f, 1.3f), new Vector3(1.6f, 2.1f, 1.3f)
         };
         static readonly string[] DecorationIds =
         {
@@ -440,6 +445,8 @@ namespace VuonNho.EditorTools
             Fill(ref skin.SeedlingPrefab, prefabs["Seedling"], "SeedlingPrefab", filled);
             Fill(ref skin.RobotPrefab, prefabs["Helper"], "RobotPrefab", filled);
             Fill(ref skin.CharacterPrefab, prefabs["Gardener"], "CharacterPrefab", filled);
+            Fill(ref skin.WorkerPrefab, prefabs["Worker"], "WorkerPrefab", filled);
+            FillStationSlots(skin, prefabs, filled);
             Fill(ref skin.StationPrefab, prefabs["TeaStation"], "StationPrefab", filled);
             Fill(ref skin.FencePostPrefab, prefabs["Fence"], "FencePostPrefab", filled);
             FillOptions(ref skin.TreePrefabs, prefabs["BackgroundTree"], "TreePrefabs", filled);
@@ -458,6 +465,39 @@ namespace VuonNho.EditorTools
                     crop.CropId == DefaultContent.CropJasmine ? "Jasmine" : null;
                 if (model != null) Fill(ref crop.MaturePrefab, prefabs[model], crop.CropId, filled);
             }
+        }
+
+        /// <summary>
+        /// May cua tung cong doan. Danh sach ten model doi chieu theo id cong doan trong Core, va
+        /// o nao nguoi lam art da dien thi khong dung toi — cung hop dong nhu moi o khac cua skin.
+        /// </summary>
+        static void FillStationSlots(GardenSkin skin, IDictionary<string, GameObject> prefabs, List<string> filled)
+        {
+            var models = new Dictionary<string, string>
+            {
+                { DefaultStages.Wither, "WitherTrough" },
+                { DefaultStages.Fix, "FixDrum" },
+                { DefaultStages.Roll, "RollTable" },
+                { DefaultStages.Oxidise, "OxidationRack" },
+                { DefaultStages.Dry, "Dryer" },
+                { DefaultStages.Pack, "Packer" }
+            };
+
+            var rows = new List<StationSkinEntry>(skin.Stations ?? new StationSkinEntry[0]);
+            foreach (var entry in models)
+            {
+                var row = rows.Find(existing => existing != null && existing.StageId == entry.Key);
+                if (row == null)
+                {
+                    row = new StationSkinEntry { StageId = entry.Key };
+                    rows.Add(row);
+                }
+                GameObject prefab;
+                if (row.Prefab != null || !prefabs.TryGetValue(entry.Value, out prefab)) continue;
+                row.Prefab = prefab;
+                filled.Add("Stations[" + entry.Key + "]");
+            }
+            skin.Stations = rows.ToArray();
         }
 
         static void Fill(ref GameObject slot, GameObject prefab, string name, List<string> filled)
