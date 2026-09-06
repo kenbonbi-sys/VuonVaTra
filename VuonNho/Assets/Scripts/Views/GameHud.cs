@@ -188,25 +188,31 @@ namespace VuonNho.Views
                                          TextAnchor.MiddleLeft, GardenPalette.TextMuted);
             _goalLabel.verticalOverflow = VerticalWrapMode.Truncate;
             UiFactory.Stretch(UiFactory.Rect(_goalLabel.gameObject), new Vector2(0f, 0f), new Vector2(1f, 1f),
-                              new Vector2(208f, 0f), new Vector2(-481f, 0f));
+                              new Vector2(208f, 0f), new Vector2(-612f, 0f));
 
+            // Bon nut deu nhau: nut rong nhat la "Nang cap" can khoang 140 px khi co ca icon
+            // lan chu, nen ca day phai duoc 596 px. Hep hon la chu bi xuong dong.
             var topButtons = UiFactory.Node(topBar.transform, "Buttons");
             UiFactory.Stretch(UiFactory.Rect(topButtons), new Vector2(1f, 0f), new Vector2(1f, 1f),
-                              new Vector2(-465f, 10f), new Vector2(-UiFactory.EdgeMargin, -10f));
+                              new Vector2(-596f, 10f), new Vector2(-UiFactory.EdgeMargin, -10f));
             UiFactory.HorizontalList(topButtons, 8f, new RectOffset(0, 0, 0, 0));
 
             _inventoryButton = UiFactory.TextButton(topButtons.transform, "InventoryButton", "Kho",
                                                     delegate { TogglePanel(_inventoryPanel); },
-                                                    UiFactory.ButtonStyle.Quiet);
+                                                    UiFactory.ButtonStyle.Quiet,
+                                                   symbol: UiFactory.Symbols.Inventory2);
             _upgradeButton = UiFactory.TextButton(topButtons.transform, "UpgradeButton", "Nâng cấp",
                                                   delegate { TogglePanel(_upgradePanel); },
-                                                  UiFactory.ButtonStyle.Quiet);
+                                                  UiFactory.ButtonStyle.Quiet,
+                                                   symbol: UiFactory.Symbols.Upgrade);
             _decorateButton = UiFactory.TextButton(topButtons.transform, "DecorateButton", "Trang trí",
                                                    delegate { TogglePanel(_decoratePanel); },
-                                                   UiFactory.ButtonStyle.Quiet);
+                                                   UiFactory.ButtonStyle.Quiet,
+                                                   symbol: UiFactory.Symbols.FormatPaint);
             _settingsButton = UiFactory.TextButton(topButtons.transform, "SettingsButton", "Cài đặt",
                                                    delegate { TogglePanel(_settingsPanel); },
-                                                   UiFactory.ButtonStyle.Quiet);
+                                                   UiFactory.ButtonStyle.Quiet,
+                                                   symbol: UiFactory.Symbols.Settings);
 
             var rule = UiFactory.Panel(topBar.transform, "Rule", GardenPalette.PanelDivider);
             UiFactory.Stretch(UiFactory.Rect(rule.gameObject), new Vector2(0f, 0f), new Vector2(1f, 0f),
@@ -446,7 +452,8 @@ namespace VuonNho.Views
                         var sfx = FindAnyObjectByType<SfxPlayer>();
                         if (sfx != null) sfx.PlayUnlock();
                     }
-                });
+                },
+                                                   symbol: UiFactory.Symbols.ShoppingCart);
                 _upgradeRows.Add(row);
             }
         }
@@ -486,7 +493,8 @@ namespace VuonNho.Views
                 labelLayout.flexibleWidth = 1f;
 
                 var choose = UiFactory.TextButton(rowGo.transform, "Choose", "Chọn",
-                                                  delegate { BeginPlacing(decorationId); });
+                                                  delegate { BeginPlacing(decorationId); },
+                                                   symbol: UiFactory.Symbols.Add);
                 _decorationRows.Add(new DecorationRow
                 {
                     DecorationId = decorationId, Label = label, Choose = choose
@@ -495,7 +503,8 @@ namespace VuonNho.Views
 
             _removeModeButton = UiFactory.TextButton(body, "RemoveMode", "Gỡ đồ đã đặt",
                                                      delegate { ToggleRemoveMode(); },
-                                                     UiFactory.ButtonStyle.Quiet);
+                                                     UiFactory.ButtonStyle.Quiet,
+                                                   symbol: UiFactory.Symbols.Delete);
         }
 
         void BeginPlacing(string decorationId)
@@ -569,14 +578,16 @@ namespace VuonNho.Views
                 if (player == null) return;
                 player.Enabled = !player.Enabled;
                 UiFactory.SetButtonCaption(soundButton, player.Enabled ? "Âm thanh: đang bật" : "Âm thanh: đang tắt");
-            });
+            },
+                                                   symbol: UiFactory.Symbols.VolumeUp);
 
             UiFactory.TextButton(body, "Export", "Xuất dữ liệu test", delegate
             {
                 var bootstrap = GetComponentInParent<GameBootstrap>();
                 if (bootstrap == null) bootstrap = FindAnyObjectByType<GameBootstrap>();
                 if (bootstrap != null) ShowToast(bootstrap.ExportTestData());
-            });
+            },
+                                                   symbol: UiFactory.Symbols.Download);
 
             var resetConfirm = UiFactory.Node(body, "ResetConfirm");
             UiFactory.VerticalList(resetConfirm, 8f, new RectOffset(0, 0, 0, 0));
@@ -593,19 +604,22 @@ namespace VuonNho.Views
 
             var resetButton = UiFactory.TextButton(body, "Reset", "Chơi lại từ đầu",
                                                    delegate { resetConfirm.SetActive(true); },
-                                                   UiFactory.ButtonStyle.Quiet);
+                                                   UiFactory.ButtonStyle.Quiet,
+                                                   symbol: UiFactory.Symbols.RestartAlt);
             resetButton.transform.SetSiblingIndex(resetConfirm.transform.GetSiblingIndex());
 
             // Nut giu lai dung truoc, nut xoa mang mau canh bao rieng.
             UiFactory.TextButton(resetButtons.transform, "ResetNo", "Giữ lại",
-                                 delegate { resetConfirm.SetActive(false); });
+                                 delegate { resetConfirm.SetActive(false); },
+                                                   symbol: UiFactory.Symbols.Undo);
             var resetYes = UiFactory.TextButton(resetButtons.transform, "ResetYes", "Xóa tiến độ", delegate
             {
                 var bootstrap = FindAnyObjectByType<GameBootstrap>();
                 if (bootstrap != null) bootstrap.ResetProgress();
                 resetConfirm.SetActive(false);
                 ShowToast("Đã tạo vườn mới.");
-            });
+            },
+                                                   symbol: UiFactory.Symbols.DeleteForever);
             var dangerStyle = resetYes.GetComponent<UiButtonStyle>();
             if (dangerStyle != null)
             {
@@ -622,19 +636,22 @@ namespace VuonNho.Views
                 {
                     _session.DebugAdvance(60000);
                     ShowToast("Đã tua 1 phút mô phỏng.");
-                }, UiFactory.ButtonStyle.Quiet);
+                }, UiFactory.ButtonStyle.Quiet,
+                                                   symbol: UiFactory.Symbols.FastForward);
                 UiFactory.TextButton(body, "Skip60", "Tua 60 phút", delegate
                 {
                     _session.DebugAdvance(3600000);
                     ShowToast("Đã tua 60 phút mô phỏng.");
-                }, UiFactory.ButtonStyle.Quiet);
+                }, UiFactory.ButtonStyle.Quiet,
+                                                   symbol: UiFactory.Symbols.FastForward);
             }
 
             UiFactory.TextButton(body, "Quit", "Thoát game", delegate
             {
                 var bootstrap = FindAnyObjectByType<GameBootstrap>();
                 if (bootstrap != null) bootstrap.QuitGame();
-            }, UiFactory.ButtonStyle.Quiet);
+            }, UiFactory.ButtonStyle.Quiet,
+                                                   symbol: UiFactory.Symbols.Logout);
         }
 
         GameObject BuildPlotPopup()
@@ -669,7 +686,8 @@ namespace VuonNho.Views
             }
 
             UiFactory.TextButton(panel.transform, "ClosePopup", "Đóng", delegate { ClosePlotPopup(); },
-                                 UiFactory.ButtonStyle.Quiet);
+                                 UiFactory.ButtonStyle.Quiet,
+                                                   symbol: UiFactory.Symbols.Close);
             return panel.gameObject;
         }
 
@@ -717,7 +735,8 @@ namespace VuonNho.Views
             {
                 _session.AcknowledgeOfflineSummary();
                 container.SetActive(false);
-            });
+            },
+                                                   symbol: UiFactory.Symbols.PlayArrow);
 
             return container;
         }
@@ -750,7 +769,8 @@ namespace VuonNho.Views
             {
                 container.SetActive(false);
                 TogglePanel(_settingsPanel);
-            });
+            },
+                                                   symbol: UiFactory.Symbols.Settings);
             UiFactory.TextButton(actions.transform, "Quit", "Thoát game", delegate
             {
                 var bootstrap = FindAnyObjectByType<GameBootstrap>();

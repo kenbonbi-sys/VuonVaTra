@@ -99,6 +99,9 @@ namespace VuonNho.Views
         [Tooltip("Chữ nhấn mạnh: tiêu đề, số xu, nhãn nút.")]
         public Font DisplayFont;
 
+        [Tooltip("Font icon Material Symbols. Để trống thì nút chỉ có chữ.")]
+        public Font SymbolFont;
+
         [Header("Trang trí — pha 2")]
         public DecorationSkinEntry[] Decorations = new DecorationSkinEntry[0];
 

@@ -85,7 +85,7 @@ namespace VuonNho.Views
             if (Helper != null) _session.Simulation.AddListener(Helper);
 
             // Phai dat truoc Bind: HUD dung toan bo nhan ngay trong Bind.
-            if (Skin != null) UiFactory.SetFonts(Skin.BodyFont, Skin.DisplayFont);
+            if (Skin != null) UiFactory.SetFonts(Skin.BodyFont, Skin.DisplayFont, Skin.SymbolFont);
             if (Hud != null)
             {
                 Hud.Bind(_session, Skin);

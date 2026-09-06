@@ -153,6 +153,12 @@ namespace VuonNho.EditorTools
                 skin.BodyFont = AssetDatabase.LoadAssetAtPath<Font>(FontFolder + "/NationalPark-Medium.ttf");
                 changed |= skin.BodyFont != null;
             }
+            if (skin.SymbolFont == null)
+            {
+                skin.SymbolFont = AssetDatabase.LoadAssetAtPath<Font>(
+                    FontFolder + "/MaterialSymbolsRounded.ttf");
+                changed |= skin.SymbolFont != null;
+            }
             if (skin.DisplayFont == null)
             {
                 skin.DisplayFont = AssetDatabase.LoadAssetAtPath<Font>(FontFolder + "/NationalPark-ExtraBold.ttf");

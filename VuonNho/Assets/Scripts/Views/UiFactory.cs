@@ -40,6 +40,7 @@ namespace VuonNho.Views
         static Font _font;
         static Font _bodyFont;
         static Font _displayFont;
+        static Font _symbolFont;
         static readonly Dictionary<int, Sprite> RoundedCache = new Dictionary<int, Sprite>();
 
         /// <summary>
@@ -48,8 +49,71 @@ namespace VuonNho.Views
         /// </summary>
         public static void SetFonts(Font body, Font display)
         {
+            SetFonts(body, display, null);
+        }
+
+        public static void SetFonts(Font body, Font display, Font symbol)
+        {
             _bodyFont = body;
             _displayFont = display != null ? display : body;
+            _symbolFont = symbol;
+        }
+
+        /// <summary>Chua nap duoc font icon thi tra ve null va nut giu nguyen chu khong.</summary>
+        public static Font SymbolFont { get { return _symbolFont; } }
+
+        /// <summary>
+        /// Ma ky tu cua cac icon Material Symbols dang dung. Ten bien lay dung ten icon tren
+        /// fonts.google.com/icons de tra nguoc lai duoc.
+        /// </summary>
+        public static class Symbols
+        {
+            public const string Inventory2 = "\ue1a1";
+            public const string Upgrade = "\uf0fb";
+            public const string FormatPaint = "\ue243";
+            public const string Settings = "\ue8b8";
+            public const string Close = "\ue5cd";
+            public const string Sell = "\uf05b";
+            public const string ShoppingCart = "\ue8cc";
+            public const string Add = "\ue145";
+            public const string Delete = "\ue92e";
+            public const string PlayArrow = "\ue037";
+            public const string Download = "\uf090";
+            public const string RestartAlt = "\uf053";
+            public const string Undo = "\ue166";
+            public const string DeleteForever = "\ue92b";
+            public const string FastForward = "\ue01f";
+            public const string Logout = "\ue9ba";
+            public const string VolumeUp = "\ue050";
+            public const string VolumeOff = "\ue04f";
+            public const string Check = "\ue668";
+        }
+
+        /// <summary>
+        /// Icon dang glyph. Dung Text chu khong dung Image nen net o moi co chu va doi mau
+        /// bang chinh mau chu, khong can atlas hay anh rieng cho tung kich thuoc.
+        /// </summary>
+        public static Text Symbol(Transform parent, string name, string glyph, float size)
+        {
+            var go = Node(parent, name);
+            var label = go.AddComponent<Text>();
+            label.font = _symbolFont != null ? _symbolFont : Font;
+            // Chieu cao mot dong chu lon hon co chu khoang 17%, nen ve dung co o thi glyph
+            // cao hon o chua no. Ve nho lai de icon nam gon trong o va khong day bo cuc.
+            label.fontSize = Mathf.RoundToInt(size * 0.8f);
+            label.text = glyph;
+            label.alignment = TextAnchor.MiddleCenter;
+            label.color = GardenPalette.IconTint;
+            label.horizontalOverflow = HorizontalWrapMode.Overflow;
+            label.verticalOverflow = VerticalWrapMode.Overflow;
+            label.supportRichText = false;
+            label.raycastTarget = false;
+
+            var layout = go.AddComponent<LayoutElement>();
+            layout.preferredWidth = size;
+            layout.preferredHeight = size;
+            layout.minWidth = size;
+            return label;
         }
 
         /// <summary>Chu chinh: nhan, mo ta, so lieu.</summary>
@@ -252,7 +316,8 @@ namespace VuonNho.Views
         /// Khong truyen icon thi nut duoc dung y het truoc day, tung dong mot.
         /// </summary>
         public static Button TextButton(Transform parent, string name, string caption, UnityAction onClick,
-                                        ButtonStyle style = ButtonStyle.Primary, Sprite icon = null)
+                                        ButtonStyle style = ButtonStyle.Primary, Sprite icon = null,
+                                        string symbol = null)
         {
             var go = Node(parent, name);
             var baseColor = style == ButtonStyle.Primary ? GardenPalette.ButtonNormal : GardenPalette.ButtonQuiet;
@@ -294,7 +359,21 @@ namespace VuonNho.Views
             // dong thi nut cao them thay vi de chu tran ra ngoai nen.
             Text label;
             Image iconImage = null;
-            if (icon == null)
+            Text symbolLabel = null;
+            if (icon == null && !string.IsNullOrEmpty(symbol) && _symbolFont != null)
+            {
+                // Cung bo cuc nhu nut co anh: icon truoc, chu chay tu trai.
+                var row = HorizontalList(go, 8f, new RectOffset(10, 10, 4, 4));
+                row.childAlignment = TextAnchor.MiddleLeft;
+                row.childForceExpandWidth = false;
+                row.childForceExpandHeight = false;
+                symbolLabel = Symbol(go.transform, "Symbol", symbol, IconSizeRow);
+                label = Label(go.transform, "Label", caption, FontSizeBody, TextAnchor.MiddleLeft,
+                              GardenPalette.TextPrimary, true);
+                var symbolFlex = label.gameObject.AddComponent<LayoutElement>();
+                symbolFlex.flexibleWidth = 1f;
+            }
+            else if (icon == null)
             {
                 var padded = VerticalList(go, 0f, new RectOffset(10, 10, 4, 4));
                 padded.childAlignment = TextAnchor.MiddleCenter;
@@ -320,6 +399,7 @@ namespace VuonNho.Views
             cache.Background = image;
             cache.Caption = label;
             cache.Icon = iconImage;
+            cache.Symbol = symbolLabel;
             cache.BaseColor = baseColor;
             cache.BaseTextColor = baseTextColor;
             label.color = baseTextColor;
@@ -371,6 +451,7 @@ namespace VuonNho.Views
             if (cache.Background != null) cache.Background.color = fill;
             if (cache.Caption != null) cache.Caption.color = text;
             if (cache.Icon != null) cache.Icon.color = iconTint;
+            if (cache.Symbol != null) cache.Symbol.color = iconTint;
         }
 
         public static void SetInteractable(Button button, bool interactable)

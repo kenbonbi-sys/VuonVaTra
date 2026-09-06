@@ -19,6 +19,8 @@ namespace VuonNho.Views
         public Text Caption;
         /// <summary>Nut khong co icon thi de trong.</summary>
         public Image Icon;
+        /// <summary>Icon dang glyph cua Material Symbols. Nut khong dung thi de trong.</summary>
+        public Text Symbol;
         public Color BaseColor;
         public Color BaseTextColor;
     }
