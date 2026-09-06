@@ -1,0 +1,71 @@
+{
+  "generator": "generate_sfx.py",
+  "seed": 9062026,
+  "assets": [
+    {
+      "cue": "Click",
+      "file": "SFX_Click.wav",
+      "source": "Original deterministic synthesis; no third-party samples",
+      "sample_rate": 48000,
+      "channels": 1,
+      "bits": 16,
+      "duration_seconds": 0.09,
+      "peak_dbfs": -9.37,
+      "rms_dbfs": -23.1,
+      "first_last_sample_zero": true,
+      "sha256": "df4eb3a6e2646e5166e37f32c82044b186438a293b75f53adbe4bded664a44ca"
+    },
+    {
+      "cue": "Plant",
+      "file": "SFX_Plant.wav",
+      "source": "Original deterministic synthesis; no third-party samples",
+      "sample_rate": 48000,
+      "channels": 1,
+      "bits": 16,
+      "duration_seconds": 0.19,
+      "peak_dbfs": -8.4,
+      "rms_dbfs": -22.65,
+      "first_last_sample_zero": true,
+      "sha256": "3e11835053ff9c14f2604f023db9603b88f634166343b213b26d7de78c62f641"
+    },
+    {
+      "cue": "Harvest",
+      "file": "SFX_Harvest.wav",
+      "source": "Original deterministic synthesis; no third-party samples",
+      "sample_rate": 48000,
+      "channels": 1,
+      "bits": 16,
+      "duration_seconds": 0.24,
+      "peak_dbfs": -7.96,
+      "rms_dbfs": -19.52,
+      "first_last_sample_zero": true,
+      "sha256": "c8efcbf2d1b6cd407a4a1ff3800e07467c63eda2b1d2ca96c9fbf695ed85238c"
+    },
+    {
+      "cue": "Brew",
+      "file": "SFX_Brew.wav",
+      "source": "Original deterministic synthesis; no third-party samples",
+      "sample_rate": 48000,
+      "channels": 1,
+      "bits": 16,
+      "duration_seconds": 0.34,
+      "peak_dbfs": -8.64,
+      "rms_dbfs": -21.96,
+      "first_last_sample_zero": true,
+      "sha256": "ed9f0d76e6718be8bc69471baa146a346569fbc18c549dd2c0137bf8cba40104"
+    },
+    {
+      "cue": "Upgrade",
+      "file": "SFX_Upgrade.wav",
+      "source": "Original deterministic synthesis; no third-party samples",
+      "sample_rate": 48000,
+      "channels": 1,
+      "bits": 16,
+      "duration_seconds": 0.48,
+      "peak_dbfs": -7.96,
+      "rms_dbfs": -19.57,
+      "first_last_sample_zero": true,
+      "sha256": "95505bc30b779b5f813745d58626180c2e358acc14fed0d89380e23fcd4a1cbd"
+    }
+  ]
+}

@@ -1,0 +1,222 @@
+# Vườn Nhỏ: Quán Trà — mốc A
+
+Bản triển khai mốc A của [Kế hoạch MVP](../Ke-hoach-MVP-Vuon-Nho.md). Vòng chơi
+**chọn cây → gieo → cây lớn → thu → máy pha → tự bán → mua nâng cấp** chạy được từ đầu đến cuối
+bằng primitive Unity, có save/offline/lifecycle và bộ test logic.
+
+Bộ asset mốc B (11 model Blender, 7 icon, 5 cue âm thanh tự ghi) **chưa có** — đó là việc tay
+người, xem mục "Còn lại" bên dưới.
+
+- Unity **6000.6.0f1**, URP 17.6.0, uGUI 2.6.0, Test Framework 1.8.0 (đều là bản đi kèm editor,
+  không cần tải thêm).
+- Windows x64, chơi bằng chuột, 1366 × 768 trở lên.
+
+## Mở và chạy
+
+```bash
+"C:\Program Files\Unity\Hub\Editor\6000.6.0f1\Editor\Unity.exe" -projectPath "C:\Users\PC\Desktop\Game\VuonNho"
+```
+
+Mở scene `Assets/Scenes/Garden.unity` rồi bấm Play. Menu **Vườn Nhỏ** trong editor có:
+
+| Mục | Việc |
+|---|---|
+| 0. Tạo hoặc mở GardenSkin | Mở asset chứa toàn bộ prefab hình ảnh và kích thước |
+| 1. Thiết lập project | Gán URP, tên sản phẩm, color space, độ phân giải mặc định |
+| 2. Dựng lại scene Garden | Dựng lại toàn bộ scene primitive từ code |
+| 3. Build Windows (bản playtest) | Không có công cụ tua thời gian |
+| 4. Build Windows (bản dev) | Có tua 1 phút / 60 phút trong Cài đặt |
+| 5. Chụp ảnh scene | Ảnh editor — xem cảnh báo bên dưới |
+
+Chạy từ dòng lệnh:
+
+```bash
+"C:\Program Files\Unity\Hub\Editor\6000.6.0f1\Editor\Unity.exe" -batchmode -quit -projectPath "C:\Users\PC\Desktop\Game\VuonNho" -executeMethod VuonNho.EditorTools.BuildTool.BuildWindowsPlaytest -logFile build.log
+```
+
+Bản build nằm ở `Build/VuonNho-playtest/` và `Build/VuonNho-dev/`.
+
+## Chạy test
+
+```bash
+"C:\Program Files\Unity\Hub\Editor\6000.6.0f1\Editor\Unity.exe" -batchmode -projectPath "C:\Users\PC\Desktop\Game\VuonNho" -runTests -testPlatform EditMode -testResults results.xml -logFile test.log
+```
+
+83 test EditMode, phủ bảng "Kiểm thử logic bắt buộc" ở mục 10 của kế hoạch: tính nhất quán thời
+gian, biên timer, trước/sau robot, cap offline 4 giờ, đồng thời, đổi cây/công thức, nâng tốc độ
+giữa chu kỳ, kho, giao dịch, resume lặp, save/backup/schema, chỉnh đồng hồ, balance khác và múi giờ.
+
+Phần "kiểm thử build và giao diện" của mục 10 chạy bằng bộ QA nằm trong chính bản build:
+
+```bash
+Build\VuonNho-dev\VuonNho.exe -screen-fullscreen 0 -screen-width 1366 -screen-height 768 -vuonnho-qa "Docs\QA-1366x768.md"
+```
+
+Nó chơi từ vườn mới tới mở 12 ô, nạp lại save giữa chu kỳ, quét chữ tràn và click xuyên UI trên mọi
+panel, đo frame time và thời gian bù 4 giờ, rồi ghi báo cáo Markdown và thoát với mã 0/1.
+Kết quả gần nhất và những gì nó **không** chứng minh được: [Docs/QA-moc-A.md](Docs/QA-moc-A.md).
+
+## Kiến trúc
+
+Tách mô phỏng khỏi hiển thị đúng như mục 8 của kế hoạch. `Assets/Scripts/`:
+
+| Assembly | Nội dung | Phụ thuộc |
+|---|---|---|
+| `VuonNho.Core` | `GameState`, `FarmSimulation`, `GameSession`, `ContentCatalog`, `SaveSerializer`, `TutorialGuide`, JSON | **C# thuần, không tham chiếu UnityEngine** |
+| `VuonNho.Infrastructure` | `FileSaveRepository`, `SystemClock`, `FileTestLogger` | Core + UnityEngine |
+| `VuonNho.Views` | `GameBootstrap`, `PlotView`, `MachineView`, `HelperView`, `GameHud`, `GardenSkin`, `SfxPlayer`, `QaScreenshot` | Core + Infrastructure |
+| `VuonNho.Editor` | `SceneFactory`, `ProjectSetup`, `BuildTool`, `SceneCapture` | Editor-only |
+
+`GameState` là nguồn sự thật duy nhất cho tiền, kho, timer và mở khóa. View dựng lại được mà
+tiến trình không đổi. Không có coroutine hay animation nào làm nguồn timer kinh tế.
+
+`FarmSimulation.AdvanceTo` là **một thuật toán dùng cho cả online và offline**: nhảy theo deadline
+chính xác, thứ tự cố định tại mỗi timestamp (cây/mẻ đến hạn → robot thu và gieo lại → máy bắt đầu
+mẻ mới). Chia nhiều tick nhỏ hay gọi một lần cho cùng kết quả — có test khẳng định điều này.
+
+### Chống cộng lại tiền khi quay lại
+
+`GameSession.ApplyOfflineProgress` mô phỏng trên **bản sao** state, ghi state mới + checkpoint mới
++ báo cáo trong cùng một snapshot, và **chỉ đưa ra UI sau khi lưu thành công**. Checkpoint được đặt
+về hiện tại nên phần dư trên cap 4 giờ không được nhận ở lần mở tiếp theo. Callback focus/pause
+lặp lại chỉ tạo một lần Suspended → Resuming.
+
+Lệnh mua trừ tiền và thay tiến độ trong cùng một transaction; lỗi ghi cho thử lại mà không trừ
+tiền thêm lần nào.
+
+### Save
+
+`%USERPROFILE%\AppData\LocalLow\Vuon Nho\Vuon Nho - Quan Tra\`
+
+- `vuon-nho-save.json` — file chính, `vuon-nho-save.backup.json` — bản tốt trước đó.
+- Ghi file tạm → đọc lại kiểm tra → `File.Replace` để thay file chính và giữ backup.
+- File chính hỏng thì tự dùng backup. **Cả hai hỏng thì game báo lỗi và dừng, không âm thầm reset.**
+- Save có schema mới hơn ứng dụng cũng bị chặn có chủ đích.
+- `vuon-nho-playtest.log` — log sự kiện cục bộ, không gửi đi đâu; nút "Xuất dữ liệu test" trong
+  Cài đặt sao chép ra file riêng.
+
+## Cân bằng
+
+Toàn bộ số của balance v0 (mục 5 kế hoạch) nằm trong `Assets/Scripts/Core/DefaultContent.cs` và
+`BalanceConfig`. Đổi số ở đó rồi chạy lại test là đủ; validator từ chối id trùng/không tồn tại,
+thời gian không dương, giá âm, yield không dương.
+
+## Thay asset — GardenSkin
+
+Scene được sinh ra bằng code nên **đừng sửa art trực tiếp trong scene**: chạy lại menu "2. Dựng lại
+scene Garden" là mất hết. Thay vào đó thả prefab vào `Assets/Settings/GardenSkin.asset`
+(menu **Vườn Nhỏ → 0. Tạo hoặc mở GardenSkin**), rồi dựng lại scene.
+
+Chỗ nào chưa có prefab thì tự rơi về primitive của mốc A, nên thay được từng phần một —
+làm xong cây bạc hà là thả vào ngay, không phải chờ đủ bộ. Log lúc dựng scene báo còn thiếu bao
+nhiêu chỗ.
+
+| Ô trong GardenSkin | Nhận model gì | Ghi chú |
+|---|---|---|
+| `SoilPrefab` | Mặt đất một ô | Không gán `LockedOverlayPrefab` thì ô khóa được tô màu tối bằng renderer đầu tiên tìm thấy |
+| `LockedOverlayPrefab` | Hình riêng cho ô chưa mở | Hiện đè lên ô khóa |
+| `SeedlingPrefab` | Mầm chung cho cả 3 cây | |
+| `Crops[].MaturePrefab` | Cây trưởng thành, mỗi loại một model | Đúng "1 mầm chung + 3 cây trưởng thành" của tài liệu asset |
+| `ReadyBadgePrefab` | Dấu hiệu cây chín | Nổi ở độ cao 1,15 m trên ô |
+| `StationPrefab` | Cụm quán trà kèm máy | Đặt con tên `StatusAnchor` và `SteamAnchor` để có đèn trạng thái và hơi nước |
+| `RobotPrefab` | Robot nổi | Đặt con tên `Face` để mặt đổi màu khi robot thức |
+| `GroundPrefab`, `TreePrefabs`, `BushPrefabs`, `RockPrefabs`, `FencePostPrefab` | Nền và props | Mảng props được chọn theo chỉ số cố định nên scene dựng lại luôn giống nhau |
+
+Skin cũng giữ kích thước và ánh sáng: `PlotSpacing` (mặc định **1,6 m**), `PlotSize` (**1,4 m**),
+`GroundSize`, `CameraOrthographicSize`, màu trời và ambient. Đổi ở đây rồi dựng lại scene là cả bố
+cục theo — vị trí quán, robot, hàng rào đều tính từ `PlotSpacing`.
+
+Yêu cầu với prefab: 1 unit = 1 m, pivot ở giữa chân, +Y lên, scale 1, không rig. Collider trong art
+được tự động tắt lúc dựng scene để raycast chỉ trúng collider gameplay trên `PlotRoot`. Prefab được
+đặt vào scene bằng `PrefabUtility.InstantiatePrefab` nên sửa prefab là scene đang mở cập nhật theo.
+
+Model trưởng thành bị script scale từ 0,55 lên 1,0 theo tiến độ, nên **đừng scale sẵn ở prefab
+root** — bọc mesh trong một child rồi scale ở child.
+
+## HUD — quy ước dựng giao diện
+
+Toàn bộ HUD được dựng bằng code trong `GameHud.BuildUi`, không có prefab UI nào trong scene.
+Sửa `GameHud.cs`, `UiFactory.cs` hoặc `GardenPalette.cs` rồi build lại là xong — **không cần chạy
+lại "2. Dựng lại scene Garden"**, vì scene chỉ giữ `HudCanvas` (Canvas + CanvasScaler 1366 × 768 +
+GraphicRaycaster + `GameHud`).
+
+Ba file, ba việc:
+
+| File | Giữ gì |
+|---|---|
+| `GardenPalette` | **Mọi màu HUD.** Không tự chế màu trong `GameHud`, thêm hằng ở đây |
+| `UiFactory` | Panel, nhãn, nút, thanh tiến độ, layout, bậc cỡ chữ và bán kính bo góc |
+| `GameHud` | Bố cục và nội dung từng bề mặt |
+
+Vài quy ước đã áp dụng, giữ nguyên khi thêm màn hình mới:
+
+- **Góc bo sinh bằng code.** `UiFactory.Rounded(radius)` dựng texture trắng + alpha trong bộ nhớ
+  rồi cắt 9-slice, cache theo bán kính. Không cần file ảnh, và vì ảnh chỉ có màu trắng nên màu thật
+  vẫn do `Image.color` quyết định — không dính gì đến color space Linear. Bán kính chuẩn:
+  `RadiusPanel` 14 cho panel/popup, `RadiusControl` 10 cho nút và thẻ dòng, `RadiusTrack` 5 cho
+  thanh tiến độ, `RadiusDot` 6 cho đèn trạng thái.
+- **Một rail duy nhất:** `EdgeMargin` 16 px cho lề ngoài, `Gutter` 12 px giữa hai bề mặt.
+- **Bậc chữ:** `FontSizeMeta` 16 (chú thích), `FontSizeBody` 18 (chữ chính, cũng là sàn), 
+  `FontSizeRowTitle` 20 (tên dòng), `FontSizeTitle` 24 (tiêu đề). `lineSpacing` 1,15 để dấu tiếng
+  Việt chồng hai tầng không chạm dòng trên.
+- **Nút có ba trạng thái** qua `UiFactory.SetButtonState`: `Normal`, `Selected` (đang chọn — đổi
+  màu *và* ghi ra bằng chữ, đừng chỉ đổi màu), `Disabled` (mờ cả nền lẫn chữ, kèm lý do trong nhãn).
+  `ButtonStyle.Primary` cho hành động, `ButtonStyle.Quiet` cho điều hướng và huỷ.
+- **Đừng đặt cứng chiều cao dòng có chữ tiếng Việt.** Dùng layout group cho uGUI tự tính; đặt cứng
+  thì chữ xuống dòng sẽ đè lên nút bên dưới. Chỉ đặt `LayoutElement.minHeight` làm sàn, không đặt
+  `preferredHeight`.
+- **Popup bắt buộc trả lời** (`BuildModal`) luôn có lớp scrim phủ cả màn hình, vừa để tách khỏi
+  vườn vừa để chặn click xuống đất. Toast thì ngược lại: `raycastTarget = false` để không nuốt click.
+
+Ảnh chụp QA: `-vuonnho-open-panel` nhận `inventory`, `upgrade`, `settings` và `plot` (mở popup ô 1).
+Ảnh tham chiếu của HUD hiện tại nằm ở `Docs/screenshots/`, chụp từ bản build chứ không phải editor.
+
+## Khác với kế hoạch — đã cân nhắc
+
+| Kế hoạch | Bản này | Lý do |
+|---|---|---|
+| Unity Input System | `Input` cũ + `StandaloneInputModule` | Input System không đi kèm editor, phải tải về; input đi qua đúng một chỗ (`GameBootstrap.HandleClick`) nên đổi sau là một file |
+| TextMeshPro | `UnityEngine.UI.Text` + font hệ thống | TMP cần import Essentials thủ công; dấu tiếng Việt đã kiểm bằng chuỗi đủ dấu và hiển thị đúng trong build |
+| ScriptableObject cho nội dung tĩnh | Class C# thuần trong Core | Giữ Core không phụ thuộc UnityEngine để test chạy độc lập; chuyển sang SO chỉ cần một lớp adapter |
+| Nội dung mốc A gọn hơn | Đã có sẵn cả 3 cây, 12 ô, 7 nâng cấp, bán thô | Là dữ liệu, không tốn công code thêm; mốc B chỉ còn phần hình ảnh |
+
+Âm thanh: 5 cue được **tổng hợp bằng sóng ngay trong game** (`SfxPlayer`), không phụ thuộc file.
+Đây là bản tạm để có phản hồi; mốc B thay bằng bản tự ghi nếu cần.
+
+## Cảnh báo: ảnh chụp từ editor batchmode không đáng tin
+
+`SceneCapture` chạy trong `-batchmode` cho ra ảnh **một màu duy nhất** dù material trong scene đã
+đúng màu. Đây là lỗi của đường render offscreen trong batchmode, không phải của game. Muốn kiểm
+tra hình ảnh thật, chụp từ chính bản build:
+
+```bash
+Build\VuonNho-dev\VuonNho.exe -screen-fullscreen 0 -screen-width 1366 -screen-height 768 -vuonnho-screenshot "C:\anh.png" -vuonnho-screenshot-delay 4 -vuonnho-open-panel upgrade
+```
+
+## Đã xong
+
+- **Mốc A** — vòng chơi, save/offline/lifecycle, HUD, 83 test, hai bản build.
+- **L01 + B02** — 13 model Blender (gồm sả và nhài), 9 material, 5 cue âm thanh, prefab và
+  GardenSkin đã điền đủ. Xem [Docs/Art/L01-B02.md](Docs/Art/L01-B02.md).
+- **Checklist mục 10** — 83 test logic + 62 mục kiểm trong bản build, hai độ phân giải.
+  Xem [Docs/QA-moc-A.md](Docs/QA-moc-A.md).
+- **Hướng v1** — đổi tên, siết nhịp, thêm sả/nhài, pha 2 trang trí.
+  Xem [Docs/Huong-di-v1.md](Docs/Huong-di-v1.md).
+- **Font** — National Park, sáu weight, kèm giấy phép OFL.
+
+## Còn lại
+
+Việc cần người, không tự động được:
+
+- **A05 / B04 — playtest.** Chưa có ai ngoài chơi thử. Toàn bộ nhịp v1 (trà đầu 18 giây,
+  robot 1,6 phút) mới là **giả thuyết đo bằng máy**, chưa ai xác nhận là vui.
+- **Máy chuẩn để đo hiệu năng.** Số hiện tại đo trên RTX 3060 nên chưa đủ nghiệm thu; kế hoạch
+  yêu cầu chọn một máy cấu hình thấp trong nhóm tester.
+
+Việc còn làm được bằng code:
+
+- **7 icon** — HUD hiện toàn chữ, chưa có icon nào. `ArtCapture` đã chụp sẵn icon vào
+  `Docs/Art/review/icons/` nhưng chưa nối vào UI.
+- **Model cho 5 món trang trí** — đang là primitive; ô `GardenSkin.Decorations` còn trống.
+- **TextMeshPro** thay `UI.Text`, và **Input System** nếu làm Android.
+- **Bold 700 của font** — file trong bản tải về hỏng, cần tải lại nếu muốn bậc chữ này.

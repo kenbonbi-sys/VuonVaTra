@@ -1,0 +1,16 @@
+{
+    "name": "VuonNho.Infrastructure",
+    "rootNamespace": "VuonNho.Infrastructure",
+    "references": [
+        "VuonNho.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

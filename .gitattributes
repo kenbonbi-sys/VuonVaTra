@@ -1,0 +1,23 @@
+# File trên đĩa đang là LF. Giữ nguyên LF ở cả working tree lẫn repo để mỗi lần
+# checkout trên Windows không viết lại toàn bộ file và làm nhiễu diff.
+* text=auto eol=lf
+
+# Nhị phân — không bao giờ đổi kết thúc dòng, không diff theo dòng.
+*.fbx    binary
+*.blend  binary
+*.blend1 binary
+*.png    binary
+*.jpg    binary
+*.wav    binary
+*.ttf    binary
+*.otf    binary
+*.dll    binary
+*.exe    binary
+*.pdb    binary
+
+# YAML của Unity là text — cần diff đọc được, và merge phải chạy qua UnityYAMLMerge.
+*.unity   text merge=unityyamlmerge eol=lf
+*.prefab  text merge=unityyamlmerge eol=lf
+*.asset   text merge=unityyamlmerge eol=lf
+*.mat     text merge=unityyamlmerge eol=lf
+*.meta    text eol=lf

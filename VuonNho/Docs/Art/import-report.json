@@ -1,0 +1,356 @@
+{
+    "utc": "2026-09-06T04:56:17.0328497Z",
+    "unityVersion": "6000.6.0f1",
+    "preset": "FBX static; globalScale 1; Convert Units on; Bake Axis Conversion on; imported normals; hierarchy preserved; no animation, cameras, lights or colliders",
+    "passed": true,
+    "skinAssigned": true,
+    "sceneRebuilt": true,
+    "calibration": {
+        "cubeSize": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "cubeBottomCenter": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "frontMarker": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.6000000238418579
+        },
+        "upMarker": {
+            "x": 0.0,
+            "y": 1.100000023841858,
+            "z": 0.0
+        },
+        "errors": []
+    },
+    "models": [
+        {
+            "name": "Plot",
+            "path": "Assets/Art/Models/SM_Plot.fbx",
+            "guid": "ac7cfec0b22797148a2aa89b3fccd609",
+            "size": {
+                "x": 1.399999976158142,
+                "y": 0.17000000178813934,
+                "z": 1.399999976158142
+            },
+            "center": {
+                "x": 0.0,
+                "y": 0.08500000089406967,
+                "z": 0.0
+            },
+            "triangles": 188,
+            "renderers": 1,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Soil"
+            ],
+            "errors": []
+        },
+        {
+            "name": "Seedling",
+            "path": "Assets/Art/Models/SM_Seedling.fbx",
+            "guid": "b128bfc665755a945b870dd18e05e301",
+            "size": {
+                "x": 0.4316665232181549,
+                "y": 0.23810380697250366,
+                "z": 0.17713597416877747
+            },
+            "center": {
+                "x": 0.0033295750617980957,
+                "y": 0.13405188918113708,
+                "z": 0.019754961133003235
+            },
+            "triangles": 156,
+            "renderers": 1,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Leaf"
+            ],
+            "errors": []
+        },
+        {
+            "name": "Mint",
+            "path": "Assets/Art/Models/SM_Mint.fbx",
+            "guid": "402474a4dceff4c42809058115c85af1",
+            "size": {
+                "x": 0.8171732425689697,
+                "y": 0.9200000166893005,
+                "z": 0.785342276096344
+            },
+            "center": {
+                "x": 0.0,
+                "y": 0.46000000834465027,
+                "z": 0.0
+            },
+            "triangles": 868,
+            "renderers": 2,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Leaf",
+                "M_Grass"
+            ],
+            "errors": []
+        },
+        {
+            "name": "Chamomile",
+            "path": "Assets/Art/Models/SM_Chamomile.fbx",
+            "guid": "0533cae6e4e95444cabdca8ac4a7168d",
+            "size": {
+                "x": 0.7685863971710205,
+                "y": 0.8673890829086304,
+                "z": 0.6482707262039185
+            },
+            "center": {
+                "x": -0.007881224155426025,
+                "y": 0.43580538034439087,
+                "z": 0.07918894290924072
+            },
+            "triangles": 1428,
+            "renderers": 2,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Leaf",
+                "M_Cream",
+                "M_Yellow"
+            ],
+            "errors": []
+        },
+        {
+            "name": "Strawberry",
+            "path": "Assets/Art/Models/SM_Strawberry.fbx",
+            "guid": "ea4728734434be846af6d846c3a6b7dc",
+            "size": {
+                "x": 0.7749027013778687,
+                "y": 0.4554654359817505,
+                "z": 0.7929736375808716
+            },
+            "center": {
+                "x": -0.011574268341064453,
+                "y": 0.23389166593551636,
+                "z": 0.020609796047210693
+            },
+            "triangles": 1368,
+            "renderers": 2,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Leaf",
+                "M_Red"
+            ],
+            "errors": []
+        },
+        {
+            "name": "Lemongrass",
+            "path": "Assets/Art/Models/SM_Lemongrass.fbx",
+            "guid": "a3087ace32d68ed4f8a20144bb87f881",
+            "size": {
+                "x": 0.7394735813140869,
+                "y": 0.925000011920929,
+                "z": 0.8773216009140015
+            },
+            "center": {
+                "x": -0.0013570785522460938,
+                "y": 0.45750001072883606,
+                "z": -0.001071155071258545
+            },
+            "triangles": 1788,
+            "renderers": 2,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Grass",
+                "M_Cream",
+                "M_Accent",
+                "M_Yellow"
+            ],
+            "errors": []
+        },
+        {
+            "name": "Jasmine",
+            "path": "Assets/Art/Models/SM_Jasmine.fbx",
+            "guid": "5daf121e1b3dd9a48b3bdd768c0a05f5",
+            "size": {
+                "x": 0.6150931119918823,
+                "y": 0.8610000014305115,
+                "z": 0.6299573183059692
+            },
+            "center": {
+                "x": 0.02066659927368164,
+                "y": 0.43050000071525574,
+                "z": 0.0028108954429626465
+            },
+            "triangles": 1580,
+            "renderers": 2,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Leaf",
+                "M_Wood",
+                "M_Cream"
+            ],
+            "errors": []
+        },
+        {
+            "name": "Helper",
+            "path": "Assets/Art/Models/SM_Helper.fbx",
+            "guid": "ddf5e28c09478a845a37af8a03b6fc5a",
+            "size": {
+                "x": 0.7049999833106995,
+                "y": 0.8289999961853027,
+                "z": 0.5394999980926514
+            },
+            "center": {
+                "x": 0.0,
+                "y": 0.08449998497962952,
+                "z": 0.0247499942779541
+            },
+            "triangles": 1988,
+            "renderers": 3,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Dark",
+                "M_Yellow",
+                "M_Cream",
+                "M_Accent"
+            ],
+            "errors": []
+        },
+        {
+            "name": "TeaStation",
+            "path": "Assets/Art/Models/SM_TeaStation.fbx",
+            "guid": "6643ccf180984664ea0c56d4feb26e4f",
+            "size": {
+                "x": 3.0999999046325684,
+                "y": 1.9800000190734863,
+                "z": 1.2599999904632568
+            },
+            "center": {
+                "x": 0.0,
+                "y": 0.9900000095367432,
+                "z": -0.04999995231628418
+            },
+            "triangles": 3244,
+            "renderers": 3,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Wood",
+                "M_Cream",
+                "M_Accent",
+                "M_Dark",
+                "M_Soil",
+                "M_Yellow"
+            ],
+            "errors": []
+        },
+        {
+            "name": "BackgroundTree",
+            "path": "Assets/Art/Models/SM_BackgroundTree.fbx",
+            "guid": "3f1d31d4299d72344b14a88f6f29f4b7",
+            "size": {
+                "x": 1.4358197450637817,
+                "y": 2.069999933242798,
+                "z": 0.8159452080726624
+            },
+            "center": {
+                "x": -0.012061238288879395,
+                "y": 1.034999966621399,
+                "z": -0.022123903036117554
+            },
+            "triangles": 764,
+            "renderers": 1,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Wood",
+                "M_Leaf"
+            ],
+            "errors": []
+        },
+        {
+            "name": "Bush",
+            "path": "Assets/Art/Models/SM_Bush.fbx",
+            "guid": "c7d884da289887c4f9c0412cd90c0c30",
+            "size": {
+                "x": 1.026017665863037,
+                "y": 0.6000000238418579,
+                "z": 0.6200000643730164
+            },
+            "center": {
+                "x": -0.005244731903076172,
+                "y": 0.30000001192092896,
+                "z": -0.004999995231628418
+            },
+            "triangles": 300,
+            "renderers": 1,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Leaf"
+            ],
+            "errors": []
+        },
+        {
+            "name": "Fence",
+            "path": "Assets/Art/Models/SM_Fence.fbx",
+            "guid": "37bb475eb78c2b2408a55bed627e903b",
+            "size": {
+                "x": 1.6200000047683716,
+                "y": 0.7850000262260437,
+                "z": 0.20000000298023224
+            },
+            "center": {
+                "x": 0.0,
+                "y": 0.39250001311302185,
+                "z": 0.0
+            },
+            "triangles": 648,
+            "renderers": 1,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Wood",
+                "M_Cream"
+            ],
+            "errors": []
+        },
+        {
+            "name": "Rock",
+            "path": "Assets/Art/Models/SM_Rock.fbx",
+            "guid": "1309d8c315b5b0f439f5d07d55613be4",
+            "size": {
+                "x": 0.6897653341293335,
+                "y": 0.4276582598686218,
+                "z": 0.5499610304832458
+            },
+            "center": {
+                "x": 0.001088261604309082,
+                "y": 0.2138291299343109,
+                "z": 0.00694119930267334
+            },
+            "triangles": 320,
+            "renderers": 1,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Cream"
+            ],
+            "errors": []
+        }
+    ],
+    "createdPrefabs": [],
+    "preservedPrefabs": [
+        "Assets/Art/Prefabs/PF_Plot.prefab",
+        "Assets/Art/Prefabs/PF_Seedling.prefab",
+        "Assets/Art/Prefabs/PF_Mint.prefab",
+        "Assets/Art/Prefabs/PF_Chamomile.prefab",
+        "Assets/Art/Prefabs/PF_Strawberry.prefab",
+        "Assets/Art/Prefabs/PF_Lemongrass.prefab",
+        "Assets/Art/Prefabs/PF_Jasmine.prefab",
+        "Assets/Art/Prefabs/PF_Helper.prefab",
+        "Assets/Art/Prefabs/PF_TeaStation.prefab",
+        "Assets/Art/Prefabs/PF_BackgroundTree.prefab",
+        "Assets/Art/Prefabs/PF_Bush.prefab",
+        "Assets/Art/Prefabs/PF_Fence.prefab",
+        "Assets/Art/Prefabs/PF_Rock.prefab"
+    ],
+    "filledSlots": [],
+    "errors": []
+}

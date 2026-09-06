@@ -1,0 +1,6 @@
+{
+  "name": "VuonNho.ArtQa",
+  "rootNamespace": "VuonNho.ArtQa",
+  "references": ["VuonNho.Core", "VuonNho.Views"],
+  "autoReferenced": true
+}

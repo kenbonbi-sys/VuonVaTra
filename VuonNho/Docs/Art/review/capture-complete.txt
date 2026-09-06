@@ -1,0 +1,1 @@
+Unity 6000.6.0f1; actual Windows player render; no save/session opened.

@@ -1,0 +1,868 @@
+{
+  "generator": "generate_garden.py",
+  "blenderVersion": "4.5.11 LTS",
+  "seed": 60206,
+  "palette": {
+    "M_Grass": "#A8BC78",
+    "M_Leaf": "#4F7B50",
+    "M_Soil": "#916447",
+    "M_Wood": "#B88858",
+    "M_Cream": "#F2E3BE",
+    "M_Dark": "#303C32",
+    "M_Yellow": "#E9BF5C",
+    "M_Red": "#D97672",
+    "M_Accent": "#81B8AB"
+  },
+  "coordinateConvention": "Blender +Z up; +Y is the model front and maps to Unity +Z (verified by SM_CalibrationCube). FBX -Z Forward, Y Up.",
+  "exportSettings": {
+    "axisForward": "-Z",
+    "axisUp": "Y",
+    "globalScale": 1,
+    "applyUnitScale": true,
+    "applyScaleOptions": "FBX_SCALE_UNITS",
+    "bakeSpaceTransform": true,
+    "useSelection": true,
+    "objectTypes": [
+      "MESH",
+      "EMPTY"
+    ],
+    "useMeshModifiers": true,
+    "useTriangles": true,
+    "bakeAnimation": false,
+    "embedTextures": false,
+    "unityBakeAxisConversion": true,
+    "unityGlobalScale": 1
+  },
+  "assets": {
+    "SM_CalibrationCube": {
+      "assetId": "CAL01",
+      "name": "SM_CalibrationCube",
+      "source": "SourceArt/Blender/SM_CalibrationCube.blend",
+      "export": "Assets/Art/Models/SM_CalibrationCube.fbx",
+      "triangles": 36,
+      "renderers": 3,
+      "materials": [
+        "M_Cream",
+        "M_Red",
+        "M_Yellow"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.5,
+          -0.5,
+          0.0
+        ],
+        "max": [
+          0.5,
+          0.7,
+          1.2
+        ]
+      },
+      "dimensionsUnityMetres": [
+        1.0,
+        1.2,
+        1.2
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "CalibrationCube",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Cream"
+          ]
+        },
+        {
+          "name": "FrontMarker",
+          "originBlender": [
+            0.0,
+            0.6,
+            0.5
+          ],
+          "materialSlots": [
+            "M_Red"
+          ]
+        },
+        {
+          "name": "UpMarker",
+          "originBlender": [
+            0.0,
+            0.0,
+            1.1
+          ],
+          "materialSlots": [
+            "M_Yellow"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_Mint": {
+      "assetId": "A03",
+      "name": "SM_Mint",
+      "source": "SourceArt/Blender/SM_Mint.blend",
+      "export": "Assets/Art/Models/SM_Mint.fbx",
+      "triangles": 868,
+      "renderers": 2,
+      "materials": [
+        "M_Grass",
+        "M_Leaf"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.40859,
+          -0.39267,
+          0.0
+        ],
+        "max": [
+          0.40859,
+          0.39267,
+          0.92
+        ]
+      },
+      "dimensionsUnityMetres": [
+        0.81717,
+        0.92,
+        0.78534
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "FoliageRoot",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Leaf"
+          ]
+        },
+        {
+          "name": "ReadyAccents",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Grass"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_Plot": {
+      "assetId": "A01",
+      "name": "SM_Plot",
+      "source": "SourceArt/Blender/SM_Plot.blend",
+      "export": "Assets/Art/Models/SM_Plot.fbx",
+      "triangles": 188,
+      "renderers": 1,
+      "materials": [
+        "M_Soil"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.7,
+          -0.7,
+          0.0
+        ],
+        "max": [
+          0.7,
+          0.7,
+          0.17
+        ]
+      },
+      "dimensionsUnityMetres": [
+        1.4,
+        0.17,
+        1.4
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "SoilMesh",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Soil"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_Seedling": {
+      "assetId": "A02",
+      "name": "SM_Seedling",
+      "source": "SourceArt/Blender/SM_Seedling.blend",
+      "export": "Assets/Art/Models/SM_Seedling.fbx",
+      "triangles": 156,
+      "renderers": 1,
+      "materials": [
+        "M_Leaf"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.2125,
+          -0.06881,
+          0.015
+        ],
+        "max": [
+          0.21916,
+          0.10832,
+          0.2531
+        ]
+      },
+      "dimensionsUnityMetres": [
+        0.43167,
+        0.2381,
+        0.17714
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "SeedlingMesh",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Leaf"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_Chamomile": {
+      "assetId": "A04",
+      "name": "SM_Chamomile",
+      "source": "SourceArt/Blender/SM_Chamomile.blend",
+      "export": "Assets/Art/Models/SM_Chamomile.fbx",
+      "triangles": 1428,
+      "renderers": 2,
+      "materials": [
+        "M_Cream",
+        "M_Leaf",
+        "M_Yellow"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.39217,
+          -0.24495,
+          0.00211
+        ],
+        "max": [
+          0.37641,
+          0.40332,
+          0.8695
+        ]
+      },
+      "dimensionsUnityMetres": [
+        0.76859,
+        0.86739,
+        0.64827
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "FoliageRoot",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Leaf"
+          ]
+        },
+        {
+          "name": "ReadyAccents",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Cream",
+            "M_Yellow"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_Strawberry": {
+      "assetId": "A05",
+      "name": "SM_Strawberry",
+      "source": "SourceArt/Blender/SM_Strawberry.blend",
+      "export": "Assets/Art/Models/SM_Strawberry.fbx",
+      "triangles": 1368,
+      "renderers": 2,
+      "materials": [
+        "M_Leaf",
+        "M_Red"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.39903,
+          -0.37588,
+          0.00616
+        ],
+        "max": [
+          0.37588,
+          0.4171,
+          0.46162
+        ]
+      },
+      "dimensionsUnityMetres": [
+        0.7749,
+        0.45547,
+        0.79297
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "FoliageRoot",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Leaf"
+          ]
+        },
+        {
+          "name": "ReadyAccents",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Red",
+            "M_Leaf"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_Helper": {
+      "assetId": "A06",
+      "name": "SM_Helper",
+      "source": "SourceArt/Blender/SM_Helper.blend",
+      "export": "Assets/Art/Models/SM_Helper.fbx",
+      "triangles": 2040,
+      "renderers": 3,
+      "materials": [
+        "M_Accent",
+        "M_Cream",
+        "M_Dark",
+        "M_Yellow"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.3525,
+          -0.245,
+          -0.33
+        ],
+        "max": [
+          0.3525,
+          0.2945,
+          0.499
+        ]
+      },
+      "dimensionsUnityMetres": [
+        0.705,
+        0.829,
+        0.5395
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "Antenna",
+          "originBlender": [
+            0.0,
+            -0.03,
+            0.27
+          ],
+          "materialSlots": [
+            "M_Dark",
+            "M_Yellow"
+          ]
+        },
+        {
+          "name": "Body",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Cream",
+            "M_Accent",
+            "M_Yellow"
+          ]
+        },
+        {
+          "name": "Face",
+          "originBlender": [
+            0.0,
+            0.238,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Dark",
+            "M_Yellow",
+            "M_Cream"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_TeaStation": {
+      "assetId": "A07",
+      "name": "SM_TeaStation",
+      "source": "SourceArt/Blender/SM_TeaStation.blend",
+      "export": "Assets/Art/Models/SM_TeaStation.fbx",
+      "triangles": 3332,
+      "renderers": 3,
+      "materials": [
+        "M_Accent",
+        "M_Cream",
+        "M_Dark",
+        "M_Soil",
+        "M_Wood",
+        "M_Yellow"
+      ],
+      "boundsBlender": {
+        "min": [
+          -1.55,
+          -0.68,
+          0.0
+        ],
+        "max": [
+          1.55,
+          0.58,
+          1.98
+        ]
+      },
+      "dimensionsUnityMetres": [
+        3.1,
+        1.98,
+        1.26
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "StationMesh",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Wood",
+            "M_Cream",
+            "M_Accent",
+            "M_Dark",
+            "M_Soil"
+          ]
+        },
+        {
+          "name": "StatusAnchor",
+          "originBlender": [
+            -0.145,
+            0.342,
+            1.408
+          ],
+          "materialSlots": [
+            "M_Yellow"
+          ]
+        },
+        {
+          "name": "SteamAnchor",
+          "originBlender": [
+            -0.49,
+            0.46,
+            1.275
+          ],
+          "materialSlots": [
+            "M_Cream"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_BackgroundTree": {
+      "assetId": "A08",
+      "name": "SM_BackgroundTree",
+      "source": "SourceArt/Blender/SM_BackgroundTree.blend",
+      "export": "Assets/Art/Models/SM_BackgroundTree.fbx",
+      "triangles": 764,
+      "renderers": 1,
+      "materials": [
+        "M_Leaf",
+        "M_Wood"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.72997,
+          -0.4301,
+          0.0
+        ],
+        "max": [
+          0.70585,
+          0.38585,
+          2.07
+        ]
+      },
+      "dimensionsUnityMetres": [
+        1.43582,
+        2.07,
+        0.81595
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "TreeMesh",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Wood",
+            "M_Leaf"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_Bush": {
+      "assetId": "A09",
+      "name": "SM_Bush",
+      "source": "SourceArt/Blender/SM_Bush.blend",
+      "export": "Assets/Art/Models/SM_Bush.fbx",
+      "triangles": 300,
+      "renderers": 1,
+      "materials": [
+        "M_Leaf"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.51825,
+          -0.315,
+          0.0
+        ],
+        "max": [
+          0.50776,
+          0.305,
+          0.6
+        ]
+      },
+      "dimensionsUnityMetres": [
+        1.02602,
+        0.6,
+        0.62
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "BushMesh",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Leaf"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_Fence": {
+      "assetId": "A10",
+      "name": "SM_Fence",
+      "source": "SourceArt/Blender/SM_Fence.blend",
+      "export": "Assets/Art/Models/SM_Fence.fbx",
+      "triangles": 648,
+      "renderers": 1,
+      "materials": [
+        "M_Cream",
+        "M_Wood"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.81,
+          -0.1,
+          0.0
+        ],
+        "max": [
+          0.81,
+          0.1,
+          0.785
+        ]
+      },
+      "dimensionsUnityMetres": [
+        1.62,
+        0.785,
+        0.2
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "FenceMesh",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Wood",
+            "M_Cream"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_Rock": {
+      "assetId": "A11",
+      "name": "SM_Rock",
+      "source": "SourceArt/Blender/SM_Rock.blend",
+      "export": "Assets/Art/Models/SM_Rock.fbx",
+      "triangles": 320,
+      "renderers": 1,
+      "materials": [
+        "M_Cream"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.34379,
+          -0.26804,
+          0.0
+        ],
+        "max": [
+          0.34597,
+          0.28192,
+          0.42766
+        ]
+      },
+      "dimensionsUnityMetres": [
+        0.68977,
+        0.42766,
+        0.54996
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "RockMesh",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Cream"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_Lemongrass": {
+      "assetId": "A12",
+      "name": "SM_Lemongrass",
+      "source": "SourceArt/Blender/SM_Lemongrass.blend",
+      "export": "Assets/Art/Models/SM_Lemongrass.fbx",
+      "triangles": 1788,
+      "renderers": 2,
+      "materials": [
+        "M_Accent",
+        "M_Cream",
+        "M_Grass",
+        "M_Yellow"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.37109,
+          -0.43973,
+          -0.005
+        ],
+        "max": [
+          0.36838,
+          0.43759,
+          0.92
+        ]
+      },
+      "dimensionsUnityMetres": [
+        0.73947,
+        0.925,
+        0.87732
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "FoliageRoot",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Grass",
+            "M_Cream"
+          ]
+        },
+        {
+          "name": "ReadyAccents",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Accent",
+            "M_Yellow"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_Jasmine": {
+      "assetId": "A13",
+      "name": "SM_Jasmine",
+      "source": "SourceArt/Blender/SM_Jasmine.blend",
+      "export": "Assets/Art/Models/SM_Jasmine.fbx",
+      "triangles": 1580,
+      "renderers": 2,
+      "materials": [
+        "M_Cream",
+        "M_Leaf",
+        "M_Wood"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.28688,
+          -0.31217,
+          0.0
+        ],
+        "max": [
+          0.32821,
+          0.31779,
+          0.861
+        ]
+      },
+      "dimensionsUnityMetres": [
+        0.61509,
+        0.861,
+        0.62996
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "FoliageRoot",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Leaf",
+            "M_Wood"
+          ]
+        },
+        {
+          "name": "ReadyAccents",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Cream"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
+    }
+  }
+}

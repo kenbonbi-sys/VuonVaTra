@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a89c1ddfcee2a4489b9f2fc6ed89571, type: 3}
+  m_Name: GardenSkin
+  m_EditorClassIdentifier: VuonNho.Views::VuonNho.Views.GardenSkin
+  PlotSpacing: 1.6
+  PlotSize: 1.4
+  GroundSize: 34
+  CameraOrthographicSize: 6
+  SoilPrefab: {fileID: 2577605644824434187, guid: 36da81312d6574d41a7bf9fb266efcad, type: 3}
+  LockedOverlayPrefab: {fileID: 4531101483982125011, guid: 82c4643cc23bc8942bc28610ae30d20f, type: 3}
+  SeedlingPrefab: {fileID: 718328680928917701, guid: 78387059e5d50b241875ee2cb056fb42, type: 3}
+  ReadyBadgePrefab: {fileID: 6390852001270807505, guid: 1131fbf99c3e14640921f01ebe1f3796, type: 3}
+  Crops:
+  - CropId: crop_mint
+    MaturePrefab: {fileID: 210244954577301049, guid: a5c0ea1a6b5a19142a8b3338cd82cb7f, type: 3}
+  - CropId: crop_chamomile
+    MaturePrefab: {fileID: 6922883559677981759, guid: 2610b1a5667c9574ca5d41c4eb2ea9a1, type: 3}
+  - CropId: crop_strawberry
+    MaturePrefab: {fileID: 7307058355275959837, guid: a29b6c9b7313f46468cb128c35ceed8b, type: 3}
+  - CropId: crop_lemongrass
+    MaturePrefab: {fileID: 4491294599061181809, guid: 1906e72c5403a724f8e31fb07e864fa0, type: 3}
+  - CropId: crop_jasmine
+    MaturePrefab: {fileID: 6617784360100790244, guid: edc7f7680b7766a4db442d8c9c2646e7, type: 3}
+  StationPrefab: {fileID: 4186430695575864216, guid: 3c6a91b347ae393439f8bf32da3a7767, type: 3}
+  RobotPrefab: {fileID: 7065989557344915967, guid: 73f5757dd801e484197da5d1a754c0b4, type: 3}
+  GroundPrefab: {fileID: 1978281551807286252, guid: 0cb8588d56f85064fa5dfd39faf5687c, type: 3}
+  TreePrefabs:
+  - {fileID: 6609403130369397503, guid: 9348ebb284524a940a8d2f0ca50877d8, type: 3}
+  BushPrefabs:
+  - {fileID: 8487109244253991160, guid: 84004d3690f891b4889137b5a7e75462, type: 3}
+  RockPrefabs:
+  - {fileID: 4235597646367451874, guid: e885a356e15556d43ac95c1ac7e880a6, type: 3}
+  FencePostPrefab: {fileID: 6951799199227941517, guid: 66c5b8cd8232a46429bb1b50bffe7408, type: 3}
+  BodyFont: {fileID: 12800000, guid: 347e6edb228d9574eb5afa1b605b23a9, type: 3}
+  DisplayFont: {fileID: 12800000, guid: 9165cc9b77a80114f8508d27a1bcf94c, type: 3}
+  Decorations: []
+  ClickClip: {fileID: 8300000, guid: 7ac12812b94628142871a3f1fbe0cc02, type: 3}
+  PlantClip: {fileID: 8300000, guid: 1d95b701d19a30741aa19e000e546fe6, type: 3}
+  HarvestClip: {fileID: 8300000, guid: b4ac2cfe9f5a015469473d1d2a7b63f9, type: 3}
+  BrewClip: {fileID: 8300000, guid: 7042701b1f68efd449336b9aea901915, type: 3}
+  UpgradeClip: {fileID: 8300000, guid: 830a5a57113c5ee40813718741123ce6, type: 3}
+  SkyColor: {r: 0.62, g: 0.78, b: 0.82, a: 1}
+  AmbientColor: {r: 0.45, g: 0.48, b: 0.46, a: 1}
+  KeyLightIntensity: 1.15

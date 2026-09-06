@@ -1,0 +1,60 @@
+{
+    "utc": "2026-09-06T03:59:29.2626850Z",
+    "unityVersion": "6000.6.0f1",
+    "preset": "FBX static; globalScale 1; Convert Units on; Bake Axis Conversion on; imported normals; hierarchy preserved; no animation, cameras, lights or colliders",
+    "passed": true,
+    "skinAssigned": false,
+    "sceneRebuilt": false,
+    "calibration": {
+        "cubeSize": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "cubeBottomCenter": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "frontMarker": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.6000000238418579
+        },
+        "upMarker": {
+            "x": 0.0,
+            "y": 1.100000023841858,
+            "z": 0.0
+        },
+        "errors": []
+    },
+    "models": [
+        {
+            "name": "Mint",
+            "path": "Assets/Art/Models/SM_Mint.fbx",
+            "guid": "402474a4dceff4c42809058115c85af1",
+            "size": {
+                "x": 0.8171732425689697,
+                "y": 0.9200000166893005,
+                "z": 0.785342276096344
+            },
+            "center": {
+                "x": 0.0,
+                "y": 0.46000000834465027,
+                "z": 0.0
+            },
+            "triangles": 868,
+            "renderers": 2,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Leaf",
+                "M_Grass"
+            ],
+            "errors": []
+        }
+    ],
+    "createdPrefabs": [],
+    "preservedPrefabs": [],
+    "filledSlots": [],
+    "errors": []
+}

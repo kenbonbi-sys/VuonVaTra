@@ -1,0 +1,17 @@
+{
+    "name": "VuonNho.Views",
+    "rootNamespace": "VuonNho.Views",
+    "references": [
+        "VuonNho.Core",
+        "VuonNho.Infrastructure"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
