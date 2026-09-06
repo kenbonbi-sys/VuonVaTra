@@ -485,7 +485,7 @@ namespace VuonNho.Core
             }
             if (_state.Coins < upgrade.Cost)
             {
-                reason = "Thiếu " + (upgrade.Cost - _state.Coins) + " xu.";
+                reason = "Thiếu " + (upgrade.Cost - _state.Coins) + " " + DefaultContent.CoinGlyph;
                 return false;
             }
             return true;
@@ -586,7 +586,8 @@ namespace VuonNho.Core
             if (plot.Fertility >= _catalog.Balance.CompostFertility)
                 return CommandResult.Fail("Đất còn tốt, chưa cần bón.");
             if (_state.Coins < _catalog.Balance.CompostCost)
-                return CommandResult.Fail("Thiếu " + (_catalog.Balance.CompostCost - _state.Coins) + " xu.");
+                return CommandResult.Fail("Thiếu " + (_catalog.Balance.CompostCost - _state.Coins) +
+                                          " " + DefaultContent.CoinGlyph);
 
             var working = _state.Clone();
             working.Coins -= _catalog.Balance.CompostCost;
@@ -618,7 +619,8 @@ namespace VuonNho.Core
             if (plot == null || !plot.Unlocked) return CommandResult.Fail("Ô này chưa mở khoá.");
             if (!plot.PestActive) return CommandResult.Fail("Ô này không có sâu bệnh.");
             if (_state.Coins < _catalog.Balance.PestTreatmentCost)
-                return CommandResult.Fail("Thiếu " + (_catalog.Balance.PestTreatmentCost - _state.Coins) + " xu.");
+                return CommandResult.Fail("Thiếu " + (_catalog.Balance.PestTreatmentCost - _state.Coins) +
+                                          " " + DefaultContent.CoinGlyph);
 
             var working = _state.Clone();
             working.Coins -= _catalog.Balance.PestTreatmentCost;
@@ -653,7 +655,7 @@ namespace VuonNho.Core
             }
             if (_state.Coins < stage.Cost)
             {
-                reason = "Thiếu " + (stage.Cost - _state.Coins) + " xu.";
+                reason = "Thiếu " + (stage.Cost - _state.Coins) + " " + DefaultContent.CoinGlyph;
                 return false;
             }
             return true;
@@ -689,7 +691,7 @@ namespace VuonNho.Core
             }
             if (_state.Coins < _catalog.Balance.WorkerHireCost)
             {
-                reason = "Thiếu " + (_catalog.Balance.WorkerHireCost - _state.Coins) + " xu.";
+                reason = "Thiếu " + (_catalog.Balance.WorkerHireCost - _state.Coins) + " " + DefaultContent.CoinGlyph;
                 return false;
             }
             return true;
@@ -854,7 +856,7 @@ namespace VuonNho.Core
 
             var definition = _catalog.Decoration(definitionId);
             if (_state.Coins < definition.Cost)
-                return CommandResult.Fail("Thiếu " + (definition.Cost - _state.Coins) + " xu.");
+                return CommandResult.Fail("Thiếu " + (definition.Cost - _state.Coins) + " " + DefaultContent.CoinGlyph);
 
             var working = _state.Clone();
             working.Coins -= definition.Cost;

@@ -635,13 +635,13 @@ namespace VuonNho.Views
             var balance = _session.Catalog.Balance;
 
             _workerSummary.text = "Thợ: " + state.HiredWorkers + " / " + balance.MaximumWorkers +
-                                  " · lương " + balance.WorkerWageCoins + " xu mỗi thợ, " +
+                                  " · lương " + balance.WorkerWageCoins + " " + DefaultContent.CoinGlyph + " mỗi thợ, " +
                                   (balance.PayrollPeriodMs / 1000) + " giây một kỳ";
 
             int owned = state.OwnedStationCount();
             string warning = null;
             if (state.StaffedWorkers < state.HiredWorkers)
-                warning = "Kỳ này không đủ xu trả lương: " + (state.HiredWorkers - state.StaffedWorkers) +
+                warning = "Kỳ này không đủ " + DefaultContent.CoinGlyph + " trả lương: " + (state.HiredWorkers - state.StaffedWorkers) +
                           " thợ đang nghỉ. Trả đủ là họ làm lại ngay.";
             else if (owned > state.HiredWorkers)
                 warning = "Có " + owned + " máy nhưng chỉ " + state.HiredWorkers +
@@ -652,7 +652,7 @@ namespace VuonNho.Views
             string hireReason;
             bool canHire = _session.CanHireWorker(out hireReason);
             UiFactory.SetButtonCaption(_hireButton, canHire
-                ? "Thuê thợ · " + balance.WorkerHireCost + " xu"
+                ? "Thuê thợ · " + balance.WorkerHireCost + " " + DefaultContent.CoinGlyph
                 : hireReason);
             UiFactory.SetButtonState(_hireButton, canHire
                 ? UiFactory.ButtonState.Normal : UiFactory.ButtonState.Disabled);
@@ -919,7 +919,8 @@ namespace VuonNho.Views
         void BuildDecorationRows(Transform body)
         {
             var note = UiFactory.Label(body, "Note",
-                                       "Chọn một món rồi đặt quanh vườn. Gỡ đồ để nhận lại đủ xu.",
+                                       "Chọn một món rồi đặt quanh vườn. Gỡ đồ để nhận lại đủ " +
+                                       DefaultContent.CoinGlyph + ".",
                                        UiFactory.FontSizeMeta, TextAnchor.UpperLeft, GardenPalette.TextMuted);
             var noteLayout = note.gameObject.AddComponent<LayoutElement>();
             noteLayout.minHeight = 44f;
@@ -1006,7 +1007,8 @@ namespace VuonNho.Views
                 // Gia da nam o nhan rieng ben phai kem icon tien, nen dong nay chi con ten va mo ta.
                 string text = decoration.DisplayName + "\n" + decoration.Description;
                 if (isPlacing) text += "\nĐang đặt — bấm vào vườn, chuột phải để thoát.";
-                else if (!affordable) text += "\nThiếu " + (decoration.Cost - state.Coins) + " xu.";
+                else if (!affordable)
+                    text += "\nThiếu " + (decoration.Cost - state.Coins) + " " + DefaultContent.CoinGlyph + ".";
                 row.Label.text = text;
 
                 UiFactory.SetButtonCaption(row.Choose, isPlacing ? "Đang đặt…" : "Đặt vào vườn");
@@ -1161,7 +1163,7 @@ namespace VuonNho.Views
             {
                 if (_selectedPlotId < 0) return;
                 Run(_session.Compost(_selectedPlotId));
-            }, UiFactory.ButtonStyle.Quiet, symbol: UiFactory.Symbols.LocalAtm);
+            }, UiFactory.ButtonStyle.Quiet);
 
             // Nut tri sau chi ton tai khi o dang co sau: khong co sau thi no bien mat han chu
             // khong nam do o dang tat, va popup lay lai duoc mot hang.
@@ -1169,7 +1171,7 @@ namespace VuonNho.Views
             {
                 if (_selectedPlotId < 0) return;
                 Run(_session.TreatPest(_selectedPlotId));
-            }, UiFactory.ButtonStyle.Primary, symbol: UiFactory.Symbols.LocalAtm);
+            }, UiFactory.ButtonStyle.Primary);
             _treatButton.gameObject.SetActive(false);
 
             foreach (var crop in _session.Catalog.Crops)
@@ -1433,7 +1435,7 @@ namespace VuonNho.Views
                 if (remaining < 0) remaining = 0;
                 _machineLabel.text = "Đang pha " + runningName +
                                      "\nCòn " + Seconds(remaining) + " giây · " +
-                                     state.Machine.BatchOutputCoins + " xu / mẻ";
+                                     state.Machine.BatchOutputCoins + " " + DefaultContent.CoinGlyph + " / mẻ";
                 _machineDot.color = MachineView.StatusRunning;
                 _machineBarTrack.color = GardenPalette.TrackEmpty;
                 _machineBarFill.color = MachineView.StatusRunning;
@@ -1532,11 +1534,11 @@ namespace VuonNho.Views
                 if (!raw)
                     meta = "Hàng trên dây chuyền, không bán lẻ được.";
                 else if (!unlocked)
-                    meta = crop.RawSellPrice + " xu/đơn vị  ·  chưa mở khóa";
+                    meta = crop.RawSellPrice + " " + DefaultContent.CoinGlyph + "/đơn vị  ·  chưa mở khóa";
                 else if (chosen.CropId == usedCropId)
-                    meta = crop.RawSellPrice + " xu/đơn vị  ·  máy đang dùng";
+                    meta = crop.RawSellPrice + " " + DefaultContent.CoinGlyph + "/đơn vị  ·  máy đang dùng";
                 else
-                    meta = crop.RawSellPrice + " xu/đơn vị";
+                    meta = crop.RawSellPrice + " " + DefaultContent.CoinGlyph + "/đơn vị";
                 _detailMeta.text = meta;
                 _detailMeta.color = raw && chosen.CropId == usedCropId
                     ? GardenPalette.StateOk : GardenPalette.TextMuted;
@@ -1545,7 +1547,7 @@ namespace VuonNho.Views
                 UiFactory.SetInteractable(_sellAll, raw && amount >= 1);
                 UiFactory.SetButtonCaption(_sellAll,
                                            raw && amount >= 1
-                                               ? "Bán hết · " + amount * crop.RawSellPrice + " xu"
+                                               ? "Bán hết · " + amount * crop.RawSellPrice + " " + DefaultContent.CoinGlyph
                                                : "Bán hết");
             }
 
@@ -1556,7 +1558,8 @@ namespace VuonNho.Views
                 bool unlocked = state.UnlockedRecipeIds.Contains(row.RecipeId);
                 bool isSelected = row.RecipeId == state.Machine.SelectedRecipeId;
                 string caption = recipe.DisplayName + " — " + recipe.InputCount + " " +
-                                 catalog.Crop(recipe.InputCropId).DisplayName + " → " + recipe.OutputCoins + " xu";
+                                 catalog.Crop(recipe.InputCropId).DisplayName + " → " + recipe.OutputCoins +
+                                 " " + DefaultContent.CoinGlyph;
                 // Dau dan dat truoc: them chu o duoi lam nhan dai qua mot dong.
                 if (!unlocked) caption += " (chưa mở khóa)";
                 else if (isSelected) caption = "▶ " + caption;
@@ -1615,7 +1618,7 @@ namespace VuonNho.Views
                 row.Buy.gameObject.SetActive(!bought);
                 if (!bought)
                 {
-                    UiFactory.SetButtonCaption(row.Buy, "Mua " + upgrade.Cost + " xu");
+                    UiFactory.SetButtonCaption(row.Buy, "Mua " + upgrade.Cost + " " + DefaultContent.CoinGlyph);
                     UiFactory.SetInteractable(row.Buy, purchasable);
                 }
             }
@@ -1671,17 +1674,16 @@ namespace VuonNho.Views
             bool affordCompost = state.Coins >= balance.CompostCost;
             UiFactory.SetButtonCaption(_compostButton,
                 !wantsCompost ? "Đất còn tốt"
-                : affordCompost ? "Bón phân · " + balance.CompostCost
-                : "Thiếu " + (balance.CompostCost - state.Coins));
-            UiFactory.SetButtonSymbolVisible(_compostButton, wantsCompost);
+                : affordCompost ? "Bón phân · " + balance.CompostCost + " " + DefaultContent.CoinGlyph
+                : "Thiếu " + (balance.CompostCost - state.Coins) + " " + DefaultContent.CoinGlyph);
             UiFactory.SetButtonState(_compostButton, wantsCompost && affordCompost
                 ? UiFactory.ButtonState.Normal : UiFactory.ButtonState.Disabled);
 
             bool affordTreat = state.Coins >= balance.PestTreatmentCost;
             _treatButton.gameObject.SetActive(plot.Unlocked && plot.PestActive);
             UiFactory.SetButtonCaption(_treatButton, affordTreat
-                ? "Trị sâu bệnh · " + balance.PestTreatmentCost
-                : "Thiếu " + (balance.PestTreatmentCost - state.Coins));
+                ? "Trị sâu bệnh · " + balance.PestTreatmentCost + " " + DefaultContent.CoinGlyph
+                : "Thiếu " + (balance.PestTreatmentCost - state.Coins) + " " + DefaultContent.CoinGlyph);
             UiFactory.SetButtonState(_treatButton, affordTreat
                 ? UiFactory.ButtonState.Normal : UiFactory.ButtonState.Disabled);
         }
@@ -1765,12 +1767,13 @@ namespace VuonNho.Views
                 case TutorialStep.WaitAndHarvest:
                     return "Mục tiêu: chờ cây chín rồi bấm vào ô để thu và gieo lại.";
                 case TutorialStep.WatchTeaSell:
-                    return "Mục tiêu: máy đang pha trà, trà bán xong sẽ thành xu.";
+                    return "Mục tiêu: máy đang pha trà, trà bán xong sẽ thành " +
+                           DefaultContent.CoinGlyph + ".";
                 case TutorialStep.SaveForRobot:
                     return "Mục tiêu: gom " + catalog.Upgrade(DefaultContent.UpgradeRobot).Cost +
-                           " xu để kích hoạt robot (còn thiếu " +
+                           " " + DefaultContent.CoinGlyph + " để kích hoạt robot (còn thiếu " +
                            System.Math.Max(0, catalog.Upgrade(DefaultContent.UpgradeRobot).Cost - state.Coins) +
-                           " xu).";
+                           " " + DefaultContent.CoinGlyph + ").";
                 default:
                     return "Mục tiêu: chọn nâng cấp tiếp theo trong bảng Nâng cấp.";
             }
@@ -1858,7 +1861,8 @@ namespace VuonNho.Views
         {
             var catalog = _session.Catalog;
             string text = "Vắng " + WholeTime(summary.ElapsedMs) + " · " +
-                          (summary.CoinsGained > 0 ? "+" : "") + summary.CoinsGained + " xu · ";
+                          (summary.CoinsGained > 0 ? "+" : "") + summary.CoinsGained + " " +
+                          DefaultContent.CoinGlyph + " · ";
 
             if (summary.ItemsGained.Count == 0)
             {

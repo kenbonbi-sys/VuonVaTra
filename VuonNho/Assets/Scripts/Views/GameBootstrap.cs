@@ -227,7 +227,7 @@ namespace VuonNho.Views
                 {
                     var removed = _session.RemoveDecoration(handle.Index);
                     if (Hud != null)
-                        Hud.ShowToast(removed.Success ? "Đã gỡ và hoàn lại xu." : removed.FailureReason);
+                        Hud.ShowToast(removed.Success ? "Đã gỡ và hoàn lại " + DefaultContent.CoinGlyph + "." : removed.FailureReason);
                 }
                 return true;
             }

@@ -359,6 +359,24 @@ Vài quy ước đã áp dụng, giữ nguyên khi thêm màn hình mới:
   Unity chia chỗ trống cho mọi thứ có `flexibleWidth` dương, không quan tâm `childForceExpandWidth`
   đã tắt hay chưa. `HugContent` ép về 0.
 
+### Chữ "xu" là một glyph trong chính font chữ
+
+Một `UI.Text` của uGUI chỉ vẽ được bằng **một** font. Icon tiền là glyph của Material Symbols, nên
+mọi chỗ muốn đặt icon cạnh một con số đều phải tự dựng một hàng ngang `[ô glyph][ô chữ]`. Cách đó
+làm được cho thẻ và nút, nhưng không làm được **giữa một câu** — "Mục tiêu: gom 240 xu để kích
+hoạt robot" thì icon không có ô nào để nhét vào.
+
+Nên thay vì lách quanh giới hạn của font, bỏ giới hạn đi: `SourceArt/Fonts/merge_coin_glyph.py`
+chép đúng một glyph (`local_atm`, U+E53E) từ Material Symbols sang cả sáu file National Park, giữ
+nguyên mã. Sau bước đó, chữ "xu" ở bất kỳ đâu chỉ là ký tự `DefaultContent.CoinGlyph` trong chuỗi
+— kể cả giữa văn xuôi, trong toast, trong lý do từ chối của một lệnh ở Core.
+
+Hằng số nằm ở Core vì cả Core lẫn Views đều dùng nó, và `UiFactory.Symbols.LocalAtm` trỏ về đúng
+hằng số đó thay vì viết lại mã ký tự lần thứ hai.
+
+Chạy lại script khi đổi font chữ hoặc đổi icon tiền. Nó bỏ qua file nào đã có glyph, nên chạy hai
+lần không hỏng gì.
+
 Ảnh chụp QA: `-vuonnho-open-panel` nhận `inventory`, `upgrade`, `settings`, `decorate` và `plot`
 (mở popup ô 1).
 Ảnh tham chiếu của HUD hiện tại nằm ở `Docs/screenshots/`, chụp từ bản build chứ không phải editor.
@@ -422,6 +440,9 @@ Hai điều đã làm hỏng một lượt chụp và sẽ làm hỏng lượt s
   22 mục kiểm chạy trong bản build vì tất cả đều cần camera thật, va chạm thật và nhiều frame
   thật, không kiểm được bằng test EditMode.
 - **Icon cây** — bạc hà, cúc, dâu, sả, nhài. Hiện ở kho, bảng chọn cây và thẻ máy pha.
+- **Icon tiền thay chữ "xu"** — glyph đồng tiền được ghép thẳng vào font chữ của game, nên nó
+  đứng được cả giữa một câu chứ không chỉ trong một ô icon riêng. Xem mục
+  [Chữ "xu" là một glyph trong chính font chữ](#chữ-xu-là-một-glyph-trong-chính-font-chữ).
 - **Dây chuyền chế biến trà** — sáu công đoạn giữa thu hoạch và quầy trà, sáu máy, thợ ăn lương.
   Xem mục [Dây chuyền chế biến trà](#dây-chuyền-chế-biến-trà). Save lên schema 3; save cũ mở
   được và vào với dây chuyền trống.

@@ -14,6 +14,16 @@ namespace VuonNho.Core
     /// </summary>
     public static class DefaultContent
     {
+        /// <summary>
+        /// Ky tu icon dong tien, dung THAY cho chu "xu" trong moi cau chu hien ra man hinh.
+        ///
+        /// Glyph nay da duoc ghep san vao font chu cua game (xem
+        /// SourceArt/Fonts/merge_coin_glyph.py), nen no nam trong chinh dong chu chu khong phai
+        /// mot o icon rieng ben canh — nho vay no dat duoc vao giua mot cau, cho ma mot o icon
+        /// khong voi toi. Hang so nam o Core vi ca Core lan Views deu dung no.
+        /// </summary>
+        public const string CoinGlyph = "\ue53e";
+
         public const string CropMint = "crop_mint";
         public const string CropChamomile = "crop_chamomile";
         public const string CropStrawberry = "crop_strawberry";

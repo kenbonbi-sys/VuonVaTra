@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using VuonNho.Core;
 
 namespace VuonNho.Views
 {
@@ -87,7 +88,8 @@ namespace VuonNho.Views
             public const string VolumeUp = "\ue050";
             public const string VolumeOff = "\ue04f";
             public const string Check = "\ue668";
-            public const string LocalAtm = "\ue53e";
+            /// <summary>Cung mot ma voi <see cref="DefaultContent.CoinGlyph"/>.</summary>
+            public const string LocalAtm = DefaultContent.CoinGlyph;
             public const string Schedule = "\uefd6";
             public const string Factory = "\uebbc";
             public const string GroupAdd = "\ue7f0";
