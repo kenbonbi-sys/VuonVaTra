@@ -49,7 +49,8 @@ namespace VuonNho.Core
     {
         Plot,
         Station,
-        Robot
+        Robot,
+        Production
     }
 
     /// <summary>
@@ -98,7 +99,7 @@ namespace VuonNho.Core
 
         /// <summary>
         /// Toan bo hinh chu nhat cam dat: tung o dat theo thu tu hang roi cot, den quay tra,
-        /// roi robot. Thu tu co dinh nen ly do tu choi tra ve luon giong nhau.
+        /// robot va khu san xuat. Thu tu co dinh nen ly do tu choi tra ve luon giong nhau.
         /// </summary>
         public static List<GardenRect> KeepOutRects(BalanceConfig balance)
         {
@@ -122,6 +123,16 @@ namespace VuonNho.Core
             rects.Add(Build(GardenBlockKind.Robot,
                             balance.RobotCenterXMm, balance.RobotCenterZMm,
                             balance.RobotKeepOutHalfWidthMm, balance.RobotKeepOutHalfDepthMm));
+            // Reserve machines, transfer belts and the service aisle even before purchase.
+            // Existing saved decorations keep their coordinates; this applies to new placement.
+            rects.Add(new GardenRect
+            {
+                Kind = GardenBlockKind.Production,
+                MinXMm = ProductionLayout.MinXMm,
+                MaxXMm = ProductionLayout.MaxXMm,
+                MinZMm = ProductionLayout.MinZMm,
+                MaxZMm = ProductionLayout.MaxZMm
+            });
             return rects;
         }
 

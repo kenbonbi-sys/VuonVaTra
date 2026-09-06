@@ -15,6 +15,13 @@ namespace VuonNho.EditorTools
         public const string OutputPath = "Build/HudReview/VuonNho-HudReview.exe";
         const string ReviewProductName = "VuonNho-HudReview";
 
+        [MenuItem("Vườn Nhỏ/Art/Dựng map và build bản kiểm tra (save riêng)")]
+        public static void BuildMap()
+        {
+            SceneFactory.BuildScene();
+            Build();
+        }
+
         [MenuItem("Vườn Nhỏ/Art/Build bản kiểm tra HUD (save riêng)")]
         public static void Build()
         {

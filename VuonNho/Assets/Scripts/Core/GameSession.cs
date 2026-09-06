@@ -752,6 +752,9 @@ namespace VuonNho.Core
                     case GardenBlockKind.Station:
                         reason = "Vướng quán trà.";
                         break;
+                    case GardenBlockKind.Production:
+                        reason = "Vướng khu dây chuyền sản xuất.";
+                        break;
                     default:
                         reason = "Vướng robot.";
                         break;

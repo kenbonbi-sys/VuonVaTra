@@ -34,6 +34,9 @@ namespace VuonNho.Views
         float _captureAt = -1f;
         bool _captured;
         bool _seeded;
+        string _mapView;
+        bool _hideHud;
+        bool _viewApplied;
 
         void Awake()
         {
@@ -52,6 +55,10 @@ namespace VuonNho.Views
                     _hasWalkPoint = TryParsePoint(arguments[i + 1], out _walkPoint);
                 else if (arguments[i] == PlaceArgument && i + 1 < arguments.Length)
                     ParsePlaceArgument(arguments[i + 1]);
+                else if (arguments[i] == "-vuonnho-map-view" && i + 1 < arguments.Length)
+                    _mapView = arguments[i + 1];
+                else if (arguments[i] == "-vuonnho-hide-hud")
+                    _hideHud = true;
             }
 
             if (string.IsNullOrEmpty(_outputPath))
@@ -106,6 +113,23 @@ namespace VuonNho.Views
                 // Cho mot nhip ngan roi moi chup: vong tron van con ro, ma nhan vat da roi cho
                 // va dang do buoc — anh chup ke duoc ca hai nua cua chuyen nay.
                 _captureAt = Time.realtimeSinceStartup + 0.15f;
+                return;
+            }
+
+            if (!_viewApplied)
+            {
+                _viewApplied = true;
+                var bootstrap = FindAnyObjectByType<GameBootstrap>();
+                if (bootstrap != null && bootstrap.Rig != null)
+                {
+                    if (_mapView == "farm") bootstrap.Rig.FocusGround(new Vector3(0f, 0f, 0.5f), 5.6f);
+                    if (_mapView == "factory") bootstrap.Rig.FocusGround(new Vector3(8.5f, 0f, 0.7f), 5.7f);
+                }
+                if (_hideHud)
+                {
+                    var hud = FindAnyObjectByType<GameHud>();
+                    if (hud != null) hud.GetComponent<Canvas>().enabled = false;
+                }
                 return;
             }
 

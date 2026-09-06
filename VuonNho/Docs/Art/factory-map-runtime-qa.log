@@ -1,0 +1,1536 @@
+Mono path[0] = 'C:/Users/PC/Desktop/Game/VuonNho/Build/HudReview/VuonNho-HudReview_Data/Managed'
+Mono config path = 'C:/Users/PC/Desktop/Game/VuonNho/Build/HudReview/MonoBleedingEdge/etc'
+CodeReloadManager initialized
+Found 4 interfaces on host : 0) 192.168.102.61 1) 26.253.10.125 2) 172.17.48.1 3) 172.24.64.1
+Player connection [31652]  Target information:
+
+Player connection [31652]  * "[IP] 192.168.102.61 [Port] 55001 [Flags] 2 [Guid] 3220651344 [EditorId] 798164038 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+
+Player connection [31652]  * "[IP] 26.253.10.125 [Port] 55001 [Flags] 2 [Guid] 3220651344 [EditorId] 798164038 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+
+Player connection [31652]  * "[IP] 172.17.48.1 [Port] 55001 [Flags] 2 [Guid] 3220651344 [EditorId] 798164038 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+
+Player connection [31652]  * "[IP] 172.24.64.1 [Port] 55001 [Flags] 2 [Guid] 3220651344 [EditorId] 798164038 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+
+Player connection [31652] Started UDP target info broadcast (1) on [225.0.0.222:54997].
+
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+Initialize engine version: 6000.6.0f1 (f7f8ed4d1e24)
+[EntityIdStore] init: VM path (explicit commit), pageSize=4096, blockCount=1048576, entitiesPerBlock=256, slots reserved=4294967296 bytes
+[Subsystems] Discovering subsystems at path C:/Users/PC/Desktop/Game/VuonNho/Build/HudReview/VuonNho-HudReview_Data/UnitySubsystems
+Forcing GfxDevice: Direct3D 11
+GfxDevice: creating device client; kGfxThreadingModeClientWorkerJobs
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 3060 (ID=0x2504)
+    Vendor:   NVIDIA
+    VRAM:     12115 MB
+    Driver:   32.0.15.6109
+Begin MonoManager ReloadAssembly
+- Finished resetting the current domain, in  0.011 seconds
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+<RI> Initializing input.
+<RI> Input initialized.
+UnloadTime: 2.668500 ms
+[QA] PASS Nạp save và dựng phiên chơi dưới 2 giây | 0.326 s
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<Run>d__11:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:70)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Engine khởi động + splash Unity (chỉ ghi nhận, không phải mục tiêu của game) | 2.09 s
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<Run>d__11:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:73)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Tổng thời gian tới khung hình chơi được | 2.94 s (bao gồm splash)
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<Run>d__11:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:75)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Độ phân giải chạy thật | 1366 × 768
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<Run>d__11:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:77)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Bắt đầu với 0 xu | 0 xu
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<Run>d__11:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:85)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mở sẵn đúng 4 ô | 4 ô
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<Run>d__11:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:86)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Chưa có robot
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<Run>d__11:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:88)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Có xu đầu tiên từ trà | ở phút mô phỏng 0.3
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunPlaythrough>d__23:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:670)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Trà đầu trong vòng 2 phút mô phỏng | 0.3 phút
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunPlaythrough>d__23:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:672)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mua được robot
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunPlaythrough>d__23:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:677)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Đủ tiền mua robot trong 8 phút mô phỏng | 1.6 phút, 36 lần thu tay
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunPlaythrough>d__23:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:678)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mua Mở cúc + công thức
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunPlaythrough>d__23:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:707)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mua Mở vườn lần 1
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunPlaythrough>d__23:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:707)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mua Tốc độ máy I
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunPlaythrough>d__23:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:707)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mua Mở dâu + công thức
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunPlaythrough>d__23:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:707)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mua Tốc độ cây I
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunPlaythrough>d__23:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:707)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mua Mở vườn lần 2
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunPlaythrough>d__23:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:707)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mua Tốc độ máy II
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunPlaythrough>d__23:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:707)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mua Tốc độ cây II
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunPlaythrough>d__23:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:707)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mua Mở sả + công thức
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunPlaythrough>d__23:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:707)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mua Mở nhài + công thức
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunPlaythrough>d__23:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:707)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mở đủ 12 ô | 12 ô sau 19.3 phút mô phỏng
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunPlaythrough>d__23:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:723)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mua hết toàn bộ nâng cấp MVP
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunPlaythrough>d__23:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:729)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mở hết mọi loại cây trong catalog | 5/5 loại
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunPlaythrough>d__23:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:730)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Không có xu âm | 92 xu
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunPlaythrough>d__23:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:733)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Có cây đang lớn lúc lưu
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunReloadCheck>d__25:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:770)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Máy đang pha lúc lưu
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunReloadCheck>d__25:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:771)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Nạp lại được file save vừa ghi | LoadedPrimary
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunReloadCheck>d__25:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:786)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Giữ nguyên số xu sau khi nạp lại | 92 → 92
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunReloadCheck>d__25:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:787)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Thời gian mô phỏng không lùi | 1196316 → 1196321
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunReloadCheck>d__25:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:789)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Trạng thái ô đất dựng lại đúng
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunReloadCheck>d__25:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:796)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Hướng dẫn tiếp tục đúng bước | ChooseNextUpgrade
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunReloadCheck>d__25:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:797)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Hình ảnh ô đất khớp trạng thái sau khi dựng lại | 0 ô lệch
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunReloadCheck>d__25:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:818)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Đóng báo cáo offline bằng nút Tiếp tục và xác nhận báo cáo | OfflineModal/Card/ActionRow/Continue; graphic trên cùng: OfflineModal/Card/ActionRow/Continue; click handler: OfflineModal/Card/ActionRow/Continue
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:DismissOfflinePopupIfOpen () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:874)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:830)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Click ngoài panel vẫn xuống được vườn | click trúng PlotRoot_0
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckGardenClickReachable () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1237)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:833)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Modal OfflineModal có lối thoát bấm được | OfflineModal/Card/ActionRow/Continue
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<CheckModalHasEscape>d__31:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:966)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Nút Tiếp tục vừa bằng chữ và nằm giữa | nút 120 px / thẻ 560 px, lệch tâm 0.0 px
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<CheckOfflineCtaFitsItsText>d__28:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:913)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Modal BlockedModal có lối thoát bấm được | BlockedModal/Card/Actions/Settings, BlockedModal/Card/Actions/Quit
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<CheckModalHasEscape>d__31:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:966)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mở được bề mặt inventory
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:846)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Chữ không tràn khỏi ô chứa — inventory | 57 nhãn
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckTextOverflow (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1094)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:849)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Click trên inventory bị UI chặn, không xuống tới vườn | UI nhận click: InventoryPanel; đối tượng nhận sự kiện pointer: không có; nếu không chặn sẽ trúng Ground
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckBlocksClicks (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1128)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:850)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS inventory không che nút trên thanh HUD | 5 nút vẫn bấm được
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckDoesNotCoverTopBar (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1260)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:852)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Nút đóng nhận click thật và đóng bề mặt inventory | HudCanvas/InventoryPanel/Close; graphic trên cùng: HudCanvas/InventoryPanel/Close; click handler: HudCanvas/InventoryPanel/Close
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckButtonReceivesClick (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:996)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:853)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mở được bề mặt upgrade
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:846)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Chữ không tràn khỏi ô chứa — upgrade | 57 nhãn
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckTextOverflow (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1094)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:849)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Click trên upgrade bị UI chặn, không xuống tới vườn | UI nhận click: Row_upgrade_expand_8; đối tượng nhận sự kiện pointer: không có; nếu không chặn sẽ trúng Ground
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckBlocksClicks (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1128)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:850)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS upgrade không che nút trên thanh HUD | 5 nút vẫn bấm được
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckDoesNotCoverTopBar (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1260)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:852)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Nút đóng nhận click thật và đóng bề mặt upgrade | HudCanvas/UpgradePanel/Close; graphic trên cùng: HudCanvas/UpgradePanel/Close; click handler: HudCanvas/UpgradePanel/Close
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckButtonReceivesClick (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:996)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:853)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mở được bề mặt decorate
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:846)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Chữ không tràn khỏi ô chứa — decorate | 30 nhãn
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckTextOverflow (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1094)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:849)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Click trên decorate bị UI chặn, không xuống tới vườn | UI nhận click: Row_deco_planter; đối tượng nhận sự kiện pointer: không có; nếu không chặn sẽ trúng Ground
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckBlocksClicks (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1128)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:850)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS decorate không che nút trên thanh HUD | 5 nút vẫn bấm được
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckDoesNotCoverTopBar (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1260)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:852)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Nút đóng nhận click thật và đóng bề mặt decorate | HudCanvas/DecoratePanel/Close; graphic trên cùng: HudCanvas/DecoratePanel/Close; click handler: HudCanvas/DecoratePanel/Close
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckButtonReceivesClick (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:996)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:853)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mở được bề mặt workshop
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:846)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Chữ không tràn khỏi ô chứa — workshop | 50 nhãn
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckTextOverflow (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1094)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:849)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Click trên workshop bị UI chặn, không xuống tới vườn | UI nhận click: Row_stage_wither; đối tượng nhận sự kiện pointer: không có; nếu không chặn sẽ trúng Ground
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckBlocksClicks (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1128)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:850)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS workshop không che nút trên thanh HUD | 5 nút vẫn bấm được
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckDoesNotCoverTopBar (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1260)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:852)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Nút đóng nhận click thật và đóng bề mặt workshop | HudCanvas/WorkshopPanel/Close; graphic trên cùng: HudCanvas/WorkshopPanel/Close; click handler: HudCanvas/WorkshopPanel/Close
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckButtonReceivesClick (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:996)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:853)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mở được bề mặt settings
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:846)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Chữ không tràn khỏi ô chứa — settings | 16 nhãn
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckTextOverflow (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1094)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:849)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Click trên settings bị UI chặn, không xuống tới vườn | UI nhận click: SettingsPanel; đối tượng nhận sự kiện pointer: không có; nếu không chặn sẽ trúng Ground
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckBlocksClicks (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1128)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:850)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS settings không che nút trên thanh HUD | 5 nút vẫn bấm được
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckDoesNotCoverTopBar (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1260)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:852)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Nút đóng nhận click thật và đóng bề mặt settings | HudCanvas/SettingsPanel/Close; graphic trên cùng: HudCanvas/SettingsPanel/Close; click handler: HudCanvas/SettingsPanel/Close
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckButtonReceivesClick (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:996)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:853)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mở được bề mặt plot
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:846)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Chữ không tràn khỏi ô chứa — plot | 9 nhãn
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckTextOverflow (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1094)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:849)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Click trên plot bị UI chặn, không xuống tới vườn | UI nhận click: Crop_crop_strawberry; đối tượng nhận sự kiện pointer: Crop_crop_strawberry; nếu không chặn sẽ trúng Ground
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckBlocksClicks (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1128)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:850)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS plot không che nút trên thanh HUD | 5 nút vẫn bấm được
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckDoesNotCoverTopBar (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1260)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:852)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Nút đóng nhận click thật và đóng bề mặt plot | HudCanvas/PlotPopup/ClosePopup; graphic trên cùng: HudCanvas/PlotPopup/ClosePopup; click handler: HudCanvas/PlotPopup/ClosePopup
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckButtonReceivesClick (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:996)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:853)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Chữ không tràn khỏi ô chứa — HUD | 18 nhãn
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckTextOverflow (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1094)
+VuonNho.Views.QaChecklist/<RunUiChecks>d__26:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:859)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mô phỏng bù 4 giờ dưới 250 ms | lần chậm nhất 3 ms trên 5 lần, vườn 12 ô
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunOfflineAndPerf>d__49:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1310)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS 5 vòng thoát/quay lại không đóng băng khung hình | frame dài nhất 11 ms
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunOfflineAndPerf>d__49:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1322)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS p95 frame time dưới 16,7 ms khi vườn đầy | trung bình 177 FPS, p95 5.6 ms, 708 khung hình
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunOfflineAndPerf>d__49:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1345)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Trung bình đạt 60 FPS | trung bình 177 FPS, p95 5.6 ms, 708 khung hình
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunOfflineAndPerf>d__49:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1346)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Bấm vào ô đất vẫn mở được bảng ô | ô 0
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<CheckPlotClickStillLands>d__21:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:622)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Lăn chuột tới thì nhìn gần lại | 8.50 → 5.79
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunControlChecks>d__13:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:220)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Thu nhỏ hết cỡ vẫn nằm trong giới hạn | 15.73 (tối đa 15.73)
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunControlChecks>d__13:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:225)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Phóng to hết cỡ vẫn nằm trong giới hạn | 3.20 (tối thiểu 3.20)
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunControlChecks>d__13:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:230)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Zoom bám điểm dưới con trỏ | lệch 0.0 cm
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunControlChecks>d__13:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:244)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Kéo màn hình không ra khỏi vườn | dừng ở (14.0, 14.0), giới hạn 14.0
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunControlChecks>d__13:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:252)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Về lại góc nhìn ban đầu | 8.50
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunControlChecks>d__13:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:260)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Nhân vật có hai chân để bước
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunControlChecks>d__13:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:272)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Chuột phải xuống đất thành lệnh đi
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunControlChecks>d__13:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:289)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Chỗ vừa bấm có vòng tròn báo lại
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunControlChecks>d__13:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:297)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Vòng tròn tự tắt chứ không nằm lại | sau 0.50 s
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunControlChecks>d__13:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:305)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Nhận lệnh đi tới điểm được chỉ | đích (-0.8, -1.4)
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunControlChecks>d__13:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:339)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Đi tới nơi rồi dừng | cách đích 6 cm
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunControlChecks>d__13:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:341)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Không đi xuyên qua đồ đã đặt | dừng cách tâm ghế 66 cm
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<CheckSolidDecorations>d__15:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:443)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Lối đi lát đá vẫn bước lên được | dừng cách tâm phiến đá 6 cm
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<CheckSolidDecorations>d__15:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:461)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Không đi xuyên qua quầy trà | dừng cách tâm quầy 110 cm
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<CheckSolidScenery>d__16:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:486)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Chọn món thì hiện bóng ma xem trước | món deco_bench, góc 0
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<CheckPlacementPreview>d__17:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:520)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Bóng ma dựng được model của món đang cầm
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<CheckPlacementPreview>d__17:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:532)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS R xoay 180° và kéo chuột phải xoay tiếp | sau R rồi kéo 45°: 225°
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<CheckPlacementPreview>d__17:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:539)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Món đặt xuống giữ đúng góc đã xoay | góc 225°
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<CheckPlacementPreview>d__17:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:552)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Thoát chế độ thì bóng ma biến mất
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<CheckPlacementPreview>d__17:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:558)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Túi đồ có một ô cho mỗi mặt hàng | 35 ô / 35 mặt hàng
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<CheckInventoryGrid>d__14:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:388)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Ô chi tiết nằm dưới đáy và không trống | Bạc hà tươi: 4
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<CheckInventoryGrid>d__14:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:394)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Bấm ra ngoài vườn thì dừng ở mép | đích (14.5, -14.5), giới hạn 14.5
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunControlChecks>d__13:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:355)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Có đủ sáu công đoạn giữa thu hoạch và quầy trà | 6 công đoạn
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunProcessingChecks>d__12:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:114)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Gom đủ xu để xây cả dây chuyền | 12820 / 12780 xu
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunProcessingChecks>d__12:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:127)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Mua được cả sáu máy | 6 máy
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunProcessingChecks>d__12:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:137)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Không mua được một cái máy hai lần | Đã mua.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunProcessingChecks>d__12:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:143)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Thuê đủ thợ cho tất cả các máy | 6 thợ
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunProcessingChecks>d__12:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:150)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Lá tươi đi hết chuỗi thành trà đóng gói
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunProcessingChecks>d__12:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:167)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Thợ ăn lương và xu vẫn không âm | 4570 xu, 6/6 thợ đang làm
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunProcessingChecks>d__12:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:173)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Xây dây chuyền xong vẫn kiếm được xu | trước 4040, sau 4570
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunProcessingChecks>d__12:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:177)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Bảng Xưởng mở được và có đủ hàng
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist/<RunProcessingChecks>d__12:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:185)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Chữ không tràn khỏi ô chứa — workshop | 26 nhãn
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:CheckTextOverflow (string,UnityEngine.RectTransform) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1094)
+VuonNho.Views.QaChecklist/<RunProcessingChecks>d__12:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:188)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Bật tắt âm thanh và ghi nhớ được lựa chọn
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:RunSettingsChecks () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1368)
+VuonNho.Views.QaChecklist/<Run>d__11:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:96)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Xuất được dữ liệu test | Đã xuất dữ liệu test: C:/Users/PC/AppData/LocalLow/Vuon va Tra/VuonNho-HudReview\vuon-nho-export-20260907-010813.log
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:RunSettingsChecks () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1372)
+VuonNho.Views.QaChecklist/<Run>d__11:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:96)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Reset trả về vườn mới | 0 xu, 4 ô
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:RunSettingsChecks () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1377)
+VuonNho.Views.QaChecklist/<Run>d__11:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:96)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Sau reset vẫn có file save hợp lệ | C:/Users/PC/AppData/LocalLow/Vuon va Tra/VuonNho-HudReview\vuon-nho-save.json
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1401)
+VuonNho.Views.QaChecklist:RunSettingsChecks () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1383)
+VuonNho.Views.QaChecklist/<Run>d__11:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:96)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] Bao cao: C:\Users\PC\Desktop\Game\VuonNho\Docs\QA-factory-map.md — 111 dat, 0 khong dat.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Finish () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1431)
+VuonNho.Views.QaChecklist/<Run>d__11:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:98)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+CodeReloadManager destroyed
+PlayerConnection::Cleanup##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1788718093681,"processId":28908,"allocatedMemory":47866,"memoryLabels":[{"Default":3832},{"NewDelete":104},{"Thread":2048},{"Manager":9364},{"GfxDevice":72},{"GfxThread":6144},{"Serialization":17000},{"BaseObject":4512},{"String":366},{"PoolAlloc":192},{"ScriptManager":5688},{"CodeReload":440},{"CloudService":144},{"VR":1928},{"Video":144},{"Subsystems":96},{"CoreBusinessMetrics":128}]}

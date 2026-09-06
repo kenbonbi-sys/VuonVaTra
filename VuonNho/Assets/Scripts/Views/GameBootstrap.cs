@@ -232,6 +232,8 @@ namespace VuonNho.Views
 
             if (hit.collider.GetComponentInParent<MachineView>() != null && Hud != null)
                 Hud.ShowToast(MachineHint());
+            if (hit.collider.GetComponentInParent<StationView>() != null && Hud != null)
+                Hud.ShowWorkshopPanel();
             return true;
         }
 

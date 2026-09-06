@@ -67,6 +67,16 @@ namespace VuonNho.Views
             Camera.orthographicSize = _homeSize;
         }
 
+        /// <summary>Jump between the two work areas without changing the orthographic angle.</summary>
+        public void FocusGround(Vector3 centre, float size)
+        {
+            if (Camera == null) return;
+            centre.y = 0f;
+            float distance = Camera.transform.position.y / -Camera.transform.forward.y;
+            Camera.transform.position = centre - Camera.transform.forward * distance;
+            Camera.orthographicSize = Mathf.Clamp(size, MinSize, MaxSize);
+        }
+
         // ---------------------------------------------------------------- zoom
 
         void HandleZoom()

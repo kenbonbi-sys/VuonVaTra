@@ -35,6 +35,7 @@ namespace VuonNho.Views
         MaterialPropertyBlock _block;
         bool _lastRunning;
         bool _lastOwned = true;
+        Collider[] _colliders;
 
         void Awake()
         {
@@ -88,6 +89,9 @@ namespace VuonNho.Views
         {
             if (_lastOwned == owned) return;
             _lastOwned = owned;
+            // An unbuilt bay is walkable; its hidden machine must not intercept clicks.
+            if (_colliders == null) _colliders = GetComponents<Collider>();
+            for (int i = 0; i < _colliders.Length; i++) _colliders[i].enabled = owned;
             if (VisualRoot != null) VisualRoot.gameObject.SetActive(owned);
             if (WorkerRoot != null && !owned) WorkerRoot.gameObject.SetActive(false);
         }

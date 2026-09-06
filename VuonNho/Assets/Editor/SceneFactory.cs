@@ -65,6 +65,8 @@ namespace VuonNho.EditorTools
             var helper = BuildHelper(skin);
             var character = BuildCharacter(skin, catalog);
             var stations = BuildStations(skin, catalog);
+            FarmFactoryScenery.Build(skin, camera);
+            ProductionLineArt.Build(skin, camera, stations);
             var marker = BuildClickMarker();
             var preview = BuildPlacementPreview(skin);
             BuildProps(skin);
@@ -210,7 +212,8 @@ namespace VuonNho.EditorTools
 
             // Quy chuan muc 3 tai lieu asset: orthographic, yaw 45 do, pitch khoang 35 do.
             go.transform.rotation = Quaternion.Euler(35f, -45f, 0f);
-            var target = new Vector3(0f, 0f, 0.5f * skin.PlotSpacing);
+            // Frame both the growing beds and the complete production loop on first launch.
+            var target = new Vector3(3.8f, 0f, 0.5f);
             go.transform.position = target - go.transform.forward * 24f;
 
             go.AddComponent<AudioListener>();
@@ -218,8 +221,9 @@ namespace VuonNho.EditorTools
             // Lan chuot de phong to thu nho, giu chuot trai de keo man hinh.
             var rig = go.AddComponent<CameraRig>();
             rig.Camera = camera;
-            rig.MinSize = skin.CameraOrthographicSize * 0.55f;
+            rig.MinSize = 3.2f;
             rig.MaxSize = skin.CameraOrthographicSize * 1.85f;
+            rig.PanLimit = 14f;
             return camera;
         }
 
@@ -251,7 +255,12 @@ namespace VuonNho.EditorTools
 
             if (skin.GroundPrefab != null)
             {
-                SpawnArt(skin.GroundPrefab, root.transform, "GroundVisual", Vector3.zero);
+                var art = SpawnArt(skin.GroundPrefab, root.transform, "GroundVisual", Vector3.zero);
+                Bounds bounds;
+                if (GardenArtImporter.TryGetBounds(art.transform, root.transform, out bounds) &&
+                    bounds.size.x > 0.01f && bounds.size.z > 0.01f)
+                    art.transform.localScale = new Vector3(skin.GroundSize / bounds.size.x, 1f,
+                        skin.GroundSize / bounds.size.z);
                 return;
             }
 
@@ -491,8 +500,8 @@ namespace VuonNho.EditorTools
             var root = new GameObject("CharacterRoot");
             root.transform.position = CharacterStartPosition(skin);
             var view = root.AddComponent<CharacterView>();
-            // Cung khu dat ma Core dung de chan dat trang tri, lui vao mot chut cho khoi cham hang rao.
-            view.WalkLimit = catalog.Balance.GardenHalfExtentMm / 1000f - 0.7f;
+            // The production site extends east of the original decoration garden.
+            view.WalkLimit = Mathf.Min(skin.GroundSize * 0.5f - 0.7f, 14.5f);
 
             var art = skin.CharacterPrefab != null
                 ? SpawnArt(skin.CharacterPrefab, root.transform, "VisualRoot", Vector3.zero)
@@ -514,16 +523,9 @@ namespace VuonNho.EditorTools
         }
 
         /// <summary>
-        /// San may o phia dong khu vuon: hai cot, ba hang, theo dung thu tu day chuyen tu bac
-        /// xuong nam. Dat ngoai khung nhin ban dau la co y — camera keo va zoom duoc roi, va de
-        /// san may chen vao giua vuon se lam mat cai bo cuc luong cay ma nguoi choi da quen.
+        /// Six stations follow a U: wither, fix, roll across the back, then oxidise, dry and
+        /// pack back towards the farm. Core shares these coordinates for decoration keep-outs.
         /// </summary>
-        static readonly Vector3[] StationSpots =
-        {
-            new Vector3(5.4f, 0f, 3.0f), new Vector3(5.4f, 0f, 0.4f), new Vector3(5.4f, 0f, -2.2f),
-            new Vector3(7.9f, 0f, 3.0f), new Vector3(7.9f, 0f, 0.4f), new Vector3(7.9f, 0f, -2.2f)
-        };
-
         static List<StationView> BuildStations(GardenSkin skin, ContentCatalog catalog)
         {
             var root = new GameObject("Stations");
@@ -534,9 +536,8 @@ namespace VuonNho.EditorTools
                 var stage = catalog.Stages[i];
                 var go = new GameObject("Station_" + stage.Id);
                 go.transform.SetParent(root.transform, false);
-                go.transform.localPosition = i < StationSpots.Length
-                    ? StationSpots[i]
-                    : new Vector3(5.4f + 2.5f * (i / 3), 0f, 3.0f - 2.6f * (i % 3));
+                go.transform.localPosition = new Vector3(ProductionLayout.StationCenterXMm(i) / 1000f,
+                    0f, ProductionLayout.StationCenterZMm(i) / 1000f);
 
                 var view = go.AddComponent<StationView>();
                 view.StageId = stage.Id;
@@ -571,6 +572,11 @@ namespace VuonNho.EditorTools
                     collider.size = new Vector3(1.6f, 1.2f, 1.2f);
                 }
                 go.AddComponent<WalkBlocker>();
+
+                var status = Primitive(PrimitiveType.Sphere, art.transform, "ProductionStatus",
+                    new Vector3(-0.4f, bounds.max.y + 0.08f, 0f),
+                    Vector3.one * 0.13f, "ProductionIdle");
+                view.StatusRenderer = status.GetComponent<Renderer>();
 
                 view.WorkerRoot = BuildStationWorker(skin, go.transform).transform;
                 views.Add(view);
@@ -696,19 +702,19 @@ namespace VuonNho.EditorTools
 
             // Cay nen va bui o mep de khong che muc tieu click.
             CreateTree(root.transform, skin, 0, new Vector3(-halfWidth - 4.0f, 0f, halfDepth + 3.6f), 1.15f);
-            CreateTree(root.transform, skin, 1, new Vector3(halfWidth + 4.2f, 0f, halfDepth + 3.0f), 0.95f);
+            CreateTree(root.transform, skin, 1, new Vector3(14.4f, 0f, 5.6f), 0.95f);
             CreateTree(root.transform, skin, 2, new Vector3(-halfWidth - 4.6f, 0f, -halfDepth - 1.8f), 0.85f);
 
-            CreateBush(root.transform, skin, 0, new Vector3(halfWidth + 2.5f, 0f, -halfDepth - 2.0f), 0.9f);
+            CreateBush(root.transform, skin, 0, new Vector3(12.8f, 0f, -4.6f), 0.9f);
             CreateBush(root.transform, skin, 1, new Vector3(-halfWidth - 2.8f, 0f, -halfDepth - 2.8f), 0.7f);
-            CreateBush(root.transform, skin, 2, new Vector3(halfWidth + 3.2f, 0f, -0.2f), 0.8f);
+            CreateBush(root.transform, skin, 2, new Vector3(14.5f, 0f, -2.7f), 0.8f);
 
             CreateRock(root.transform, skin, 0, new Vector3(halfWidth + 1.0f, 0f, -halfDepth - 2.8f), 0.55f);
             CreateRock(root.transform, skin, 1, new Vector3(-halfWidth - 1.2f, 0f, halfDepth + 3.4f), 0.42f);
 
             // Hang rao chay doc canh truoc cua cum luong.
             float fenceZ = -halfDepth - 3.2f;
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < 6; i++)
                 CreateFencePost(root.transform, skin, new Vector3(-halfWidth - 3.6f + i * 1.5f, 0f, fenceZ));
         }
 
@@ -1039,6 +1045,7 @@ namespace VuonNho.EditorTools
                 case "CropMint": return GardenPalette.CropBody(DefaultContent.CropMint);
                 case "CropChamomile": return GardenPalette.CropBody(DefaultContent.CropChamomile);
                 case "CropStrawberry": return GardenPalette.CropBody(DefaultContent.CropStrawberry);
+                case "ProductionIdle": return GardenPalette.TextMuted;
                 default: return Color.magenta;
             }
         }

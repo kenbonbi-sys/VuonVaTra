@@ -1,0 +1,147 @@
+# Kết quả checklist mục 10 — kiểm thử build và giao diện
+
+Chạy tự động bên trong bản build Windows, không phải trong Editor.
+
+- Thời điểm: 2026-09-07 01:08:13
+- Build: 0.2.0 (development)
+- Độ phân giải: 1366 × 768
+- Kết quả: **111 đạt, 0 không đạt**
+
+
+## Khởi động
+
+- ĐẠT — Nạp save và dựng phiên chơi dưới 2 giây · 0.326 s
+- ĐẠT — Engine khởi động + splash Unity (chỉ ghi nhận, không phải mục tiêu của game) · 2.09 s
+- ĐẠT — Tổng thời gian tới khung hình chơi được · 2.94 s (bao gồm splash)
+- ĐẠT — Độ phân giải chạy thật · 1366 × 768
+
+## Vườn mới
+
+- ĐẠT — Bắt đầu với 0 xu · 0 xu
+- ĐẠT — Mở sẵn đúng 4 ô · 4 ô
+- ĐẠT — Chưa có robot
+
+## Chơi từ vườn mới tới mở 12 ô
+
+- ĐẠT — Có xu đầu tiên từ trà · ở phút mô phỏng 0.3
+- ĐẠT — Trà đầu trong vòng 2 phút mô phỏng · 0.3 phút
+- ĐẠT — Mua được robot
+- ĐẠT — Đủ tiền mua robot trong 8 phút mô phỏng · 1.6 phút, 36 lần thu tay
+- ĐẠT — Mua Mở cúc + công thức
+- ĐẠT — Mua Mở vườn lần 1
+- ĐẠT — Mua Tốc độ máy I
+- ĐẠT — Mua Mở dâu + công thức
+- ĐẠT — Mua Tốc độ cây I
+- ĐẠT — Mua Mở vườn lần 2
+- ĐẠT — Mua Tốc độ máy II
+- ĐẠT — Mua Tốc độ cây II
+- ĐẠT — Mua Mở sả + công thức
+- ĐẠT — Mua Mở nhài + công thức
+- ĐẠT — Mở đủ 12 ô · 12 ô sau 19.3 phút mô phỏng
+- ĐẠT — Mua hết toàn bộ nâng cấp MVP
+- ĐẠT — Mở hết mọi loại cây trong catalog · 5/5 loại
+- ĐẠT — Không có xu âm · 92 xu
+
+## Reload khi cây và máy đang chạy
+
+- ĐẠT — Có cây đang lớn lúc lưu
+- ĐẠT — Máy đang pha lúc lưu
+- ĐẠT — Nạp lại được file save vừa ghi · LoadedPrimary
+- ĐẠT — Giữ nguyên số xu sau khi nạp lại · 92 → 92
+- ĐẠT — Thời gian mô phỏng không lùi · 1196316 → 1196321
+- ĐẠT — Trạng thái ô đất dựng lại đúng
+- ĐẠT — Hướng dẫn tiếp tục đúng bước · ChooseNextUpgrade
+- ĐẠT — Hình ảnh ô đất khớp trạng thái sau khi dựng lại · 0 ô lệch
+
+## Giao diện ở 1366 × 768
+
+- ĐẠT — Đóng báo cáo offline bằng nút Tiếp tục và xác nhận báo cáo · OfflineModal/Card/ActionRow/Continue; graphic trên cùng: OfflineModal/Card/ActionRow/Continue; click handler: OfflineModal/Card/ActionRow/Continue
+- ĐẠT — Click ngoài panel vẫn xuống được vườn · click trúng PlotRoot_0
+- ĐẠT — Modal OfflineModal có lối thoát bấm được · OfflineModal/Card/ActionRow/Continue
+- ĐẠT — Nút Tiếp tục vừa bằng chữ và nằm giữa · nút 120 px / thẻ 560 px, lệch tâm 0.0 px
+- ĐẠT — Modal BlockedModal có lối thoát bấm được · BlockedModal/Card/Actions/Settings, BlockedModal/Card/Actions/Quit
+- ĐẠT — Mở được bề mặt inventory
+- ĐẠT — Chữ không tràn khỏi ô chứa — inventory · 57 nhãn
+- ĐẠT — Click trên inventory bị UI chặn, không xuống tới vườn · UI nhận click: InventoryPanel; đối tượng nhận sự kiện pointer: không có; nếu không chặn sẽ trúng Ground
+- ĐẠT — inventory không che nút trên thanh HUD · 5 nút vẫn bấm được
+- ĐẠT — Nút đóng nhận click thật và đóng bề mặt inventory · HudCanvas/InventoryPanel/Close; graphic trên cùng: HudCanvas/InventoryPanel/Close; click handler: HudCanvas/InventoryPanel/Close
+- ĐẠT — Mở được bề mặt upgrade
+- ĐẠT — Chữ không tràn khỏi ô chứa — upgrade · 57 nhãn
+- ĐẠT — Click trên upgrade bị UI chặn, không xuống tới vườn · UI nhận click: Row_upgrade_expand_8; đối tượng nhận sự kiện pointer: không có; nếu không chặn sẽ trúng Ground
+- ĐẠT — upgrade không che nút trên thanh HUD · 5 nút vẫn bấm được
+- ĐẠT — Nút đóng nhận click thật và đóng bề mặt upgrade · HudCanvas/UpgradePanel/Close; graphic trên cùng: HudCanvas/UpgradePanel/Close; click handler: HudCanvas/UpgradePanel/Close
+- ĐẠT — Mở được bề mặt decorate
+- ĐẠT — Chữ không tràn khỏi ô chứa — decorate · 30 nhãn
+- ĐẠT — Click trên decorate bị UI chặn, không xuống tới vườn · UI nhận click: Row_deco_planter; đối tượng nhận sự kiện pointer: không có; nếu không chặn sẽ trúng Ground
+- ĐẠT — decorate không che nút trên thanh HUD · 5 nút vẫn bấm được
+- ĐẠT — Nút đóng nhận click thật và đóng bề mặt decorate · HudCanvas/DecoratePanel/Close; graphic trên cùng: HudCanvas/DecoratePanel/Close; click handler: HudCanvas/DecoratePanel/Close
+- ĐẠT — Mở được bề mặt workshop
+- ĐẠT — Chữ không tràn khỏi ô chứa — workshop · 50 nhãn
+- ĐẠT — Click trên workshop bị UI chặn, không xuống tới vườn · UI nhận click: Row_stage_wither; đối tượng nhận sự kiện pointer: không có; nếu không chặn sẽ trúng Ground
+- ĐẠT — workshop không che nút trên thanh HUD · 5 nút vẫn bấm được
+- ĐẠT — Nút đóng nhận click thật và đóng bề mặt workshop · HudCanvas/WorkshopPanel/Close; graphic trên cùng: HudCanvas/WorkshopPanel/Close; click handler: HudCanvas/WorkshopPanel/Close
+- ĐẠT — Mở được bề mặt settings
+- ĐẠT — Chữ không tràn khỏi ô chứa — settings · 16 nhãn
+- ĐẠT — Click trên settings bị UI chặn, không xuống tới vườn · UI nhận click: SettingsPanel; đối tượng nhận sự kiện pointer: không có; nếu không chặn sẽ trúng Ground
+- ĐẠT — settings không che nút trên thanh HUD · 5 nút vẫn bấm được
+- ĐẠT — Nút đóng nhận click thật và đóng bề mặt settings · HudCanvas/SettingsPanel/Close; graphic trên cùng: HudCanvas/SettingsPanel/Close; click handler: HudCanvas/SettingsPanel/Close
+- ĐẠT — Mở được bề mặt plot
+- ĐẠT — Chữ không tràn khỏi ô chứa — plot · 9 nhãn
+- ĐẠT — Click trên plot bị UI chặn, không xuống tới vườn · UI nhận click: Crop_crop_strawberry; đối tượng nhận sự kiện pointer: Crop_crop_strawberry; nếu không chặn sẽ trúng Ground
+- ĐẠT — plot không che nút trên thanh HUD · 5 nút vẫn bấm được
+- ĐẠT — Nút đóng nhận click thật và đóng bề mặt plot · HudCanvas/PlotPopup/ClosePopup; graphic trên cùng: HudCanvas/PlotPopup/ClosePopup; click handler: HudCanvas/PlotPopup/ClosePopup
+- ĐẠT — Chữ không tràn khỏi ô chứa — HUD · 18 nhãn
+
+## Offline và hiệu năng
+
+- ĐẠT — Mô phỏng bù 4 giờ dưới 250 ms · lần chậm nhất 3 ms trên 5 lần, vườn 12 ô
+- ĐẠT — 5 vòng thoát/quay lại không đóng băng khung hình · frame dài nhất 11 ms
+- ĐẠT — p95 frame time dưới 16,7 ms khi vườn đầy · trung bình 177 FPS, p95 5.6 ms, 708 khung hình
+- ĐẠT — Trung bình đạt 60 FPS · trung bình 177 FPS, p95 5.6 ms, 708 khung hình
+
+## Điều khiển camera và nhân vật
+
+- ĐẠT — Bấm vào ô đất vẫn mở được bảng ô · ô 0
+- ĐẠT — Lăn chuột tới thì nhìn gần lại · 8.50 → 5.79
+- ĐẠT — Thu nhỏ hết cỡ vẫn nằm trong giới hạn · 15.73 (tối đa 15.73)
+- ĐẠT — Phóng to hết cỡ vẫn nằm trong giới hạn · 3.20 (tối thiểu 3.20)
+- ĐẠT — Zoom bám điểm dưới con trỏ · lệch 0.0 cm
+- ĐẠT — Kéo màn hình không ra khỏi vườn · dừng ở (14.0, 14.0), giới hạn 14.0
+- ĐẠT — Về lại góc nhìn ban đầu · 8.50
+- ĐẠT — Nhân vật có hai chân để bước
+- ĐẠT — Chuột phải xuống đất thành lệnh đi
+- ĐẠT — Chỗ vừa bấm có vòng tròn báo lại
+- ĐẠT — Vòng tròn tự tắt chứ không nằm lại · sau 0.50 s
+- ĐẠT — Nhận lệnh đi tới điểm được chỉ · đích (-0.8, -1.4)
+- ĐẠT — Đi tới nơi rồi dừng · cách đích 6 cm
+- ĐẠT — Không đi xuyên qua đồ đã đặt · dừng cách tâm ghế 66 cm
+- ĐẠT — Lối đi lát đá vẫn bước lên được · dừng cách tâm phiến đá 6 cm
+- ĐẠT — Không đi xuyên qua quầy trà · dừng cách tâm quầy 110 cm
+- ĐẠT — Chọn món thì hiện bóng ma xem trước · món deco_bench, góc 0
+- ĐẠT — Bóng ma dựng được model của món đang cầm
+- ĐẠT — R xoay 180° và kéo chuột phải xoay tiếp · sau R rồi kéo 45°: 225°
+- ĐẠT — Món đặt xuống giữ đúng góc đã xoay · góc 225°
+- ĐẠT — Thoát chế độ thì bóng ma biến mất
+- ĐẠT — Túi đồ có một ô cho mỗi mặt hàng · 35 ô / 35 mặt hàng
+- ĐẠT — Ô chi tiết nằm dưới đáy và không trống · Bạc hà tươi: 4
+- ĐẠT — Bấm ra ngoài vườn thì dừng ở mép · đích (14.5, -14.5), giới hạn 14.5
+
+## Dây chuyền chế biến trà
+
+- ĐẠT — Có đủ sáu công đoạn giữa thu hoạch và quầy trà · 6 công đoạn
+- ĐẠT — Gom đủ xu để xây cả dây chuyền · 12820 / 12780 xu
+- ĐẠT — Mua được cả sáu máy · 6 máy
+- ĐẠT — Không mua được một cái máy hai lần · Đã mua.
+- ĐẠT — Thuê đủ thợ cho tất cả các máy · 6 thợ
+- ĐẠT — Lá tươi đi hết chuỗi thành trà đóng gói
+- ĐẠT — Thợ ăn lương và xu vẫn không âm · 4570 xu, 6/6 thợ đang làm
+- ĐẠT — Xây dây chuyền xong vẫn kiếm được xu · trước 4040, sau 4570
+- ĐẠT — Bảng Xưởng mở được và có đủ hàng
+- ĐẠT — Chữ không tràn khỏi ô chứa — workshop · 26 nhãn
+
+## Âm lượng, reset và thoát
+
+- ĐẠT — Bật tắt âm thanh và ghi nhớ được lựa chọn
+- ĐẠT — Xuất được dữ liệu test · Đã xuất dữ liệu test: C:/Users/PC/AppData/LocalLow/Vuon va Tra/VuonNho-HudReview\vuon-nho-export-20260907-010813.log
+- ĐẠT — Reset trả về vườn mới · 0 xu, 4 ô
+- ĐẠT — Sau reset vẫn có file save hợp lệ · C:/Users/PC/AppData/LocalLow/Vuon va Tra/VuonNho-HudReview\vuon-nho-save.json
