@@ -98,6 +98,12 @@ namespace VuonNho.Core
         public int RobotKeepOutHalfWidthMm = 700;
         public int RobotKeepOutHalfDepthMm = 700;
 
+        // --- robot thu hoach
+        /// <summary>Toc do robot di trong vuon, milimet moi giay.</summary>
+        public int RobotSpeedMmPerSecond = 7800;
+        /// <summary>Robot dung lai bao lau de thu mot o. Phai duong, neu khong vong su kien khong dung.</summary>
+        public long RobotHarvestMs = 350;
+
         // --- tho che bien
         /// <summary>Gia thue mot tho. Tra mot lan luc thue.</summary>
         public long WorkerHireCost = 300;
@@ -319,6 +325,12 @@ namespace VuonNho.Core
                     throw new ContentValidationException(
                         "Tra dong goi khong tra hon tra tu la tuoi thi khong ai xay day chuyen: " + r.Id);
             }
+
+            if (Balance.RobotSpeedMmPerSecond <= 0)
+                throw new ContentValidationException("Toc do robot phai duong.");
+            // Robot thu tuc thi thi "ranh va co o chin" se lap lai mai o cung mot moc thoi gian.
+            if (Balance.RobotHarvestMs <= 0)
+                throw new ContentValidationException("Thoi gian robot thu mot o phai duong.");
 
             if (Balance.WorkerHireCost < 0 || Balance.WorkerWageCoins < 0)
                 throw new ContentValidationException("Gia thue hoac luong tho am.");

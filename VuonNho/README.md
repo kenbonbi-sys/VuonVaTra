@@ -68,6 +68,26 @@ dùng đúng prefab chứ không phải một hình thay thế, vì câu hỏi n
 đây thì nó trông thế nào". Chỗ không đặt được thì bóng ma **đỏ lên chứ không biến mất**: biến mất
 là câu trả lời mơ hồ, người chơi không biết là mình đưa chuột ra ngoài vườn hay chỗ đó vướng.
 
+### Robot thu hoạch
+
+Robot **đi tới từng ô để thu**, không thu sạch mọi ô chín trong cùng một khoảnh khắc. Cây chín thì
+**nằm chờ** cho tới lượt nó — đó là ý nghĩa của việc robot có mặt trong vườn. Nó luôn nhắm ô chín
+gần chỗ nó đang đứng nhất, bằng nhau thì lấy ô có `plotId` nhỏ hơn, nên chạy lại cùng một lịch cho
+ra cùng một kết quả.
+
+Cả quãng đi lẫn lúc dừng lại thu đều là **deadline**, y như cây lớn và mẻ pha, nên bù offline không
+cần luật riêng: nó chỉ là nhiều bước `AdvanceTo` liên tiếp. Quãng đường tính bằng **căn bậc hai số
+nguyên** chứ không phải `Math.Sqrt`, để đường đi của robot không phụ thuộc vào cách từng máy làm
+tròn số thực.
+
+Cái giá: **thu nhập giảm khoảng 12%** ở bốn ô bạc hà — đo được 792/900 xu trong mười phút mô phỏng.
+Đó là quãng cây chín nằm chờ, và nó là thứ người chơi nhìn thấy chứ không phải một khoản mất vô
+hình. Công thức cân bằng cũ giờ là **trần**, không còn là mức đạt tới được; bài test giữ trần đó
+làm mục kiểm thật — vượt trần nghĩa là robot đã quay về lối thu sạch tức thì.
+
+Hình robot suy ra hoàn toàn từ state: chỗ xuất phát, ô đang nhắm và mốc tới nơi là đủ. Không lưu
+thêm trường nào cho quãng đang đi, nên nạp lại giữa một chuyến, robot vẫn đứng đúng chỗ nó phải đứng.
+
 Nhân vật đi thẳng, không tìm đường: vườn là một mảnh đất phẳng không có vật cản. Không có xương
 và không có animation clip — hai chân là hai nhóm mesh với gốc xoay ở hông, nhịp chân tính theo
 quãng đường đã đi nên chân luôn chạm đất đúng nhịp dù tốc độ có đổi.
@@ -339,7 +359,7 @@ Hai điều đã làm hỏng một lượt chụp và sẽ làm hỏng lượt s
 - **Mốc A** — vòng chơi, save/offline/lifecycle, HUD, 83 test, hai bản build.
 - **L01 + B02** — 13 model Blender (gồm sả và nhài), 9 material, 5 cue âm thanh, prefab và
   GardenSkin đã điền đủ. Xem [Docs/Art/L01-B02.md](Docs/Art/L01-B02.md).
-- **Checklist mục 10** — 139 test logic + 125 mục kiểm trong bản build, hai độ phân giải.
+- **Checklist mục 10** — 148 test logic + 128 mục kiểm trong bản build, hai độ phân giải.
   Xem [Docs/QA-moc-A.md](Docs/QA-moc-A.md).
 - **Hướng v1** — đổi tên, siết nhịp, thêm sả/nhài, pha 2 trang trí.
   Xem [Docs/Huong-di-v1.md](Docs/Huong-di-v1.md).

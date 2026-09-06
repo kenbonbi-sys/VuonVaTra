@@ -168,7 +168,7 @@ namespace VuonNho.Views
                 for (int i = 0; i < Stations.Length; i++)
                     if (Stations[i] != null) Stations[i].Render(state);
             if (_crew != null) _crew.Render(state);
-            if (Helper != null) Helper.Render(state);
+            if (Helper != null) Helper.Render(state, _session.Simulation);
         }
 
         void HandleClick()

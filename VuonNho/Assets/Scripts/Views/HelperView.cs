@@ -43,9 +43,20 @@ namespace VuonNho.Views
             CacheRestTransform();
         }
 
-        public void Render(GameState state)
+        [Tooltip("Robot quay đầu nhanh cỡ nào khi đổi hướng, độ mỗi giây.")]
+        public float TurnSpeed = 420f;
+
+        /// <summary>
+        /// Dua robot toi dung cho ma GameState noi no dang o.
+        ///
+        /// Quang dang di khong duoc luu trong save: chi can cho xuat phat, o dang nham va moc toi
+        /// noi la suy ra du. Lam vay thi hinh anh khong bao gio troi khoi mo phong — nap lai giua
+        /// mot chuyen di, robot van dung dung cho no phai dung.
+        /// </summary>
+        public void Render(GameState state, FarmSimulation simulation)
         {
             _awake = state.RobotUnlocked;
+            MoveToStatePosition(state, simulation);
             if (BodyRenderer != null)
                 BodyRenderer.material.color = _awake
                     ? GardenPalette.Robot
@@ -56,6 +67,47 @@ namespace VuonNho.Views
                     : new Color(0.30f, 0.30f, 0.32f);
             if (SleepingHint != null && SleepingHint.activeSelf == _awake)
                 SleepingHint.SetActive(!_awake);
+        }
+
+        void MoveToStatePosition(GameState state, FarmSimulation simulation)
+        {
+            if (simulation == null) return;
+
+            var from = Ground(state.RobotXMm, state.RobotZMm);
+            var to = from;
+
+            if (state.RobotTargetPlotId >= 0)
+            {
+                to = Ground(simulation.PlotXMm(state.RobotTargetPlotId),
+                            simulation.PlotZMm(state.RobotTargetPlotId));
+
+                // Moc toi noi tru thoi gian dung lai thu, tru quang di, ra moc xuat phat.
+                long harvestMs = simulation.Catalog.Balance.RobotHarvestMs;
+                long travelMs = simulation.TravelMsTo(state, state.RobotTargetPlotId);
+                long arriveAtMs = state.RobotReadyAtMs - harvestMs;
+                long departAtMs = arriveAtMs - travelMs;
+
+                float progress = travelMs <= 0
+                    ? 1f
+                    : Mathf.Clamp01((state.SimulationTimeMs - departAtMs) / (float)travelMs);
+                to = Vector3.Lerp(from, to, progress);
+            }
+
+            var position = transform.position;
+            transform.position = new Vector3(to.x, position.y, to.z);
+
+            // Quay ve huong dang di. Duoi nguong nay thi coi nhu dang dung yen, khong quay lung tung.
+            var heading = to - position;
+            heading.y = 0f;
+            if (heading.sqrMagnitude > 0.0004f)
+                transform.rotation = Quaternion.RotateTowards(
+                    transform.rotation, Quaternion.LookRotation(heading, Vector3.up),
+                    TurnSpeed * Time.deltaTime);
+        }
+
+        static Vector3 Ground(int xMm, int zMm)
+        {
+            return new Vector3(xMm / 1000f, 0f, zMm / 1000f);
         }
 
         void Update()

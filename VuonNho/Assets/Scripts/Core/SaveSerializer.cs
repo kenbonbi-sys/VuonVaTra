@@ -26,8 +26,8 @@ namespace VuonNho.Core
 
     public sealed class SaveSnapshot
     {
-        /// <summary>3 = them day chuyen che bien: may, tho, luong, va hang trung gian trong kho.</summary>
-        public const int CurrentSchemaVersion = 3;
+        /// <summary>4 = robot di toi tung o de thu, nen phai nho cho no dung va o dang nham.</summary>
+        public const int CurrentSchemaVersion = 4;
 
         public int SchemaVersion = CurrentSchemaVersion;
         public string BalanceVersion;
@@ -57,6 +57,10 @@ namespace VuonNho.Core
             root.Set("coins", state.Coins);
             root.Set("tutorialStep", state.TutorialStep);
             root.Set("robotUnlocked", state.RobotUnlocked);
+            root.Set("robotXMm", state.RobotXMm);
+            root.Set("robotZMm", state.RobotZMm);
+            root.Set("robotTargetPlotId", state.RobotTargetPlotId);
+            root.Set("robotReadyAtMs", state.RobotReadyAtMs);
             root.Set("hiredWorkers", state.HiredWorkers);
             root.Set("staffedWorkers", state.StaffedWorkers);
             root.Set("nextPayrollAtMs", state.NextPayrollAtMs);
@@ -217,10 +221,20 @@ namespace VuonNho.Core
                 Coins = root.GetLong("coins", -1),
                 TutorialStep = root.GetInt("tutorialStep", 0),
                 RobotUnlocked = root.GetBool("robotUnlocked", false),
+                // Save cu khong co bon truong nay: mac dinh la robot dung o cho cua no va dang ranh.
+                RobotXMm = root.GetInt("robotXMm", catalog.Balance.RobotCenterXMm),
+                RobotZMm = root.GetInt("robotZMm", catalog.Balance.RobotCenterZMm),
+                RobotTargetPlotId = root.GetInt("robotTargetPlotId", -1),
+                RobotReadyAtMs = root.GetLong("robotReadyAtMs", 0),
                 HiredWorkers = root.GetInt("hiredWorkers", 0),
                 StaffedWorkers = root.GetInt("staffedWorkers", 0),
                 NextPayrollAtMs = root.GetLong("nextPayrollAtMs", 0)
             };
+
+            if (state.RobotReadyAtMs < 0)
+                throw new SaveCorruptException("robotReadyAtMs am.");
+            if (state.RobotTargetPlotId < -1 || state.RobotTargetPlotId >= catalog.Balance.MaximumPlots)
+                throw new SaveCorruptException("Robot nham o khong ton tai: " + state.RobotTargetPlotId);
 
             if (state.HiredWorkers < 0 || state.StaffedWorkers < 0 || state.NextPayrollAtMs < 0)
                 throw new SaveCorruptException("So tho hoac moc tra luong am.");
@@ -468,8 +482,12 @@ namespace VuonNho.Core
                 if (!root.Has("hiredWorkers")) root.Set("hiredWorkers", 0);
                 if (!root.Has("staffedWorkers")) root.Set("staffedWorkers", 0);
                 if (!root.Has("nextPayrollAtMs")) root.Set("nextPayrollAtMs", 0);
-                return root;
+                fromSchemaVersion = 3;
             }
+
+            // 3 -> 4: robot di toi tung o thay vi thu sach tuc thi. Khong truong nao doi y nghia;
+            // bon truong moi deu co mac dinh dung o buoc doc, nen o day khong phai them gi.
+            if (fromSchemaVersion == 3) return root;
 
             throw new SaveCorruptException("Khong co buoc migration tu schema " + fromSchemaVersion + ".");
         }

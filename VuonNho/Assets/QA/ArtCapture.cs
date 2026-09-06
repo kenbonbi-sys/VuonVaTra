@@ -48,7 +48,7 @@ namespace VuonNho.ArtQa
             state.Machine.BatchFinishAtMs = 10000;
             foreach (var plot in Plots) plot.Render(state, simulation);
             Machine.Render(state, simulation);
-            Helper.Render(state);
+            Helper.Render(state, simulation);
             yield return new WaitForSeconds(0.5f);
             yield return new WaitForEndOfFrame();
             ScreenCapture.CaptureScreenshot(Path.Combine(output, "garden-" + Screen.width + "x" + Screen.height + ".png"));
@@ -58,7 +58,7 @@ namespace VuonNho.ArtQa
             state.RobotUnlocked = false;
             state.Machine.BatchRunning = false;
             Machine.Render(state, simulation);
-            Helper.Render(state);
+            Helper.Render(state, simulation);
             yield return new WaitForEndOfFrame();
             ScreenCapture.CaptureScreenshot(Path.Combine(output, "garden-waiting-" + Screen.width + "x" + Screen.height + ".png"));
             yield return new WaitForSeconds(0.3f);

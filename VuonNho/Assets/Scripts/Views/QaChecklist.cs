@@ -94,6 +94,7 @@ namespace VuonNho.Views
             yield return RunControlChecks();
             yield return RunProcessingChecks();
             yield return CheckWorkshopPresentation();
+            yield return CheckRobotHarvestTrip();
             RunSettingsChecks();
 
             Finish();
@@ -314,6 +315,73 @@ namespace VuonNho.Views
             Check("Hover ẩn khi chuột rời màn hình", !hover.TooltipVisible,
                   hover.TooltipVisible ? "bảng vẫn hiện khi con trỏ ra ngoài cửa sổ" : null);
             hover.enabled = true;
+        }
+
+        // ---------------------------------------------------------------- robot di thu
+
+        /// <summary>
+        /// Robot di toi tung o de thu. Do trong ban build vi day la cho mo phong va hinh anh phai
+        /// khop nhau: state noi robot dang o dau, va cai nguoi choi nhin thay phai dung o do.
+        /// </summary>
+        IEnumerator CheckRobotHarvestTrip()
+        {
+            Section("Robot đi thu từng ô");
+
+            if (!_session.State.RobotUnlocked)
+            {
+                Check("Robot mất thời gian đi tới ô", false, "Chưa mở khoá robot để thử.");
+                yield break;
+            }
+
+            // Tua toi khi robot dang tren duong toi mot o. Khong doi mai: neu khong bat duoc thi
+            // bao la khong do duoc, chu khong bao la hong.
+            int guard = 0;
+            while (_session.State.RobotTargetPlotId < 0 && guard++ < 400)
+            {
+                _session.DebugAdvance(500);
+                if (guard % 20 == 0) yield return null;
+            }
+
+            var state = _session.State;
+            if (state.RobotTargetPlotId < 0)
+            {
+                Check("Robot mất thời gian đi tới ô", false, "Không bắt được lúc robot đang trên đường.");
+                yield break;
+            }
+
+            long remaining = state.RobotReadyAtMs - state.SimulationTimeMs;
+            Check("Robot mất thời gian đi tới ô", remaining > 0,
+                  "còn " + remaining + " ms nữa mới tới ô " + state.RobotTargetPlotId);
+
+            int waiting = 0;
+            for (int i = 0; i < state.Plots.Count; i++)
+                if (state.Plots[i].Phase == PlotPhase.Ready) waiting++;
+            Check("Cây chín nằm chờ chứ không bị thu sạch tức thì", waiting > 0,
+                  waiting + " ô đang chín chờ robot");
+
+            // Hinh robot phai chay theo mo phong chu khong dung yen mot cho.
+            var before = _bootstrap.Helper != null ? _bootstrap.Helper.transform.position : Vector3.zero;
+            for (int i = 0; i < 30; i++) yield return null;
+            var after = _bootstrap.Helper != null ? _bootstrap.Helper.transform.position : Vector3.zero;
+            float moved = Vector3.Distance(before, after);
+            Check("Hình robot chạy theo mô phỏng", _bootstrap.Helper != null && moved > 0.01f,
+                  _bootstrap.Helper == null ? "GameBootstrap.Helper chưa được gán."
+                                            : "đi được " + (moved * 100f).ToString("0") + " cm");
+
+            // Toi noi thi dung lai ngay o do — khong nhay ve cho cu.
+            int target = state.RobotTargetPlotId;
+            int wait = 0;
+            while (state.RobotTargetPlotId == target && wait++ < 200) { _session.DebugAdvance(200); }
+            yield return null;
+
+            bool parked = state.RobotXMm == _session.Simulation.PlotXMm(target) &&
+                          state.RobotZMm == _session.Simulation.PlotZMm(target);
+            Check("Thu xong thì robot đứng lại ngay ô đó", parked,
+                  parked ? "ô " + target
+                         : "robot ở (" + state.RobotXMm + ", " + state.RobotZMm + "), ô " + target +
+                           " ở (" + _session.Simulation.PlotXMm(target) + ", " +
+                           _session.Simulation.PlotZMm(target) + ")");
+            yield return null;
         }
 
         // ---------------------------------------------------------------- camera va nhan vat

@@ -163,6 +163,11 @@ namespace VuonNho.Tests
                    .Append(machine.BatchFinishAtMs).Append('|')
                    .Append(machine.BatchOutputCoins);
 
+            builder.Append(";robot=").Append(state.RobotXMm).Append('|')
+                   .Append(state.RobotZMm).Append('|')
+                   .Append(state.RobotTargetPlotId).Append('|')
+                   .Append(state.RobotReadyAtMs);
+
             builder.Append(";workers=").Append(state.HiredWorkers).Append('|')
                    .Append(state.StaffedWorkers).Append('|')
                    .Append(state.NextPayrollAtMs);

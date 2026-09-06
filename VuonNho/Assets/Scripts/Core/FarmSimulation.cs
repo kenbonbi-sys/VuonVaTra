@@ -175,16 +175,8 @@ namespace VuonNho.Core
             //    may duoc phep chay trong ky sap toi.
             PayWagesIfDue(state, atMs);
 
-            // 4. Robot thu cac o Ready theo plotId roi gieo lai cay da chon.
-            if (state.RobotUnlocked)
-            {
-                for (int i = 0; i < state.Plots.Count; i++)
-                {
-                    var plot = state.Plots[i];
-                    if (plot.Phase == PlotPhase.Ready)
-                        HarvestAndReplant(state, plot, atMs, true);
-                }
-            }
+            // 4. Robot: toi noi thi thu dung o da nham, roi nham o chin gan nhat con lai.
+            if (state.RobotUnlocked) ServiceRobot(state, atMs);
 
             // 5. May che bien ranh va du nguyen lieu thi bat dau me moi, theo thu tu day chuyen.
             //    Uu tien chang dau: mot day chuyen dung o giua thi hang o dau se don lai, con
@@ -324,15 +316,24 @@ namespace VuonNho.Core
                 }
             }
 
-            // Robot dang doi mot o Ready (vi du vua mua robot giua chung) cung la mot su kien tuc thi.
             if (state.RobotUnlocked)
             {
-                for (int i = 0; i < state.Plots.Count; i++)
+                if (state.RobotTargetPlotId >= 0)
                 {
-                    if (state.Plots[i].Phase != PlotPhase.Ready) continue;
+                    // Dang tren duong: moc toi noi la mot deadline nhu moi deadline khac, nen chay
+                    // bu offline khong can luat rieng — no chi la nhieu buoc AdvanceTo lien tiep.
+                    if (!found || state.RobotReadyAtMs < best)
+                    {
+                        best = state.RobotReadyAtMs;
+                        found = true;
+                    }
+                }
+                else if (NearestReadyPlot(state) != null)
+                {
+                    // Ranh ma co o dang chin: nham ngay bay gio. Nham xong thi RobotReadyAtMs luon
+                    // lon hon bay gio (RobotHarvestMs duong), nen vong su kien khong quay tai cho.
                     long now = state.SimulationTimeMs;
                     if (!found || now < best) { best = now; found = true; }
-                    break;
                 }
             }
 
@@ -347,6 +348,100 @@ namespace VuonNho.Core
 
             nextEventMs = best;
             return found;
+        }
+
+        /// <summary>
+        /// Mot nhip cua robot. No khong con thu sach moi o chin trong cung mot khoanh khac: no
+        /// di toi tung o, thu, roi moi nham o tiep theo.
+        ///
+        /// Cay chin **nam cho** cho toi khi robot toi noi — do la y nghia cua viec robot co mat
+        /// trong vuon. Ca quang di lan luc dung lai thu deu la deadline, nen mot buoc AdvanceTo
+        /// dai bang nhieu buoc ngan cong lai, va quang vang mat cung ra dung ket qua do.
+        /// </summary>
+        public void ServiceRobot(GameState state, long atMs)
+        {
+            if (state.RobotTargetPlotId >= 0 && state.RobotReadyAtMs <= atMs)
+            {
+                var arrived = state.Plot(state.RobotTargetPlotId);
+                state.RobotXMm = PlotXMm(state.RobotTargetPlotId);
+                state.RobotZMm = PlotZMm(state.RobotTargetPlotId);
+                state.RobotTargetPlotId = -1;
+
+                // O co the da duoc nguoi choi thu bang tay trong luc robot dang di. Chuyen di do
+                // coi nhu bo, khong bu lai gi — robot khong biet truoc thi nguoi choi cung vay.
+                if (arrived != null && arrived.Phase == PlotPhase.Ready)
+                    HarvestAndReplant(state, arrived, atMs, true);
+            }
+
+            if (state.RobotTargetPlotId >= 0) return;
+
+            var next = NearestReadyPlot(state);
+            if (next == null) return;
+
+            state.RobotTargetPlotId = next.PlotId;
+            state.RobotReadyAtMs = atMs + TravelMsTo(state, next.PlotId) + _catalog.Balance.RobotHarvestMs;
+        }
+
+        /// <summary>
+        /// O chin gan cho robot nhat. Bang nhau thi lay o co plotId nho hon — hoa co dinh, nen
+        /// chay lai cung mot lich cho ra cung mot ket qua.
+        /// </summary>
+        public PlotState NearestReadyPlot(GameState state)
+        {
+            PlotState best = null;
+            long bestDistance = 0;
+            for (int i = 0; i < state.Plots.Count; i++)
+            {
+                var plot = state.Plots[i];
+                if (plot.Phase != PlotPhase.Ready) continue;
+
+                long dx = PlotXMm(plot.PlotId) - state.RobotXMm;
+                long dz = PlotZMm(plot.PlotId) - state.RobotZMm;
+                long distance = dx * dx + dz * dz;
+                if (best == null || distance < bestDistance ||
+                    (distance == bestDistance && plot.PlotId < best.PlotId))
+                {
+                    best = plot;
+                    bestDistance = distance;
+                }
+            }
+            return best;
+        }
+
+        /// <summary>Quang duong tu cho robot dang dung toi mot o, quy ra millisecond.</summary>
+        public long TravelMsTo(GameState state, int plotId)
+        {
+            long dx = PlotXMm(plotId) - state.RobotXMm;
+            long dz = PlotZMm(plotId) - state.RobotZMm;
+            return IntegerSqrt(dx * dx + dz * dz) * 1000L / _catalog.Balance.RobotSpeedMmPerSecond;
+        }
+
+        public int PlotXMm(int plotId)
+        {
+            return GardenLayout.PlotCenterXMm(_catalog.Balance, plotId % _catalog.Balance.GardenColumns);
+        }
+
+        public int PlotZMm(int plotId)
+        {
+            return GardenLayout.PlotCenterZMm(_catalog.Balance, plotId / _catalog.Balance.GardenColumns);
+        }
+
+        /// <summary>
+        /// Can bac hai tren so nguyen. Dung so nguyen chu khong dung Math.Sqrt de quang duong cua
+        /// robot khong phu thuoc vao cach tung may lam tron so thuc — cung ky luat so nguyen ma
+        /// tien, kho va toa do trong game deu theo.
+        /// </summary>
+        public static long IntegerSqrt(long value)
+        {
+            if (value <= 0) return 0;
+            long root = value;
+            long next = (root + 1) / 2;
+            while (next < root)
+            {
+                root = next;
+                next = (root + value / root) / 2;
+            }
+            return root;
         }
 
         /// <summary>Thu thu cong va thu bang robot chay cung mot quy tac.</summary>

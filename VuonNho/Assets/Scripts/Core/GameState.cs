@@ -115,6 +115,16 @@ namespace VuonNho.Core
 
         /// <summary>Moc tra luong tiep theo, theo thoi gian mo phong.</summary>
         public long NextPayrollAtMs;
+
+        /// <summary>Cho robot dang dung, milimet. Nguon su that cho ca hinh anh lan thoi gian di.</summary>
+        public int RobotXMm;
+        public int RobotZMm;
+
+        /// <summary>O robot dang tren duong toi. -1 nghia la dang ranh.</summary>
+        public int RobotTargetPlotId = -1;
+
+        /// <summary>Luc robot toi noi va thu xong o dang nham.</summary>
+        public long RobotReadyAtMs;
         public readonly HashSet<string> UnlockedCropIds = new HashSet<string>(StringComparer.Ordinal);
         public readonly HashSet<string> UnlockedRecipeIds = new HashSet<string>(StringComparer.Ordinal);
         public readonly Dictionary<string, int> UpgradeLevels = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -131,7 +141,10 @@ namespace VuonNho.Core
                 Coins = 0,
                 TutorialStep = 0,
                 SaveRevision = 1,
-                RobotUnlocked = false
+                RobotUnlocked = false,
+                RobotXMm = catalog.Balance.RobotCenterXMm,
+                RobotZMm = catalog.Balance.RobotCenterZMm,
+                RobotTargetPlotId = -1
             };
 
             for (int i = 0; i < catalog.Balance.MaximumPlots; i++)
@@ -240,6 +253,10 @@ namespace VuonNho.Core
                 TutorialStep = TutorialStep,
                 SaveRevision = SaveRevision,
                 RobotUnlocked = RobotUnlocked,
+                RobotXMm = RobotXMm,
+                RobotZMm = RobotZMm,
+                RobotTargetPlotId = RobotTargetPlotId,
+                RobotReadyAtMs = RobotReadyAtMs,
                 HiredWorkers = HiredWorkers,
                 StaffedWorkers = StaffedWorkers,
                 NextPayrollAtMs = NextPayrollAtMs,

@@ -178,7 +178,7 @@ namespace VuonNho.Tests.ArtViews
             {
                 machine.Render(state, simulation);
                 plotView.Render(state, simulation);
-                helper.Render(state);
+                helper.Render(state, simulation);
             }
 
             Assert.AreEqual(before, SaveSerializer.Write(snapshot, catalog, false));

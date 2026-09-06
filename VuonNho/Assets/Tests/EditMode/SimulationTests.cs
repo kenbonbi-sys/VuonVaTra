@@ -152,11 +152,18 @@ namespace VuonNho.Tests
             double expected = System.Math.Min(fieldBatchesPerMinute, machineBatchesPerMinute)
                               * recipe.OutputCoins * (tenMinutes / 60000.0);
 
-            // Cho phep lech 8% vi phan khoi dong: vu dau va me dau chua chay ngay tu giay 0.
-            Assert.GreaterOrEqual(state.Coins, (long)(expected * 0.92),
-                                  "Thu nhap on dinh thap hon cong thuc balance.");
+            // Cong thuc tren la TRAN, khong con la muc dat toi duoc.
+            //
+            // Robot di toi tung o de thu, nen mot o chin xong con nam cho toi luot no. Quang cho
+            // do la thu nguoi choi nhin thay va la ly do robot co mat trong vuon, nhung no cung
+            // an mat mot phan thu nhap — do duoc 792/900 xu o bon o bac ha, tuc mat 12%.
+            //
+            // Can duoi 15% giu cho phan mat do khong am tham phinh to. Can tren 1.02 moi la muc
+            // kiem that su: vuot tran nghia la robot da quay ve loi thu sach tuc thi.
+            Assert.GreaterOrEqual(state.Coins, (long)(expected * 0.85),
+                                  "Thu nhap on dinh thap hon nhieu so voi tran balance.");
             Assert.LessOrEqual(state.Coins, (long)(expected * 1.02),
-                               "Thu nhap on dinh cao hon cong thuc balance.");
+                               "Thu nhap vuot tran: robot dang thu ma khong mat thoi gian di.");
         }
 
         // ---- Dong thoi ----------------------------------------------------------------
