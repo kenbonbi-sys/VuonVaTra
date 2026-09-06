@@ -165,7 +165,6 @@ namespace VuonNho.Views
 
             BuildTopBar(root);
             BuildMachineCard(root);
-            BuildMapNavigation(root);
 
             // --- cac panel ben phai
             Transform body;
@@ -202,32 +201,6 @@ namespace VuonNho.Views
             _plotPopup.SetActive(false);
             _offlinePopup.SetActive(false);
             _blockedPanel.SetActive(false);
-        }
-
-        void BuildMapNavigation(Transform root)
-        {
-            var panel = UiFactory.Panel(root, "MapNavigation", GardenPalette.PanelBackground,
-                UiFactory.RadiusControl);
-            var rect = UiFactory.Rect(panel.gameObject);
-            rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.zero;
-            rect.anchoredPosition = new Vector2(UiFactory.EdgeMargin, UiFactory.EdgeMargin);
-            rect.sizeDelta = new Vector2(420f, 52f);
-            UiFactory.HorizontalList(panel.gameObject, 6f, new RectOffset(6, 6, 6, 6));
-            UiFactory.TextButton(panel.transform, "Overview", "Toàn cảnh", delegate { FocusMap(0); },
-                UiFactory.ButtonStyle.Quiet);
-            UiFactory.TextButton(panel.transform, "Farm", "Nông trại", delegate { FocusMap(1); },
-                UiFactory.ButtonStyle.Quiet);
-            UiFactory.TextButton(panel.transform, "Factory", "Dây chuyền", delegate { FocusMap(2); },
-                UiFactory.ButtonStyle.Quiet, symbol: UiFactory.Symbols.Factory);
-        }
-
-        void FocusMap(int area)
-        {
-            var bootstrap = FindAnyObjectByType<GameBootstrap>();
-            if (bootstrap == null || bootstrap.Rig == null) return;
-            if (area == 1) bootstrap.Rig.FocusGround(new Vector3(0f, 0f, 0.5f), 5.6f);
-            else if (area == 2) bootstrap.Rig.FocusGround(new Vector3(8.5f, 0f, 0.7f), 5.7f);
-            else bootstrap.Rig.ResetView();
         }
 
         public void ShowWorkshopPanel()

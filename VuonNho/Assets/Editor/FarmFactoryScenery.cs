@@ -83,7 +83,7 @@ namespace VuonNho.EditorTools
             Pallet(site, new Vector3(4.4f, 0f, 4.7f), false);
             Pallet(site, new Vector3(3.55f, 0f, 4.7f), false);
             Sign(site, skin, camera, "FarmSign", "NÔNG TRẠI", null, new Vector3(-2.4f, 0f, -3.8f), 2.45f);
-            Sign(site, skin, camera, "FactorySign", "XƯỞNG CHẾ BIẾN", "LÀM HÉO → ĐÓNG GÓI", new Vector3(8.9f, 0f, 5.05f), 3.1f);
+            Sign(site, skin, camera, "FactorySign", "XƯỞNG CHẾ BIẾN", null, new Vector3(8.9f, 0f, 5.05f), 3.1f);
             var dispatchSign = new GameObject("DispatchNameplate").transform;
             dispatchSign.SetParent(shelter, false);
             dispatchSign.localPosition = new Vector3(0f, 2.07f, 0f);

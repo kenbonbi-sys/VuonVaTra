@@ -1,8 +1,8 @@
 # Map nông trại và xưởng chế biến
 
-Map Garden đã chuyển sang hai khu: 12 luống cây và quầy trà ở phía trái; sân xưởng riêng ở phía phải. Góc nhìn ban đầu thấy được cả hai khu. Các nút **Toàn cảnh / Nông trại / Dây chuyền** ở góc dưới trái đưa camera đến từng khu; vẫn có thể kéo và zoom bằng chuột.
+Map Garden đã chuyển sang hai khu: 12 luống cây và quầy trà ở phía trái; sân xưởng riêng ở phía phải. Góc nhìn ban đầu thấy được cả hai khu; đi lại giữa hai khu bằng cách kéo và zoom chuột.
 
-Sáu máy xếp theo tuyến chữ U, đánh số theo thứ tự: **01 Làm héo → 02 Diệt men → 03 Vò → 04 Lên men → 05 Sấy → 06 Đóng gói**. Băng tải đi quanh cạnh ngoài ở chỗ quay đầu, chừa lối đứng máy và đường đi giữa sân. Hai đầu tuyến có khu nhận lá và kho thành phẩm. Nền sân, vạch phân khu, biển tên, pallet, mái kho và hàng rào giúp đọc rõ chức năng của từng khu.
+Sáu máy xếp theo tuyến chữ U, theo thứ tự **làm héo → diệt men → vò → lên men → sấy → đóng gói**. Băng tải đi quanh cạnh ngoài ở chỗ quay đầu, chừa lối đứng máy và đường đi giữa sân. Hai đầu tuyến có khu nhận lá và kho thành phẩm. Nền sân, vạch phân khu, biển tên, pallet, mái kho và hàng rào giúp đọc rõ chức năng của từng khu.
 
 Băng tải xuất hiện khi hai máy nối với nó đã được mua. Khay lá và kiện trà chuyển động theo trạng thái chạy của máy nguồn; đây là hiệu ứng hiển thị, không thêm hoặc trừ kho. Máy chưa mua không tạo collider vô hình. Bấm máy đang có sẽ mở bảng Xưởng.
 
