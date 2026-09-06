@@ -20,7 +20,7 @@ ICONS = [
     "inventory_2", "upgrade", "format_paint", "settings", "close", "sell",
     "shopping_cart", "add", "delete", "play_arrow", "download", "restart_alt",
     "undo", "delete_forever", "fast_forward", "logout", "volume_up", "volume_off",
-    "check", "local_atm",
+    "check", "local_atm", "schedule",
 ]
 
 

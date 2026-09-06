@@ -57,6 +57,7 @@ namespace VuonNho.Views
         Text _plotPopupTitle;
         Text _plotPopupState;
         Text _offlineText;
+        Text _offlineCapText;
         Text _blockedText;
         Text _toastLabel;
         Image _toastPanel;
@@ -744,20 +745,43 @@ namespace VuonNho.Views
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
             fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
 
-            UiFactory.Label(card, "Title", "Khu vườn vẫn chạy khi bạn vắng mặt",
-                            UiFactory.FontSizeTitle, TextAnchor.UpperLeft, GardenPalette.TextPrimary);
+            // Icon dong hang voi tieu de chu khong nam rieng mot dong: the nay von da cao, them
+            // mot tang nua chi day cai nut ra xa hon.
+            var titleRow = UiFactory.Node(card, "TitleRow");
+            var titleLayout = UiFactory.HorizontalList(titleRow, 10f, new RectOffset(0, 0, 0, 0));
+            titleLayout.childAlignment = TextAnchor.MiddleLeft;
+            titleLayout.childForceExpandWidth = false;
+            titleLayout.childForceExpandHeight = false;
+            UiFactory.Symbol(titleRow.transform, "Symbol", UiFactory.Symbols.Schedule,
+                             UiFactory.IconSizeCard).color = GardenPalette.TextMuted;
+            var title = UiFactory.Label(titleRow.transform, "Title", "Vườn vẫn chạy khi bạn vắng mặt",
+                                        UiFactory.FontSizeTitle, TextAnchor.MiddleLeft,
+                                        GardenPalette.TextPrimary, true);
+            title.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
             _offlineText = UiFactory.Label(card, "Body", "", UiFactory.FontSizeBody,
                                            TextAnchor.UpperLeft, GardenPalette.TextPrimary);
             _offlineText.lineSpacing = 1.25f;
 
-            // Mot loi thoat duy nhat cho ca the: de no chay het be ngang cho khoi phai tim.
-            UiFactory.TextButton(card, "Continue", "Tiếp tục", delegate
+            // Tran offline la mot luat, khong phai ket qua cua lan vang mat nay. De mo va nho hon
+            // de no khong tranh cho voi may dong that su noi ve khu vuon.
+            _offlineCapText = UiFactory.Label(card, "Cap", "", UiFactory.FontSizeMeta,
+                                              TextAnchor.UpperLeft, GardenPalette.TextMuted);
+
+            // Nut vua bang chu va nam giua: the nay chi co mot loi thoat, khong can mot thanh
+            // chay het be ngang moi tim thay no.
+            var actionRow = UiFactory.Node(card, "ActionRow");
+            var actionLayout = UiFactory.HorizontalList(actionRow, 0f, new RectOffset(0, 0, 4, 0));
+            actionLayout.childAlignment = TextAnchor.MiddleCenter;
+            actionLayout.childForceExpandWidth = false;
+            actionLayout.childForceExpandHeight = false;
+            var continueButton = UiFactory.TextButton(actionRow.transform, "Continue", "Tiếp tục", delegate
             {
                 _session.AcknowledgeOfflineSummary();
                 container.SetActive(false);
             },
-                                                   symbol: UiFactory.Symbols.PlayArrow);
+                                                      symbol: UiFactory.Symbols.PlayArrow);
+            UiFactory.HugContent(continueButton);
 
             return container;
         }
@@ -1197,19 +1221,24 @@ namespace VuonNho.Views
             _toastHideTime = Time.unscaledTime + 3f;
         }
 
+        /// <summary>
+        /// Bao cao vang mat. Ba con so cua lan vang mat nay — thoi gian, xu, kho — di chung mot
+        /// dong: chung tra loi cung mot cau hoi "trong luc toi di vang thi duoc gi", tach ra ba
+        /// dong chi bat nguoi doc doc ba lan. Hai dong sau chi hien khi that su co chuyen.
+        /// </summary>
         void ShowOfflineReport(OfflineSummary summary)
         {
             var catalog = _session.Catalog;
-            string text = "Thời gian được tính: " + WholeTime(summary.ElapsedMs) + ".\n" +
-                          "Xu kiếm được: " + summary.CoinsGained + ".\n";
+            string text = "Vắng " + WholeTime(summary.ElapsedMs) + " · " +
+                          (summary.CoinsGained > 0 ? "+" : "") + summary.CoinsGained + " xu · ";
 
             if (summary.ItemsGained.Count == 0)
             {
-                text += "Kho không đổi.\n";
+                text += "kho không đổi.";
             }
             else
             {
-                text += "Kho thay đổi: ";
+                text += "kho ";
                 for (int i = 0; i < summary.ItemsGained.Count; i++)
                 {
                     var item = summary.ItemsGained[i];
@@ -1217,16 +1246,16 @@ namespace VuonNho.Views
                     text += catalog.Crop(item.CropId).DisplayName + " " +
                             (item.Amount > 0 ? "+" : "") + item.Amount;
                 }
-                text += ".\n";
+                text += ".";
             }
 
             if (summary.MachineWaiting)
-                text += "Máy đang chờ nguyên liệu cho công thức đang chọn.\n";
+                text += "\nMáy đang chờ nguyên liệu.";
             if (!_session.State.RobotUnlocked)
-                text += "Chưa có robot nên cây chỉ lớn đến khi chín, không được thu tự động.\n";
+                text += "\nChưa có robot nên cây chín rồi nằm chờ bạn thu.";
 
-            text += "Tối đa " + (_session.Catalog.Balance.OfflineCapMs / 3600000) + " giờ tiến độ cho một lần vắng mặt.";
-
+            _offlineCapText.text = "Tối đa " + (_session.Catalog.Balance.OfflineCapMs / 3600000) +
+                                   " giờ cho một lần vắng mặt.";
             _offlineText.text = text;
             _offlinePopup.SetActive(true);
             // The tu tinh chieu cao theo do dai bao cao: dung lai ngay trong frame nay.

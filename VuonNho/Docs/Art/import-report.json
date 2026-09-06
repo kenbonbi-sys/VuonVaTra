@@ -1,5 +1,5 @@
 {
-    "utc": "2026-09-06T11:41:24.6174919Z",
+    "utc": "2026-09-06T14:08:12.6769290Z",
     "unityVersion": "6000.6.0f1",
     "preset": "FBX static; globalScale 1; Convert Units on; Bake Axis Conversion on; imported normals; hierarchy preserved; no animation, cameras, lights or colliders",
     "passed": true,
@@ -483,9 +483,7 @@
             "errors": []
         }
     ],
-    "createdPrefabs": [
-        "Assets/Art/Prefabs/PF_Gardener.prefab"
-    ],
+    "createdPrefabs": [],
     "preservedPrefabs": [
         "Assets/Art/Prefabs/PF_Plot.prefab",
         "Assets/Art/Prefabs/PF_Seedling.prefab",
@@ -504,10 +502,15 @@
         "Assets/Art/Prefabs/PF_Planter.prefab",
         "Assets/Art/Prefabs/PF_Lantern.prefab",
         "Assets/Art/Prefabs/PF_Bench.prefab",
-        "Assets/Art/Prefabs/PF_Signboard.prefab"
+        "Assets/Art/Prefabs/PF_Signboard.prefab",
+        "Assets/Art/Prefabs/PF_Gardener.prefab"
     ],
     "filledSlots": [
-        "CharacterPrefab"
+        "Icons[crop_mint]",
+        "Icons[crop_chamomile]",
+        "Icons[crop_strawberry]",
+        "Icons[crop_lemongrass]",
+        "Icons[crop_jasmine]"
     ],
     "errors": []
 }

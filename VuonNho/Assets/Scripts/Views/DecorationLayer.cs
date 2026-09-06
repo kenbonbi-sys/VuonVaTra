@@ -15,6 +15,9 @@ namespace VuonNho.Views
     public sealed class DecorationHandle : MonoBehaviour
     {
         public int Index;
+
+        /// <summary>Nhan vat phai di vong qua mon nay. Chep tu DecorationDefinition luc dung.</summary>
+        public bool BlocksWalking;
     }
 
     /// <summary>
@@ -82,6 +85,9 @@ namespace VuonNho.Views
 
             var handle = root.AddComponent<DecorationHandle>();
             handle.Index = index;
+            DecorationDefinition definition;
+            handle.BlocksWalking = _session.Catalog.TryGetDecoration(placed.DefinitionId, out definition)
+                                   && definition.BlocksWalking;
 
             var prefab = Skin != null ? Skin.DecorationPrefabFor(placed.DefinitionId) : null;
             if (prefab != null)

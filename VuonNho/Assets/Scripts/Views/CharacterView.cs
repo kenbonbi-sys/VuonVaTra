@@ -5,8 +5,13 @@ namespace VuonNho.Views
     /// <summary>
     /// Nhan vat chinh: bam chuot phai len dat thi di toi do.
     ///
-    /// Di thang, khong tim duong. Vuon la mot manh dat phang khong co vat can chan loi, nen
-    /// mot thuat toan tim duong chi them ma nguon ma khong doi lai duoc gi tren man hinh.
+    /// Di thang, roi truot doc theo do dac neu dam vao — khong tim duong. Vuon la mot khoang
+    /// trong voi vai mon do dat roi rac, khong phai me cung: truot doc mot canh la du de di vong
+    /// qua chung, con mot thuat toan tim duong thi them nhieu ma nguon ma gan nhu khong bao gio
+    /// cho ra duong di khac.
+    ///
+    /// Cai gia phai tra: dung giua hai mon do ke sat nhau thanh mot goc lom thi nhan vat dung
+    /// lai chu khong lui ra de vong. Bam mot cu nua la di tiep duoc.
     ///
     /// Khong co xuong va khong co animation clip: hai chan la hai nhom mesh rieng, goc xoay
     /// nam ngay hong, nen chi can xoay transform la co buoc di. Cung cach robot dang lam.
@@ -29,11 +34,16 @@ namespace VuonNho.Views
         [Tooltip("Nhân vật không đi ra ngoài ô vuông này quanh tâm vườn, tính bằng mét.")]
         public float WalkLimit = 8f;
 
+        [Tooltip("Bán kính thân người, dùng để tránh đồ đã đặt trong vườn. Mét.")]
+        public float BodyRadius = 0.3f;
+
         const float ArrivalDistance = 0.06f;
         const float StepDegrees = 32f;
         const float StepsPerMetre = 1.15f;
         const float BobAmplitude = 0.035f;
         const float StridePerSecond = 6f;
+
+        readonly Collider[] _nearby = new Collider[16];
 
         Vector3 _target;
         bool _walking;
@@ -97,8 +107,11 @@ namespace VuonNho.Views
                 else
                 {
                     var direction = toTarget / distance;
-                    stepped = Mathf.Min(Speed * Time.deltaTime, distance);
-                    transform.position += direction * stepped;
+                    stepped = StepWithSlide(direction, Mathf.Min(Speed * Time.deltaTime, distance));
+
+                    // Di khong noi nua thi dung han, khong day mai vao mot mon do: dung im la
+                    // loi bao "toi khong den duoc do", con rung tai cho thi khong noi gi ca.
+                    if (stepped <= 0f) _walking = false;
 
                     // Quay nguoi tach khoi buoc di: doi huong dot ngot van muot chu khong giat.
                     var body = VisualRoot != null ? VisualRoot : transform;
@@ -137,6 +150,54 @@ namespace VuonNho.Views
             if (VisualRoot != null)
                 VisualRoot.localPosition = _restLocalPosition +
                     new Vector3(0f, Mathf.Abs(Mathf.Sin(_stepPhase)) * BobAmplitude * _stride, 0f);
+        }
+
+        /// <summary>
+        /// Di mot buoc theo huong da cho. Dam vao do dac thi bo mot truc va di not truc kia —
+        /// do trang tri deu la hop vuong goc voi truc nen bo mot thanh phan la du de truot doc
+        /// theo canh, khong can tinh phap tuyen va cung khong the truot vong ra sau vat can.
+        /// </summary>
+        /// <returns>Quang duong that su di duoc; 0 nghia la bi chan hoan toan.</returns>
+        float StepWithSlide(Vector3 direction, float distance)
+        {
+            var from = transform.position;
+
+            var full = from + direction * distance;
+            if (!Blocked(full)) { transform.position = full; return distance; }
+
+            var alongX = from + new Vector3(direction.x * distance, 0f, 0f);
+            if (Mathf.Abs(direction.x) > 0.01f && !Blocked(alongX))
+            {
+                transform.position = alongX;
+                return Mathf.Abs(direction.x) * distance;
+            }
+
+            var alongZ = from + new Vector3(0f, 0f, direction.z * distance);
+            if (Mathf.Abs(direction.z) > 0.01f && !Blocked(alongZ))
+            {
+                transform.position = alongZ;
+                return Mathf.Abs(direction.z) * distance;
+            }
+
+            return 0f;
+        }
+
+        /// <summary>
+        /// Cho nay co mon do nao chan khong. Chi do trang tri chan: o dat va nen vuon cung co
+        /// collider, ma di len o dat thi phai duoc.
+        /// </summary>
+        bool Blocked(Vector3 position)
+        {
+            var centre = position + Vector3.up * BodyRadius;
+            int count = Physics.OverlapSphereNonAlloc(centre, BodyRadius, _nearby,
+                                                      ~0, QueryTriggerInteraction.Ignore);
+            for (int i = 0; i < count; i++)
+            {
+                // Collider gameplay nam ngay tren wrapper cua mon trang tri, cung cho voi handle.
+                var handle = _nearby[i].GetComponent<DecorationHandle>();
+                if (handle != null && handle.BlocksWalking) return true;
+            }
+            return false;
         }
 
         static Vector3 Horizontal(Vector3 v)

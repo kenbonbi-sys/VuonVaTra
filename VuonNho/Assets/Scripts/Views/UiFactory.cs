@@ -88,6 +88,7 @@ namespace VuonNho.Views
             public const string VolumeOff = "\ue04f";
             public const string Check = "\ue668";
             public const string LocalAtm = "\ue53e";
+            public const string Schedule = "\uefd6";
         }
 
         /// <summary>
@@ -432,6 +433,22 @@ namespace VuonNho.Views
             var layout = go.AddComponent<LayoutElement>();
             layout.minHeight = ButtonHeight;
             return button;
+        }
+
+        /// <summary>
+        /// Nut chi rong bang noi dung cua no.
+        ///
+        /// Nhan chu ben trong nut duoc dat flexibleWidth = 1 de chu can duoc giua khi nut bi keo
+        /// rong. Nhung layout group cua nut lai bao flexibleWidth cua chinh no bang tong cua cac
+        /// con, nen con so 1 do noi len thanh flexibleWidth cua ca cai nut — va Unity chia cho
+        /// trong cho moi thu co flexibleWidth duong, khong quan tam childForceExpandWidth da tat
+        /// hay chua. Ep ve 0 la cach duy nhat de nut dung yen o be rong cua no.
+        /// </summary>
+        public static void HugContent(Button button)
+        {
+            if (button == null) return;
+            var layout = button.GetComponent<LayoutElement>();
+            if (layout != null) layout.flexibleWidth = 0f;
         }
 
         public static void SetButtonCaption(Button button, string caption)

@@ -15,6 +15,7 @@ namespace VuonNho.EditorTools
         public const string ModelFolder = "Assets/Art/Models";
         public const string MaterialFolder = "Assets/Art/Materials";
         public const string PrefabFolder = "Assets/Art/Prefabs";
+        public const string IconFolder = "Assets/Art/Icons";
         public const string ReportPath = "Docs/Art/import-report.json";
         public const string CalibrationPath = ModelFolder + "/SM_CalibrationCube.fbx";
 
@@ -202,6 +203,7 @@ namespace VuonNho.EditorTools
                 if (skin.GroundPrefab == null)
                     skin.GroundPrefab = LoadOrCreateUtilityPrefab("Ground", materials, skin, report);
                 FillEmptyAudio(skin, report.filledSlots);
+                FillEmptyIcons(skin, report.filledSlots);
                 EditorUtility.SetDirty(skin);
                 AssetDatabase.SaveAssets();
                 report.skinAssigned = true;
@@ -569,6 +571,60 @@ namespace VuonNho.EditorTools
                 }
             }
             serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>
+        /// Icon HUD cua nam cay. Anh nguon la file ve tay, khong phai dau ra cua Blender, nen no
+        /// chi di qua buoc chinh lai cai dat import chu khong qua cong kiem model.
+        ///
+        /// Chinh cai dat trong code chu khong dua vao file .meta co san: anh moi keo vao du an se
+        /// vao voi kieu Default va HUD se khong hien duoc no, ma loi do khong noi ra la vi sao.
+        /// </summary>
+        static void FillEmptyIcons(GardenSkin skin, List<string> filled)
+        {
+            var cropIcons = new Dictionary<string, string>
+            {
+                { DefaultContent.CropMint, "Mint" },
+                { DefaultContent.CropChamomile, "Chamomile" },
+                { DefaultContent.CropStrawberry, "Strawberry" },
+                { DefaultContent.CropLemongrass, "Lemongrass" },
+                { DefaultContent.CropJasmine, "Jasmine" }
+            };
+
+            var icons = new List<IconSkinEntry>(skin.Icons ?? new IconSkinEntry[0]);
+            foreach (var entry in cropIcons)
+            {
+                if (icons.Exists(existing => existing != null && existing.Id == entry.Key)) continue;
+
+                string path = IconFolder + "/ICO_" + entry.Value + ".png";
+                if (!File.Exists(path)) continue;
+                ConfigureIconImport(path);
+
+                var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+                if (sprite == null) continue;
+                icons.Add(new IconSkinEntry { Id = entry.Key, Icon = sprite });
+                filled.Add("Icons[" + entry.Key + "]");
+            }
+            skin.Icons = icons.ToArray();
+        }
+
+        /// <summary>Anh HUD: sprite, giu alpha, khong mipmap vi no luon duoc ve dung mot co.</summary>
+        static void ConfigureIconImport(string path)
+        {
+            var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer == null) return;
+            if (importer.textureType == TextureImporterType.Sprite &&
+                importer.spriteImportMode == SpriteImportMode.Single &&
+                importer.alphaIsTransparency && !importer.mipmapEnabled) return;
+
+            importer.textureType = TextureImporterType.Sprite;
+            importer.spriteImportMode = SpriteImportMode.Single;
+            importer.alphaIsTransparency = true;
+            importer.mipmapEnabled = false;
+            importer.wrapMode = TextureWrapMode.Clamp;
+            importer.filterMode = FilterMode.Bilinear;
+            importer.maxTextureSize = 256;
+            importer.SaveAndReimport();
         }
 
         public static bool TryGetBounds(Transform target, Transform relativeTo, out Bounds bounds)

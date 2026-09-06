@@ -251,6 +251,8 @@ namespace VuonNho.Views
                       ? "chuột thật bấm chen vào giữa phép đo, không kết luận được"
                       : "cách đích " + (missed * 100f).ToString("0") + " cm");
 
+            yield return CheckSolidDecorations(character);
+
             // Diem ngoai vuon phai bi keo ve trong bo chu khong bi bo qua: mot cu bam hut van
             // phai dan den mot buoc di co nghia.
             character.WalkTo(new Vector3(500f, 0f, -500f));
@@ -263,6 +265,96 @@ namespace VuonNho.Views
 
             // Tra nhan vat ve cho cu de anh chup sau bo kiem tra van dung bo cuc quen thuoc.
             character.Teleport(start);
+        }
+
+        /// <summary>
+        /// Do da dat xuong la vat cung, tru loi di lat da. Hai muc nay di cung nhau vi chung la
+        /// hai nua cua cung mot luat: neu chi kiem cai ghe thi mot thay doi lam moi thu deu cung
+        /// van qua duoc, va loi di lat da se lang le chan duong.
+        /// </summary>
+        IEnumerator CheckSolidDecorations(CharacterView character)
+        {
+            if (!_session.DecoratingUnlocked)
+            {
+                Check("Không đi xuyên qua đồ đã đặt", false, "Chưa mở khoá trang trí để thử.");
+                yield break;
+            }
+
+            var home = character.transform.position;
+
+            // Dat ngay truoc mat nhan vat, ve phia xa luong cay — khoang trong nhat trong vuon.
+            var spot = home + new Vector3(0f, 0f, -1.3f);
+            int xMm = Mathf.RoundToInt(spot.x * 1000f);
+            int zMm = Mathf.RoundToInt(spot.z * 1000f);
+
+            // Mua het nang cap xong thi vua het xu. Tua toi khi du tien mua mon dat nhat trong
+            // hai mon can thu, chu khong tang xu bang tay: tang tay se bo qua ca duong mua ban.
+            long price = Mathf.Max((int)_session.Catalog.Decoration(DefaultDecorations.Bench).Cost,
+                                   (int)_session.Catalog.Decoration(DefaultDecorations.StonePath).Cost);
+            int wait = 0;
+            while (_session.State.Coins < price && wait++ < 600)
+            {
+                _session.DebugAdvance(10000);
+                if (wait % 40 == 0) yield return null;
+            }
+
+            var bench = _session.PlaceDecoration(DefaultDecorations.Bench, xMm, zMm, 0);
+            if (!bench.Success)
+            {
+                Check("Không đi xuyên qua đồ đã đặt", false, "Không đặt được ghế: " + bench.FailureReason);
+                yield break;
+            }
+
+            yield return RebuildDecorations();
+            yield return WalkTowards(character, home, spot);
+            float stopped = FlatDistance(character.transform.position, spot);
+            Check("Không đi xuyên qua đồ đã đặt", stopped >= 0.45f,
+                  "dừng cách tâm ghế " + (stopped * 100f).ToString("0") + " cm");
+
+            _session.RemoveDecoration(_session.State.Decorations.Count - 1);
+
+            // Nua thu hai: phien da la loi di, buoc len tren phai duoc.
+            var path = _session.PlaceDecoration(DefaultDecorations.StonePath, xMm, zMm, 0);
+            if (!path.Success)
+            {
+                Check("Lối đi lát đá vẫn bước lên được", false,
+                      "Không đặt được phiến đá: " + path.FailureReason);
+                character.Teleport(home);
+                yield break;
+            }
+
+            yield return RebuildDecorations();
+            yield return WalkTowards(character, home, spot);
+            float onPath = FlatDistance(character.transform.position, spot);
+            Check("Lối đi lát đá vẫn bước lên được", onPath < 0.15f,
+                  "dừng cách tâm phiến đá " + (onPath * 100f).ToString("0") + " cm");
+
+            _session.RemoveDecoration(_session.State.Decorations.Count - 1);
+            yield return RebuildDecorations();
+            character.Teleport(home);
+        }
+
+        /// <summary>Collider cua mon vua dat chi ton tai sau khi DecorationLayer dung lai.</summary>
+        IEnumerator RebuildDecorations()
+        {
+            if (_bootstrap.Decorations != null) _bootstrap.Decorations.RefreshIfChanged();
+            yield return null;
+            yield return null;
+        }
+
+        IEnumerator WalkTowards(CharacterView character, Vector3 from, Vector3 to)
+        {
+            character.Teleport(from);
+            yield return null;
+            character.WalkTo(to);
+
+            float deadline = Time.unscaledTime + 6f;
+            while (character.IsWalking && Time.unscaledTime < deadline) yield return null;
+        }
+
+        static float FlatDistance(Vector3 a, Vector3 b)
+        {
+            return Vector2.Distance(new Vector2(a.x, a.z), new Vector2(b.x, b.z));
         }
 
         /// <summary>
@@ -512,6 +604,7 @@ namespace VuonNho.Views
 
             CheckGardenClickReachable();
             yield return CheckModalHasEscape("OfflineModal");
+            yield return CheckOfflineCtaFitsItsText();
             yield return CheckModalHasEscape("BlockedModal");
 
             string[] panels = { "inventory", "upgrade", "decorate", "settings", "plot" };
@@ -544,7 +637,7 @@ namespace VuonNho.Views
             if (modal == null || !modal.gameObject.activeInHierarchy) return;
 
             Canvas.ForceUpdateCanvases();
-            var buttonTransform = modal.Find("Card/Continue");
+            var buttonTransform = modal.Find("Card/ActionRow/Continue");
             var button = buttonTransform != null ? buttonTransform.GetComponent<Button>() : null;
             string detail;
             bool clicked = TryClickButton(button, out detail);
@@ -558,6 +651,60 @@ namespace VuonNho.Views
         /// Bat tam modal de kiem loi thoat co the nhan pointer qua scrim. Khong bam cac hanh
         /// dong thoat game/reset; sau phep do tra lai dung trang thai hien thi truoc do.
         /// </summary>
+        /// <summary>
+        /// Nut "Tiep tuc" cua bao cao vang mat: rong vua bang chu va nam giua the.
+        ///
+        /// Do bang so do chu khong bang mat, va do rieng khoi muc "modal co loi thoat": mot nut
+        /// bi keo het be ngang van bam duoc, nen muc kia van dat trong khi bo cuc da sai.
+        /// </summary>
+        IEnumerator CheckOfflineCtaFitsItsText()
+        {
+            var modal = _hud.transform.Find("OfflineModal");
+            var card = modal != null ? modal.Find("Card") as RectTransform : null;
+            var button = card != null ? card.Find("ActionRow/Continue") as RectTransform : null;
+            if (button == null)
+            {
+                Check("Nút Tiếp tục vừa bằng chữ và nằm giữa", false,
+                      "Không tìm thấy OfflineModal/Card/ActionRow/Continue.");
+                yield break;
+            }
+
+            bool wasActive = modal.gameObject.activeSelf;
+            modal.gameObject.SetActive(true);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(card);
+            Canvas.ForceUpdateCanvases();
+            // Canvas chi chot hinh hoc o cuoi khung hinh; do ngay bay gio thi so nao cung la 0.
+            yield return null;
+
+            float cardWidth = WorldWidth(card);
+            float buttonWidth = WorldWidth(button);
+            float offCentre = Mathf.Abs(WorldCentre(button).x - WorldCentre(card).x);
+
+            bool hugs = cardWidth > 0f && buttonWidth <= cardWidth * 0.6f;
+            bool centred = offCentre <= cardWidth * 0.01f;
+            Check("Nút Tiếp tục vừa bằng chữ và nằm giữa", hugs && centred,
+                  "nút " + buttonWidth.ToString("0") + " px / thẻ " + cardWidth.ToString("0") +
+                  " px, lệch tâm " + offCentre.ToString("0.0") + " px");
+
+            modal.gameObject.SetActive(wasActive);
+            Canvas.ForceUpdateCanvases();
+            yield return null;
+        }
+
+        static Vector3 WorldCentre(RectTransform rect)
+        {
+            var corners = new Vector3[4];
+            rect.GetWorldCorners(corners);
+            return (corners[0] + corners[2]) * 0.5f;
+        }
+
+        static float WorldWidth(RectTransform rect)
+        {
+            var corners = new Vector3[4];
+            rect.GetWorldCorners(corners);
+            return Vector3.Distance(corners[0], corners[3]);
+        }
+
         IEnumerator CheckModalHasEscape(string modalName)
         {
             var modal = _hud.transform.Find(modalName);

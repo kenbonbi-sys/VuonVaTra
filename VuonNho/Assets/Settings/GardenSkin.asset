@@ -56,7 +56,17 @@ MonoBehaviour:
     Prefab: {fileID: 7849703948220688348, guid: a841c11b3e4fefc4caec13ad41885f2a, type: 3}
   - DecorationId: deco_signboard
     Prefab: {fileID: 8671852737939986871, guid: bc41d528fb36d9e459c5ea514c8c9866, type: 3}
-  Icons: []
+  Icons:
+  - Id: crop_mint
+    Icon: {fileID: 21300000, guid: 6f7b3285480a6014e941ad529efa168e, type: 3}
+  - Id: crop_chamomile
+    Icon: {fileID: 21300000, guid: b4d5cb49f8df2724498850ddf57f4515, type: 3}
+  - Id: crop_strawberry
+    Icon: {fileID: 21300000, guid: 7aac5ccfc66515842b225e41029f66c5, type: 3}
+  - Id: crop_lemongrass
+    Icon: {fileID: 21300000, guid: aa4406315d2646542b98d17e28101931, type: 3}
+  - Id: crop_jasmine
+    Icon: {fileID: 21300000, guid: ee97788bcfc50b24ba2bf02406a4e58b, type: 3}
   ClickClip: {fileID: 8300000, guid: 7ac12812b94628142871a3f1fbe0cc02, type: 3}
   PlantClip: {fileID: 8300000, guid: 1d95b701d19a30741aa19e000e546fe6, type: 3}
   HarvestClip: {fileID: 8300000, guid: b4ac2cfe9f5a015469473d1d2a7b63f9, type: 3}

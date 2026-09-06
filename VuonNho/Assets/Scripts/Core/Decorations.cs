@@ -14,6 +14,16 @@ namespace VuonNho.Core
         public long Cost;
         /// <summary>Ban kinh chiem cho, milimet. Dung de chan hai mon dat chong len nhau.</summary>
         public int FootprintMm;
+
+        /// <summary>
+        /// Nhan vat co phai di vong qua mon nay khong. Mac dinh la co: mot cai ghe ma di xuyen
+        /// qua duoc thi nhin nhu anh nen chu khong nhu do vat.
+        ///
+        /// Loi di lat da la ngoai le duy nhat, va no khong phai chuyen ky thuat: mon do sinh ra
+        /// de nguoi ta di len tren.
+        /// </summary>
+        public bool BlocksWalking = true;
+
         public int SortOrder;
     }
 
@@ -197,7 +207,8 @@ namespace VuonNho.Core
                 new DecorationDefinition
                 {
                     Id = StonePath, DisplayName = "Phiến đá", Cost = 60, FootprintMm = 220,
-                    Description = "Lát lối đi quanh vườn.", SortOrder = 0
+                    Description = "Lát lối đi quanh vườn.", SortOrder = 0,
+                    BlocksWalking = false
                 },
                 new DecorationDefinition
                 {

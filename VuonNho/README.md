@@ -20,6 +20,7 @@ Vòng chơi **chọn cây → gieo → cây lớn → thu → máy pha → tự 
 | Giữ chuột trái rồi kéo | Kéo màn hình đi xem chỗ khác |
 | Lăn chuột | Phóng to / thu nhỏ, bám vào điểm dưới con trỏ |
 | Chuột phải xuống đất | Nhân vật đi tới đó, có vòng tròn báo lại chỗ vừa bấm |
+| Chuột phải qua chỗ có đồ đã đặt | Nhân vật đi vòng qua — đồ trang trí là vật cứng |
 | Chuột phải khi đang đặt / gỡ đồ trang trí | Thoát chế độ đó (không đi) |
 
 Hai điều đáng biết vì chúng ràng buộc nhau:
@@ -30,6 +31,16 @@ Hai điều đáng biết vì chúng ràng buộc nhau:
 - **Chuột phải vẫn là đường thoát khỏi chế độ đặt/gỡ đồ.** Đó là lối ra duy nhất người chơi đã
   quen; cho nhân vật đi lúc đó sẽ cướp mất nó. Chỉ khi không ở trong chế độ nào thì chuột phải
   mới là lệnh đi.
+
+Đồ trang trí đã đặt là **vật cứng**: nhân vật đi vòng qua chứ không xuyên qua. Ngoại lệ duy nhất
+là **phiến đá** — món đó sinh ra để người ta bước lên, chặn nó lại là tự mâu thuẫn. Cờ nằm ở
+`DecorationDefinition.BlocksWalking` trong Core, không phải ở phía Unity, vì đó là chuyện của
+món đồ chứ không phải của cách dựng scene.
+
+Cách tránh là **trượt dọc một trục**, không phải tìm đường: đâm vào thì bỏ một thành phần và đi
+nốt thành phần kia. Đồ trang trí đều là hộp vuông góc với trục nên thế là đủ để đi vòng. Cái giá
+phải trả: đứng giữa hai món kê sát nhau thành một góc lõm thì nhân vật dừng lại chứ không lùi ra
+để vòng — bấm một cú nữa là đi tiếp được.
 
 Vòng tròn báo lại (`ClickMarker`) **vẽ đè lên mọi thứ trong vườn**, không kiểm tra độ sâu. Nó
 nằm sát mặt đất mà luống cây cao 17 cm và chiếm gần hết khu giữa — chỗ người chơi bấm nhiều nhất
@@ -201,6 +212,12 @@ Vài quy ước đã áp dụng, giữ nguyên khi thêm màn hình mới:
   `preferredHeight`.
 - **Popup bắt buộc trả lời** (`BuildModal`) luôn có lớp scrim phủ cả màn hình, vừa để tách khỏi
   vườn vừa để chặn click xuống đất. Toast thì ngược lại: `raycastTarget = false` để không nuốt click.
+- **Nút muốn vừa bằng chữ thì phải gọi `UiFactory.HugContent`,** không đủ nếu chỉ tắt
+  `childForceExpandWidth` của layout group cha. Nhãn bên trong nút được đặt `flexibleWidth = 1`
+  để chữ căn được giữa khi nút bị kéo rộng; layout group của nút lại báo `flexibleWidth` của
+  chính nó bằng tổng của các con, nên con số đó nổi lên thành `flexibleWidth` của cả cái nút — và
+  Unity chia chỗ trống cho mọi thứ có `flexibleWidth` dương, không quan tâm `childForceExpandWidth`
+  đã tắt hay chưa. `HugContent` ép về 0.
 
 Ảnh chụp QA: `-vuonnho-open-panel` nhận `inventory`, `upgrade`, `settings`, `decorate` và `plot`
 (mở popup ô 1).
@@ -250,15 +267,16 @@ Hai điều đã làm hỏng một lượt chụp và sẽ làm hỏng lượt s
 - **Mốc A** — vòng chơi, save/offline/lifecycle, HUD, 83 test, hai bản build.
 - **L01 + B02** — 13 model Blender (gồm sả và nhài), 9 material, 5 cue âm thanh, prefab và
   GardenSkin đã điền đủ. Xem [Docs/Art/L01-B02.md](Docs/Art/L01-B02.md).
-- **Checklist mục 10** — 97 test logic + 85 mục kiểm trong bản build, hai độ phân giải.
+- **Checklist mục 10** — 97 test logic + 88 mục kiểm trong bản build, hai độ phân giải.
   Xem [Docs/QA-moc-A.md](Docs/QA-moc-A.md).
 - **Hướng v1** — đổi tên, siết nhịp, thêm sả/nhài, pha 2 trang trí.
   Xem [Docs/Huong-di-v1.md](Docs/Huong-di-v1.md).
 - **Font** — National Park, sáu weight, kèm giấy phép OFL.
 - **Điều khiển camera và nhân vật** — lăn chuột để zoom, giữ trái để kéo màn hình, chuột phải để
-  ra lệnh cho nhân vật đi, và một vòng tròn dưới đất báo lại chỗ vừa bấm. Xem mục
-  [Điều khiển](#điều-khiển). 14 mục kiểm chạy trong bản build vì cả bốn đều cần camera thật và
-  nhiều frame thật, không kiểm được bằng test EditMode.
+  ra lệnh cho nhân vật đi, một vòng tròn dưới đất báo lại chỗ vừa bấm, và đồ đã đặt là vật cứng.
+  Xem mục [Điều khiển](#điều-khiển). 16 mục kiểm chạy trong bản build vì tất cả đều cần camera
+  thật, va chạm thật và nhiều frame thật, không kiểm được bằng test EditMode.
+- **Icon cây** — bạc hà, cúc, dâu, sả, nhài. Hiện ở kho, bảng chọn cây và thẻ máy pha.
 
 ## Còn lại
 
@@ -271,8 +289,8 @@ Việc cần người, không tự động được:
 
 Việc còn làm được bằng code:
 
-- **Icon 3D cho vật phẩm** — nút HUD đã có icon Material Symbols, nhưng icon render sẵn từ model
-  trong `Docs/Art/review/icons/` thì chưa món nào được nối vào UI (kho, bảng trang trí).
+- **Icon cho 5 món trang trí** — năm cây đã có icon vẽ tay, nút HUD đã có icon Material Symbols,
+  nhưng bảng trang trí thì vẫn toàn chữ.
 - **Model cho 5 món trang trí** — đang là primitive; ô `GardenSkin.Decorations` còn trống.
 - **TextMeshPro** thay `UI.Text`, và **Input System** nếu làm Android.
 - **Bold 700 của font** — file trong bản tải về hỏng, cần tải lại nếu muốn bậc chữ này.
