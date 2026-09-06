@@ -19,6 +19,7 @@ namespace VuonNho.Views
         public const string PanelArgument = "-vuonnho-open-panel";
         public const string SeedArgument = "-vuonnho-screenshot-seed";
         public const string WalkArgument = "-vuonnho-screenshot-walk";
+        public const string PlaceArgument = "-vuonnho-screenshot-place";
 
         string _outputPath;
         string _panelName;
@@ -26,6 +27,9 @@ namespace VuonNho.Views
         bool _hasWalkPoint;
         Vector3 _walkPoint;
         bool _walked;
+        string _placeDefinitionId;
+        float _placeRotationDeg;
+        bool _placing;
         float _delaySeconds = 5f;
         float _captureAt = -1f;
         bool _captured;
@@ -46,6 +50,8 @@ namespace VuonNho.Views
                     _seed = true;
                 else if (arguments[i] == WalkArgument && i + 1 < arguments.Length)
                     _hasWalkPoint = TryParsePoint(arguments[i + 1], out _walkPoint);
+                else if (arguments[i] == PlaceArgument && i + 1 < arguments.Length)
+                    ParsePlaceArgument(arguments[i + 1]);
             }
 
             if (string.IsNullOrEmpty(_outputPath))
@@ -76,6 +82,21 @@ namespace VuonNho.Views
                 if (hud != null) hud.OpenPanelByName(_panelName);
                 _panelName = null;
                 return;   // cho mot frame de panel kip dung xong
+            }
+
+            if (_placeDefinitionId != null && !_placing)
+            {
+                _placing = true;
+                var bootstrap = FindAnyObjectByType<GameBootstrap>();
+                if (bootstrap != null)
+                {
+                    bootstrap.BeginPlacingDecoration(_placeDefinitionId);
+                    if (bootstrap.Preview != null) bootstrap.Preview.RotateBy(_placeRotationDeg);
+                }
+                // Bong ma bam theo con tro that, nen anh chi co no khi con tro dang o tren vuon.
+                // Cho mot nhip de nguoi goi kip dat con tro vao giua man hinh.
+                _captureAt = Time.realtimeSinceStartup + 1.2f;
+                return;
             }
 
             if (_hasWalkPoint && !_walked)
@@ -177,6 +198,15 @@ namespace VuonNho.Views
             var screen = camera.WorldToScreenPoint(_walkPoint);
             if (!bootstrap.TryWalkCommand(new Vector3(screen.x, screen.y, 0f)))
                 Debug.LogWarning("[VuonNho] Lenh di khong toi noi: tia khong cham vuon o diem da cho.");
+        }
+
+        /// <summary>Doc "id" hoac "id,goc" — mon trang tri can cam len tay va goc xoay san.</summary>
+        void ParsePlaceArgument(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return;
+            var parts = text.Split(',');
+            _placeDefinitionId = parts[0];
+            if (parts.Length > 1) float.TryParse(parts[1], out _placeRotationDeg);
         }
 
         /// <summary>Doc "x,z" tren dong lenh thanh mot diem tren mat dat.</summary>

@@ -21,6 +21,9 @@ Vòng chơi **chọn cây → gieo → cây lớn → thu → máy pha → tự 
 | Lăn chuột | Phóng to / thu nhỏ, bám vào điểm dưới con trỏ |
 | Chuột phải xuống đất | Nhân vật đi tới đó, có vòng tròn báo lại chỗ vừa bấm |
 | Chuột phải qua chỗ có đồ đã đặt | Nhân vật đi vòng qua — đồ trang trí là vật cứng |
+| Chọn một món trang trí | Bóng ma của món đó bám theo con trỏ |
+| `R` khi đang cầm món | Xoay 180° |
+| Giữ chuột phải kéo ngang khi đang cầm món | Xoay tự do |
 | Chuột phải khi đang đặt / gỡ đồ trang trí | Thoát chế độ đó (không đi) |
 
 Hai điều đáng biết vì chúng ràng buộc nhau:
@@ -32,10 +35,21 @@ Hai điều đáng biết vì chúng ràng buộc nhau:
   quen; cho nhân vật đi lúc đó sẽ cướp mất nó. Chỉ khi không ở trong chế độ nào thì chuột phải
   mới là lệnh đi.
 
-Đồ trang trí đã đặt là **vật cứng**: nhân vật đi vòng qua chứ không xuyên qua. Ngoại lệ duy nhất
-là **phiến đá** — món đó sinh ra để người ta bước lên, chặn nó lại là tự mâu thuẫn. Cờ nằm ở
-`DecorationDefinition.BlocksWalking` trong Core, không phải ở phía Unity, vì đó là chuyện của
-món đồ chứ không phải của cách dựng scene.
+**Vật cứng** — hàng rào, thân cây, quầy trà và đồ trang trí đã đặt: nhân vật đi vòng qua chứ
+không xuyên qua. Đánh dấu bằng thành phần `WalkBlocker` đặt cạnh collider, **không phải "mọi
+collider đều chặn"**: ô đất, nền vườn và quầy trà đều có collider gameplay để nhận click, mà đi
+lên ô đất thì phải được.
+
+Hai ngoại lệ có lý do:
+
+- **Phiến đá** không chặn. Món đó sinh ra để người ta bước lên; chặn nó lại là tự mâu thuẫn với
+  chính mô tả của nó. Cờ nằm ở `DecorationDefinition.BlocksWalking` trong Core, không phải ở phía
+  Unity, vì đó là chuyện của món đồ chứ không phải của cách dựng scene.
+- **Cây chỉ chặn phần thân**, không chặn tán lá. Tán vươn ra hơn một mét mà đi dưới tán cây thì
+  phải được — chặn cả tán sẽ thành một bức tường tròn vô hình giữa bãi cỏ.
+
+Bụi và tảng đá **không chặn**: chúng thấp và nằm rải rác ở mép, chặn lại chỉ làm đường đi vướng
+mà không được gì.
 
 Cách tránh là **trượt dọc một trục**, không phải tìm đường: đâm vào thì bỏ một thành phần và đi
 nốt thành phần kia. Đồ trang trí đều là hộp vuông góc với trục nên thế là đủ để đi vòng. Cái giá
@@ -47,6 +61,11 @@ nằm sát mặt đất mà luống cây cao 17 cm và chiếm gần hết khu g
 — nên nếu để kiểm tra độ sâu thì bấm vào luống sẽ không được báo lại gì. Vòng tròn hiện ở **đích**
 chứ không ở chỗ con trỏ: bấm ra ngoài vườn thì nhân vật dừng ở mép, và vòng tròn phải nằm đúng
 chỗ nó sẽ dừng.
+
+Chọn một món trang trí thì **bóng ma của chính món đó** bám theo con trỏ (`PlacementPreview`) —
+dùng đúng prefab chứ không phải một hình thay thế, vì câu hỏi người chơi đang hỏi là "đặt xuống
+đây thì nó trông thế nào". Chỗ không đặt được thì bóng ma **đỏ lên chứ không biến mất**: biến mất
+là câu trả lời mơ hồ, người chơi không biết là mình đưa chuột ra ngoài vườn hay chỗ đó vướng.
 
 Nhân vật đi thẳng, không tìm đường: vườn là một mảnh đất phẳng không có vật cản. Không có xương
 và không có animation clip — hai chân là hai nhóm mesh với gốc xoay ở hông, nhịp chân tính theo
@@ -105,7 +124,7 @@ Tách mô phỏng khỏi hiển thị đúng như mục 8 của kế hoạch. `A
 |---|---|---|
 | `VuonNho.Core` | `GameState`, `FarmSimulation`, `GameSession`, `ContentCatalog`, `SaveSerializer`, `TutorialGuide`, JSON | **C# thuần, không tham chiếu UnityEngine** |
 | `VuonNho.Infrastructure` | `FileSaveRepository`, `SystemClock`, `FileTestLogger` | Core + UnityEngine |
-| `VuonNho.Views` | `GameBootstrap`, `PlotView`, `MachineView`, `HelperView`, `CharacterView`, `CameraRig`, `ClickMarker`, `GameHud`, `GardenSkin`, `SfxPlayer`, `QaScreenshot` | Core + Infrastructure |
+| `VuonNho.Views` | `GameBootstrap`, `PlotView`, `MachineView`, `HelperView`, `CharacterView`, `CameraRig`, `ClickMarker`, `PlacementPreview`, `WalkBlocker`, `GameHud`, `GardenSkin`, `SfxPlayer`, `QaScreenshot` | Core + Infrastructure |
 | `VuonNho.Editor` | `SceneFactory`, `ProjectSetup`, `BuildTool`, `SceneCapture` | Editor-only |
 
 `GameState` là nguồn sự thật duy nhất cho tiền, kho, timer và mở khóa. View dựng lại được mà
@@ -245,6 +264,10 @@ tra hình ảnh thật, chụp từ chính bản build:
 Build\VuonNho-dev\VuonNho.exe -screen-fullscreen 0 -screen-width 1366 -screen-height 768 -vuonnho-screenshot "C:\anh.png" -vuonnho-screenshot-delay 4 -vuonnho-open-panel upgrade -vuonnho-screenshot-seed
 ```
 
+`-vuonnho-screenshot-place "<id>[,góc]"` cầm sẵn một món trang trí và xoay sẵn, để ảnh có bóng ma
+xem trước. Bóng ma bám theo **con trỏ thật**, nên trước khi chụp phải đưa chuột vào giữa cửa sổ —
+xem cách làm trong lịch sử lệnh, hoặc dùng `[System.Windows.Forms.Cursor]::Position`.
+
 `-vuonnho-screenshot-walk "x,z"` gửi một lệnh đi tới điểm (x, z) rồi chụp sau 0,15 giây, để ảnh
 bắt được cả vòng tròn báo lại lẫn nhân vật đang dở bước. Nó đi qua đúng đường mà chuột thật đi
 (`GameBootstrap.TryWalkCommand`) chứ không gọi thẳng `WalkTo`: ảnh chụp phải là ảnh của thứ người
@@ -267,15 +290,16 @@ Hai điều đã làm hỏng một lượt chụp và sẽ làm hỏng lượt s
 - **Mốc A** — vòng chơi, save/offline/lifecycle, HUD, 83 test, hai bản build.
 - **L01 + B02** — 13 model Blender (gồm sả và nhài), 9 material, 5 cue âm thanh, prefab và
   GardenSkin đã điền đủ. Xem [Docs/Art/L01-B02.md](Docs/Art/L01-B02.md).
-- **Checklist mục 10** — 97 test logic + 88 mục kiểm trong bản build, hai độ phân giải.
+- **Checklist mục 10** — 97 test logic + 94 mục kiểm trong bản build, hai độ phân giải.
   Xem [Docs/QA-moc-A.md](Docs/QA-moc-A.md).
 - **Hướng v1** — đổi tên, siết nhịp, thêm sả/nhài, pha 2 trang trí.
   Xem [Docs/Huong-di-v1.md](Docs/Huong-di-v1.md).
 - **Font** — National Park, sáu weight, kèm giấy phép OFL.
 - **Điều khiển camera và nhân vật** — lăn chuột để zoom, giữ trái để kéo màn hình, chuột phải để
-  ra lệnh cho nhân vật đi, một vòng tròn dưới đất báo lại chỗ vừa bấm, và đồ đã đặt là vật cứng.
-  Xem mục [Điều khiển](#điều-khiển). 16 mục kiểm chạy trong bản build vì tất cả đều cần camera
-  thật, va chạm thật và nhiều frame thật, không kiểm được bằng test EditMode.
+  ra lệnh cho nhân vật đi, một vòng tròn dưới đất báo lại chỗ vừa bấm, hàng rào / cây / quầy trà /
+  đồ đã đặt là vật cứng, và bóng ma xem trước khi đặt đồ. Xem mục [Điều khiển](#điều-khiển).
+  22 mục kiểm chạy trong bản build vì tất cả đều cần camera thật, va chạm thật và nhiều frame
+  thật, không kiểm được bằng test EditMode.
 - **Icon cây** — bạc hà, cúc, dâu, sả, nhài. Hiện ở kho, bảng chọn cây và thẻ máy pha.
 
 ## Còn lại

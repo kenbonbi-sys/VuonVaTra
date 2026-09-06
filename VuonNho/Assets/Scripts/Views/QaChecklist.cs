@@ -252,6 +252,8 @@ namespace VuonNho.Views
                       : "cách đích " + (missed * 100f).ToString("0") + " cm");
 
             yield return CheckSolidDecorations(character);
+            yield return CheckSolidScenery(character);
+            yield return CheckPlacementPreview();
 
             // Diem ngoai vuon phai bi keo ve trong bo chu khong bi bo qua: mot cu bam hut van
             // phai dan den mot buoc di co nghia.
@@ -332,6 +334,102 @@ namespace VuonNho.Views
             _session.RemoveDecoration(_session.State.Decorations.Count - 1);
             yield return RebuildDecorations();
             character.Teleport(home);
+        }
+
+        /// <summary>
+        /// Quay tra la vat cung. Hang rao va cay cung duoc danh dau, nhung quay tra la mon duy
+        /// nhat nam giua vuon nen la mon duy nhat do duoc ma khong phu thuoc vao bo cuc canh nen.
+        /// </summary>
+        IEnumerator CheckSolidScenery(CharacterView character)
+        {
+            if (_bootstrap.Machine == null)
+            {
+                Check("Không đi xuyên qua quầy trà", false, "GameBootstrap.Machine chưa được gán.");
+                yield break;
+            }
+
+            var home = character.transform.position;
+            var station = _bootstrap.Machine.transform.position;
+
+            yield return WalkTowards(character, home, station);
+            float stopped = FlatDistance(character.transform.position, station);
+            Check("Không đi xuyên qua quầy trà", stopped >= 0.8f,
+                  "dừng cách tâm quầy " + (stopped * 100f).ToString("0") + " cm");
+
+            character.Teleport(home);
+            yield return null;
+        }
+
+        /// <summary>
+        /// Bong ma xem truoc va goc xoay cua no. Do rieng khoi viec dat that vi hai thu hong
+        /// theo hai kieu khac nhau: bong ma khong hien la nguoi choi dat mu, con goc xoay khong
+        /// theo la mon do nam sai huong sau khi da dat.
+        /// </summary>
+        IEnumerator CheckPlacementPreview()
+        {
+            var preview = _bootstrap.Preview;
+            if (preview == null || !_session.DecoratingUnlocked)
+            {
+                Check("Chọn món thì hiện bóng ma xem trước", false,
+                      preview == null ? "GameBootstrap.Preview chưa được gán."
+                                      : "Chưa mở khoá trang trí để thử.");
+                yield break;
+            }
+
+            long price = _session.Catalog.Decoration(DefaultDecorations.Bench).Cost;
+            int wait = 0;
+            while (_session.State.Coins < price && wait++ < 600)
+            {
+                _session.DebugAdvance(10000);
+                if (wait % 40 == 0) yield return null;
+            }
+
+            _bootstrap.BeginPlacingDecoration(DefaultDecorations.Bench);
+            yield return null;
+
+            Check("Chọn món thì hiện bóng ma xem trước",
+                  preview.DefinitionId == DefaultDecorations.Bench &&
+                  Mathf.Approximately(preview.RotationDeg, 0f),
+                  "món " + (preview.DefinitionId ?? "không có") +
+                  ", góc " + preview.RotationDeg.ToString("0"));
+
+            // Bong ma chi dung len khi con tro cham dat, ma chuot that thi dang o dau khong biet.
+            // Goi thang ShowAt de do chinh cai model co dung duoc hay khong.
+            var home = _bootstrap.Character != null ? _bootstrap.Character.transform.position : Vector3.zero;
+            var spot = home + new Vector3(0f, 0f, -1.3f);
+            preview.ShowAt(spot, true);
+            yield return null;
+            Check("Bóng ma dựng được model của món đang cầm", preview.IsShowing,
+                  preview.IsShowing ? null : "GardenSkin chưa có prefab cho " + DefaultDecorations.Bench);
+
+            preview.Flip();
+            bool flipped = Mathf.Abs(Mathf.DeltaAngle(preview.RotationDeg, 180f)) < 0.01f;
+            preview.RotateBy(45f);
+            bool dragged = Mathf.Abs(Mathf.DeltaAngle(preview.RotationDeg, 225f)) < 0.01f;
+            Check("R xoay 180° và kéo chuột phải xoay tiếp", flipped && dragged,
+                  "sau R rồi kéo 45°: " + preview.RotationDeg.ToString("0") + "°");
+
+            // Dat that qua dung duong ma chuot di, roi doc lai goc trong state: goc tren bong ma
+            // ma khong sang duoc mon do da dat thi bong ma chi la trang tri.
+            var camera = _bootstrap.GameCamera != null ? _bootstrap.GameCamera : Camera.main;
+            int before = _session.State.Decorations.Count;
+            var screen = camera.WorldToScreenPoint(spot);
+            _bootstrap.TryWorldClick(new Vector3(screen.x, screen.y, 0f));
+            yield return null;
+
+            bool placed = _session.State.Decorations.Count == before + 1;
+            int rotation = placed ? _session.State.Decorations[before].RotationDeg : -1;
+            Check("Món đặt xuống giữ đúng góc đã xoay", placed && rotation == 225,
+                  placed ? "góc " + rotation + "°" : "không đặt được món nào");
+
+            if (placed) _session.RemoveDecoration(before);
+            _bootstrap.CancelDecorationMode();
+            yield return null;
+            Check("Thoát chế độ thì bóng ma biến mất", !preview.IsShowing && preview.DefinitionId == null,
+                  preview.DefinitionId == null ? null : "vẫn còn cầm " + preview.DefinitionId);
+
+            yield return RebuildDecorations();
+            if (_bootstrap.Character != null) _bootstrap.Character.Teleport(home);
         }
 
         /// <summary>Collider cua mon vua dat chi ton tai sau khi DecorationLayer dung lai.</summary>

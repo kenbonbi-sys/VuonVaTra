@@ -65,6 +65,7 @@ namespace VuonNho.EditorTools
             var helper = BuildHelper(skin);
             var character = BuildCharacter(skin, catalog);
             var marker = BuildClickMarker();
+            var preview = BuildPlacementPreview(skin);
             BuildProps(skin);
 
             var decorations = BuildDecorationLayer(skin);
@@ -79,6 +80,7 @@ namespace VuonNho.EditorTools
             bootstrap.Helper = helper;
             bootstrap.Character = character;
             bootstrap.Marker = marker;
+            bootstrap.Preview = preview;
             bootstrap.Rig = camera.GetComponent<CameraRig>();
             bootstrap.Plots = plots.ToArray();
             bootstrap.Decorations = decorations;
@@ -425,6 +427,7 @@ namespace VuonNho.EditorTools
             var collider = root.AddComponent<BoxCollider>();
             collider.center = new Vector3(0f, 0.6f, 0f);
             collider.size = new Vector3(3.2f, 1.4f, 1.6f);
+            root.AddComponent<WalkBlocker>();
 
             var view = root.AddComponent<MachineView>();
 
@@ -539,6 +542,15 @@ namespace VuonNho.EditorTools
             return material;
         }
 
+        /// <summary>Bong ma cua mon trang tri dang cam. Dung prefab tu skin nen khong can prefab rieng.</summary>
+        static PlacementPreview BuildPlacementPreview(GardenSkin skin)
+        {
+            var go = new GameObject("PlacementPreview");
+            var preview = go.AddComponent<PlacementPreview>();
+            preview.Skin = skin;
+            return preview;
+        }
+
         static HelperView BuildHelper(GardenSkin skin)
         {
             var root = new GameObject("HelperRoot");
@@ -619,6 +631,7 @@ namespace VuonNho.EditorTools
                 var art = SpawnArt(prefab, parent, "Tree", position);
                 art.transform.localScale = Vector3.one * scale;
                 art.transform.localRotation = Quaternion.Euler(0f, index * 73f, 0f);
+                BlockTrunk(art);
                 return;
             }
 
@@ -627,6 +640,7 @@ namespace VuonNho.EditorTools
             tree.transform.localPosition = position;
             tree.transform.localScale = Vector3.one * scale;
             tree.transform.localRotation = Quaternion.Euler(0f, index * 73f, 0f);
+            BlockTrunk(tree);
 
             Primitive(PrimitiveType.Cylinder, tree.transform, "Trunk",
                       new Vector3(0f, 0.9f, 0f), new Vector3(0.28f, 0.9f, 0.28f), "Wood");
@@ -671,7 +685,7 @@ namespace VuonNho.EditorTools
         {
             if (skin.FencePostPrefab != null)
             {
-                SpawnArt(skin.FencePostPrefab, parent, "FencePost", position);
+                BlockBounds(SpawnArt(skin.FencePostPrefab, parent, "FencePost", position));
                 return;
             }
 
@@ -679,6 +693,45 @@ namespace VuonNho.EditorTools
                       position + new Vector3(0f, 0.42f, 0f), new Vector3(0.14f, 0.84f, 0.14f), "Wood");
             Primitive(PrimitiveType.Cube, parent, "FenceRail",
                       position + new Vector3(0.75f, 0.6f, 0f), new Vector3(1.5f, 0.1f, 0.08f), "Wood");
+            BlockBox(parent, "FenceBlock", position + new Vector3(0.75f, 0.5f, 0f),
+                     new Vector3(1.6f, 1f, 0.24f));
+        }
+
+        /// <summary>
+        /// Chan dung phan than cay, khong chan tan la. Tan la vuon ra hon mot met ma di duoi tan
+        /// cay thi phai duoc — chan ca tan la se thanh mot buc tuong tron vo hinh giua bai co.
+        /// </summary>
+        static void BlockTrunk(GameObject tree)
+        {
+            var collider = tree.AddComponent<BoxCollider>();
+            collider.center = new Vector3(0f, 1f, 0f);
+            collider.size = new Vector3(0.55f, 2f, 0.55f);
+            tree.AddComponent<WalkBlocker>();
+        }
+
+        /// <summary>
+        /// Chan dung khoi ma model chiem cho. Do tu renderer chu khong dat cung so: doi sang
+        /// model khac kich thuoc thi vung chan doi theo, khong de lai mot buc tuong lech cho.
+        /// </summary>
+        static void BlockBounds(GameObject art)
+        {
+            Bounds bounds;
+            if (!GardenArtImporter.TryGetBounds(art.transform, art.transform, out bounds)) return;
+            var collider = art.AddComponent<BoxCollider>();
+            collider.center = bounds.center;
+            collider.size = bounds.size;
+            art.AddComponent<WalkBlocker>();
+        }
+
+        /// <summary>Khoi chan roi, khong gan vao mesh nao — dung khi mon do la nhieu primitive rieng.</summary>
+        static void BlockBox(Transform parent, string name, Vector3 centre, Vector3 size)
+        {
+            var go = new GameObject(name);
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = centre;
+            var collider = go.AddComponent<BoxCollider>();
+            collider.size = size;
+            go.AddComponent<WalkBlocker>();
         }
 
         static DecorationLayer BuildDecorationLayer(GardenSkin skin)

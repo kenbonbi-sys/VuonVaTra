@@ -183,8 +183,8 @@ namespace VuonNho.Views
         }
 
         /// <summary>
-        /// Cho nay co mon do nao chan khong. Chi do trang tri chan: o dat va nen vuon cung co
-        /// collider, ma di len o dat thi phai duoc.
+        /// Cho nay co gi chan khong. Chi nhung collider co <see cref="WalkBlocker"/> moi chan:
+        /// o dat va nen vuon cung co collider gameplay, ma di len o dat thi phai duoc.
         /// </summary>
         bool Blocked(Vector3 position)
         {
@@ -192,11 +192,7 @@ namespace VuonNho.Views
             int count = Physics.OverlapSphereNonAlloc(centre, BodyRadius, _nearby,
                                                       ~0, QueryTriggerInteraction.Ignore);
             for (int i = 0; i < count; i++)
-            {
-                // Collider gameplay nam ngay tren wrapper cua mon trang tri, cung cho voi handle.
-                var handle = _nearby[i].GetComponent<DecorationHandle>();
-                if (handle != null && handle.BlocksWalking) return true;
-            }
+                if (_nearby[i].GetComponent<WalkBlocker>() != null) return true;
             return false;
         }
 

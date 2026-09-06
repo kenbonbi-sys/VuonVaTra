@@ -23,6 +23,7 @@ namespace VuonNho.Views
         public CameraRig Rig;
         public CharacterView Character;
         public ClickMarker Marker;
+        public PlacementPreview Preview;
 
         GameSession _session;
         FileSaveRepository _repository;
@@ -146,6 +147,7 @@ namespace VuonNho.Views
             RenderScene();
             if (Decorations != null) Decorations.RefreshIfChanged();
             HandleClick();
+            UpdatePlacementPreview();
         }
 
         void RenderScene()
@@ -162,19 +164,15 @@ namespace VuonNho.Views
 
         void HandleClick()
         {
-            if (Input.GetMouseButtonDown(1))
+            if (_placingDecorationId != null || _removingDecorations)
             {
-                // Trong che do dat/go, chuot phai van la duong thoat — do la loi ra duy nhat
-                // ma nguoi choi da quen; cho nhan vat di luc nay se cuop mat no.
-                if (_placingDecorationId != null || _removingDecorations)
-                {
-                    CancelDecorationMode();
-                    if (Hud != null) Hud.Refresh();
-                }
-                else
-                {
-                    HandleWalkCommand();
-                }
+                if (_placingDecorationId != null && Input.GetKeyDown(FlipKey) && Preview != null)
+                    Preview.Flip();
+                HandleDecorationRightMouse();
+            }
+            else if (Input.GetMouseButtonDown(1))
+            {
+                HandleWalkCommand();
                 return;
             }
 
@@ -277,13 +275,17 @@ namespace VuonNho.Views
         {
             _placingDecorationId = definitionId;
             _removingDecorations = false;
-            if (Hud != null) Hud.ShowToast("Bấm vào khoảng trống trong vườn để đặt. Chuột phải để thoát.");
+            if (Preview != null) Preview.Begin(definitionId);
+            if (Hud != null)
+                Hud.ShowToast("Bấm để đặt · R xoay 180° · giữ chuột phải kéo ngang để xoay · " +
+                              "chuột phải để thoát.");
         }
 
         public void SetRemovingDecorations(bool removing)
         {
             _removingDecorations = removing;
             _placingDecorationId = null;
+            if (Preview != null) Preview.Cancel();
             if (Hud != null && removing) Hud.ShowToast("Bấm vào món muốn gỡ. Chuột phải để thoát.");
         }
 
@@ -291,6 +293,104 @@ namespace VuonNho.Views
         {
             _placingDecorationId = null;
             _removingDecorations = false;
+            if (Preview != null) Preview.Cancel();
+        }
+
+        /// <summary>Phim doi mat truoc ra sau. Mot phim rieng vi day la lan xoay hay dung nhat.</summary>
+        const KeyCode FlipKey = KeyCode.R;
+
+        const float RotateDegreesPerPixel = 0.9f;
+        const float RotateDragThresholdPixels = 6f;
+
+        float _rotatePressScreenX;
+        bool _rotateWasDrag;
+
+        /// <summary>
+        /// Trong che do dat/go, chuot phai mang hai nghia. Giu va keo ngang la xoay mon dang cam;
+        /// nhan roi tha ngay tai cho la thoat che do.
+        ///
+        /// Phan biet luc THA chu khong luc nhan, cung ky luat voi chuot trai va viec keo man hinh:
+        /// luc nhan xuong thi chua biet nguoi choi dinh lam gi. Lam khac di se mat duong thoat ma
+        /// nguoi choi da quen — do van la loi ra duy nhat cua che do nay.
+        /// </summary>
+        void HandleDecorationRightMouse()
+        {
+            if (Input.GetMouseButtonDown(1))
+            {
+                _rotatePressScreenX = Input.mousePosition.x;
+                _rotateWasDrag = false;
+                return;
+            }
+
+            if (Input.GetMouseButton(1))
+            {
+                float moved = Input.mousePosition.x - _rotatePressScreenX;
+                if (!_rotateWasDrag && Mathf.Abs(moved) < RotateDragThresholdPixels) return;
+                _rotateWasDrag = true;
+                _rotatePressScreenX = Input.mousePosition.x;
+                if (Preview != null) Preview.RotateBy(moved * RotateDegreesPerPixel);
+                return;
+            }
+
+            if (Input.GetMouseButtonUp(1) && !_rotateWasDrag)
+            {
+                CancelDecorationMode();
+                if (Hud != null) Hud.Refresh();
+            }
+        }
+
+        /// <summary>
+        /// Bong ma bam theo con tro. Vi tri va tinh hop le deu tinh lai moi khung hinh chu khong
+        /// nho lai tu lan click truoc: con tro di lien tuc, con click thi khong.
+        ///
+        /// Cho dat khong duoc thi bong ma **do len chu khong bien mat**. Bien mat la mot cau tra
+        /// loi mo ho — nguoi choi khong biet la minh dua chuot ra ngoai vuon hay la cho do vuong.
+        /// </summary>
+        void UpdatePlacementPreview()
+        {
+            if (Preview == null) return;
+            if (_placingDecorationId == null) { Preview.Cancel(); return; }
+
+            var camera = GameCamera != null ? GameCamera : Camera.main;
+            bool overUi = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+            Vector3 ground;
+            if (ClicksAreBlocked || overUi || camera == null ||
+                !TryGroundPoint(camera, Input.mousePosition, out ground))
+            {
+                Preview.HideGhost();
+                return;
+            }
+
+            int xMm = SnapToGrid(ground.x);
+            int zMm = SnapToGrid(ground.z);
+
+            // Cham dung dat trong moi dat duoc — dung cung dieu kien ma cu click that se dung,
+            // nen mau cua bong ma khong bao gio hua mot chuyen ma cu click lai tu choi.
+            RaycastHit hit;
+            bool onBareGround =
+                Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit, 500f) &&
+                hit.collider.GetComponentInParent<GardenGround>() != null;
+
+            string reason;
+            bool canPlace = onBareGround &&
+                            _session.CanPlaceDecoration(_placingDecorationId, xMm, zMm, -1, out reason);
+            Preview.ShowAt(new Vector3(xMm / 1000f, 0f, zMm / 1000f), canPlace);
+        }
+
+        /// <summary>
+        /// Diem tren mat dat (y = 0) ma tia tu con tro cham toi, tinh bang hinh hoc chu khong
+        /// bang collider: bong ma phai dung yen tren mat dat ke ca khi tia dang cham vao mot cai
+        /// cay hay mot luong rau cao hon mat dat.
+        /// </summary>
+        static bool TryGroundPoint(Camera camera, Vector3 screenPosition, out Vector3 point)
+        {
+            point = Vector3.zero;
+            var ray = camera.ScreenPointToRay(screenPosition);
+            if (Mathf.Approximately(ray.direction.y, 0f)) return false;
+            float distance = -ray.origin.y / ray.direction.y;
+            if (distance <= 0f) return false;
+            point = ray.GetPoint(distance);
+            return true;
         }
 
         void HandlePlacementClick(RaycastHit hit)
@@ -303,7 +403,8 @@ namespace VuonNho.Views
 
             int xMm = SnapToGrid(hit.point.x);
             int zMm = SnapToGrid(hit.point.z);
-            var result = _session.PlaceDecoration(_placingDecorationId, xMm, zMm, 0);
+            int rotationDeg = Preview != null ? Mathf.RoundToInt(Preview.RotationDeg) : 0;
+            var result = _session.PlaceDecoration(_placingDecorationId, xMm, zMm, rotationDeg);
 
             if (!result.Success)
             {
