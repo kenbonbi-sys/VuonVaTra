@@ -21,6 +21,7 @@ Vòng chơi **chọn cây → gieo → cây lớn → thu → chế biến → q
 | Lăn chuột | Phóng to / thu nhỏ, bám vào điểm dưới con trỏ |
 | Chuột phải xuống đất | Nhân vật đi tới đó, có vòng tròn báo lại chỗ vừa bấm |
 | Chuột phải qua chỗ có đồ đã đặt | Nhân vật đi vòng qua — đồ trang trí là vật cứng |
+| Rê chuột lên một cái máy | Máy sáng lên, hiện bảng nguyên liệu, tiến độ và tình trạng thợ |
 | Chọn một món trang trí | Bóng ma của món đó bám theo con trỏ |
 | `R` khi đang cầm món | Xoay 180° |
 | Giữ chuột phải kéo ngang khi đang cầm món | Xoay tự do |
@@ -101,6 +102,11 @@ thì theo thứ tự dây chuyền — chặng đầu trước, vì dây chuyề
   vào đâu cả.
 - Ít thợ hơn số máy đang có thì máy cuối dây nằm không. Đọc được bằng mắt: **thợ đứng ngay cạnh
   máy đang chạy**, máy nào không có ai đứng là máy đang nằm không.
+
+**Thợ đứng máy là thường trực, không hiện theo từng mẻ.** Thuê xong là họ ở lại sân: hết việc thì
+đứng nghỉ và hạ tay xuống, có việc thì hai tay đưa lên làm. Ít thợ hơn máy thì họ chuyển sang máy
+đang cần người chứ không biến mất rồi hiện lại — thợ nhấp nháy theo từng mẻ đọc ra như lỗi hiển
+thị, không đọc ra như "máy này đang nằm không".
 
 Máy nào chế biến cây nào là tự chọn: cây đang dồn nhiều nhất ở đầu vào. Bằng nhau thì lấy cây
 đứng trước trong catalog, nên chạy lại cùng một lịch cho cùng một kết quả. Sáu cái máy mà mỗi cái
@@ -333,7 +339,7 @@ Hai điều đã làm hỏng một lượt chụp và sẽ làm hỏng lượt s
 - **Mốc A** — vòng chơi, save/offline/lifecycle, HUD, 83 test, hai bản build.
 - **L01 + B02** — 13 model Blender (gồm sả và nhài), 9 material, 5 cue âm thanh, prefab và
   GardenSkin đã điền đủ. Xem [Docs/Art/L01-B02.md](Docs/Art/L01-B02.md).
-- **Checklist mục 10** — 113 test logic + 109 mục kiểm trong bản build, hai độ phân giải.
+- **Checklist mục 10** — 139 test logic + 125 mục kiểm trong bản build, hai độ phân giải.
   Xem [Docs/QA-moc-A.md](Docs/QA-moc-A.md).
 - **Hướng v1** — đổi tên, siết nhịp, thêm sả/nhài, pha 2 trang trí.
   Xem [Docs/Huong-di-v1.md](Docs/Huong-di-v1.md).

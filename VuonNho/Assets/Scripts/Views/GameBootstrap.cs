@@ -31,6 +31,7 @@ namespace VuonNho.Views
         FileTestLogger _logger;
         SystemClock _clock;
         SfxPlayer _sfx;
+        WorkshopCrewView _crew;
         bool _blocked;
         /// <summary>Cu click de dua cua so ve foreground khong duoc tinh la thao tac trong vuon.</summary>
         /// <summary>
@@ -102,6 +103,9 @@ namespace VuonNho.Views
 
             var outcome = _session.Initialize();
             HandleLoadOutcome(outcome);
+            _crew = gameObject.AddComponent<WorkshopCrewView>();
+            _crew.Bind(Stations);
+            gameObject.AddComponent<StationHoverController>().Bootstrap = this;
             SessionLoadSeconds = Time.realtimeSinceStartup - EngineBootSeconds;
         }
 
@@ -163,6 +167,7 @@ namespace VuonNho.Views
             if (Stations != null)
                 for (int i = 0; i < Stations.Length; i++)
                     if (Stations[i] != null) Stations[i].Render(state);
+            if (_crew != null) _crew.Render(state);
             if (Helper != null) Helper.Render(state);
         }
 
@@ -185,9 +190,6 @@ namespace VuonNho.Views
             if (!Input.GetMouseButtonUp(0)) return;
             if (Rig != null && Rig.ClickWasDrag) return;
             if (ClicksAreBlocked) return;
-            // Click len UI khong truyen xuong dat.
-            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
-
             TryWorldClick(Input.mousePosition);
         }
 
@@ -196,9 +198,16 @@ namespace VuonNho.Views
         /// de bo kiem tra trong build goi duoc: doan quyet dinh "bam hay keo" nam o tren, con doan
         /// lam viec nam o day, va chi doan nay moi doi duoc trang thai van.
         /// </summary>
+        /// <param name="ignorePointerOverUi">
+        /// Bo qua cua "con tro dang o tren HUD". Chi bo kiem tra dung: no chay trong mot cua so ma
+        /// chuot that cua nguoi dung co the dang nam bat cu dau, ke ca tren thanh HUD, va mot phep
+        /// do khong duoc phu thuoc vao cho de tay cua nguoi ngoi truoc may.
+        /// </param>
         /// <returns>Tia co cham vao thu gi trong vuon hay khong.</returns>
-        public bool TryWorldClick(Vector3 screenPosition)
+        public bool TryWorldClick(Vector3 screenPosition, bool ignorePointerOverUi = false)
         {
+            if (!ignorePointerOverUi && PointerIsOverUi()) return false;
+
             var camera = GameCamera != null ? GameCamera : Camera.main;
             if (camera == null) return false;
 
@@ -246,17 +255,22 @@ namespace VuonNho.Views
             TryWalkCommand(Input.mousePosition);
         }
 
+        static bool PointerIsOverUi()
+        {
+            return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+        }
+
         /// <summary>
         /// Ra lenh di tai mot diem tren man hinh. Tach khoi <see cref="HandleWalkCommand"/> vi
         /// cung mot ly do da tach <see cref="TryWorldClick"/>: bo kiem tra trong build phai goi
         /// duoc dung doan ma nay chu khong phai mot ban chep gan giong.
         /// </summary>
         /// <returns>Tia co cham dat va nhan vat co nhan lenh hay khong.</returns>
-        public bool TryWalkCommand(Vector3 screenPosition)
+        public bool TryWalkCommand(Vector3 screenPosition, bool ignorePointerOverUi = false)
         {
             if (Character == null) return false;
             if (ClicksAreBlocked) return false;
-            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return false;
+            if (!ignorePointerOverUi && PointerIsOverUi()) return false;
 
             var camera = GameCamera != null ? GameCamera : Camera.main;
             if (camera == null) return false;

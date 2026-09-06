@@ -20,8 +20,8 @@ Vị trí và ID ô đất, quầy trà và robot giữ nguyên. Save không đ�
 
 ## Kiểm tra
 
-- **122/122 EditMode tests đạt**: gồm kiểm tra scene khớp layout Core, sáu máy nằm trong khung hình và vùng đi bộ, collider theo quyền sở hữu, raycast đến cả 12 ô đất, đủ các đoạn băng tải, vùng cấm trang trí và đọc save cũ.
-- **111/111 kiểm tra trong player đạt**, ở 1366 × 768: chuỗi sản xuất, mua máy, thợ, kho, HUD, camera, di chuyển, save/reset. Báo cáo: `Docs/QA-factory-map.md`.
+- **139/139 EditMode tests đạt**: gồm kiểm tra scene khớp layout Core, sáu máy nằm trong khung hình và vùng đi bộ, collider theo quyền sở hữu, raycast đến cả 12 ô đất, đủ các đoạn băng tải, vùng cấm trang trí và đọc save cũ.
+- **125/125 kiểm tra trong player đạt**, ở cả 1366 × 768 và 1920 × 1080: chuỗi sản xuất, mua máy, thợ, kho, HUD, camera, di chuyển, save/reset. Báo cáo: `Docs/QA-1366x768.md` và `Docs/QA-1920x1080.md`. `Docs/QA-factory-map.md` là ảnh chụp kết quả của riêng lần dựng map, giữ lại làm mốc.
 - Ảnh chụp từ bản player: `Docs/screenshots/11-farm-factory-hud.png`, `Docs/screenshots/12-farm-factory-map.png` và góc cận `Docs/screenshots/13-production-line-detail.png`. Ảnh minh họa dùng tiến trình QA đã mở đủ 12 ô và 6 máy; không thay đổi tiến trình của người chơi.
 - Bản kiểm tra dùng tên sản phẩm riêng `VuonNho-HudReview`. Bản chơi Windows thông thường: `Build/VuonNho-playtest/VuonNho.exe`.
 

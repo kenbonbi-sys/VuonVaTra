@@ -13,7 +13,7 @@ namespace VuonNho.EditorTools
     {
         const float BeltWidth = 0.48f;
         const float OuterWidth = 0.66f;
-        static Material _cream, _belt, _metal, _paint, _leaves, _dried, _parcel, _label;
+        static Material _cream, _belt, _metal, _paint, _leaves, _dried, _parcel;
 
         public static void Build(GardenSkin skin, Camera camera, IReadOnlyList<StationView> stations)
         {
@@ -24,7 +24,6 @@ namespace VuonNho.EditorTools
 
             for (int i = 0; i < stations.Count; i++)
             {
-                BuildNumber(root.transform, stations[i], i + 1, skin, camera);
                 if (i == stations.Count - 1) continue;
                 var source = stations[i];
                 var destination = stations[i + 1];
@@ -187,33 +186,6 @@ namespace VuonNho.EditorTools
             return parcel;
         }
 
-        static void BuildNumber(Transform parent, StationView station, int number, GardenSkin skin, Camera camera)
-        {
-            var bounds = MachineBounds(station);
-            var marker = Child(parent, "StageNumber_" + number.ToString("00"));
-            marker.localPosition = new Vector3(station.transform.position.x - 0.48f, 0f, bounds.min.z - 0.28f);
-            Cube(marker, "Post", new Vector3(0f, 0.24f, 0f), new Vector3(0.035f, 0.48f, 0.035f), _metal);
-            var face = Child(marker, "Face");
-            face.localPosition = Vector3.up * 0.51f;
-            if (camera != null) face.rotation = camera.transform.rotation;
-            Cube(face, "CreamPlate", Vector3.zero, new Vector3(0.44f, 0.265f, 0.035f), _cream);
-            var textRoot = Child(face, "Number");
-            textRoot.localPosition = new Vector3(0f, -0.005f, -0.021f);
-            var text = textRoot.gameObject.AddComponent<TextMesh>();
-            text.text = number.ToString("00");
-            text.anchor = TextAnchor.MiddleCenter;
-            text.alignment = TextAlignment.Center;
-            text.fontSize = 52;
-            text.characterSize = 0.044f;
-            text.color = _label.color;
-            text.font = skin != null && skin.DisplayFont != null
-                ? skin.DisplayFont : Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            var renderer = text.GetComponent<MeshRenderer>();
-            renderer.sharedMaterial = text.font.material;
-            renderer.shadowCastingMode = ShadowCastingMode.Off;
-            renderer.receiveShadows = false;
-        }
-
         static Bounds MachineBounds(StationView station)
         {
             var collider = station.GetComponent<Collider>();
@@ -290,7 +262,6 @@ namespace VuonNho.EditorTools
             _leaves = Material("FreshTea", new Color(0.38f, 0.53f, 0.19f));
             _dried = Material("DriedTea", new Color(0.43f, 0.36f, 0.17f));
             _parcel = Material("Kraft", new Color(0.66f, 0.46f, 0.25f));
-            _label = Material("Ink", new Color(0.22f, 0.32f, 0.24f));
         }
 
         static Material Material(string key, Color color)

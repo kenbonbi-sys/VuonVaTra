@@ -7,9 +7,7 @@ namespace VuonNho.Views
     /// Mot cai may trong day chuyen. Chua mua thi khong hien gi ca — mot cai may mo o cho san
     /// se lam nguoi choi tuong no da hong chu khong phai chua co.
     ///
-    /// Tho **dung ngay canh may dang chay**, khong phai mot dam nguoi dung dau do trong vuon.
-    /// Nho vay "thieu nguoi" doc duoc bang mat: may da mua ma khong co ai dung canh la may dang
-    /// nam khong, khong can mo bang nao ra xem.
+    /// WorkshopCrewView keeps hired workers present between batches and routes them to jobs.
     /// </summary>
     public sealed class StationView : MonoBehaviour
     {
@@ -18,7 +16,7 @@ namespace VuonNho.Views
         [Tooltip("Cụm model của máy. Tắt cả cụm khi chưa mua.")]
         public Transform VisualRoot;
 
-        [Tooltip("Thợ đứng máy. Chỉ hiện khi máy đang chạy.")]
+        [Tooltip("Nhân vật thợ trong nhóm WorkshopCrewView. Không tắt theo từng mẻ máy.")]
         public Transform WorkerRoot;
 
         [Tooltip("Đèn báo máy đang chạy. Để trống thì bỏ qua.")]
@@ -60,8 +58,6 @@ namespace VuonNho.Views
             if (!station.Owned) return;
 
             CacheRest();
-            if (WorkerRoot != null && WorkerRoot.gameObject.activeSelf != station.Running)
-                WorkerRoot.gameObject.SetActive(station.Running);
 
             if (VisualRoot != null)
             {
@@ -93,7 +89,6 @@ namespace VuonNho.Views
             if (_colliders == null) _colliders = GetComponents<Collider>();
             for (int i = 0; i < _colliders.Length; i++) _colliders[i].enabled = owned;
             if (VisualRoot != null) VisualRoot.gameObject.SetActive(owned);
-            if (WorkerRoot != null && !owned) WorkerRoot.gameObject.SetActive(false);
         }
     }
 }

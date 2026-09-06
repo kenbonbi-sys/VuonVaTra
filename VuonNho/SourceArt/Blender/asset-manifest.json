@@ -1570,7 +1570,7 @@
       "source": "SourceArt/Blender/SM_Worker.blend",
       "export": "Assets/Art/Models/SM_Worker.fbx",
       "triangles": 1948,
-      "renderers": 5,
+      "renderers": 7,
       "materials": [
         "M_Accent",
         "M_Cream",
@@ -1600,6 +1600,30 @@
         1.0
       ],
       "parts": [
+        {
+          "name": "ArmLeft",
+          "originBlender": [
+            -0.245,
+            0.0,
+            0.88
+          ],
+          "materialSlots": [
+            "M_Cream",
+            "M_Wood"
+          ]
+        },
+        {
+          "name": "ArmRight",
+          "originBlender": [
+            0.245,
+            0.0,
+            0.88
+          ],
+          "materialSlots": [
+            "M_Cream",
+            "M_Wood"
+          ]
+        },
         {
           "name": "Body",
           "originBlender": [

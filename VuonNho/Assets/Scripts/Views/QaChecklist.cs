@@ -93,6 +93,7 @@ namespace VuonNho.Views
             yield return RunOfflineAndPerf();
             yield return RunControlChecks();
             yield return RunProcessingChecks();
+            yield return CheckWorkshopPresentation();
             RunSettingsChecks();
 
             Finish();
@@ -190,6 +191,131 @@ namespace VuonNho.Views
             yield return null;
         }
 
+        IEnumerator CheckWorkshopPresentation()
+        {
+            Section("Thợ thường trực và hover máy");
+            var crew = _bootstrap.GetComponent<WorkshopCrewView>();
+            var hover = _bootstrap.GetComponent<StationHoverController>();
+            Check("Có quản lý thợ thường trực và hover máy", crew != null && hover != null,
+                  crew == null && hover == null ? "thiếu cả WorkshopCrewView lẫn StationHoverController"
+                  : crew == null ? "thiếu WorkshopCrewView"
+                  : hover == null ? "thiếu StationHoverController" : null);
+            if (crew == null || hover == null) yield break;
+
+            var stations = _bootstrap.Stations;
+            if (stations == null || stations.Length == 0)
+            {
+                Check("Thợ vẫn hiện qua nhiều mẻ làm việc và chờ nguyên liệu", false,
+                      "GameBootstrap.Stations chưa được gán.");
+                yield break;
+            }
+
+            bool hasArmPivots = true;
+            string missingPivots = null;
+            var poses = new Dictionary<WorkerWorkAnimation, Quaternion>();
+            foreach (var station in stations)
+            {
+                var root = station != null ? station.WorkerRoot : null;
+                var work = root != null ? root.GetComponent<WorkerWorkAnimation>() : null;
+                bool ok = work != null && work.ArmLeft != null && work.ArmRight != null;
+                if (!ok && missingPivots == null)
+                    missingPivots = station != null ? station.StageId : "máy không rõ";
+                hasArmPivots &= ok;
+                if (work != null && work.ArmLeft != null) poses[work] = work.ArmLeft.localRotation;
+            }
+
+            // Do qua nhieu me lien tiep: cai loi cu la tho bat/tat theo tung me, nen no chi lo ra
+            // khi mot cai may vua chay xong va chua co nguyen lieu cho me sau.
+            bool stayedVisible = true;
+            int worstVisible = int.MaxValue;
+            string vanishedAt = null;
+            float maxArmAngle = 0f;
+            for (int step = 0; step < 16; step++)
+            {
+                _session.DebugAdvance(3000);
+                yield return new WaitForSeconds(0.12f);
+
+                if (crew.VisibleWorkerCount < worstVisible) worstVisible = crew.VisibleWorkerCount;
+                stayedVisible &= crew.VisibleWorkerCount == _session.State.HiredWorkers;
+                foreach (var station in stations)
+                {
+                    var root = station != null ? station.WorkerRoot : null;
+                    bool shown = root != null && root.gameObject.activeInHierarchy;
+                    if (!shown && vanishedAt == null)
+                        vanishedAt = station != null ? station.StageId : "máy không rõ";
+                    stayedVisible &= shown;
+                }
+                foreach (var pose in poses)
+                {
+                    float angle = Quaternion.Angle(pose.Value, pose.Key.ArmLeft.localRotation);
+                    if (angle > maxArmAngle) maxArmAngle = angle;
+                }
+            }
+
+            Check("Thợ vẫn hiện qua nhiều mẻ làm việc và chờ nguyên liệu", stayedVisible,
+                  stayedVisible
+                      ? "ít nhất " + worstVisible + "/" + _session.State.HiredWorkers + " thợ luôn có mặt"
+                      : "biến mất ở " + (vanishedAt ?? "một lúc nào đó") + ", thấp nhất " + worstVisible +
+                        "/" + _session.State.HiredWorkers);
+            Check("Model có đủ hai tay xoay tại vai", hasArmPivots,
+                  hasArmPivots ? poses.Count + " thợ có ArmLeft và ArmRight"
+                               : "thiếu khớp vai ở " + missingPivots);
+            Check("Tay thợ chuyển động trong player", maxArmAngle > 5f,
+                  "lệch nhiều nhất " + maxArmAngle.ToString("0.0") + "°");
+
+            // Tat Update cua hover de tu dieu khien diem tro; chuot that cua nguoi dung dang o
+            // dau khong biet, ma bai nay phai do dung sau cai may chu khong do cho con tro.
+            hover.enabled = false;
+            int hoverHits = 0;
+            int measured = 0;
+            bool cardsFit = true;
+            float worstOverflow = 0f;
+            foreach (var station in stations)
+            {
+                var collider = station != null ? station.GetComponent<Collider>() : null;
+                if (collider == null || _bootstrap.GameCamera == null) continue;
+                measured++;
+
+                var screen = _bootstrap.GameCamera.WorldToScreenPoint(collider.bounds.center);
+                hover.UpdateHoverAt(new Vector2(screen.x, screen.y));
+                yield return null;
+
+                if (hover.TooltipVisible && hover.HoveredStation == station) hoverHits++;
+                if (!hover.TooltipVisible) continue;
+
+                var corners = new Vector3[4];
+                hover.TooltipRect.GetWorldCorners(corners);
+                foreach (var corner in corners)
+                {
+                    float outside = Mathf.Max(-corner.x, -corner.y,
+                                              corner.x - Screen.width, corner.y - Screen.height);
+                    if (outside > worstOverflow) worstOverflow = outside;
+                    if (outside > 0.5f) cardsFit = false;
+                }
+                CheckTextOverflow("hover " + station.StageId, hover.TooltipRect);
+            }
+
+            Check("Rê chuột nhận đủ sáu máy và hiện thông tin", measured > 0 && hoverHits == measured,
+                  hoverHits + "/" + measured + " máy" +
+                  (hoverHits == 0 && !Application.isFocused
+                       ? " — cửa sổ không có focus, hover tự tắt; đóng bớt cửa sổ game rồi chạy lại"
+                       : ""));
+            Check("Bảng hover nằm trong màn hình", cardsFit,
+                  cardsFit ? "sát mép nhất còn trong màn hình"
+                           : "tràn ra ngoài " + worstOverflow.ToString("0") + " px");
+
+            hover.UpdateHoverAt(new Vector2(30f, Screen.height - 25f));
+            yield return null;
+            Check("Hover ẩn khi chuột vào HUD", !hover.TooltipVisible && hover.HoveredStation == null,
+                  hover.TooltipVisible ? "bảng vẫn hiện khi con trỏ ở trên thanh HUD" : null);
+
+            hover.UpdateHoverAt(new Vector2(-1f, -1f));
+            yield return null;
+            Check("Hover ẩn khi chuột rời màn hình", !hover.TooltipVisible,
+                  hover.TooltipVisible ? "bảng vẫn hiện khi con trỏ ra ngoài cửa sổ" : null);
+            hover.enabled = true;
+        }
+
         // ---------------------------------------------------------------- camera va nhan vat
 
         /// <summary>
@@ -285,7 +411,7 @@ namespace VuonNho.Views
                 .WorldToScreenPoint(groundPoint);
             int routedBefore = _bootstrap.WalkCommandCount;
             if (_bootstrap.Marker != null) _bootstrap.Marker.Hide();
-            bool routed = _bootstrap.TryWalkCommand(new Vector3(groundScreen.x, groundScreen.y, 0f));
+            bool routed = _bootstrap.TryWalkCommand(new Vector3(groundScreen.x, groundScreen.y, 0f), true);
             Check("Chuột phải xuống đất thành lệnh đi",
                   routed && _bootstrap.WalkCommandCount == routedBefore + 1 && character.IsWalking,
                   routed ? null : "tia không chạm vườn hoặc lệnh bị chặn");
@@ -414,11 +540,6 @@ namespace VuonNho.Views
 
             var home = character.transform.position;
 
-            // Dat ngay truoc mat nhan vat, ve phia xa luong cay — khoang trong nhat trong vuon.
-            var spot = home + new Vector3(0f, 0f, -1.3f);
-            int xMm = Mathf.RoundToInt(spot.x * 1000f);
-            int zMm = Mathf.RoundToInt(spot.z * 1000f);
-
             // Mua het nang cap xong thi vua het xu. Tua toi khi du tien mua mon dat nhat trong
             // hai mon can thu, chu khong tang xu bang tay: tang tay se bo qua ca duong mua ban.
             long price = Mathf.Max((int)_session.Catalog.Decoration(DefaultDecorations.Bench).Cost,
@@ -429,6 +550,16 @@ namespace VuonNho.Views
                 _session.DebugAdvance(10000);
                 if (wait % 40 == 0) yield return null;
             }
+
+            Vector3 spot;
+            if (!TryFindFreeSpot(home, DefaultDecorations.Bench, out spot))
+            {
+                Check("Không đi xuyên qua đồ đã đặt", false,
+                      "Không tìm được chỗ trống nào quanh nhân vật để thử.");
+                yield break;
+            }
+            int xMm = Mathf.RoundToInt(spot.x * 1000f);
+            int zMm = Mathf.RoundToInt(spot.z * 1000f);
 
             var bench = _session.PlaceDecoration(DefaultDecorations.Bench, xMm, zMm, 0);
             if (!bench.Success)
@@ -526,9 +657,16 @@ namespace VuonNho.Views
             // Bong ma chi dung len khi con tro cham dat, ma chuot that thi dang o dau khong biet.
             // Goi thang ShowAt de do chinh cai model co dung duoc hay khong.
             var home = _bootstrap.Character != null ? _bootstrap.Character.transform.position : Vector3.zero;
-            var spot = home + new Vector3(0f, 0f, -1.3f);
+            Vector3 spot;
+            if (!TryFindFreeSpot(home, DefaultDecorations.Bench, out spot))
+            {
+                Check("Bóng ma dựng được model của món đang cầm", false,
+                      "Không tìm được chỗ trống nào quanh nhân vật để thử.");
+                yield break;
+            }
+            // Do NGAY, khong yield: UpdatePlacementPreview chay moi khung hinh va an bong ma di
+            // khi con tro that khong nam tren dat trong. Cho mot khung hinh la do trung cai khac.
             preview.ShowAt(spot, true);
-            yield return null;
             Check("Bóng ma dựng được model của món đang cầm", preview.IsShowing,
                   preview.IsShowing ? null : "GardenSkin chưa có prefab cho " + DefaultDecorations.Bench);
 
@@ -544,7 +682,7 @@ namespace VuonNho.Views
             var camera = _bootstrap.GameCamera != null ? _bootstrap.GameCamera : Camera.main;
             int before = _session.State.Decorations.Count;
             var screen = camera.WorldToScreenPoint(spot);
-            _bootstrap.TryWorldClick(new Vector3(screen.x, screen.y, 0f));
+            _bootstrap.TryWorldClick(new Vector3(screen.x, screen.y, 0f), true);
             yield return null;
 
             bool placed = _session.State.Decorations.Count == before + 1;
@@ -560,6 +698,34 @@ namespace VuonNho.Views
 
             yield return RebuildDecorations();
             if (_bootstrap.Character != null) _bootstrap.Character.Teleport(home);
+        }
+
+        /// <summary>
+        /// Mot cho trong quanh nhan vat de thu dat do.
+        ///
+        /// Do bang chinh luat dat cua Core chu khong chon cung mot diem co dinh: bo cuc vuon doi
+        /// la diem cung roi vao vung cam, va bo kiem tra se bao mot loi khong co that — cai hong
+        /// luc do la phep do, khong phai tro choi.
+        /// </summary>
+        bool TryFindFreeSpot(Vector3 near, string definitionId, out Vector3 spot)
+        {
+            for (float radius = 1.3f; radius <= 4.5f; radius += 1.6f)
+            {
+                for (int step = 0; step < 8; step++)
+                {
+                    float angle = step * Mathf.PI * 0.25f;
+                    var candidate = near + new Vector3(Mathf.Sin(angle) * radius, 0f,
+                                                       Mathf.Cos(angle) * radius);
+                    int x = Mathf.RoundToInt(candidate.x * 1000f);
+                    int z = Mathf.RoundToInt(candidate.z * 1000f);
+                    string reason;
+                    if (!_session.CanPlaceDecoration(definitionId, x, z, -1, out reason)) continue;
+                    spot = new Vector3(x / 1000f, 0f, z / 1000f);
+                    return true;
+                }
+            }
+            spot = near;
+            return false;
         }
 
         /// <summary>Collider cua mon vua dat chi ton tai sau khi DecorationLayer dung lai.</summary>
@@ -615,7 +781,7 @@ namespace VuonNho.Views
             yield return null;
 
             var screen = camera.WorldToScreenPoint(target.transform.position);
-            bool reached = _bootstrap.TryWorldClick(new Vector3(screen.x, screen.y, 0f));
+            bool reached = _bootstrap.TryWorldClick(new Vector3(screen.x, screen.y, 0f), true);
             yield return null;
 
             bool opened = FindOpenSurface("plot") != null;

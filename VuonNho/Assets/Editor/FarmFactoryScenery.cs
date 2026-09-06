@@ -82,7 +82,7 @@ namespace VuonNho.EditorTools
 
             Pallet(site, new Vector3(4.4f, 0f, 4.7f), false);
             Pallet(site, new Vector3(3.55f, 0f, 4.7f), false);
-            Sign(site, skin, camera, "FarmSign", "NÔNG TRẠI", "12 LUỐNG · LÁ TƯƠI", new Vector3(-2.4f, 0f, -3.8f), 2.45f);
+            Sign(site, skin, camera, "FarmSign", "NÔNG TRẠI", null, new Vector3(-2.4f, 0f, -3.8f), 2.45f);
             Sign(site, skin, camera, "FactorySign", "XƯỞNG CHẾ BIẾN", "LÀM HÉO → ĐÓNG GÓI", new Vector3(8.9f, 0f, 5.05f), 3.1f);
             var dispatchSign = new GameObject("DispatchNameplate").transform;
             dispatchSign.SetParent(shelter, false);
@@ -143,11 +143,15 @@ namespace VuonNho.EditorTools
             root.rotation = Quaternion.Euler(0f, -45f, 0f);
             foreach (float x in new[] { -width * 0.36f, width * 0.36f })
                 Cube(root, "Post", new Vector3(x, 0.48f, 0.04f), new Vector3(0.085f, 0.96f, 0.085f), "Timber", Timber);
-            var board = Cube(root, "Signboard", new Vector3(0f, 1f, 0f), new Vector3(width, 0.72f, 0.10f), "Sage", Sage);
-            var titleLabel = Label(root, skin, camera, "Title", title, new Vector3(0f, 1.13f, -0.065f), 0.043f, Cream);
+            bool hasCaption = !string.IsNullOrEmpty(caption);
+            var board = Cube(root, "Signboard", new Vector3(0f, 1f, 0f), new Vector3(width, hasCaption ? 0.72f : 0.48f, 0.10f), "Sage", Sage);
+            var titleLabel = Label(root, skin, camera, "Title", title, new Vector3(0f, hasCaption ? 1.13f : 1f, -0.065f), 0.043f, Cream);
             titleLabel.transform.localRotation = Quaternion.identity;
-            var subtitle = Label(root, skin, camera, "Caption", caption, new Vector3(0f, 0.88f, -0.065f), 0.019f, Cream);
-            subtitle.transform.localRotation = Quaternion.identity;
+            if (hasCaption)
+            {
+                var subtitle = Label(root, skin, camera, "Caption", caption, new Vector3(0f, 0.88f, -0.065f), 0.019f, Cream);
+                subtitle.transform.localRotation = Quaternion.identity;
+            }
             var collider = board.AddComponent<BoxCollider>();
             root.gameObject.AddComponent<WalkBlocker>();
         }

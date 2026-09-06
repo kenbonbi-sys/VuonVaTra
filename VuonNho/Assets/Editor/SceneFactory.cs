@@ -585,7 +585,7 @@ namespace VuonNho.EditorTools
             return views;
         }
 
-        /// <summary>Tho dung ben canh may, quay mat ve phia nguoi choi nhu moi nhan vat khac.</summary>
+        /// <summary>Worker faces the machine; the crew manager owns attendance and movement.</summary>
         static GameObject BuildStationWorker(GardenSkin skin, Transform parent)
         {
             var root = new GameObject("WorkerRoot");
@@ -595,13 +595,22 @@ namespace VuonNho.EditorTools
             if (skin.WorkerPrefab != null)
             {
                 var art = SpawnArt(skin.WorkerPrefab, root.transform, "Visual", Vector3.zero);
-                art.transform.localRotation = Quaternion.Euler(0f, HelperFacingYaw, 0f);
+                art.transform.localRotation = Quaternion.identity;
+                var walker = root.AddComponent<CharacterView>();
+                walker.VisualRoot = art.transform;
+                walker.LegLeft = FindDeep(art.transform, "LegLeft");
+                walker.LegRight = FindDeep(art.transform, "LegRight");
+                walker.WalkLimit = 14.5f;
+                walker.Speed = 2.1f;
             }
             else
             {
                 Primitive(PrimitiveType.Capsule, root.transform, "Visual",
                           new Vector3(0f, 0.7f, 0f), new Vector3(0.5f, 0.7f, 0.5f), "Accent");
             }
+            var work = root.AddComponent<WorkerWorkAnimation>();
+            var movement = root.GetComponent<CharacterView>();
+            if (movement != null) work.FacingRoot = movement.VisualRoot;
             root.SetActive(false);
             return root;
         }

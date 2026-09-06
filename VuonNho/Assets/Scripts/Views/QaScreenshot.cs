@@ -37,6 +37,10 @@ namespace VuonNho.Views
         string _mapView;
         bool _hideHud;
         bool _viewApplied;
+        string _hoverStage;
+        bool _hoverApplied;
+        int _motionFrames;
+        int _motionFrame;
 
         void Awake()
         {
@@ -59,6 +63,10 @@ namespace VuonNho.Views
                     _mapView = arguments[i + 1];
                 else if (arguments[i] == "-vuonnho-hide-hud")
                     _hideHud = true;
+                else if (arguments[i] == "-vuonnho-hover" && i + 1 < arguments.Length)
+                    _hoverStage = arguments[i + 1];
+                else if (arguments[i] == "-vuonnho-motion-frames" && i + 1 < arguments.Length)
+                    int.TryParse(arguments[i + 1], out _motionFrames);
             }
 
             if (string.IsNullOrEmpty(_outputPath))
@@ -124,12 +132,45 @@ namespace VuonNho.Views
                 {
                     if (_mapView == "farm") bootstrap.Rig.FocusGround(new Vector3(0f, 0f, 0.5f), 5.6f);
                     if (_mapView == "factory") bootstrap.Rig.FocusGround(new Vector3(8.5f, 0f, 0.7f), 5.7f);
+                    if (string.IsNullOrEmpty(_mapView)) bootstrap.Rig.ResetView();
                 }
                 if (_hideHud)
                 {
                     var hud = FindAnyObjectByType<GameHud>();
                     if (hud != null) hud.GetComponent<Canvas>().enabled = false;
                 }
+                return;
+            }
+
+            if (!_hoverApplied && !string.IsNullOrEmpty(_hoverStage))
+            {
+                _hoverApplied = true;
+                var bootstrap = FindAnyObjectByType<GameBootstrap>();
+                var hover = bootstrap != null ? bootstrap.GetComponent<StationHoverController>() : null;
+                if (hover != null)
+                {
+                    hover.enabled = false;
+                    foreach (var station in bootstrap.Stations)
+                        if (station.StageId == _hoverStage)
+                        {
+                            var screen = bootstrap.GameCamera.WorldToScreenPoint(station.GetComponent<Collider>().bounds.center);
+                            hover.UpdateHoverAt(new Vector2(screen.x, screen.y));
+                            Debug.Log("[Hover QA] " + _hoverStage + " visible=" + hover.TooltipVisible);
+                            break;
+                        }
+                }
+                return;
+            }
+
+            if (_motionFrame < Mathf.Clamp(_motionFrames, 0, 200))
+            {
+                string folder = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(_outputPath),
+                    System.IO.Path.GetFileNameWithoutExtension(_outputPath) + "-frames");
+                System.IO.Directory.CreateDirectory(folder);
+                ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(folder,
+                    "frame" + _motionFrame.ToString("D3") + ".png"));
+                _motionFrame++;
+                _captureAt = Time.realtimeSinceStartup + 0.1f;
                 return;
             }
 

@@ -585,10 +585,13 @@ def worker(root):
              cube("Apron strap left", (-.10, .142, .855), (.055, .03, .10), "M_Accent", 0),
              cube("Apron strap right", (.10, .142, .855), (.055, .03, .10), "M_Accent", 0),
              cylinder("Neck", (0, 0, .935), .058, .085, "M_Wood", 8, 0)]
-    for x in (-.245, .245):
-        torso.append(cube("Sleeve", (x, 0, .755), (.115, .135, .30), "M_Cream", .045, 2))
-        torso.append(cube("Forearm", (x, .015, .545), (.095, .11, .16), "M_Wood", .035, 2))
-        torso.append(sphere("Hand", (x, .03, .455), (.115, .115, .105), "M_Wood", 8, 4))
+    # Keep the original resting silhouette, but give each hand a shoulder pivot.
+    # Unity moves these two mesh groups for the work loop; the body stays still.
+    for side, x in (("ArmLeft", -.245), ("ArmRight", .245)):
+        arm = [cube("Sleeve", (x, 0, .755), (.115, .135, .30), "M_Cream", .045, 2),
+               cube("Forearm", (x, .015, .545), (.095, .11, .16), "M_Wood", .035, 2),
+               sphere("Hand", (x, .03, .455), (.115, .115, .105), "M_Wood", 8, 4)]
+        join(arm, side, root, (x, 0, .88))
     head = [sphere("Head", (0, 0, 1.045), (.30, .285, .30), "M_Wood", 12, 6, True),
             sphere("Hair", (0, -.045, 1.055), (.305, .255, .29), "M_Dark", 10, 5, True),
             cube("Fringe", (0, .108, 1.125), (.245, .085, .085), "M_Dark", .03, 2)]
