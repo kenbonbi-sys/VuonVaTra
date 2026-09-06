@@ -95,9 +95,7 @@ namespace VuonNho.Tests.ArtEditor
                 };
                 skin.Crops = crops;
                 var prefabs = new Dictionary<string, GameObject>();
-                foreach (var name in new[] { "Plot", "Seedling", "Mint", "Chamomile", "Strawberry", "Helper",
-                    "TeaStation", "BackgroundTree", "Bush", "Fence", "Rock",
-                    "StonePath", "Planter", "Lantern", "Bench", "Signboard" }) prefabs[name] = imported;
+                foreach (var name in GardenArtImporter.AllModelNames()) prefabs[name] = imported;
                 var filled = new List<string>();
                 GardenArtImporter.FillEmptySkinSlots(skin, prefabs, filled);
                 Assert.That(skin.SoilPrefab, Is.SameAs(artist));
@@ -158,9 +156,7 @@ namespace VuonNho.Tests.ArtEditor
                 };
                 skin.Decorations = rows;
                 var prefabs = new Dictionary<string, GameObject>();
-                foreach (var name in new[] { "Plot", "Seedling", "Mint", "Chamomile", "Strawberry", "Helper",
-                    "TeaStation", "BackgroundTree", "Bush", "Fence", "Rock",
-                    "StonePath", "Planter", "Lantern", "Bench", "Signboard" }) prefabs[name] = imported;
+                foreach (var name in GardenArtImporter.AllModelNames()) prefabs[name] = imported;
                 var filled = new List<string>();
                 GardenArtImporter.FillEmptySkinSlots(skin, prefabs, filled);
                 Assert.That(skin.Decorations.Length, Is.EqualTo(6));

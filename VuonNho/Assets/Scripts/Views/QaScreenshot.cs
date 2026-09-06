@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using VuonNho.Core;
 
 namespace VuonNho.Views
 {
@@ -16,12 +17,15 @@ namespace VuonNho.Views
         public const string PathArgument = "-vuonnho-screenshot";
         public const string DelayArgument = "-vuonnho-screenshot-delay";
         public const string PanelArgument = "-vuonnho-open-panel";
+        public const string SeedArgument = "-vuonnho-screenshot-seed";
 
         string _outputPath;
         string _panelName;
+        bool _seed;
         float _delaySeconds = 5f;
         float _captureAt = -1f;
         bool _captured;
+        bool _seeded;
 
         void Awake()
         {
@@ -34,6 +38,8 @@ namespace VuonNho.Views
                     float.TryParse(arguments[i + 1], out _delaySeconds);
                 else if (arguments[i] == PanelArgument && i + 1 < arguments.Length)
                     _panelName = arguments[i + 1];
+                else if (arguments[i] == SeedArgument)
+                    _seed = true;
             }
 
             if (string.IsNullOrEmpty(_outputPath))
@@ -48,6 +54,16 @@ namespace VuonNho.Views
         {
             if (_captured || _captureAt < 0f || Time.realtimeSinceStartup < _captureAt) return;
 
+            if (_seed && !_seeded)
+            {
+                _seeded = true;
+                SeedGrownGarden();
+                // Cho vuon dung lai theo trang thai moi: HUD tinh lai muc tieu, cay moc len,
+                // may bat dau pha. Chup ngay frame sau se dinh mot khung hinh nua voi nua cu.
+                _captureAt = Time.realtimeSinceStartup + 1.5f;
+                return;
+            }
+
             if (!string.IsNullOrEmpty(_panelName))
             {
                 var hud = FindAnyObjectByType<GameHud>();
@@ -61,6 +77,106 @@ namespace VuonNho.Views
             Debug.Log("[VuonNho] QA screenshot: " + _outputPath);
             // Cho vai frame de file duoc ghi xong roi moi thoat.
             Invoke("QuitAfterCapture", 2f);
+        }
+
+        /// <summary>
+        /// Tua vuon toi luc da mo het 12 o va mua het nang cap, de anh chup tai lieu cho thay
+        /// mot khu vuon co thu de nhin chu khong phai bon o dat trong.
+        ///
+        /// Mua theo dung thu tu catalog: thu tu do da thoa dieu kien mo khoa cua tung muc va
+        /// tang dan theo gia, nen khong can chep lai lo trinh cua ban can bang o day.
+        /// </summary>
+        void SeedGrownGarden()
+        {
+            var bootstrap = FindAnyObjectByType<GameBootstrap>();
+            if (bootstrap == null || bootstrap.Session == null || bootstrap.Session.State == null)
+            {
+                Debug.LogWarning("[VuonNho] Khong tim thay phien choi de tua vuon.");
+                return;
+            }
+
+            var session = bootstrap.Session;
+            var hud = FindAnyObjectByType<GameHud>();
+
+            // Popup vang mat che kin giua man hinh. Anh tai lieu chup khu vuon, khong chup popup.
+            session.AcknowledgeOfflineSummary();
+            if (hud != null)
+            {
+                var modal = hud.transform.Find("OfflineModal");
+                if (modal != null) modal.gameObject.SetActive(false);
+            }
+
+            PlantEveryEmptyPlot(session);
+
+            foreach (var upgrade in session.Catalog.Upgrades)
+            {
+                if (session.State.UpgradeLevel(upgrade.Id) >= 1) continue;
+
+                int guard = 0;
+                while (session.State.Coins < upgrade.Cost && guard++ < 4000)
+                {
+                    session.DebugAdvance(10000);
+                    HarvestEveryReadyPlot(session);
+                }
+
+                if (!session.Purchase(upgrade.Id).Success) break;
+
+                if (upgrade.Kind == UpgradeKind.UnlockCrop)
+                {
+                    for (int i = 0; i < session.State.Plots.Count; i++)
+                        if (session.State.Plot(i).Unlocked) session.SetNextCrop(i, upgrade.TargetId);
+                    var recipe = session.Catalog.RecipeForCrop(upgrade.TargetId);
+                    if (recipe != null) session.SelectRecipe(recipe.Id);
+                }
+                if (upgrade.Kind == UpgradeKind.ExpandPlots) PlantEveryEmptyPlot(session);
+            }
+
+            // Mua het nang cap thi vua het xu va nhieu o vua thu xong dang de trong. Trong lai
+            // roi chay them mot doan de co xu du tru, sau do trong lan cuoi va chi tua mot doan
+            // ngan: anh chup can vuon dang len cay, khong phai vuon vua bi vet sach.
+            PlantEveryEmptyPlot(session);
+            session.DebugAdvance(300000);
+            HarvestEveryReadyPlot(session);
+            PlantEveryEmptyPlot(session);
+            SelectRecipeForPlantedCrop(session);
+            session.DebugAdvance(20000);
+
+            Debug.Log("[VuonNho] Da tua vuon: " + session.State.UnlockedPlotCount() + " o, " +
+                      session.State.Coins + " xu.");
+            if (hud != null) hud.Refresh();
+        }
+
+        static void PlantEveryEmptyPlot(GameSession session)
+        {
+            string cropId = BestCrop(session);
+            for (int i = 0; i < session.State.Plots.Count; i++)
+            {
+                var plot = session.State.Plot(i);
+                if (plot.Unlocked && plot.Phase == PlotPhase.Empty) session.Plant(i, cropId);
+            }
+        }
+
+        /// <summary>May dang cho nguyen lieu cua mot cong thuc khong ai trong nua thi nhin nhu hong.</summary>
+        static void SelectRecipeForPlantedCrop(GameSession session)
+        {
+            var recipe = session.Catalog.RecipeForCrop(BestCrop(session));
+            if (recipe != null) session.SelectRecipe(recipe.Id);
+        }
+
+        /// <summary>Cay moi nhat da mo khoa — cung la cay dat nhat, dung nhu nguoi choi se trong.</summary>
+        static string BestCrop(GameSession session)
+        {
+            string cropId = DefaultContent.CropMint;
+            foreach (var crop in session.Catalog.Crops)
+                if (session.State.UnlockedCropIds.Contains(crop.Id)) cropId = crop.Id;
+            return cropId;
+        }
+
+        /// <summary>Truoc khi co robot thi khong thu tay se khong bao gio du xu mua no.</summary>
+        static void HarvestEveryReadyPlot(GameSession session)
+        {
+            for (int i = 0; i < session.State.Plots.Count; i++)
+                if (session.State.Plot(i).Phase == PlotPhase.Ready) session.HarvestAndReplant(i);
         }
 
         void QuitAfterCapture()

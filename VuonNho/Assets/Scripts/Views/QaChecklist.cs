@@ -91,9 +91,215 @@ namespace VuonNho.Views
             yield return RunReloadCheck();
             yield return RunUiChecks();
             yield return RunOfflineAndPerf();
+            yield return RunControlChecks();
             RunSettingsChecks();
 
             Finish();
+        }
+
+
+        // ---------------------------------------------------------------- camera va nhan vat
+
+        /// <summary>
+        /// Zoom, keo man hinh va lenh di cua nhan vat. Ba thu nay khong co trong bo test EditMode
+        /// vi ca ba deu can mot camera that va nhieu frame that.
+        /// </summary>
+        IEnumerator RunControlChecks()
+        {
+            Section("Điều khiển camera và nhân vật");
+
+            yield return CheckPlotClickStillLands();
+
+            var rig = _bootstrap.Rig;
+            if (rig == null || rig.Camera == null)
+            {
+                Check("Camera có bộ điều khiển zoom/kéo", false, "GameBootstrap.Rig chưa được gán.");
+            }
+            else
+            {
+                rig.ResetView();
+                yield return null;
+
+                float home = rig.Camera.orthographicSize;
+                var centre = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0f);
+
+                rig.ZoomBy(3f, centre);
+                float closer = rig.Camera.orthographicSize;
+                Check("Lăn chuột tới thì nhìn gần lại", closer < home - 0.01f,
+                      home.ToString("0.00") + " → " + closer.ToString("0.00"));
+
+                rig.ZoomBy(-40f, centre);
+                float farthest = rig.Camera.orthographicSize;
+                Check("Thu nhỏ hết cỡ vẫn nằm trong giới hạn",
+                      farthest <= rig.MaxSize + 0.001f && farthest >= rig.MinSize - 0.001f,
+                      farthest.ToString("0.00") + " (tối đa " + rig.MaxSize.ToString("0.00") + ")");
+
+                rig.ZoomBy(40f, centre);
+                Check("Phóng to hết cỡ vẫn nằm trong giới hạn",
+                      rig.Camera.orthographicSize >= rig.MinSize - 0.001f,
+                      rig.Camera.orthographicSize.ToString("0.00") +
+                      " (tối thiểu " + rig.MinSize.ToString("0.00") + ")");
+
+                // Zoom phai bam vao cho con tro dang tro, khong nhay ve giua man hinh.
+                rig.ResetView();
+                yield return null;
+                var anchor = new Vector3(Screen.width * 0.32f, Screen.height * 0.62f, 0f);
+                Vector3 groundBefore, groundAfter;
+                bool measured = TryGroundUnder(rig.Camera, anchor, out groundBefore);
+                rig.ZoomBy(2f, anchor);
+                measured &= TryGroundUnder(rig.Camera, anchor, out groundAfter);
+                float slip = measured ? Vector3.Distance(groundBefore, groundAfter) : 999f;
+                Check("Zoom bám điểm dưới con trỏ", measured && slip < 0.05f,
+                      measured ? "lệch " + (slip * 100f).ToString("0.0") + " cm" : "không đo được");
+
+                rig.ResetView();
+                yield return null;
+                rig.PanBy(new Vector3(500f, 0f, 500f));
+                Vector3 focus;
+                bool hasFocus = rig.TryFocusPoint(out focus);
+                Check("Kéo màn hình không ra khỏi vườn",
+                      hasFocus && Mathf.Abs(focus.x) <= rig.PanLimit + 0.01f &&
+                      Mathf.Abs(focus.z) <= rig.PanLimit + 0.01f,
+                      hasFocus ? "dừng ở (" + focus.x.ToString("0.0") + ", " + focus.z.ToString("0.0") +
+                                 "), giới hạn " + rig.PanLimit.ToString("0.0") : "không đo được");
+
+                rig.ResetView();
+                yield return null;
+                Check("Về lại góc nhìn ban đầu",
+                      Mathf.Abs(rig.Camera.orthographicSize - home) < 0.01f,
+                      rig.Camera.orthographicSize.ToString("0.00"));
+            }
+
+            var character = _bootstrap.Character;
+            if (character == null)
+            {
+                Check("Có nhân vật chính trong vườn", false, "GameBootstrap.Character chưa được gán.");
+                yield break;
+            }
+
+            Check("Nhân vật có hai chân để bước",
+                  character.LegLeft != null && character.LegRight != null,
+                  character.LegLeft != null && character.LegRight != null
+                      ? null : "thiếu LegLeft/LegRight — nhân vật sẽ trượt chứ không bước");
+
+            // Duong tu cu bam chuot phai toi lenh di. Muc "Nhan lenh di" o duoi goi thang WalkTo
+            // nen khong noi duoc gi ve doan dinh tuyen: tia co xuong dat khong, che do dat/go co
+            // nuot mat lenh khong, nhan vat co duoc gan vao bootstrap khong.
+            var groundPoint = _bootstrap.Plots != null && _bootstrap.Plots.Length > 0 &&
+                              _bootstrap.Plots[0] != null
+                ? _bootstrap.Plots[0].transform.position
+                : character.transform.position;
+            var groundScreen = (_bootstrap.GameCamera != null ? _bootstrap.GameCamera : Camera.main)
+                .WorldToScreenPoint(groundPoint);
+            int routedBefore = _bootstrap.WalkCommandCount;
+            bool routed = _bootstrap.TryWalkCommand(new Vector3(groundScreen.x, groundScreen.y, 0f));
+            Check("Chuột phải xuống đất thành lệnh đi",
+                  routed && _bootstrap.WalkCommandCount == routedBefore + 1 && character.IsWalking,
+                  routed ? null : "tia không chạm vườn hoặc lệnh bị chặn");
+            character.Teleport(character.transform.position);
+            yield return null;
+
+            // Chuot that cua nguoi dung van bam duoc vao cua so trong luc chay, va moi cu chuot
+            // phai la mot lenh di moi. Do lai khi co lenh la chen vao giua phep do, chu khong
+            // bao la khong dat: cai bi hong luc do la phep do, khong phai tro choi.
+            var start = character.transform.position;
+            var goal = new Vector3(start.x - 2.4f, start.y, start.z + 1.8f);
+            float missed = 0f;
+            bool accepted = false, arrived = false, disturbed = false;
+
+            for (int attempt = 0; attempt < 3; attempt++)
+            {
+                character.Teleport(start);
+                yield return null;
+
+                int commandsBefore = _bootstrap.WalkCommandCount;
+                character.WalkTo(goal);
+                accepted = character.IsWalking;
+
+                float deadline = Time.unscaledTime + 6f;
+                while (character.IsWalking && Time.unscaledTime < deadline) yield return null;
+
+                missed = Vector3.Distance(
+                    new Vector3(character.transform.position.x, 0f, character.transform.position.z),
+                    new Vector3(goal.x, 0f, goal.z));
+                arrived = !character.IsWalking && missed < 0.15f;
+
+                disturbed = _bootstrap.WalkCommandCount != commandsBefore;
+                if (!disturbed) break;
+            }
+
+            Check("Nhận lệnh đi tới điểm được chỉ", accepted,
+                  "đích (" + goal.x.ToString("0.0") + ", " + goal.z.ToString("0.0") + ")");
+            Check("Đi tới nơi rồi dừng", arrived || disturbed,
+                  disturbed
+                      ? "chuột thật bấm chen vào giữa phép đo, không kết luận được"
+                      : "cách đích " + (missed * 100f).ToString("0") + " cm");
+
+            // Diem ngoai vuon phai bi keo ve trong bo chu khong bi bo qua: mot cu bam hut van
+            // phai dan den mot buoc di co nghia.
+            character.WalkTo(new Vector3(500f, 0f, -500f));
+            var destination = character.Destination;
+            Check("Bấm ra ngoài vườn thì dừng ở mép",
+                  Mathf.Abs(destination.x) <= character.WalkLimit + 0.01f &&
+                  Mathf.Abs(destination.z) <= character.WalkLimit + 0.01f,
+                  "đích (" + destination.x.ToString("0.0") + ", " + destination.z.ToString("0.0") +
+                  "), giới hạn " + character.WalkLimit.ToString("0.0"));
+
+            // Tra nhan vat ve cho cu de anh chup sau bo kiem tra van dung bo cuc quen thuoc.
+            character.Teleport(start);
+        }
+
+        /// <summary>
+        /// Chuot trai gio chot luc tha chu khong luc nhan, de phan biet voi keo man hinh. Muc nay
+        /// giu cho cai gia cua thay doi do khong phai la "bam vao o dat khong con tac dung nua".
+        /// </summary>
+        IEnumerator CheckPlotClickStillLands()
+        {
+            var camera = _bootstrap.GameCamera != null ? _bootstrap.GameCamera : Camera.main;
+            PlotView target = null;
+            if (_bootstrap.Plots != null && camera != null)
+            {
+                for (int i = 0; i < _bootstrap.Plots.Length && target == null; i++)
+                {
+                    var view = _bootstrap.Plots[i];
+                    if (view == null) continue;
+                    var plot = _session.State.Plot(view.PlotId);
+                    if (plot != null && plot.Unlocked && plot.Phase != PlotPhase.Ready) target = view;
+                }
+            }
+
+            if (target == null)
+            {
+                Check("Bấm vào ô đất vẫn mở được bảng ô", false,
+                      "Không tìm thấy ô đang mở khoá và chưa chín để thử.");
+                yield break;
+            }
+
+            CloseSurface("plot");
+            yield return null;
+
+            var screen = camera.WorldToScreenPoint(target.transform.position);
+            bool reached = _bootstrap.TryWorldClick(new Vector3(screen.x, screen.y, 0f));
+            yield return null;
+
+            bool opened = FindOpenSurface("plot") != null;
+            Check("Bấm vào ô đất vẫn mở được bảng ô", reached && opened,
+                  "ô " + target.PlotId + (reached ? "" : " — tia không chạm vườn") +
+                  (opened ? "" : " — bảng ô không mở"));
+
+            CloseSurface("plot");
+            yield return null;
+        }
+
+        static bool TryGroundUnder(Camera camera, Vector3 screenPoint, out Vector3 point)
+        {
+            point = Vector3.zero;
+            var ray = camera.ScreenPointToRay(screenPoint);
+            if (Mathf.Approximately(ray.direction.y, 0f)) return false;
+            float distance = -ray.origin.y / ray.direction.y;
+            if (distance <= 0f) return false;
+            point = ray.GetPoint(distance);
+            return true;
         }
 
         // ---------------------------------------------------------------- chơi tới 12 ô

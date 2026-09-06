@@ -20,6 +20,8 @@ namespace VuonNho.Views
         public PlotView[] Plots;
         public DecorationLayer Decorations;
         public GardenSkin Skin;
+        public CameraRig Rig;
+        public CharacterView Character;
 
         GameSession _session;
         FileSaveRepository _repository;
@@ -159,29 +161,51 @@ namespace VuonNho.Views
 
         void HandleClick()
         {
-            // Chuot phai luon la duong thoat khoi che do dat/go.
-            if (Input.GetMouseButtonDown(1) && (_placingDecorationId != null || _removingDecorations))
+            if (Input.GetMouseButtonDown(1))
             {
-                CancelDecorationMode();
-                if (Hud != null) Hud.Refresh();
+                // Trong che do dat/go, chuot phai van la duong thoat — do la loi ra duy nhat
+                // ma nguoi choi da quen; cho nhan vat di luc nay se cuop mat no.
+                if (_placingDecorationId != null || _removingDecorations)
+                {
+                    CancelDecorationMode();
+                    if (Hud != null) Hud.Refresh();
+                }
+                else
+                {
+                    HandleWalkCommand();
+                }
                 return;
             }
 
-            if (!Input.GetMouseButtonDown(0)) return;
+            // Thao tac cua chuot trai chot luc THA chu khong luc nhan: luc nhan chua biet day
+            // la mot cu bam hay la khoi dau cua mot lan keo man hinh.
+            if (!Input.GetMouseButtonUp(0)) return;
+            if (Rig != null && Rig.ClickWasDrag) return;
             if (ClicksAreBlocked) return;
             // Click len UI khong truyen xuong dat.
             if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
 
+            TryWorldClick(Input.mousePosition);
+        }
+
+        /// <summary>
+        /// Xu ly mot cu bam vao vuon tai mot diem tren man hinh. Tach khoi <see cref="HandleClick"/>
+        /// de bo kiem tra trong build goi duoc: doan quyet dinh "bam hay keo" nam o tren, con doan
+        /// lam viec nam o day, va chi doan nay moi doi duoc trang thai van.
+        /// </summary>
+        /// <returns>Tia co cham vao thu gi trong vuon hay khong.</returns>
+        public bool TryWorldClick(Vector3 screenPosition)
+        {
             var camera = GameCamera != null ? GameCamera : Camera.main;
-            if (camera == null) return;
+            if (camera == null) return false;
 
             RaycastHit hit;
-            if (!Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit, 500f)) return;
+            if (!Physics.Raycast(camera.ScreenPointToRay(screenPosition), out hit, 500f)) return false;
 
             if (_placingDecorationId != null)
             {
                 HandlePlacementClick(hit);
-                return;
+                return true;
             }
 
             if (_removingDecorations)
@@ -193,18 +217,50 @@ namespace VuonNho.Views
                     if (Hud != null)
                         Hud.ShowToast(removed.Success ? "Đã gỡ và hoàn lại xu." : removed.FailureReason);
                 }
-                return;
+                return true;
             }
 
             var plotView = hit.collider.GetComponentInParent<PlotView>();
             if (plotView != null)
             {
                 OnPlotClicked(plotView);
-                return;
+                return true;
             }
 
             if (hit.collider.GetComponentInParent<MachineView>() != null && Hud != null)
                 Hud.ShowToast(MachineHint());
+            return true;
+        }
+
+        /// <summary>So lenh di da nhan. Bo kiem tra dung de biet co input la lot vao hay khong.</summary>
+        public int WalkCommandCount { get; private set; }
+
+        /// <summary>Chuot phai len dat: nhan vat di toi diem vua bam.</summary>
+        void HandleWalkCommand()
+        {
+            TryWalkCommand(Input.mousePosition);
+        }
+
+        /// <summary>
+        /// Ra lenh di tai mot diem tren man hinh. Tach khoi <see cref="HandleWalkCommand"/> vi
+        /// cung mot ly do da tach <see cref="TryWorldClick"/>: bo kiem tra trong build phai goi
+        /// duoc dung doan ma nay chu khong phai mot ban chep gan giong.
+        /// </summary>
+        /// <returns>Tia co cham dat va nhan vat co nhan lenh hay khong.</returns>
+        public bool TryWalkCommand(Vector3 screenPosition)
+        {
+            if (Character == null) return false;
+            if (ClicksAreBlocked) return false;
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return false;
+
+            var camera = GameCamera != null ? GameCamera : Camera.main;
+            if (camera == null) return false;
+
+            RaycastHit hit;
+            if (!Physics.Raycast(camera.ScreenPointToRay(screenPosition), out hit, 500f)) return false;
+            WalkCommandCount++;
+            Character.WalkTo(hit.point);
+            return true;
         }
 
         // ---------------------------------------------------------------- trang tri (pha 2)

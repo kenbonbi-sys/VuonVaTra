@@ -1129,6 +1129,108 @@
       ],
       "license": "Original project art; no third-party model or texture inputs.",
       "status": "Exported; Unity import and gameplay-camera verification required."
+    },
+    "SM_Gardener": {
+      "assetId": "A14",
+      "name": "SM_Gardener",
+      "source": "SourceArt/Blender/SM_Gardener.blend",
+      "export": "Assets/Art/Models/SM_Gardener.fbx",
+      "triangles": 1778,
+      "renderers": 5,
+      "materials": [
+        "M_Accent",
+        "M_Cream",
+        "M_Dark",
+        "M_Wood",
+        "M_Yellow"
+      ],
+      "boundsBlender": {
+        "min": [
+          -0.3025,
+          -0.27,
+          0.0
+        ],
+        "max": [
+          0.3025,
+          0.27,
+          1.3775
+        ]
+      },
+      "dimensionsUnityMetres": [
+        0.605,
+        1.3775,
+        0.54
+      ],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parts": [
+        {
+          "name": "Body",
+          "originBlender": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "materialSlots": [
+            "M_Accent",
+            "M_Cream",
+            "M_Wood"
+          ]
+        },
+        {
+          "name": "Hat",
+          "originBlender": [
+            0.0,
+            0.0,
+            1.15
+          ],
+          "materialSlots": [
+            "M_Yellow",
+            "M_Cream"
+          ]
+        },
+        {
+          "name": "Head",
+          "originBlender": [
+            0.0,
+            0.0,
+            1.02
+          ],
+          "materialSlots": [
+            "M_Wood",
+            "M_Dark"
+          ]
+        },
+        {
+          "name": "LegLeft",
+          "originBlender": [
+            -0.1,
+            0.0,
+            0.44
+          ],
+          "materialSlots": [
+            "M_Dark",
+            "M_Wood"
+          ]
+        },
+        {
+          "name": "LegRight",
+          "originBlender": [
+            0.1,
+            0.0,
+            0.44
+          ],
+          "materialSlots": [
+            "M_Dark",
+            "M_Wood"
+          ]
+        }
+      ],
+      "license": "Original project art; no third-party model or texture inputs.",
+      "status": "Exported; Unity import and gameplay-camera verification required."
     }
   }
 }

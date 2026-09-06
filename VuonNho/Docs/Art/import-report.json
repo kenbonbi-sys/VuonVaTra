@@ -1,5 +1,5 @@
 {
-    "utc": "2026-09-06T09:55:38.0588376Z",
+    "utc": "2026-09-06T11:41:24.6174919Z",
     "unityVersion": "6000.6.0f1",
     "preset": "FBX static; globalScale 1; Convert Units on; Bake Axis Conversion on; imported normals; hierarchy preserved; no animation, cameras, lights or colliders",
     "passed": true,
@@ -455,14 +455,36 @@
                 "M_Accent"
             ],
             "errors": []
+        },
+        {
+            "name": "Gardener",
+            "path": "Assets/Art/Models/SM_Gardener.fbx",
+            "guid": "165ff6ef96096e3468e925ae4242e39c",
+            "size": {
+                "x": 0.6050000190734863,
+                "y": 1.3774999380111694,
+                "z": 0.5400000214576721
+            },
+            "center": {
+                "x": 0.0,
+                "y": 0.6887499690055847,
+                "z": 0.0
+            },
+            "triangles": 1754,
+            "renderers": 5,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Accent",
+                "M_Cream",
+                "M_Wood",
+                "M_Yellow",
+                "M_Dark"
+            ],
+            "errors": []
         }
     ],
     "createdPrefabs": [
-        "Assets/Art/Prefabs/PF_StonePath.prefab",
-        "Assets/Art/Prefabs/PF_Planter.prefab",
-        "Assets/Art/Prefabs/PF_Lantern.prefab",
-        "Assets/Art/Prefabs/PF_Bench.prefab",
-        "Assets/Art/Prefabs/PF_Signboard.prefab"
+        "Assets/Art/Prefabs/PF_Gardener.prefab"
     ],
     "preservedPrefabs": [
         "Assets/Art/Prefabs/PF_Plot.prefab",
@@ -477,14 +499,15 @@
         "Assets/Art/Prefabs/PF_BackgroundTree.prefab",
         "Assets/Art/Prefabs/PF_Bush.prefab",
         "Assets/Art/Prefabs/PF_Fence.prefab",
-        "Assets/Art/Prefabs/PF_Rock.prefab"
+        "Assets/Art/Prefabs/PF_Rock.prefab",
+        "Assets/Art/Prefabs/PF_StonePath.prefab",
+        "Assets/Art/Prefabs/PF_Planter.prefab",
+        "Assets/Art/Prefabs/PF_Lantern.prefab",
+        "Assets/Art/Prefabs/PF_Bench.prefab",
+        "Assets/Art/Prefabs/PF_Signboard.prefab"
     ],
     "filledSlots": [
-        "deco_stone_path",
-        "deco_planter",
-        "deco_lantern",
-        "deco_bench",
-        "deco_signboard"
+        "CharacterPrefab"
     ],
     "errors": []
 }

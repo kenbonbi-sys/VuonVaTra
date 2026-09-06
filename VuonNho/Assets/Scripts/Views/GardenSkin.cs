@@ -85,6 +85,9 @@ namespace VuonNho.Views
         [Tooltip("Robot nổi. Đặt con tên Face nếu muốn mặt robot đổi màu khi thức.")]
         public GameObject RobotPrefab;
 
+        [Tooltip("Nhân vật chính. Đặt con tên LegLeft và LegRight nếu muốn có bước đi.")]
+        public GameObject CharacterPrefab;
+
         [Header("Nền và props")]
         public GameObject GroundPrefab;
         public GameObject[] TreePrefabs = new GameObject[0];

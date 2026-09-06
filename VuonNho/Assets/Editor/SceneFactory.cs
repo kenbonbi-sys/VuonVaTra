@@ -62,6 +62,7 @@ namespace VuonNho.EditorTools
             var plots = BuildPlots(skin, catalog);
             var machine = BuildTeaStation(skin);
             var helper = BuildHelper(skin);
+            var character = BuildCharacter(skin, catalog);
             BuildProps(skin);
 
             var decorations = BuildDecorationLayer(skin);
@@ -74,6 +75,8 @@ namespace VuonNho.EditorTools
             bootstrap.Hud = hud;
             bootstrap.Machine = machine;
             bootstrap.Helper = helper;
+            bootstrap.Character = character;
+            bootstrap.Rig = camera.GetComponent<CameraRig>();
             bootstrap.Plots = plots.ToArray();
             bootstrap.Decorations = decorations;
 
@@ -204,6 +207,12 @@ namespace VuonNho.EditorTools
             go.transform.position = target - go.transform.forward * 24f;
 
             go.AddComponent<AudioListener>();
+
+            // Lan chuot de phong to thu nho, giu chuot trai de keo man hinh.
+            var rig = go.AddComponent<CameraRig>();
+            rig.Camera = camera;
+            rig.MinSize = skin.CameraOrthographicSize * 0.55f;
+            rig.MaxSize = skin.CameraOrthographicSize * 1.85f;
             return camera;
         }
 
@@ -465,6 +474,37 @@ namespace VuonNho.EditorTools
             return view;
         }
 
+        /// <summary>
+        /// Nhan vat chinh dung san trong vuon. Khong gan collider: nguoi choi bam xuyen qua
+        /// nhan vat de cham vao o dat phia sau, khong bao gio bi chinh nhan vat che mat thao tac.
+        /// </summary>
+        static CharacterView BuildCharacter(GardenSkin skin, ContentCatalog catalog)
+        {
+            var root = new GameObject("CharacterRoot");
+            root.transform.position = CharacterStartPosition(skin);
+            var view = root.AddComponent<CharacterView>();
+            // Cung khu dat ma Core dung de chan dat trang tri, lui vao mot chut cho khoi cham hang rao.
+            view.WalkLimit = catalog.Balance.GardenHalfExtentMm / 1000f - 0.7f;
+
+            var art = skin.CharacterPrefab != null
+                ? SpawnArt(skin.CharacterPrefab, root.transform, "VisualRoot", Vector3.zero)
+                : new GameObject("VisualRoot");
+            if (skin.CharacterPrefab == null)
+            {
+                art.transform.SetParent(root.transform, false);
+                Primitive(PrimitiveType.Capsule, art.transform, "Body",
+                          new Vector3(0f, 0.7f, 0f), new Vector3(0.5f, 0.7f, 0.5f), "Accent");
+            }
+            art.transform.localRotation = Quaternion.Euler(0f, HelperFacingYaw, 0f);
+            view.VisualRoot = art.transform;
+
+            var legLeft = FindDeep(art.transform, "LegLeft");
+            if (legLeft != null) view.LegLeft = legLeft;
+            var legRight = FindDeep(art.transform, "LegRight");
+            if (legRight != null) view.LegRight = legRight;
+            return view;
+        }
+
         static HelperView BuildHelper(GardenSkin skin)
         {
             var root = new GameObject("HelperRoot");
@@ -651,6 +691,12 @@ namespace VuonNho.EditorTools
         static Vector3 StationPosition(GardenSkin skin)
         {
             return new Vector3(0f, 0f, (Rows - 1) * 0.5f * skin.PlotSpacing + 2.6f);
+        }
+
+        /// <summary>Nhan vat dung phia truoc luong cay, khong dam vao o dat nao.</summary>
+        static Vector3 CharacterStartPosition(GardenSkin skin)
+        {
+            return new Vector3(skin.PlotSpacing, 0f, -((Rows - 1) * 0.5f * skin.PlotSpacing + 1.6f));
         }
 
         /// <summary>Robot dung ben trai luong cay.</summary>

@@ -21,14 +21,11 @@ namespace VuonNho.EditorTools
         /// thi bo qua chu khong dung ca me, nen agent khac lam xong prefab la co icon ngay.
         /// Ten icon = "ICO_" + ten trong mang nay.
         /// </summary>
-        static readonly string[] Names =
-        {
-            "Plot", "Seedling",
-            "Mint", "Chamomile", "Strawberry", "Lemongrass", "Jasmine",
-            "Helper", "TeaStation",
-            "BackgroundTree", "Bush", "Fence", "Rock",
-            "StonePath", "Planter", "Lantern", "Bench", "Signboard"
-        };
+        /// <summary>
+        /// Chup dung bo model ma bo nhap dung, khong chep lai danh sach: them mot model moi ma
+        /// quen sua o day thi no lang le vang mat khoi tap anh de xet duyet.
+        /// </summary>
+        static readonly string[] Names = GardenArtImporter.AllModelNames();
 
         /// <summary>Anh chup nam o dau tuy tham so -art-output luc chup, nen thu lan luot.</summary>
         static readonly string[] CaptureFolders = { "Docs/Art/review/icons", "Docs/Art/captures/icons" };

@@ -46,6 +46,7 @@ ASSET_IDS = {
     "SM_Lemongrass": "A12", "SM_Jasmine": "A13",
     "SM_StonePath": "D01", "SM_Planter": "D02", "SM_Lantern": "D03",
     "SM_Bench": "D04", "SM_Signboard": "D05",
+    "SM_Gardener": "A14",
 }
 SEED = 60206
 MATERIALS = {}
@@ -144,6 +145,12 @@ def cylinder(name, loc, radius, depth, material, vertices=12, bevel=.012):
         active(obj)
         bpy.ops.object.modifier_apply(modifier=mod.name)
     return finish(obj, name, material)
+
+
+def cone(name, loc, radius, depth, material, vertices=16):
+    bpy.ops.mesh.primitive_cone_add(vertices=vertices, radius1=radius, radius2=0,
+                                    depth=depth, location=loc)
+    return finish(bpy.context.object, name, material)
 
 
 def stem(name, start, end, radius=.022, material="M_Leaf", vertices=8):
@@ -402,6 +409,45 @@ def helper(root):
     join(antenna, "Antenna", root, (0, -.03, .27))
 
 
+def gardener(root):
+    """Nguoi choi: non la vang de nhan ra ngay tu goc nhin tren cao.
+
+    Chan tach thanh hai nhom rieng, goc xoay dat ngay hong, de runtime dong dua
+    chan luc di ma khong can xuong hay clip animation.
+    """
+    hip_z = .44
+    legs = {}
+    for side, x in (("LegLeft", -.10), ("LegRight", .10)):
+        legs[side] = [cube("Trouser", (x, 0, .225), (.155, .17, .43), "M_Dark", .035, 2),
+                      cube("Shoe", (x, .045, .045), (.175, .255, .09), "M_Wood", .024, 2)]
+    torso = [cube("Shirt", (0, 0, .68), (.40, .27, .50), "M_Accent", .07, 3),
+             cube("Apron", (0, .15, .615), (.33, .035, .40), "M_Cream", .04, 2),
+             cube("Apron strap left", (-.10, .142, .855), (.055, .03, .10), "M_Cream", 0),
+             cube("Apron strap right", (.10, .142, .855), (.055, .03, .10), "M_Cream", 0),
+             cylinder("Neck", (0, 0, .935), .058, .085, "M_Wood", 8, 0)]
+    for x in (-.245, .245):
+        torso.append(cube("Sleeve", (x, 0, .755), (.115, .135, .30), "M_Accent", .045, 2))
+        torso.append(cube("Forearm", (x, .015, .545), (.095, .11, .16), "M_Wood", .035, 2))
+        torso.append(sphere("Hand", (x, .03, .455), (.115, .115, .105), "M_Wood", 8, 4))
+    head = [sphere("Head", (0, 0, 1.045), (.30, .285, .30), "M_Wood", 12, 6, True),
+            sphere("Hair", (0, -.045, 1.055), (.305, .255, .29), "M_Dark", 10, 5, True),
+            cube("Fringe", (0, .108, 1.125), (.245, .085, .085), "M_Dark", .03, 2)]
+    for x in (-.068, .068):
+        head.append(cube("Eye", (x, .132, 1.045), (.036, .03, .058), "M_Dark", 0))
+    head.append(cube("Smile", (0, .142, .965), (.062, .025, .018), "M_Dark", 0))
+    # Non la: mot khoi non lien, vanh rong hon dau nen bong do rat de nhan ra.
+    # Vanh non chi rong hon vai mot chut: rong hon nua thi tu goc nhin cua game
+    # no che kin ca nguoi, chi con thay mot cai dia.
+    hat = [cone("Non la", (0, 0, 1.265), .27, .225, "M_Yellow", 16),
+           cylinder("Vanh non", (0, 0, 1.158), .27, .024, "M_Yellow", 16, 0),
+           cylinder("Quai non", (0, 0, 1.180), .145, .020, "M_Cream", 10, 0)]
+    join(legs["LegLeft"], "LegLeft", root, (-.10, 0, hip_z))
+    join(legs["LegRight"], "LegRight", root, (.10, 0, hip_z))
+    join(torso, "Body", root)
+    join(head, "Head", root, (0, 0, 1.02))
+    join(hat, "Hat", root, (0, 0, 1.15))
+
+
 def tea_station(root):
     parts = []
     # Three metres wide, simple closed masses, clear mint/cream shop silhouette.
@@ -626,6 +672,7 @@ BUILDERS = {
     # lai bat ky mon nao trong so do van ra dung ket qua cu.
     "SM_StonePath": stone_path, "SM_Planter": planter, "SM_Lantern": lantern,
     "SM_Bench": bench, "SM_Signboard": signboard,
+    "SM_Gardener": gardener,
 }
 
 

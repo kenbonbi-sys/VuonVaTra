@@ -33,6 +33,8 @@ crashlytics-build.properties
 # Log và kết quả test do chạy batchmode sinh ra ở gốc project
 build.log
 test.log
+import.log
+artqa.log
 results.xml
 test-results.xml
 

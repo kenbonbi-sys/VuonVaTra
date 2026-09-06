@@ -32,7 +32,7 @@ namespace VuonNho.EditorTools
         {
             "Plot", "Seedling", "Mint", "Chamomile", "Strawberry", "Lemongrass", "Jasmine",
             "Helper", "TeaStation", "BackgroundTree", "Bush", "Fence", "Rock",
-            "StonePath", "Planter", "Lantern", "Bench", "Signboard"
+            "StonePath", "Planter", "Lantern", "Bench", "Signboard", "Gardener"
         };
         static readonly Vector3[] MaximumDimensions =
         {
@@ -44,7 +44,7 @@ namespace VuonNho.EditorTools
             new Vector3(1.8f, 1.3f, .5f), new Vector3(1.5f, 1f, 1.5f),
             new Vector3(.44f, .30f, .44f), new Vector3(.52f, .80f, .52f),
             new Vector3(.44f, 1.30f, .44f), new Vector3(1.04f, 1f, 1.04f),
-            new Vector3(.84f, 1.40f, .84f)
+            new Vector3(.84f, 1.40f, .84f), new Vector3(.9f, 1.6f, .9f)
         };
         static readonly string[] DecorationIds =
         {
@@ -112,6 +112,12 @@ namespace VuonNho.EditorTools
             public List<string> filledSlots = new List<string>();
             public List<string> errors = new List<string>();
         }
+
+        /// <summary>
+        /// Ten cac model bo nhap ky vong co. Test dung chinh danh sach nay chu khong chep lai:
+        /// mot danh sach chep doi la mot lan them model la mot lan test do vi ly do sai.
+        /// </summary>
+        public static string[] AllModelNames() { return (string[])ModelNames.Clone(); }
 
         [MenuItem("Vườn Nhỏ/Art/1. Import Blender và điền GardenSkin")]
         public static void ImportOnly() { Run(false); }
@@ -431,6 +437,7 @@ namespace VuonNho.EditorTools
             Fill(ref skin.SoilPrefab, prefabs["Plot"], "SoilPrefab", filled);
             Fill(ref skin.SeedlingPrefab, prefabs["Seedling"], "SeedlingPrefab", filled);
             Fill(ref skin.RobotPrefab, prefabs["Helper"], "RobotPrefab", filled);
+            Fill(ref skin.CharacterPrefab, prefabs["Gardener"], "CharacterPrefab", filled);
             Fill(ref skin.StationPrefab, prefabs["TeaStation"], "StationPrefab", filled);
             Fill(ref skin.FencePostPrefab, prefabs["Fence"], "FencePostPrefab", filled);
             FillOptions(ref skin.TreePrefabs, prefabs["BackgroundTree"], "TreePrefabs", filled);

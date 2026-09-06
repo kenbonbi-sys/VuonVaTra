@@ -33,6 +33,7 @@ MonoBehaviour:
     MaturePrefab: {fileID: 6617784360100790244, guid: edc7f7680b7766a4db442d8c9c2646e7, type: 3}
   StationPrefab: {fileID: 4186430695575864216, guid: 3c6a91b347ae393439f8bf32da3a7767, type: 3}
   RobotPrefab: {fileID: 7065989557344915967, guid: 73f5757dd801e484197da5d1a754c0b4, type: 3}
+  CharacterPrefab: {fileID: 8704440418347989326, guid: f509f083f5c78484888fe88aa904c9c7, type: 3}
   GroundPrefab: {fileID: 1978281551807286252, guid: 0cb8588d56f85064fa5dfd39faf5687c, type: 3}
   TreePrefabs:
   - {fileID: 6609403130369397503, guid: 9348ebb284524a940a8d2f0ca50877d8, type: 3}
