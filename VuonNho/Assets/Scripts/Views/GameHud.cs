@@ -178,10 +178,22 @@ namespace VuonNho.Views
             chipRect.anchoredPosition = new Vector2(UiFactory.EdgeMargin, 0f);
             chipRect.sizeDelta = new Vector2(176f, 40f);
 
-            _coinsLabel = UiFactory.Label(coinChip.transform, "Coins", "0 xu", UiFactory.FontSizeTitle,
-                                          TextAnchor.MiddleLeft, GardenPalette.TextCoin, true);
-            UiFactory.Stretch(UiFactory.Rect(_coinsLabel.gameObject), Vector2.zero, Vector2.one,
+            var coinRow = UiFactory.Node(coinChip.transform, "Coins");
+            UiFactory.Stretch(UiFactory.Rect(coinRow), Vector2.zero, Vector2.one,
                               new Vector2(14f, 0f), new Vector2(-14f, 0f));
+            var coinLayout = UiFactory.HorizontalList(coinRow, 8f, new RectOffset(0, 0, 0, 0));
+            coinLayout.childAlignment = TextAnchor.MiddleLeft;
+            coinLayout.childForceExpandWidth = false;
+            coinLayout.childForceExpandHeight = false;
+
+            // Chip xu chi cao 40 px: dung co icon cua the thi chieu cao dong glyph vuot ra ngoai.
+            var coinSymbol = UiFactory.Symbol(coinRow.transform, "CoinSymbol",
+                                              UiFactory.Symbols.LocalAtm, UiFactory.IconSizeRow);
+            coinSymbol.color = GardenPalette.TextCoin;
+
+            _coinsLabel = UiFactory.Label(coinRow.transform, "Value", "0 xu", UiFactory.FontSizeTitle,
+                                          TextAnchor.MiddleLeft, GardenPalette.TextCoin, true);
+            _coinsLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
 
             // Muc tieu la loi nhac, khong phai tieu de: de mo hon chip xu ben trai.
             _goalLabel = UiFactory.Label(topBar.transform, "Goal", "", UiFactory.FontSizeBody,
@@ -427,11 +439,12 @@ namespace VuonNho.Views
                 var titleFlex = row.Title.gameObject.AddComponent<LayoutElement>();
                 titleFlex.flexibleWidth = 1f;
 
-                row.Cost = UiFactory.Label(titleRow.transform, "Cost", "", UiFactory.FontSizeRowTitle,
-                                           TextAnchor.MiddleRight, GardenPalette.TextCoin);
-                row.Cost.horizontalOverflow = HorizontalWrapMode.Overflow;
-                var costWidth = row.Cost.gameObject.AddComponent<LayoutElement>();
-                costWidth.preferredWidth = 88f;
+                row.Cost = UiFactory.CoinValue(titleRow.transform, "Cost", UiFactory.FontSizeRowTitle,
+                                               UiFactory.IconSizeRow, TextAnchor.MiddleRight);
+                // Icon 32 px + khe 6 px + so bon chu so. Rong hon nua thi tieu de bi xuong dong.
+                var costWidth = row.Cost.transform.parent.gameObject.AddComponent<LayoutElement>();
+                costWidth.preferredWidth = 96f;
+                costWidth.minWidth = 96f;
                 costWidth.flexibleWidth = 0f;
 
                 row.Description = UiFactory.Label(card.transform, "Desc", upgrade.Description,
@@ -492,6 +505,10 @@ namespace VuonNho.Views
                 labelLayout.minHeight = 56f;
                 labelLayout.flexibleWidth = 1f;
 
+                var cost = UiFactory.CoinValue(titleRow.transform, "Cost", UiFactory.FontSizeMeta,
+                                               UiFactory.IconSizeRow, TextAnchor.UpperRight);
+                cost.text = decoration.Cost.ToString();
+
                 var choose = UiFactory.TextButton(rowGo.transform, "Choose", "Chọn",
                                                   delegate { BeginPlacing(decorationId); },
                                                    symbol: UiFactory.Symbols.Add);
@@ -541,7 +558,8 @@ namespace VuonNho.Views
                 bool affordable = state.Coins >= decoration.Cost;
                 bool isPlacing = row.DecorationId == placing;
 
-                string text = decoration.DisplayName + "  ·  " + decoration.Cost + " xu\n" + decoration.Description;
+                // Gia da nam o nhan rieng ben phai kem icon tien, nen dong nay chi con ten va mo ta.
+                string text = decoration.DisplayName + "\n" + decoration.Description;
                 if (isPlacing) text += "\nĐang đặt — bấm vào vườn, chuột phải để thoát.";
                 else if (!affordable) text += "\nThiếu " + (decoration.Cost - state.Coins) + " xu.";
                 row.Label.text = text;
@@ -984,7 +1002,8 @@ namespace VuonNho.Views
 
                 row.Title.text = upgrade.DisplayName;
                 row.Title.color = bought ? GardenPalette.TextMuted : GardenPalette.TextPrimary;
-                row.Cost.text = upgrade.Cost + " xu";
+                // Icon tien da noi ro day la xu, nen cot gia chi can con so.
+                row.Cost.text = upgrade.Cost.ToString();
                 row.Cost.color = bought ? GardenPalette.TextMuted : GardenPalette.TextCoin;
                 row.Description.text = upgrade.Description;
                 row.Card.color = bought ? GardenPalette.PanelSoftMuted : GardenPalette.PanelSoft;

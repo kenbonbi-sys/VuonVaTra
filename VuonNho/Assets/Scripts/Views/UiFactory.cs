@@ -87,6 +87,29 @@ namespace VuonNho.Views
             public const string VolumeUp = "\ue050";
             public const string VolumeOff = "\ue04f";
             public const string Check = "\ue668";
+            public const string LocalAtm = "\ue53e";
+        }
+
+        /// <summary>
+        /// So xu kem icon tien. Tra ve chinh cai nhan so, nen cho goi chi viec gan .text
+        /// nhu voi mot Label thuong.
+        /// </summary>
+        public static Text CoinValue(Transform parent, string name, int fontSize, float symbolSize,
+                                     TextAnchor anchor)
+        {
+            var group = Node(parent, name);
+            var row = HorizontalList(group, 6f, new RectOffset(0, 0, 0, 0));
+            row.childAlignment = anchor;
+            row.childForceExpandWidth = false;
+            row.childForceExpandHeight = false;
+
+            var symbol = Symbol(group.transform, "CoinSymbol", Symbols.LocalAtm, symbolSize);
+            symbol.color = GardenPalette.TextCoin;
+
+            var value = Label(group.transform, "Value", "", fontSize, TextAnchor.MiddleLeft,
+                              GardenPalette.TextCoin, true);
+            value.horizontalOverflow = HorizontalWrapMode.Overflow;
+            return value;
         }
 
         /// <summary>
