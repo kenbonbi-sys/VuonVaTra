@@ -9,15 +9,13 @@ namespace VuonNho.Views
     /// HUD, kho, nang cap, cai dat va bao cao quay lai. UI goi GameSession chu khong sua inventory
     /// truc tiep. Click len UI khong truyen xuong dat vi GraphicRaycaster chan truoc.
     ///
-    /// Bo cuc theo mot rail duy nhat: le ngoai 16 px, khoang cach giua hai be mat 12 px, moi
-    /// be mat la mot the bo goc duc. Chieu cao dong do uGUI tinh — khong dat cung so px cho
-    /// dong nao co chu tieng Viet, vi chu xuong dong la de len nut ben duoi.
+    /// Cac cum HUD noi o mep man hinh duoc dung trong GameHud.Farm.cs. Cac panel chi tiet
+    /// giu layout tu tinh chieu cao de chu tieng Viet khong tran xuong nut ben duoi.
     /// </summary>
-    public sealed class GameHud : MonoBehaviour
+    public sealed partial class GameHud : MonoBehaviour
     {
-        const float TopBarHeight = 64f;
-        /// <summary>Mep tren cua moi be mat noi duoi thanh tren.</summary>
-        const float ContentTop = TopBarHeight + UiFactory.Gutter;
+        /// <summary>Panel chi tiet nam duoi hang ho so va tai nguyen.</summary>
+        const float ContentTop = 76f;
         const float SidePanelWidth = 360f;
 
         GameSession _session;
@@ -170,6 +168,7 @@ namespace VuonNho.Views
 
             BuildTopBar(root);
             BuildMachineCard(root);
+            BuildJournal();
 
             // --- cac panel ben phai
             Transform body;
@@ -191,6 +190,8 @@ namespace VuonNho.Views
             _settingsPanel = BuildSidePanel("SettingsPanel", "Cài đặt và công cụ test", out body);
             BuildSettingsRows(body);
 
+            BuildStartupPanels();
+
             _plotPopup = BuildPlotPopup();
             // Hai popup nay phu scrim len ca panel nen phai dung sau chung trong hierarchy.
             _offlinePopup = BuildOfflinePopup();
@@ -211,155 +212,6 @@ namespace VuonNho.Views
         public void ShowWorkshopPanel()
         {
             if (!_workshopPanel.activeSelf) TogglePanel(_workshopPanel);
-        }
-
-        /// <summary>Thanh tren: chip xu, muc tieu hien tai, ba nut mo panel.</summary>
-        void BuildTopBar(Transform root)
-        {
-            var topBar = UiFactory.Panel(root, "TopBar", GardenPalette.PanelBackground);
-            UiFactory.Stretch(UiFactory.Rect(topBar.gameObject), new Vector2(0f, 1f), new Vector2(1f, 1f),
-                              new Vector2(0f, -TopBarHeight), new Vector2(0f, 0f));
-
-            var coinChip = UiFactory.Panel(topBar.transform, "CoinChip", GardenPalette.PanelSoft,
-                                           UiFactory.RadiusControl);
-            var chipRect = UiFactory.Rect(coinChip.gameObject);
-            chipRect.anchorMin = new Vector2(0f, 0.5f);
-            chipRect.anchorMax = new Vector2(0f, 0.5f);
-            chipRect.pivot = new Vector2(0f, 0.5f);
-            chipRect.anchoredPosition = new Vector2(UiFactory.EdgeMargin, 0f);
-            // Bo chu "xu" thi chip hep lai dung bang the, khong de lai khoang trong: 144 px van
-            // du cho so tam chu so, bang dung so cho ma phien ban co chu "xu" cho duoc.
-            chipRect.sizeDelta = new Vector2(144f, 40f);
-
-            var coinRow = UiFactory.Node(coinChip.transform, "Coins");
-            UiFactory.Stretch(UiFactory.Rect(coinRow), Vector2.zero, Vector2.one,
-                              new Vector2(14f, 0f), new Vector2(-14f, 0f));
-            var coinLayout = UiFactory.HorizontalList(coinRow, 8f, new RectOffset(0, 0, 0, 0));
-            coinLayout.childAlignment = TextAnchor.MiddleLeft;
-            coinLayout.childForceExpandWidth = false;
-            coinLayout.childForceExpandHeight = false;
-
-            // Chip xu chi cao 40 px: dung co icon cua the thi chieu cao dong glyph vuot ra ngoai.
-            var coinSymbol = UiFactory.Symbol(coinRow.transform, "CoinSymbol",
-                                              UiFactory.Symbols.LocalAtm, UiFactory.IconSizeRow);
-            coinSymbol.color = GardenPalette.TextCoin;
-
-            // Da co icon tien dung canh thi chu "xu" chi la nhan lap lai.
-            _coinsLabel = UiFactory.Label(coinRow.transform, "Value", "0", UiFactory.FontSizeTitle,
-                                          TextAnchor.MiddleLeft, GardenPalette.TextCoin, true);
-            _coinsLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
-
-            // The mua nam ngay canh chip xu vi hai con so nay doc cung nhau: xu la thu da co,
-            // mua la thu quyet dinh vu sap gieo duoc bao nhieu.
-            var seasonChip = UiFactory.Panel(topBar.transform, "SeasonChip", GardenPalette.PanelSoft,
-                                             UiFactory.RadiusControl);
-            var seasonRect = UiFactory.Rect(seasonChip.gameObject);
-            seasonRect.anchorMin = new Vector2(0f, 0.5f);
-            seasonRect.anchorMax = new Vector2(0f, 0.5f);
-            seasonRect.pivot = new Vector2(0f, 0.5f);
-            seasonRect.anchoredPosition = new Vector2(UiFactory.EdgeMargin + 152f, 0f);
-            // 216 px: do duoc "Mua xuan · 240 s" can 142 px chu, cong glyph, khoang cach va
-            // hai ben le. Hep hon la chu tran ra khoi the.
-            seasonRect.sizeDelta = new Vector2(216f, 40f);
-
-            var seasonRow = UiFactory.Node(seasonChip.transform, "Season");
-            UiFactory.Stretch(UiFactory.Rect(seasonRow), Vector2.zero, Vector2.one,
-                              new Vector2(14f, 0f), new Vector2(-14f, 0f));
-            var seasonLayout = UiFactory.HorizontalList(seasonRow, 8f, new RectOffset(0, 0, 0, 0));
-            seasonLayout.childAlignment = TextAnchor.MiddleLeft;
-            seasonLayout.childForceExpandWidth = false;
-            seasonLayout.childForceExpandHeight = false;
-
-            var seasonSymbol = UiFactory.Symbol(seasonRow.transform, "SeasonSymbol",
-                                                UiFactory.Symbols.Schedule, UiFactory.IconSizeRow);
-            seasonSymbol.color = GardenPalette.TextMuted;
-            _seasonLabel = UiFactory.Label(seasonRow.transform, "Value", "", UiFactory.FontSizeBody,
-                                           TextAnchor.MiddleLeft, GardenPalette.TextPrimary, true);
-            _seasonLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
-
-            // Muc tieu la loi nhac, khong phai tieu de: de mo hon chip xu ben trai.
-            _goalLabel = UiFactory.Label(topBar.transform, "Goal", "", UiFactory.FontSizeBody,
-                                         TextAnchor.MiddleLeft, GardenPalette.TextMuted);
-            _goalLabel.verticalOverflow = VerticalWrapMode.Truncate;
-            UiFactory.Stretch(UiFactory.Rect(_goalLabel.gameObject), new Vector2(0f, 0f), new Vector2(1f, 1f),
-                              new Vector2(400f, 0f), new Vector2(-728f, 0f));
-
-            // Nam nut deu nhau: nut rong nhat la "Nang cap" can khoang 140 px khi co ca icon lan
-            // chu. "Xuong" ngan hon han nen ca day duoc 712 px la du. Hep hon la chu bi xuong dong.
-            var topButtons = UiFactory.Node(topBar.transform, "Buttons");
-            UiFactory.Stretch(UiFactory.Rect(topButtons), new Vector2(1f, 0f), new Vector2(1f, 1f),
-                              new Vector2(-712f, 10f), new Vector2(-UiFactory.EdgeMargin, -10f));
-            UiFactory.HorizontalList(topButtons, 8f, new RectOffset(0, 0, 0, 0));
-
-            _inventoryButton = UiFactory.TextButton(topButtons.transform, "InventoryButton", "Kho",
-                                                    delegate { TogglePanel(_inventoryPanel); },
-                                                    UiFactory.ButtonStyle.Quiet,
-                                                   symbol: UiFactory.Symbols.Inventory2);
-            _upgradeButton = UiFactory.TextButton(topButtons.transform, "UpgradeButton", "Nâng cấp",
-                                                  delegate { TogglePanel(_upgradePanel); },
-                                                  UiFactory.ButtonStyle.Quiet,
-                                                   symbol: UiFactory.Symbols.Upgrade);
-            _decorateButton = UiFactory.TextButton(topButtons.transform, "DecorateButton", "Trang trí",
-                                                   delegate { TogglePanel(_decoratePanel); },
-                                                   UiFactory.ButtonStyle.Quiet,
-                                                   symbol: UiFactory.Symbols.FormatPaint);
-            _workshopButton = UiFactory.TextButton(topButtons.transform, "WorkshopButton", "Xưởng",
-                                                   delegate { TogglePanel(_workshopPanel); },
-                                                   UiFactory.ButtonStyle.Quiet,
-                                                   symbol: UiFactory.Symbols.Factory);
-            _settingsButton = UiFactory.TextButton(topButtons.transform, "SettingsButton", "Cài đặt",
-                                                   delegate { TogglePanel(_settingsPanel); },
-                                                   UiFactory.ButtonStyle.Quiet,
-                                                   symbol: UiFactory.Symbols.Settings);
-
-            var rule = UiFactory.Panel(topBar.transform, "Rule", GardenPalette.PanelDivider);
-            UiFactory.Stretch(UiFactory.Rect(rule.gameObject), new Vector2(0f, 0f), new Vector2(1f, 0f),
-                              Vector2.zero, new Vector2(0f, 1f));
-        }
-
-        /// <summary>The trang thai may: den mau, mot dong chu, mot thanh tien do.</summary>
-        void BuildMachineCard(Transform root)
-        {
-            var card = UiFactory.Panel(root, "MachineCard", GardenPalette.PanelBackground, UiFactory.RadiusPanel);
-            var cardRect = UiFactory.Rect(card.gameObject);
-            cardRect.anchorMin = new Vector2(0f, 1f);
-            cardRect.anchorMax = new Vector2(0f, 1f);
-            cardRect.pivot = new Vector2(0f, 1f);
-            cardRect.anchoredPosition = new Vector2(UiFactory.EdgeMargin, -ContentTop);
-            cardRect.sizeDelta = new Vector2(464f, 88f);
-
-            var dot = UiFactory.Panel(card.transform, "MachineDot", MachineView.StatusIdle, UiFactory.RadiusDot);
-            var dotRect = UiFactory.Rect(dot.gameObject);
-            dotRect.anchorMin = new Vector2(0f, 1f);
-            dotRect.anchorMax = new Vector2(0f, 1f);
-            dotRect.pivot = new Vector2(0f, 1f);
-            dotRect.anchoredPosition = new Vector2(432f, -16f);
-            dotRect.sizeDelta = new Vector2(12f, 12f);
-            _machineDot = dot;
-
-            // Neo o mep phai the, khong nam trong layout group nao. Nhan may la MiddleLeft va
-            // HorizontalWrapMode.Overflow nen o nay khong xe dich mot chu nao.
-            _machineIcon = UiFactory.Icon(card.transform, "MachineIcon", null, UiFactory.IconSizeCard);
-            var machineIconRect = UiFactory.Rect(_machineIcon.gameObject);
-            machineIconRect.anchorMin = new Vector2(0f, 1f);
-            machineIconRect.anchorMax = new Vector2(0f, 1f);
-            machineIconRect.pivot = new Vector2(0f, 1f);
-            machineIconRect.anchoredPosition = new Vector2(UiFactory.EdgeMargin, -18f);
-            machineIconRect.sizeDelta = new Vector2(UiFactory.IconSizeCard, UiFactory.IconSizeCard);
-
-            _machineLabel = UiFactory.Label(card.transform, "MachineLabel", "", UiFactory.FontSizeBody,
-                                            TextAnchor.MiddleLeft, GardenPalette.TextPrimary);
-            _machineLabel.horizontalOverflow = HorizontalWrapMode.Wrap;
-            // Hai dong chu 18 px voi lineSpacing 1,15 can 52 px; chua 50 px thi dong duoi bi cat.
-            UiFactory.Stretch(UiFactory.Rect(_machineLabel.gameObject), new Vector2(0f, 1f), new Vector2(1f, 1f),
-                              new Vector2(80f, -62f), new Vector2(-40f, -6f));
-
-            Image machineFill;
-            var track = UiFactory.ProgressBar(card.transform, "MachineBar", MachineView.StatusRunning, out machineFill);
-            UiFactory.Stretch(UiFactory.Rect(track.gameObject), new Vector2(0f, 0f), new Vector2(1f, 0f),
-                              new Vector2(80f, 14f), new Vector2(-UiFactory.EdgeMargin, 22f));
-            _machineBarFill = machineFill;
-            _machineBarTrack = track;
         }
 
         GameObject BuildSidePanel(string name, string title, out Transform body)
@@ -464,6 +316,16 @@ namespace VuonNho.Views
         }
 
         const float InventoryFooterHeight = 132f;
+
+        /// <summary>
+        /// Chieu cao vung chon cay trong popup o dat. Nam nut mot luc, cuon de xem tiep.
+        ///
+        /// Con so nay la thu giu popup khong de len the ho so o goc tren man hinh 768 px: phan
+        /// con lai cua popup (tieu de, tinh trang dat, hai nut cham soc, nut dong) khoang 250 px,
+        /// nen 5 x 44 + 4 x 6 = 244 la vua. Them cay moi vao catalog khong lam popup cao them.
+        /// </summary>
+        const float CropListHeight = 244f;
+
         const int InventoryColumns = 4;
         const float SlotWidth = 72f;
         const float SlotHeight = 86f;
@@ -1128,9 +990,10 @@ namespace VuonNho.Views
             rect.anchorMax = new Vector2(0f, 0f);
             rect.pivot = new Vector2(0f, 0f);
             rect.anchoredPosition = new Vector2(UiFactory.EdgeMargin, UiFactory.EdgeMargin);
-            // 360 px de hai nut cham soc dung vua mot hang: hep hon thi "Bón phân · 40" bi
-            // xuong dong va ca hang cao gap doi.
-            rect.sizeDelta = new Vector2(360f, 0f);
+            // 400 px: hai nut cham soc dung vua mot hang, va nhan dai nhat cua danh sach cay —
+            // "Chè đinh — 71 s · 4 đơn vị · chưa mở" — con nam trong mot dong. Hep hon thi mot
+            // trong hai cho do gay xuong dong, va co muc kiem trong bo QA bat duoc ca hai.
+            rect.sizeDelta = new Vector2(400f, 0f);
             UiFactory.VerticalList(panel.gameObject, 8f, new RectOffset(16, 16, 16, 16));
             var fitter = panel.gameObject.AddComponent<ContentSizeFitter>();
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
@@ -1174,14 +1037,57 @@ namespace VuonNho.Views
             }, UiFactory.ButtonStyle.Primary);
             _treatButton.gameObject.SetActive(false);
 
+            // Danh sach cay cuon duoc, cao toi da CropListHeight.
+            //
+            // Van mot cot chu khong hai: nhan cua moi nut khong chi la ten cay, no con noi vu nay
+            // bao lau moi chin va thu duoc bao nhieu — "Bạc hà — 8 s · 4 đơn vị" can gan 190 px,
+            // nen mot cot 161 px se lam moi cai nhan gay hai dong.
+            //
+            // Nhung chin loai cay xep het mot cot thi popup cao qua ca man hinh 768 px va de len
+            // the ho so o goc tren. Nen cat o chieu cao: nam nut nhin thay mot luc, cuon de xem
+            // tiep. Co hai muc kiem trong bo QA giu ca hai dieu nay.
+            //
+            // Cay chi sinh ra tu su kien khong co nut nao o day: khong ai gieo no duoc, nen mot
+            // cai nut cho no chi la mot cai nut luon bi tat.
+            var cropViewport = UiFactory.Node(panel.transform, "CropViewport");
+            cropViewport.AddComponent<RectMask2D>();
+            var viewportSize = cropViewport.AddComponent<LayoutElement>();
+            viewportSize.preferredHeight = CropListHeight;
+            viewportSize.minHeight = CropListHeight;
+            viewportSize.flexibleHeight = 0f;
+
+            var cropList = UiFactory.Node(cropViewport.transform, "CropList");
+            var cropListRect = UiFactory.Rect(cropList);
+            cropListRect.anchorMin = new Vector2(0f, 1f);
+            cropListRect.anchorMax = new Vector2(1f, 1f);
+            cropListRect.pivot = new Vector2(0.5f, 1f);
+            cropListRect.anchoredPosition = Vector2.zero;
+            cropListRect.sizeDelta = Vector2.zero;
+            UiFactory.VerticalList(cropList, 6f, new RectOffset(0, 0, 0, 0));
+            var cropListFitter = cropList.AddComponent<ContentSizeFitter>();
+            cropListFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+            var cropScroll = cropViewport.AddComponent<ScrollRect>();
+            cropScroll.viewport = UiFactory.Rect(cropViewport);
+            cropScroll.content = cropListRect;
+            cropScroll.horizontal = false;
+            cropScroll.vertical = true;
+            cropScroll.movementType = ScrollRect.MovementType.Clamped;
+            cropScroll.scrollSensitivity = 30f;
+
             foreach (var crop in _session.Catalog.Crops)
             {
+                if (crop.EventOnly) continue;
                 string cropId = crop.Id;
-                var button = UiFactory.TextButton(panel.transform, "Crop_" + cropId, crop.DisplayName, delegate
+                var button = UiFactory.TextButton(cropList.transform, "Crop_" + cropId, crop.DisplayName,
+                                                  delegate
                 {
                     if (_selectedPlotId < 0) return;
                     Run(_session.SetNextCrop(_selectedPlotId, cropId));
                 }, UiFactory.ButtonStyle.Primary, IconFor(cropId));
+                var rowSize = button.gameObject.AddComponent<LayoutElement>();
+                rowSize.minHeight = UiFactory.ButtonHeight;
+                rowSize.preferredHeight = UiFactory.ButtonHeight;
                 _cropChoiceRows.Add(new CropChoiceRow { CropId = cropId, Choose = button });
             }
 
@@ -1350,7 +1256,7 @@ namespace VuonNho.Views
             rect.anchorMin = new Vector2(0.5f, 0f);
             rect.anchorMax = new Vector2(0.5f, 0f);
             rect.pivot = new Vector2(0.5f, 0f);
-            rect.anchoredPosition = new Vector2(0f, 24f);
+            rect.anchoredPosition = new Vector2(0f, 252f);
             rect.sizeDelta = new Vector2(560f, 0f);
             UiFactory.VerticalList(_toastPanel.gameObject, 0f, new RectOffset(16, 16, 10, 10));
             var toastFitter = _toastPanel.gameObject.AddComponent<ContentSizeFitter>();
@@ -1395,6 +1301,7 @@ namespace VuonNho.Views
                                    state.SimulationTimeMs;
             _seasonLabel.text = "Mùa " + SeasonName(season) + " · " + Seconds(untilNextSeason) + " s";
             _goalLabel.text = GoalText(TutorialGuide.CurrentStep(state, catalog), state, catalog);
+            RefreshFarmHud(state, catalog, untilNextSeason);
             RefreshWorkshop();
 
             RefreshMachineCard(state);
@@ -1409,6 +1316,7 @@ namespace VuonNho.Views
             if (_upgradePanel.activeSelf) RefreshUpgradePanel(state, catalog);
             if (_decoratePanel.activeSelf) RefreshDecoratePanel(state, catalog);
             if (_plotPopup.activeSelf) RefreshPlotPopup(state, catalog);
+            RefreshStartupPanels(state);
         }
 
         /// <summary>Nut cua panel dang mo phai nhin ra ngay la dang mo.</summary>
@@ -1748,7 +1656,7 @@ namespace VuonNho.Views
                 int yield = Cultivation.YieldFor(catalog.Balance, crop, plot.Fertility, inSeason);
 
                 string caption = crop.DisplayName + " — " + Seconds(growthMs) + " s · " + yield + " đơn vị";
-                if (!unlocked) caption += " (chưa mở khóa)";
+                if (!unlocked) caption += " · chưa mở";
                 else if (!inSeason) caption += " · trái vụ";
                 else if (isNext) caption += " · vụ tiếp theo";
                 UiFactory.SetButtonCaption(row.Choose, caption);
@@ -1804,7 +1712,13 @@ namespace VuonNho.Views
             else if (panelName == "inventory") TogglePanel(_inventoryPanel);
             else if (panelName == "settings") TogglePanel(_settingsPanel);
             else if (panelName == "decorate") TogglePanel(_decoratePanel);
+            else if (panelName == "journal") TogglePanel(_journalPanel);
             else if (panelName == "workshop") TogglePanel(_workshopPanel);
+            else if (panelName == "finance") TogglePanel(_financePanel);
+            else if (panelName == "agronomy") TogglePanel(_agronomyPanel);
+            else if (panelName == "craft") TogglePanel(_craftPanel);
+            else if (panelName == "legal") TogglePanel(_legalPanel);
+            else if (panelName == "model") TogglePanel(_modelPanel);
             else if (panelName == "plot") OpenPlotPopup(0);
             else if (panelName == "offline")
             {
@@ -1816,12 +1730,21 @@ namespace VuonNho.Views
 
         void TogglePanel(GameObject panel)
         {
+            if (panel == null) return;
             bool willOpen = !panel.activeSelf;
+            if (_journalPanel != null) _journalPanel.SetActive(false);
             _inventoryPanel.SetActive(false);
             _upgradePanel.SetActive(false);
             _settingsPanel.SetActive(false);
             _decoratePanel.SetActive(false);
             _workshopPanel.SetActive(false);
+            // Nam bang cua ban mo phong deu neo cung mot cho ben phai nen chung phai loai tru
+            // nhau y nhu cac panel cu.
+            if (_financePanel != null) _financePanel.SetActive(false);
+            if (_agronomyPanel != null) _agronomyPanel.SetActive(false);
+            if (_craftPanel != null) _craftPanel.SetActive(false);
+            if (_legalPanel != null) _legalPanel.SetActive(false);
+            if (_modelPanel != null) _modelPanel.SetActive(false);
             panel.SetActive(willOpen);
             if (panel != _decoratePanel) CancelDecorationMode();
             if (!willOpen) return;

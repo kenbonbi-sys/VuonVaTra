@@ -110,6 +110,16 @@ namespace VuonNho.Tests
             state.HiredWorkers = workers;
             state.StaffedWorkers = workers;
             state.NextPayrollAtMs = state.SimulationTimeMs + catalog.Balance.PayrollPeriodMs;
+
+            // Mot day chuyen "da mo het" cung la mot day chuyen **hop phap**: co giay an toan
+            // thuc pham va co do bao ho cho tho. Khong the thi doan kiem tra se dinh chi xuong
+            // giua bai test, va bai test do se bao la day chuyen bi dut mat xich — mot cau tra
+            // loi dung nhung tra loi sai cau hoi.
+            //
+            // Khong dang ky hinh thuc kinh doanh: dang ky la keo theo thue, va thue la thu cac
+            // bai test nhip do phai duoc chon bat len rieng chu khong nhan kem.
+            state.Compliance.FoodSafetyCertified = true;
+            state.Compliance.ProtectiveGear = true;
         }
 
         /// <summary>

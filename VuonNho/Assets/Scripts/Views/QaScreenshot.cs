@@ -237,6 +237,7 @@ namespace VuonNho.Views
             // roi chay them mot doan de co xu du tru, sau do trong lan cuoi va chi tua mot doan
             // ngan: anh chup can vuon dang len cay, khong phai vuon vua bi vet sach.
             BuildWholeChain(session);
+            SettleLegalPaperwork(session);
 
             PlantEveryEmptyPlot(session);
             session.DebugAdvance(300000);
@@ -248,6 +249,25 @@ namespace VuonNho.Views
             Debug.Log("[VuonNho] Da tua vuon: " + session.State.UnlockedPlotCount() + " o, " +
                       session.State.Coins + " xu.");
             if (hud != null) hud.Refresh();
+        }
+
+        /// <summary>
+        /// Dang ky ho kinh doanh va xin giay an toan thuc pham, roi tua cho ho so xong.
+        ///
+        /// Vuon tua san la mot co so **da lam an duoc mot thoi gian**: no phai co giay to day du.
+        /// Khong lam buoc nay thi moi anh tai lieu se bat duoc mot cai toast bao xuong vua bi phat
+        /// va dinh chi — dung theo luat, nhung khong phai canh ma tai lieu muon cho thay.
+        ///
+        /// Di qua dung lenh cua GameSession chu khong dat thang vao state: anh chup phai la anh
+        /// cua thu nguoi choi that se thay khi ho lam dung nhung buoc do.
+        /// </summary>
+        void SettleLegalPaperwork(GameSession session)
+        {
+            if (!session.RegisterEntity(BusinessEntity.Hkd).Success) return;
+            // Tham dinh 3–5 ngay in-game, roi giay moi co hieu luc.
+            session.DebugAdvance(Compliance.DayMs(session.Catalog.Balance) * 6);
+            if (!session.ApplyFoodSafety().Success) return;
+            session.DebugAdvance(Compliance.DayMs(session.Catalog.Balance) * 46);
         }
 
         /// <summary>

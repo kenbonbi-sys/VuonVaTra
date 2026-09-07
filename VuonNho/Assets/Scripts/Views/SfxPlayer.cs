@@ -151,5 +151,7 @@ namespace VuonNho.Views
         public void OnStationStarted(string stageId, string cropId, long atMs) { Play(Cue.Click); }
         public void OnStationCompleted(string stageId, string cropId, int amount, long atMs) { Play(Cue.Harvest); }
         public void OnWagesPaid(long coins, int paid, int unpaid, long atMs) { }
+
+        public void OnBusinessEvent(string kind, string detail, long coins, long atMs) { }
     }
 }

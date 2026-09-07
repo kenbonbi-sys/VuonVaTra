@@ -59,6 +59,25 @@ namespace VuonNho.Core
         }
     }
 
+    /// <summary>
+    /// Mot lan ban tai quay tra, da chot xong: lay mat hang nao, bao nhieu, duoc bao nhieu xu.
+    ///
+    /// <see cref="PricePercent"/> giu lai he so da ap de HUD noi duoc **vi sao** me nay duoc gia
+    /// do — mua vu, can lua, kenh ban. Khong co no thi nguoi choi chi thay mot con so khac hom
+    /// qua ma khong biet minh vua lam gi dung hay sai.
+    /// </summary>
+    public sealed class CounterSale
+    {
+        public string ItemId;
+        public int Count;
+        public long Coins;
+
+        /// <summary>Lay tu hang da qua day chuyen, khong phai tu la tuoi.</summary>
+        public bool FromPacked;
+
+        public int PricePercent;
+    }
+
     /// <summary>Mot cai may trong vuon: da mua chua, dang chay me nao.</summary>
     public sealed class StationState
     {

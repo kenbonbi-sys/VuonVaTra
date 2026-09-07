@@ -70,7 +70,7 @@ namespace VuonNho.Views
         public float GroundSize = 34f;
 
         [Tooltip("Orthographic size của camera. Tăng nếu model mới làm vườn tràn khung.")]
-        public float CameraOrthographicSize = 6.0f;
+        public float CameraOrthographicSize = 6.6f;
 
         [Header("Ô đất")]
         [Tooltip("Mặt đất của một ô. Để trống thì dùng khối primitive.")]

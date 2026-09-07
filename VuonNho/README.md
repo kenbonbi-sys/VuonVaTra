@@ -209,9 +209,11 @@ Bản build nằm ở `Build/VuonNho-playtest/` và `Build/VuonNho-dev/`.
 "C:\Program Files\Unity\Hub\Editor\6000.6.0f1\Editor\Unity.exe" -batchmode -projectPath "C:\Users\PC\Desktop\Game\VuonNho" -runTests -testPlatform EditMode -testResults results.xml -logFile test.log
 ```
 
-83 test EditMode, phủ bảng "Kiểm thử logic bắt buộc" ở mục 10 của kế hoạch: tính nhất quán thời
-gian, biên timer, trước/sau robot, cap offline 4 giờ, đồng thời, đổi cây/công thức, nâng tốc độ
-giữa chu kỳ, kho, giao dịch, resume lặp, save/backup/schema, chỉnh đồng hồ, balance khác và múi giờ.
+204 test EditMode. 149 bài phủ bảng "Kiểm thử logic bắt buộc" ở mục 10 của kế hoạch: tính nhất
+quán thời gian, biên timer, trước/sau robot, cap offline 4 giờ, đồng thời, đổi cây/công thức, nâng
+tốc độ giữa chu kỳ, kho, giao dịch, resume lặp, save/backup/schema, chỉnh đồng hồ, balance khác và
+múi giờ. 55 bài còn lại phủ sáu mục của bản mô phỏng khởi nghiệp trà — xem
+[Docs/Mo-phong-khoi-nghiep-tra.md](Docs/Mo-phong-khoi-nghiep-tra.md).
 
 Phần "kiểm thử build và giao diện" của mục 10 chạy bằng bộ QA nằm trong chính bản build:
 
@@ -429,7 +431,7 @@ Hai điều đã làm hỏng một lượt chụp và sẽ làm hỏng lượt s
 - **Mốc A** — vòng chơi, save/offline/lifecycle, HUD, 83 test, hai bản build.
 - **L01 + B02** — 13 model Blender (gồm sả và nhài), 9 material, 5 cue âm thanh, prefab và
   GardenSkin đã điền đủ. Xem [Docs/Art/L01-B02.md](Docs/Art/L01-B02.md).
-- **Checklist mục 10** — 149 test logic + 149 mục kiểm trong bản build, hai độ phân giải.
+- **Checklist mục 10** — 149 test logic + 198 mục kiểm trong bản build, hai độ phân giải.
   Xem [Docs/QA-moc-A.md](Docs/QA-moc-A.md).
 - **Hướng v1** — đổi tên, siết nhịp, thêm sả/nhài, pha 2 trang trí.
   Xem [Docs/Huong-di-v1.md](Docs/Huong-di-v1.md).
@@ -451,6 +453,12 @@ Hai điều đã làm hỏng một lượt chụp và sẽ làm hỏng lượt s
 - **Canh tác** — độ phì, cỏ dại, sâu bệnh và thời vụ, kèm ba việc chăm sóc trong popup ô và ba
   dấu hiệu đọc được từ xa trong vườn. Vườn bỏ bê còn 42% thu nhập của vườn chăm kỹ. Xem mục
   [Canh tác](#canh-tác). Save lên schema 5; save cũ mở được với đất tốt và không cỏ.
+- **Mô phỏng khởi nghiệp trà** — sáu mục của bản HTML thành cơ chế chơi được: vay ngân hàng và
+  nguy cơ bị siết nợ, cây chè bốn tiêu chuẩn thu hái và bảng sinh hoá bốn mùa, rầy xanh thành
+  Đông Phương Mỹ Nhân, bốn thông số căn lửa, hộ kinh doanh / công ty và chế tài ATTP, ba phân
+  nhánh kinh doanh, và đoạn mở màn bốn phân cảnh. Năm bảng mới mở từ Sổ tay; 55 test logic và
+  49 mục kiểm mới trong bản build. Save lên schema 6; save cũ mở được như một ván chưa vay đồng
+  nào và chưa đăng ký gì. Xem [Docs/Mo-phong-khoi-nghiep-tra.md](Docs/Mo-phong-khoi-nghiep-tra.md).
 
 ## Còn lại
 

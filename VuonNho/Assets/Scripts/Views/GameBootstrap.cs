@@ -103,10 +103,44 @@ namespace VuonNho.Views
 
             var outcome = _session.Initialize();
             HandleLoadOutcome(outcome);
+            if (!_blocked) BeginIntroIfUnseen();
             _crew = gameObject.AddComponent<WorkshopCrewView>();
             _crew.Bind(Stations);
             gameObject.AddComponent<StationHoverController>().Bootstrap = this;
             SessionLoadSeconds = Time.realtimeSinceStartup - EngineBootSeconds;
+        }
+
+        /// <summary>
+        /// Doan mo man cua muc 6, chi cho van chua xem.
+        ///
+        /// Dung canvas rieng tren mot GameObject rieng chu khong nhet vao HUD: no song ngan hon
+        /// HUD va tu huy khi xong, nen tron vao HUD se de lai mot lop trong suot nam mai o day
+        /// hierarchy. Bo qua duoc bang chuot phai, Space hay Escape.
+        ///
+        /// Anh chup QA khong bao gio phai nhin qua no: <c>-vuonnho-screenshot</c> tat doan mo man,
+        /// khong thi moi anh chup se la mot khoi chu tren nen den.
+        /// </summary>
+        void BeginIntroIfUnseen()
+        {
+            // `-vuonnho-show-intro` la duong duy nhat de chup chinh doan mo man: khong co no thi
+            // moi anh QA se la mot khoi chu tren nen den.
+            if ((HasArgument(QaScreenshot.PathArgument) || HasArgument(QaChecklist.Argument)) &&
+                !HasArgument("-vuonnho-show-intro"))
+            {
+                _session.MarkIntroSeen();
+                return;
+            }
+            var host = new GameObject("IntroCinematic");
+            var intro = host.AddComponent<IntroCinematic>();
+            if (!intro.Begin(_session)) Destroy(host);
+        }
+
+        static bool HasArgument(string name)
+        {
+            var arguments = System.Environment.GetCommandLineArgs();
+            for (int i = 0; i < arguments.Length; i++)
+                if (arguments[i] == name) return true;
+            return false;
         }
 
         void HandleLoadOutcome(LoadOutcome outcome)
@@ -565,6 +599,18 @@ namespace VuonNho.Views
         public void OnStationStarted(string stageId, string cropId, long atMs) { }
         public void OnStationCompleted(string stageId, string cropId, int amount, long atMs) { }
         public void OnWagesPaid(long coins, int paid, int unpaid, long atMs) { }
+
+        /// <summary>
+        /// Chot ky, bien ban kiem tra, giay phep xong: bao thanh mot cau tren man hinh.
+        ///
+        /// Nhung viec nay xay ra khi nguoi choi dang lam viec khac va khong bam vao dau ca, nen
+        /// khong noi thi ho chi thay so xu tu nhien tut xuong. `detail` da la cau tieng Viet hoan
+        /// chinh do Core dung san — o day khong dien giai lai gi.
+        /// </summary>
+        public void OnBusinessEvent(string kind, string detail, long coins, long atMs)
+        {
+            if (Hud != null && !string.IsNullOrEmpty(detail)) Hud.ShowToast(detail);
+        }
 
         PlotView FindPlotView(int plotId)
         {

@@ -87,6 +87,7 @@ namespace VuonNho.Views
                   _session.State.UnlockedPlotCount() + " ô");
             Check("Chưa có robot", !_session.State.RobotUnlocked, null);
 
+            yield return CheckPrimaryFarmAction();
             yield return RunPlaythrough();
             yield return RunReloadCheck();
             yield return RunUiChecks();
@@ -509,13 +510,13 @@ namespace VuonNho.Views
             _hud.ClosePlotPopup();
             yield return null;
 
-            // --- the mua tren thanh tren
-            var topBar = _hud.transform.Find("TopBar");
-            var seasonChip = topBar != null ? topBar.Find("SeasonChip") : null;
-            var seasonText = seasonChip != null ? TextAt(seasonChip, "Season/Value") : null;
-            Check("Thanh trên hiện mùa hiện tại và thời gian còn lại",
-                  seasonText != null && seasonText.text.StartsWith("Mùa "),
-                  seasonText != null ? seasonText.text : "không tìm thấy thẻ mùa");
+            // --- mua hien tai trong the ho so noi
+            var seasonText = TextAt(_hud.transform, "FarmHud/Profile/Season");
+            string currentSeason = GameHud.SeasonName(Cultivation.SeasonAt(balance, _session.State.SimulationTimeMs));
+            Check("Thẻ hồ sơ hiện đúng mùa hiện tại và đồng hồ mùa",
+                  seasonText != null && seasonText.text.StartsWith("Mùa " + currentSeason) &&
+                  seasonText.text.Contains(":"),
+                  seasonText != null ? seasonText.text : "không tìm thấy mùa trong thẻ hồ sơ");
 
             // --- canh 3D: co dai va sau benh phai nhin thay duoc tren o dat
             var view = PlotViewFor(0);
@@ -1106,7 +1107,14 @@ namespace VuonNho.Views
                 DefaultContent.UpgradeGrowthSpeed2,
                 DefaultContent.UpgradeLemongrass,
                 DefaultContent.UpgradeJasmine,
-                DefaultContent.UpgradePestControl
+                DefaultContent.UpgradePestControl,
+                // Nuong che va tay nghe hai bup: bon bac cuoi cua lo trinh, mo dan tu bup xo len
+                // tan dinh tra. Do bao ho di cuoi cung vi no chi can den khi da co xuong va co tho.
+                DefaultContent.UpgradeTea,
+                DefaultContent.UpgradePluckMocCau,
+                DefaultContent.UpgradePluckNon,
+                DefaultContent.UpgradePluckDinh,
+                DefaultContent.UpgradeProtectiveGear
             };
 
             foreach (string upgradeId in route)
@@ -1143,9 +1151,15 @@ namespace VuonNho.Views
             foreach (var upgrade in _session.Catalog.Upgrades)
                 if (_session.State.UpgradeLevel(upgrade.Id) < 1) allBought = false;
             Check("Mua hết toàn bộ nâng cấp MVP", allBought, null);
-            Check("Mở hết mọi loại cây trong catalog",
-                  _session.State.UnlockedCropIds.Count == _session.Catalog.Crops.Count,
-                  _session.State.UnlockedCropIds.Count + "/" + _session.Catalog.Crops.Count + " loại");
+            // Cay chi sinh ra tu su kien khong bao gio nam trong danh sach gieo duoc — do la luat,
+            // khong phai mot thu con thieu. Dem ca no vao day thi muc kiem nay khong bao gio dat
+            // duoc, va mot muc khong bao gio dat duoc thi khong con kiem duoc gi.
+            int plantable = 0;
+            foreach (var crop in _session.Catalog.Crops)
+                if (!crop.EventOnly) plantable++;
+            Check("Mở hết mọi loại cây gieo được",
+                  _session.State.UnlockedCropIds.Count == plantable,
+                  _session.State.UnlockedCropIds.Count + "/" + plantable + " loại");
             Check("Không có xu âm", _session.State.Coins >= 0, _session.State.Coins + " xu");
         }
 
@@ -1242,6 +1256,81 @@ namespace VuonNho.Views
 
         // ---------------------------------------------------------------- giao diện
 
+        IEnumerator CheckPrimaryFarmAction()
+        {
+            Section("Nút gieo và thu hoạch giữa màn hình");
+            DismissOfflinePopupIfOpen();
+            _hud.Refresh();
+            yield return null;
+
+            var actionTransform = _hud.transform.Find("FarmHud/ActionDock/FarmActionButton");
+            var action = actionTransform != null ? actionTransform.GetComponent<Button>() : null;
+            string detail;
+            bool opened = TryClickButton(action, out detail);
+            yield return null;
+            var popup = FindOpenSurface("plot");
+            Check("Bấm Gieo hạt ở vườn mới mở bảng chọn cây",
+                  opened && popup != null && Plot(0).Phase == PlotPhase.Empty, detail);
+
+            // Tim theo duong day du: danh sach cay nam trong mot vung cuon duoc, khong con la con
+            // truc tiep cua popup. Find khong tim xuong sau nen duong phai ghi ra het.
+            var cropTransform = popup != null
+                ? popup.Find("CropViewport/CropList/Crop_" + DefaultContent.CropMint) : null;
+            var cropButton = cropTransform != null ? cropTransform.GetComponent<Button>() : null;
+            bool planted = TryClickButton(cropButton, out detail);
+            planted &= Plot(0).Phase == PlotPhase.Growing && Plot(0).CurrentCropId == DefaultContent.CropMint;
+            Check("Chọn Bạc hà từ nút gieo bắt đầu một vụ thật", planted, detail);
+            CloseSurface("plot");
+
+            if (planted)
+            {
+                // Dung vu vua gieo, chua co robot, de thao tac UI la nguon thu hoach duy nhat.
+                _session.DebugAdvance(Math.Max(1L, Plot(0).FinishAtMs - _session.State.SimulationTimeMs));
+
+                // Sau benh lam vu nay mat trang, va hat giong sau benh lay tu dong ho that nen muc
+                // kiem nay se hong khoang mot phan nam so lan chay. Mot muc kiem khong dung tin
+                // duoc thi lam ca bo bao cao mat gia tri.
+                //
+                // Bo qua nhung vu dinh sau benh cho toi khi gap mot vu sach: lich sau benh bam tu
+                // (hat giong, id o, so thu tu vu) nen doi so thu tu vu la doi ket qua. Vu bi bo
+                // cho ra dung 0 don vi nen no khong lam lech mot phep do nao ve sau — ke ca moc
+                // "du tien mua robot trong 8 phut" o ngay duoi. Thu dang do o day la nut Thu hoach
+                // co lay du san luong khong; xac suat sau benh co bai test rieng trong EditMode.
+                for (int skip = 0; skip < 8 && Plot(0).PestActive; skip++)
+                {
+                    _session.HarvestAndReplant(0);
+                    if (Plot(0).Phase != PlotPhase.Growing) break;
+                    _session.DebugAdvance(Math.Max(1L, Plot(0).FinishAtMs - _session.State.SimulationTimeMs));
+                }
+                _hud.Refresh();
+                yield return null;
+                bool ready = Plot(0).Phase == PlotPhase.Ready;
+                int cycle = Plot(0).CycleIndex;
+                int expectedYield = Plot(0).PendingYield;
+                long inventoryBefore = _session.State.InventoryOf(DefaultContent.CropMint);
+                bool wasBrewing = _session.State.Machine.BatchRunning;
+                bool harvested = TryClickButton(action, out detail);
+                long received = _session.State.InventoryOf(DefaultContent.CropMint) - inventoryBefore;
+                // Neu balance cho phep pha ngay, nguyen lieu nam trong me van phai duoc tinh.
+                var machine = _session.State.Machine;
+                if (!wasBrewing && machine.BatchRunning && !machine.BatchFromPacked)
+                {
+                    var recipe = _session.Catalog.Recipe(machine.BatchRecipeId);
+                    if (recipe != null && recipe.InputCropId == DefaultContent.CropMint) received += recipe.InputCount;
+                }
+                Check("Bấm Thu hoạch thu đủ sản lượng và gieo lại cây đang chọn",
+                      ready && harvested && received == expectedYield && expectedYield > 0 &&
+                      Plot(0).Phase == PlotPhase.Growing && Plot(0).CycleIndex == cycle + 1 &&
+                      Plot(0).CurrentCropId == DefaultContent.CropMint && FindOpenSurface("plot") == null,
+                      "sản lượng " + received + "/" + expectedYield + "; " + detail);
+            }
+
+            // Tra lai fixture vuon moi de khong thay doi moc thoi gian cua bai choi toi 12 o.
+            _bootstrap.ResetProgress();
+            _session = _bootstrap.Session;
+            yield return null;
+        }
+
         IEnumerator RunUiChecks()
         {
             Section("Giao diện ở " + Screen.width + " × " + Screen.height);
@@ -1251,15 +1340,33 @@ namespace VuonNho.Views
             DismissOfflinePopupIfOpen();
             yield return null;
 
+            CheckFloatingHud();
             CheckGardenClickReachable();
             yield return CheckModalHasEscape("OfflineModal");
             yield return CheckOfflineCtaFitsItsText();
             yield return CheckModalHasEscape("BlockedModal");
 
-            string[] panels = { "inventory", "upgrade", "decorate", "workshop", "settings", "plot" };
+            // Nam be mat cuoi mo tu trong so tay chu khong tu mot nut o mep man hinh, nen chung
+            // khong co "<Ten>Button" trong FarmHud. Vao thang bang OpenPanelByName va bo qua
+            // rieng phep do nut dieu huong; ba phep do con lai — chu tran, click xuyen UI, che
+            // the tren cung — moi la thu can o day, va chung la nhung bang nhieu chu nhat game co.
+            string[] panels =
+            {
+                "inventory", "upgrade", "decorate", "workshop", "settings", "journal", "plot",
+                "finance", "agronomy", "craft", "legal", "model"
+            };
             foreach (string panelName in panels)
             {
-                _hud.OpenPanelByName(panelName);
+                if (panelName == "plot") _hud.OpenPlotPopup(0);
+                else if (!HasFarmHudNavButton(panelName)) _hud.OpenPanelByName(panelName);
+                else
+                {
+                    string buttonName = char.ToUpperInvariant(panelName[0]) + panelName.Substring(1) + "Button";
+                    var nav = _hud.transform.Find("FarmHud/" + buttonName);
+                    string detail;
+                    bool clicked = TryClickButton(nav != null ? nav.GetComponent<Button>() : null, out detail);
+                    Check("Nút điều hướng mở " + panelName, clicked && FindOpenSurface(panelName) != null, detail);
+                }
                 yield return null;
                 yield return null;
 
@@ -1270,7 +1377,7 @@ namespace VuonNho.Views
                 CheckTextOverflow(panelName, opened);
                 CheckBlocksClicks(panelName, opened);
                 // Phai do truoc khi bam nut dong that: sau do be mat khong con tren man hinh nua.
-                CheckDoesNotCoverTopBar(panelName, opened);
+                CheckDoesNotCoverTopCounters(panelName, opened);
                 CheckButtonReceivesClick(panelName, opened);
 
                 CloseSurface(panelName);
@@ -1473,6 +1580,18 @@ namespace VuonNho.Views
             else _hud.OpenPanelByName(panelName);   // goi lai la dong
         }
 
+        /// <summary>
+        /// Be mat nay co mot nut dieu huong o mep man hinh khong.
+        ///
+        /// Co thi phep do phai di qua dung cai nut do — mot be mat mo duoc bang code ma nut cua
+        /// no khong nhan click la dung loi ma bo QA nay ton tai de bat.
+        /// </summary>
+        bool HasFarmHudNavButton(string panelName)
+        {
+            string buttonName = char.ToUpperInvariant(panelName[0]) + panelName.Substring(1) + "Button";
+            return _hud.transform.Find("FarmHud/" + buttonName) != null;
+        }
+
         RectTransform FindOpenSurface(string panelName)
         {
             string wanted;
@@ -1483,6 +1602,12 @@ namespace VuonNho.Views
                 case "settings": wanted = "SettingsPanel"; break;
                 case "decorate": wanted = "DecoratePanel"; break;
                 case "workshop": wanted = "WorkshopPanel"; break;
+                case "journal": wanted = "JournalPanel"; break;
+                case "finance": wanted = "FinancePanel"; break;
+                case "agronomy": wanted = "AgronomyPanel"; break;
+                case "craft": wanted = "CraftPanel"; break;
+                case "legal": wanted = "LegalPanel"; break;
+                case "model": wanted = "ModelPanel"; break;
                 default: wanted = "PlotPopup"; break;
             }
             var found = _hud.transform.Find(wanted);
@@ -1661,25 +1786,54 @@ namespace VuonNho.Views
                       : blockedByUi + " ô bị UI che, " + noCollider + " ô không có collider nhận tia");
         }
 
-        void CheckDoesNotCoverTopBar(string surface, RectTransform panel)
+        void CheckFloatingHud()
         {
-            var topBar = _hud.transform.Find("TopBar") as RectTransform;
-            if (topBar == null)
+            var farmHud = _hud.transform.Find("FarmHud");
+            if (farmHud == null)
             {
-                Check(surface + " không che thanh trên", false, "Không tìm thấy TopBar.");
+                Check("HUD nổi hiển thị và các nút bấm tới được", false, "Không tìm thấy FarmHud.");
                 return;
             }
 
-            var buttons = topBar.GetComponentsInChildren<Button>(false);
-            var covered = new List<string>();
-            foreach (var button in buttons)
+            foreach (string name in new[] { "Profile", "FarmStats", "CoinChip", "WorkerChip", "StockChip" })
             {
-                if (Overlaps(panel, button.transform as RectTransform))
-                    covered.Add(button.name);
+                var region = farmHud.Find(name) as RectTransform;
+                bool visible = region != null && region.gameObject.activeInHierarchy;
+                if (visible)
+                {
+                    var bounds = WorldRect(region);
+                    var probe = ProbeClick(ScreenCenterOf(region), false);
+                    visible = bounds.xMin >= -0.5f && bounds.yMin >= -0.5f &&
+                              bounds.xMax <= Screen.width + 0.5f && bounds.yMax <= Screen.height + 0.5f &&
+                              probe.UiTarget != null && probe.UiTarget.transform.IsChildOf(region);
+                }
+                Check("Thẻ " + name + " nằm trong màn hình và không bị che", visible, null);
             }
 
-            Check(surface + " không che nút trên thanh HUD", covered.Count == 0,
-                  covered.Count == 0 ? buttons.Length + " nút vẫn bấm được" : string.Join(", ", covered.ToArray()));
+            var buttons = farmHud.GetComponentsInChildren<Button>(false);
+            var unreachable = new List<string>();
+            foreach (var button in buttons)
+            {
+                string detail;
+                if (!ButtonIsReachable(button, out detail)) unreachable.Add(detail);
+            }
+            Check("Các nút nổi nhận được click khi không mở bảng", buttons.Length > 0 && unreachable.Count == 0,
+                  unreachable.Count == 0 ? buttons.Length + " nút" : string.Join("; ", unreachable.ToArray()));
+        }
+
+        void CheckDoesNotCoverTopCounters(string surface, RectTransform panel)
+        {
+            var covered = new List<string>();
+            // Bang ben duoc phep de len the kho thap hon, nhung ho so va hai so tren cung phai con ro.
+            foreach (string name in new[] { "Profile", "CoinChip", "WorkerChip" })
+            {
+                var region = _hud.transform.Find("FarmHud/" + name) as RectTransform;
+                if (region == null || !region.gameObject.activeInHierarchy) covered.Add(name + " không hiển thị");
+                else if (Overlaps(panel, region)) covered.Add(name);
+            }
+
+            Check(surface + " không che hồ sơ, xu và số thợ", covered.Count == 0,
+                  covered.Count == 0 ? "ba thẻ trên cùng vẫn nhìn thấy" : string.Join(", ", covered.ToArray()));
         }
 
         static bool Overlaps(RectTransform a, RectTransform b)

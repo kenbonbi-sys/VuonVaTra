@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mô Phỏng Khởi Nghiệp Trà Bản Địa - Craft Tea Simulator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FBF9F5',
+                        sand: '#F2EDE4',
+                        teaGreen: '#4A6B53',
+                        teaGreenDark: '#2D4333',
+                        teaAmber: '#8C5A3C',
+                        teaGold: '#C89D54',
+                        charcoal: '#2D312E',
+                        softBorder: '#E2DACD'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FBF9F5;
+            color: #2D312E;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 380px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .tab-active {
+            border-bottom: 3px solid #4A6B53;
+            color: #4A6B53;
+            font-weight: 600;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F2EDE4;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4A6B53;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+<!-- Chosen Palette: Warm Craft Harvest (Cream #FBF9F5, Tea Green #4A6B53, Amber #8C5A3C, Gold #C89D54, Charcoal #2D312E) -->
+
+<!-- Application Structure Plan:
+     1. Interactive Header & Nav: Centralized tab-based navigation for 6 key dimensions of the report.
+     2. Overview Intro Section: Highlighting core goals and quick stats summary.
+     3. Section 1: Financial Mechanics & Loan Amortization Engine (Dynamic calculator for cash flow CF_t, PMT equation, 200M initial allocation pie chart/bars).
+     4. Section 2: Agronomy & Seasonal Dynamic Simulator (Seasonal biochemical changes, picking standards efficiency, and the special Green Leafhopper -> Oriental Beauty transformation toggle).
+     5. Section 3: Crafting Thermodynamics Visualizer (Step-by-step Green vs Black tea timeline, interactive temperature/time quality output tester for processing errors).
+     6. Section 4: Legal Framework & One-Way Factory Architecture (Interactive HKD vs TNHH comparison, 1-way flow visual grid, ATTP fine checker under Decree 115/2018).
+     7. Section 5: Game Business Branches & Progression Radar (Compare B2B Bulk, Artisanal DTC, Farmstay on Margin, CAPEX, Cash Cycle, and seasonal buffer).
+     8. Section 6: Storyboard & Art Direction Cinema (Step-by-step intro cinematic viewer with audio/visual details and script).
+     Why: Grouping complex economic and technical data into interactive sandbox widgets allows game developers and entrepreneurs to intuitively grasp trade-offs and mathematical mechanisms. -->
+
+<!-- Visualization & Content Choices:
+     - Financials: Dynamic Line/Bar chart (Chart.js) for loan amortization & cash flow simulation.
+     - Agronomy: Interactive seasonal selector updating biochemical radar/bar charts, plus a plucking comparison matrix.
+     - Crafting: HTML/CSS custom dynamic process flow + interactive sliders for temperature/rolling duration.
+     - Legal: Interactive HTML Grid layout representing 1-Way Factory flow + inspection risk calculator.
+     - Strategy: Radar Chart (Chart.js) comparing business paths across 5 key dimensions.
+     - Storyboard: Interactive timeline carousel.
+     CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. All visual items use Canvas Chart.js or styled HTML/CSS elements and Unicode characters. -->
+
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Header Navigation -->
+    <header class="bg-white border-b border-softBorder sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <span class="text-2xl">🍃</span>
+                    <div>
+                        <h1 class="font-bold text-lg text-teaGreenDark leading-tight">VƯỜN VÀ TRÀ (Craft Tea Simulator)</h1>
+                        <p class="text-xs text-gray-500">Mô Phỏng Kinh Tế & Kỹ Thuật Khởi Nghiệp Trà Bản Địa (200 Tr VNĐ)</p>
+                    </div>
+                </div>
+                <!-- Navigation Tabs -->
+                <nav class="hidden md:flex space-x-6 text-sm font-medium text-gray-600" id="desktopNav">
+                    <button onclick="switchTab('finance')" id="nav-finance" class="py-5 tab-active transition">📊 Tài Chính & Vay Vốn</button>
+                    <button onclick="switchTab('agronomy')" id="nav-agronomy" class="py-5 hover:text-teaGreen transition">🌿 Nông Học & Mùa Vụ</button>
+                    <button onclick="switchTab('crafting')" id="nav-crafting" class="py-5 hover:text-teaGreen transition">⚙️ Động Học Chế Biến</button>
+                    <button onclick="switchTab('legal')" id="nav-legal" class="py-5 hover:text-teaGreen transition">⚖️ Pháp Lý & Xưởng</button>
+                    <button onclick="switchTab('branches')" id="nav-branches" class="py-5 hover:text-teaGreen transition">🌳 Cây Phát Triển</button>
+                    <button onclick="switchTab('cinematic')" id="nav-cinematic" class="py-5 hover:text-teaGreen transition">🎬 Storyboard Video</button>
+                </nav>
+            </div>
+        </div>
+        <!-- Mobile Navigation Menu -->
+        <div class="md:hidden flex overflow-x-auto border-t border-softBorder bg-sand px-2 py-2 text-xs space-x-2">
+            <button onclick="switchTab('finance')" id="mnav-finance" class="px-3 py-1.5 rounded bg-teaGreen text-white font-medium whitespace-nowrap">📊 Tài Chính</button>
+            <button onclick="switchTab('agronomy')" id="mnav-agronomy" class="px-3 py-1.5 rounded bg-white text-gray-700 whitespace-nowrap">🌿 Nông Học</button>
+            <button onclick="switchTab('crafting')" id="mnav-crafting" class="px-3 py-1.5 rounded bg-white text-gray-700 whitespace-nowrap">⚙️ Chế Biến</button>
+            <button onclick="switchTab('legal')" id="mnav-legal" class="px-3 py-1.5 rounded bg-white text-gray-700 whitespace-nowrap">⚖️ Pháp Lý</button>
+            <button onclick="switchTab('branches')" id="mnav-branches" class="px-3 py-1.5 rounded bg-white text-gray-700 whitespace-nowrap">🌳 Mô Hình</button>
+            <button onclick="switchTab('cinematic')" id="mnav-cinematic" class="px-3 py-1.5 rounded bg-white text-gray-700 whitespace-nowrap">🎬 Storyboard</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow">
+
+        <!-- Banner Intro -->
+        <div class="bg-gradient-to-r from-teaGreenDark to-teaGreen text-white p-6 rounded-2xl mb-8 shadow-md">
+            <div class="max-w-3xl">
+                <span class="inline-block px-3 py-1 bg-teaGold text-teaGreenDark font-bold text-xs rounded-full uppercase tracking-wider mb-2">Game Mechanics Analysis</span>
+                <h2 class="text-2xl sm:text-3xl font-bold mb-2">Mô Hình Khởi Nghiệp Trà Thủ Công 200 Triệu VNĐ</h2>
+                <p class="text-sand text-sm sm:text-base leading-relaxed">
+                    Bảng điều khiển tích hợp toàn bộ dữ liệu nông nghiệp, nhiệt động học chế biến, cơ chế tín dụng ngân hàng và pháp lý an toàn thực phẩm. Sử dụng công cụ bên dưới để thử nghiệm các biến số kinh doanh và quy luật vận hành của game.
+                </p>
+            </div>
+        </div>
+
+        <!-- ================= SECTION 1: FINANCIALS & LOAN ================= -->
+        <section id="section-finance" class="space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-softBorder shadow-sm">
+                <h3 class="text-xl font-bold text-teaGreenDark mb-2">1. Cấu Trúc Vốn Mồi & Mô Phỏng Dòng Tiền Vay Ngân Hàng</h3>
+                <p class="text-sm text-gray-600 mb-6">
+                    Với 200.000.000 VNĐ vốn tự có, người chơi buộc phải áp dụng đòn bẩy tài chính (Nghị định 55/2015/NĐ-CP, 116/2018/NĐ-CP & 156/2025/NĐ-CP). Dưới đây là công thức tính nghĩa vụ trả nợ hàng tháng $PMT_t$ và dòng tiền ròng $CF_t$.
+                </p>
+
+                <!-- 200M Allocation Summary Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div class="bg-cream p-4 rounded-lg border border-softBorder">
+                        <div class="text-xs text-gray-500 font-semibold uppercase">Vốn Tự Có Initial</div>
+                        <div class="text-2xl font-bold text-teaGreen">200.000.000 VNĐ</div>
+                        <p class="text-xs text-gray-600 mt-1">Chỉ đủ thuê đất 1–2 năm và cọc thiết bị ban đầu.</p>
+                    </div>
+                    <div class="bg-cream p-4 rounded-lg border border-softBorder">
+                        <div class="text-xs text-gray-500 font-semibold uppercase">Hạn Mức Vay Tín Chấp</div>
+                        <div class="text-2xl font-bold text-teaAmber">200.000.000 VNĐ</div>
+                        <p class="text-xs text-gray-600 mt-1">Lãi suất 6.5% - 8.5%/năm (Cần UBND xã xác nhận dự án).</p>
+                    </div>
+                    <div class="bg-cream p-4 rounded-lg border border-softBorder">
+                        <div class="text-xs text-gray-500 font-semibold uppercase">Hạn Mức Vay Thế Chấp</div>
+                        <div class="text-2xl font-bold text-teaGold">350.000.000 VNĐ</div>
+                        <p class="text-xs text-gray-600 mt-1">70% định giá sổ đỏ 500tr; Lãi suất 7.5% - 9.0%/năm.</p>
+                    </div>
+                </div>
+
+                <!-- Simulator Controls & Chart Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    <!-- Controls -->
+                    <div class="lg:col-span-5 bg-sand/50 p-5 rounded-xl border border-softBorder space-y-4">
+                        <h4 class="font-bold text-gray-800 text-sm uppercase tracking-wide border-b border-softBorder pb-2">🕹️ Bảng Mô Phỏng Tín Dụng In-Game</h4>
+                        
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Số tiền vay gốc ($L_0$): <span id="valLoan" class="font-bold text-teaGreen">200,000,000</span> VNĐ</label>
+                            <input type="range" id="inputLoan" min="50000000" max="350000000" step="10000000" value="200000000" class="w-full accent-teaGreen" oninput="updateFinanceSimulator()">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Lãi suất vay ($r$): <span id="valRate" class="font-bold text-teaGreen">8.5</span>%/năm</label>
+                            <input type="range" id="inputRate" min="6.0" max="13.0" step="0.5" value="8.5" class="w-full accent-teaGreen" oninput="updateFinanceSimulator()">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Thời hạn vay ($n$): <span id="valTenure" class="font-bold text-teaGreen">36</span> tháng</label>
+                            <input type="range" id="inputTenure" min="12" max="60" step="6" value="36" class="w-full accent-teaGreen" oninput="updateFinanceSimulator()">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Doanh thu dự kiến/tháng ($R_t$): <span id="valRevenue" class="font-bold text-teaGreen">45,000,000</span> VNĐ</label>
+                            <input type="range" id="inputRevenue" min="15000000" max="90000000" step="5000000" value="45000000" class="w-full accent-teaGreen" oninput="updateFinanceSimulator()">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Chi phí vận hành OPEX/tháng: <span id="valOpex" class="font-bold text-teaGreen">22,000,000</span> VNĐ</label>
+                            <input type="range" id="inputOpex" min="10000000" max="50000000" step="2000000" value="22000000" class="w-full accent-teaGreen" oninput="updateFinanceSimulator()">
+                        </div>
+
+                        <div class="bg-white p-3 rounded-lg border border-softBorder text-xs space-y-1">
+                            <div class="flex justify-between">
+                                <span>Trả gốc hàng tháng ($L_0 / n$):</span>
+                                <span font-bold id="resPrincipal">5,555,556 VNĐ</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Lãi tháng đầu tiên:</span>
+                                <span font-bold id="resFirstInterest" class="text-teaAmber">1,416,667 VNĐ</span>
+                            </div>
+                            <div class="flex justify-between font-bold border-t border-gray-100 pt-1 text-sm">
+                                <span>Tổng trả tháng 1 ($PMT_1$):</span>
+                                <span id="resTotalPMT" class="text-teaGreenDark">6,972,223 VNĐ</span>
+                            </div>
+                            <div class="flex justify-between font-bold text-sm">
+                                <span>Dòng tiền Ròng ($CF_1$):</span>
+                                <span id="resCF1" class="text-teaGreen">16,027,777 VNĐ</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Output -->
+                    <div class="lg:col-span-7 bg-white p-4 rounded-xl border border-softBorder">
+                        <h4 class="font-bold text-gray-800 text-sm mb-3">📈 Biểu Đồ Mô Phỏng Dòng Tiền & Dư Nợ Theo Chu Kỳ 12 Tháng</h4>
+                        <div class="chart-container">
+                            <canvas id="financeChart"></canvas>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-3 italic">
+                            *Cơ chế Game Over: Nếu số dư tiền mặt ròng lũy kế chạm ngưỡng âm trong 3 chu kỳ liên tiếp, ngân hàng sẽ siết nợ và niêm phong nương chè.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Breakdown table of 200M Allocation -->
+                <div class="mt-8">
+                    <h4 class="font-bold text-teaGreenDark text-base mb-3">Chi Tiết Cấu Trúc Phân Bổ Vốn Ban Đầu (200.000.000 VNĐ)</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs text-gray-700 border-collapse">
+                            <thead>
+                                <tr class="bg-sand text-teaGreenDark font-bold uppercase">
+                                    <th class="p-3 border-b border-softBorder">Hạng mục chi phí</th>
+                                    <th class="p-3 border-b border-softBorder">Quy mô tối thiểu</th>
+                                    <th class="p-3 border-b border-softBorder">Chi phí thực tế (VNĐ)</th>
+                                    <th class="p-3 border-b border-softBorder">Tham số & Cơ chế số hóa Game</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-softBorder">
+                                <tr class="hover:bg-cream">
+                                    <td class="p-3 font-semibold">Thuê đất canh tác</td>
+                                    <td class="p-3">1 ha (Chè 5-7 năm tuổi)</td>
+                                    <td class="p-3">30 - 50 Triệu/năm</td>
+                                    <td class="p-3">OPEX cố định hàng năm. Trễ hạn giảm điểm uy tín địa phương.</td>
+                                </tr>
+                                <tr class="hover:bg-cream">
+                                    <td class="p-3 font-semibold">Cải tạo & Phân bón</td>
+                                    <td class="p-3">Đạm, lân, phân chuồng, vôi</td>
+                                    <td class="p-3">15 - 25 Triệu</td>
+                                    <td class="p-3">Tác động trực tiếp chỉ số phì nhiêu $F$ và pH đất ($4.5 - 5.5$).</td>
+                                </tr>
+                                <tr class="hover:bg-cream">
+                                    <td class="p-3 font-semibold">Bom sao chè tôn quay</td>
+                                    <td class="p-3">Gas/củi công suất 18-25kg/mẻ</td>
+                                    <td class="p-3">35 - 45 Triệu</td>
+                                    <td class="p-3">Kiểm soát nhiệt diệt men ($T_1$) & sao khô ($T_2$). Mòn theo mẻ.</td>
+                                </tr>
+                                <tr class="hover:bg-cream">
+                                    <td class="p-3 font-semibold">Máy vò chè mini</td>
+                                    <td class="p-3">Động cơ điện 15-25kg/mẻ</td>
+                                    <td class="p-3">18 - 22 Triệu</td>
+                                    <td class="p-3">Tỷ lệ dập tế bào ($D_{cell}$). Tăng thoát dịch vị, tạo hình móc câu.</td>
+                                </tr>
+                                <tr class="hover:bg-cream">
+                                    <td class="p-3 font-semibold">Tủ sấy đối lưu</td>
+                                    <td class="p-3">9-12 khay xoay tròn</td>
+                                    <td class="p-3">18 - 25 Triệu</td>
+                                    <td class="p-3">Rút độ ẩm thành phẩm về ngưỡng an toàn ($M \le 5\%$).</td>
+                                </tr>
+                                <tr class="hover:bg-cream">
+                                    <td class="p-3 font-semibold">Máy đóng gói chân không</td>
+                                    <td class="p-3">Buồng đơn LD-600 / LD-720</td>
+                                    <td class="p-3">6.5 - 9 Triệu</td>
+                                    <td class="p-3">Khóa quá trình oxy hóa ngoài ý muốn, bảo quản hương cốm.</td>
+                                </tr>
+                                <tr class="hover:bg-cream">
+                                    <td class="p-3 font-semibold">Pháp lý & Kiểm nghiệm</td>
+                                    <td class="p-3">HKD, ATTP, Test mẫu QUATEST</td>
+                                    <td class="p-3">15 - 20 Triệu</td>
+                                    <td class="p-3">Thời gian thẩm định 15–45 ngày in-game. Mở khóa kênh bán hàng.</td>
+                                </tr>
+                                <tr class="hover:bg-cream">
+                                    <td class="p-3 font-semibold">Bao bì & Nhãn mác</td>
+                                    <td class="p-3">Túi màng nhôm, hộp Kraft</td>
+                                    <td class="p-3">20 - 30 Triệu</td>
+                                    <td class="p-3">MOQ 1,000 - 3,000 đơn vị. Chiếm dụng vốn lưu động ban đầu.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 2: AGRONOMY ================= -->
+        <section id="section-agronomy" class="space-y-6 hidden">
+            <div class="bg-white p-6 rounded-xl border border-softBorder shadow-sm">
+                <h3 class="text-xl font-bold text-teaGreenDark mb-2">2. Kỹ Thuật Canh Tác & Động Học Nông Học (Agronomy Mechanics)</h3>
+                <p class="text-sm text-gray-600 mb-6">
+                    Chất lượng búp chè quyết định 70% giá thành phẩm. Hàm lượng Theanine (vị ngọt êm) và Polyphenol (vị chát đượm) biến thiên theo 4 mùa và tiêu chuẩn hái búp.
+                </p>
+
+                <!-- Interactive Season & Biochemical Selector -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+                    <div class="lg:col-span-5 space-y-4">
+                        <h4 class="font-bold text-gray-800 text-sm uppercase">🌦️ Chọn Mùa Vụ Khai Thác</h4>
+                        <div class="grid grid-cols-2 gap-2" id="seasonBtns">
+                            <button onclick="selectSeason('spring')" id="btn-spring" class="p-3 rounded-lg border text-left bg-teaGreen text-white font-semibold text-xs transition">
+                                🌸 Vụ Xuân (Tiền Minh)<br>
+                                <span class="font-normal opacity-90">18-24°C | Hương cốm, ngọt hậu</span>
+                            </button>
+                            <button onclick="selectSeason('summer')" id="btn-summer" class="p-3 rounded-lg border text-left bg-white text-gray-700 font-semibold text-xs hover:bg-cream transition">
+                                ☀️ Vụ Hè (Chính Vụ)<br>
+                                <span class="font-normal text-gray-500">32-38°C | Đắng gắt, năng suất cao</span>
+                            </button>
+                            <button onclick="selectSeason('autumn')" id="btn-autumn" class="p-3 rounded-lg border text-left bg-white text-gray-700 font-semibold text-xs hover:bg-cream transition">
+                                🍁 Vụ Thu (Trà Thu)<br>
+                                <span class="font-normal text-gray-500">22-28°C | Đượm vị, vàng óng</span>
+                            </button>
+                            <button onclick="selectSeason('winter')" id="btn-winter" class="p-3 rounded-lg border text-left bg-white text-gray-700 font-semibold text-xs hover:bg-cream transition">
+                                ❄️ Vụ Đông (Ngủ Đông)<br>
+                                <span class="font-normal text-gray-500">&lt;15°C | Đốn tỉa, bón phân</span>
+                            </button>
+                        </div>
+
+                        <!-- Special Insect Mechanics: Green Leafhopper -->
+                        <div class="p-4 bg-sand rounded-xl border border-softBorder space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-xs text-teaAmber flex items-center gap-1">
+                                    🦗 CƠ CHẾ RẦY XANH (Jacobiasca formosana)
+                                </span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="toggleLeafhopper" class="sr-only peer" onchange="toggleInsectMechanic()">
+                                    <div class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-teaAmber"></div>
+                                </label>
+                            </div>
+                            <p class="text-xs text-gray-600 leading-relaxed" id="leafhopperDesc">
+                                Khi bị rầy xanh chích hút nhẹ vào cuối xuân đầu hè, cây chè giải phóng <i>linalool</i> và <i>geraniol</i> để thu hút thiên địch. Chế biến oxy hóa 60-75% sẽ chuyển hóa thành <b>Đông Phương Mỹ Nhân (Oriental Beauty)</b> - giá trị tăng gấp 4-6 lần!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-7 bg-cream p-4 rounded-xl border border-softBorder">
+                        <h4 class="font-bold text-gray-800 text-sm mb-2" id="seasonChartTitle">📊 Chỉ Số Sinh Hóa & Giá Bán Thương Phẩm Vụ Xuân</h4>
+                        <div class="chart-container">
+                            <canvas id="agronomyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plucking Standards Table -->
+                <div class="mt-6">
+                    <h4 class="font-bold text-teaGreenDark text-base mb-3">Phân Hạng Tiêu Chuẩn Thu Hái & Định Vi Phẩm Cấp</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs text-gray-700 border-collapse">
+                            <thead>
+                                <tr class="bg-sand text-teaGreenDark font-bold uppercase">
+                                    <th class="p-3 border-b border-softBorder">Phân hạng búp</th>
+                                    <th class="p-3 border-b border-softBorder">Tên thương phẩm</th>
+                                    <th class="p-3 border-b border-softBorder">Năng suất hái (kg búp tươi/ngày)</th>
+                                    <th class="p-3 border-b border-softBorder">Tỷ lệ hao hụt (Tươi ➔ Khô)</th>
+                                    <th class="p-3 border-b border-softBorder">Phân khúc & Định giá</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-softBorder">
+                                <tr class="hover:bg-cream">
+                                    <td class="p-3 font-bold text-teaGreen">1 tôm (Đinh Trà)</td>
+                                    <td class="p-3 font-semibold">Trà Đinh Ngọc / Nhất Diệp</td>
+                                    <td class="p-3">1.2 - 2.0 kg</td>
+                                    <td class="p-3">4.8 - 5.2 kg ➔ 1.0 kg khô</td>
+                                    <td class="p-3 font-semibold text-teaAmber">Quà tặng cao cấp (1.5 - 3.5 Triệu/kg)</td>
+                                </tr>
+                                <tr class="hover:bg-cream">
+                                    <td class="p-3 font-bold text-teaGreen">1 tôm 1 lá</td>
+                                    <td class="p-3 font-semibold">Trà Nõn Tôm</td>
+                                    <td class="p-3">3.5 - 5.0 kg</td>
+                                    <td class="p-3">4.4 - 4.6 kg ➔ 1.0 kg khô</td>
+                                    <td class="p-3">Giới thưởng trà (600k - 1.2 Triệu/kg)</td>
+                                </tr>
+                                <tr class="hover:bg-cream">
+                                    <td class="p-3 font-bold text-teaGreen">1 tôm 2 lá</td>
+                                    <td class="p-3 font-semibold">Trà Móc Câu thượng hạng</td>
+                                    <td class="p-3">8.0 - 12.0 kg</td>
+                                    <td class="p-3">4.0 - 4.3 kg ➔ 1.0 kg khô</td>
+                                    <td class="p-3">Bán lẻ phổ thông (300k - 500k/kg)</td>
+                                </tr>
+                                <tr class="hover:bg-cream">
+                                    <td class="p-3 font-bold text-teaGreen">1 tôm 3 lá / Búp xô</td>
+                                    <td class="p-3 font-semibold">Trà búp thông thường</td>
+                                    <td class="p-3">18.0 - 25.0 kg</td>
+                                    <td class="p-3">3.8 - 4.0 kg ➔ 1.0 kg khô</td>
+                                    <td class="p-3 text-gray-500">Bán sỉ bao lớn, F&B công nghiệp (120k - 200k/kg)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 3: CRAFTING MECHANICS ================= -->
+        <section id="section-crafting" class="space-y-6 hidden">
+            <div class="bg-white p-6 rounded-xl border border-softBorder shadow-sm">
+                <h3 class="text-xl font-bold text-teaGreenDark mb-2">3. Động Học Chế Biến Thực Nghiệm (Crafting Mechanics)</h3>
+                <p class="text-sm text-gray-600 mb-6">
+                    Biến đổi nhiệt động học và phản ứng sinh hóa nội tại trong lá chè. Chế biến Trà Xanh yêu cầu triệt tiêu enzyme PPO (diệt men), trong khi Trà Đen khai thác tối đa PPO để lên men hiếu khí.
+                </p>
+
+                <!-- Tea Type Selector -->
+                <div class="flex space-x-4 mb-6 border-b border-softBorder pb-4">
+                    <button onclick="setCraftingType('green')" id="craft-green-btn" class="px-4 py-2 rounded-lg bg-teaGreen text-white font-bold text-xs uppercase tracking-wider shadow-sm">🍃 Quy Trình Trà Xanh (Green Tea)</button>
+                    <button onclick="setCraftingType('black')" id="craft-black-btn" class="px-4 py-2 rounded-lg bg-white text-gray-700 font-bold text-xs uppercase tracking-wider border border-softBorder hover:bg-cream">🍂 Quy Trình Hồng Trà (Black Tea)</button>
+                </div>
+
+                <!-- Process Flowchart Steps -->
+                <div id="craftingFlowContainer" class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-8">
+                    <!-- Dynamic process step items injected by JS -->
+                </div>
+
+                <!-- Interactive Processing Quality Sandbox -->
+                <div class="bg-sand/60 p-6 rounded-xl border border-softBorder">
+                    <h4 class="font-bold text-teaGreenDark text-sm uppercase mb-4">🎛️ Thử Nghiệm Thông Số Căn Lửa & Đánh Giá Chất Lượng Mẻ Trà</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Controls -->
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Nhiệt độ Diệt Men Thành Bom ($T_1$): <span id="valTemp1" class="font-bold text-teaAmber">255°C</span></label>
+                                <input type="range" id="inputTemp1" min="150" max="320" step="5" value="255" class="w-full accent-teaAmber" oninput="updateCraftingQuality()">
+                                <span class="text-[10px] text-gray-500">Chuẩn Trà Xanh: 250 - 260°C</span>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Thời gian Vò Định Hình: <span id="valRollTime" class="font-bold text-teaGreen">18 phút</span></label>
+                                <input type="range" id="inputRollTime" min="5" max="45" step="1" value="18" class="w-full accent-teaGreen" oninput="updateCraftingQuality()">
+                                <span class="text-[10px] text-gray-500">Chuẩn: 15 - 20 phút ($D_{cell} \approx 45-50\%$)</span>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Độ ẩm thành phẩm ($M$): <span id="valMoisture" class="font-bold text-teaGold">4.5%</span></label>
+                                <input type="range" id="inputMoisture" min="2.0" max="12.0" step="0.5" value="4.5" class="w-full accent-teaGold" oninput="updateCraftingQuality()">
+                                <span class="text-[10px] text-gray-500">An toàn: $\le 5\%$</span>
+                            </div>
+                        </div>
+
+                        <!-- Quality Result Box -->
+                        <div class="md:col-span-2 bg-white p-5 rounded-xl border border-softBorder flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs font-bold uppercase text-gray-500">Trạng thái mẻ trà thành phẩm</span>
+                                    <span id="qualityBadge" class="px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800">Đạt Tiêu Chuẩn Thượng Hạng</span>
+                                </div>
+                                <h5 id="qualityTitle" class="text-lg font-bold text-teaGreenDark mb-1">Trà Xanh Móc Câu Hương Cốm Non</h5>
+                                <p id="qualityDesc" class="text-xs text-gray-600 leading-relaxed">
+                                    Nhiệt độ diệt men chính xác giúp cố định màu diệp lục, ức chế hoàn toàn enzyme PPO. Nước trà xanh trong, ngọt hậu sâu, không có lỗi chát gắt.
+                                </p>
+                            </div>
+
+                            <!-- Diagnostic Flags -->
+                            <div class="mt-4 pt-3 border-t border-softBorder grid grid-cols-3 gap-2 text-center text-[11px]">
+                                <div class="p-2 rounded bg-cream">
+                                    <span class="block text-gray-400">Sắc Nước</span>
+                                    <strong id="flagColor" class="text-teaGreen">Xanh Trong</strong>
+                                </div>
+                                <div class="p-2 rounded bg-cream">
+                                    <span class="block text-gray-400">Hương Vị</span>
+                                    <strong id="flagAroma" class="text-teaGreen">Hương Cốm Non</strong>
+                                </div>
+                                <div class="p-2 rounded bg-cream">
+                                    <span class="block text-gray-400">Rủi Ro Bảo Quản</span>
+                                    <strong id="flagRisk" class="text-teaGreen">An Toàn (&gt;12 tháng)</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 4: LEGAL & FACTORY ================= -->
+        <section id="section-legal" class="space-y-6 hidden">
+            <div class="bg-white p-6 rounded-xl border border-softBorder shadow-sm">
+                <h3 class="text-xl font-bold text-teaGreenDark mb-2">4. Khung Pháp Lý, ATTP & Thiết Kế Xưởng Một Chiều</h3>
+                <p class="text-sm text-gray-600 mb-6">
+                    Tuân thủ Thông tư 38/2018/TT-BNNPTNT & Nghị định 115/2018/NĐ-CP. Xưởng sơ chế bắt buộc thiết kế theo nguyên tắc <b>dòng chảy một chiều</b> để chống nhiễm chéo.
+                </p>
+
+                <!-- Business Model Legal Comparison -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-cream p-5 rounded-xl border border-softBorder">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="font-bold text-teaGreenDark text-base">Hộ Kinh Doanh Cá Thể (HKD)</h4>
+                            <span class="px-2 py-0.5 bg-teaGreen/10 text-teaGreen font-bold text-xs rounded">Giai Đoạn Đầu</span>
+                        </div>
+                        <ul class="text-xs text-gray-600 space-y-2 leading-relaxed">
+                            <li>• <b>Đăng ký:</b> UBND cấp huyện (3–5 ngày).</li>
+                            <li>• <b>Nghĩa vụ thuế:</b> Thuế khoán (GTGT 3% + TNCN 1.5% = 4.5% doanh thu).</li>
+                            <li>• <b>Sổ sách:</b> Đơn giản theo Thông tư 88/2021/TT-BTC, không bắt buộc kế toán trưởng.</li>
+                            <li>• <b>Nhược điểm:</b> Không xuất được hóa đơn VAT khấu trừ cho kênh B2B/Siêu thị lớn.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-cream p-5 rounded-xl border border-softBorder">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="font-bold text-teaAmber text-base">Công Ty TNHH Một Thành Viên</h4>
+                            <span class="px-2 py-0.5 bg-teaAmber/10 text-teaAmber font-bold text-xs rounded">Mở Rộng Quy Mô</span>
+                        </div>
+                        <ul class="text-xs text-gray-600 space-y-2 leading-relaxed">
+                            <li>• <b>Đăng ký:</b> Sở Kế hoạch & Đầu tư (5–10 ngày).</li>
+                            <li>• <b>Nghĩa vụ thuế:</b> Thuế TNDN 20% trên lợi nhuận ròng + Thuế GTGT 8-10%.</li>
+                            <li>• <b>Sổ sách:</b> Bắt buộc lập Báo cáo tài chính năm, chi phí kế toán 1.5–2.5 triệu/tháng.</li>
+                            <li>• <b>Ưu điểm:</b> Tư cách pháp nhân đầy đủ, xuất hóa đơn GTGT điện tử, đủ chuẩn xuất khẩu.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- One-Way Factory Flow Visualizer -->
+                <div class="mb-8">
+                    <h4 class="font-bold text-teaGreenDark text-sm uppercase mb-3">🏢 Mô Hình Kiến Trúc Xưởng Sơ Chế Một Chiều (One-Way Factory Layout)</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 text-center text-xs font-semibold">
+                        <div class="p-3 bg-sand rounded-lg border border-softBorder flex flex-col items-center justify-center">
+                            <span class="text-lg">🍃</span>
+                            <span>1. Tiếp Nhận Lá Tươi</span>
+                            <span class="text-[10px] text-gray-500 font-normal">Khu vực phân loại thô</span>
+                        </div>
+                        <div class="p-3 bg-teaGreen/10 text-teaGreenDark rounded-lg border border-teaGreen/30 flex flex-col items-center justify-center">
+                            <span class="text-lg">🔥</span>
+                            <span>2. Diệt Men & Vò</span>
+                            <span class="text-[10px] text-gray-500 font-normal">Khu nhiệt độ cao</span>
+                        </div>
+                        <div class="p-3 bg-teaGold/10 text-teaAmber rounded-lg border border-teaGold/30 flex flex-col items-center justify-center">
+                            <span class="text-lg">💨</span>
+                            <span>3. Sấy Khô & Sao Hương</span>
+                            <span class="text-[10px] text-gray-500 font-normal">Kiểm soát độ ẩm &lt;5%</span>
+                        </div>
+                        <div class="p-3 bg-blue-50 text-blue-900 rounded-lg border border-blue-200 flex flex-col items-center justify-center">
+                            <span class="text-lg">✨</span>
+                            <span>4. Đóng Gói Vô Trùng</span>
+                            <span class="text-[10px] text-gray-500 font-normal">Hút chân không, màng nhôm</span>
+                        </div>
+                        <div class="p-3 bg-cream rounded-lg border border-softBorder flex flex-col items-center justify-center">
+                            <span class="text-lg">📦</span>
+                            <span>5. Kho Thành Phẩm</span>
+                            <span class="text-[10px] text-gray-500 font-normal">Xuất hàng B2B / DTC</span>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-gray-500 mt-2 text-center italic">
+                        *Lưu ý: Luồng nguyên liệu và công nhân di chuyển theo 1 chiều duy nhất. Bắt buộc có lưới chắn côn trùng và không đọng nước sàn.
+                    </p>
+                </div>
+
+                <!-- Inspection Fine Checklist / Calculator -->
+                <div class="bg-red-50 p-5 rounded-xl border border-red-200">
+                    <h4 class="font-bold text-red-900 text-sm uppercase mb-3">🚨 Hệ Thống Chế Tài Xử Phạt Vi Phạm ATTP (Nghị định 115/2018/NĐ-CP)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-red-800">
+                        <div class="flex justify-between items-center p-2 bg-white rounded border border-red-100">
+                            <span>Sản xuất không theo nguyên tắc 1 chiều:</span>
+                            <strong class="text-red-600">Phạt 5.0 - 7.0 Triệu</strong>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-white rounded border border-red-100">
+                            <span>Côn trùng, động vật xâm nhập xưởng:</span>
+                            <strong class="text-red-600">Phạt 1.0 - 3.0 Triệu</strong>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-white rounded border border-red-100">
+                            <span>Không mang đầy đủ đồ bảo hộ y tế:</span>
+                            <strong class="text-red-600">Phạt 500k - 1.0 Triệu</strong>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-white rounded border border-red-100">
+                            <span>Hoạt động khi chưa có Giấy ATTP:</span>
+                            <strong class="text-red-600">Phạt 20.0 - 30.0 Triệu + Đình chỉ</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 5: BUSINESS BRANCHES ================= -->
+        <section id="section-branches" class="space-y-6 hidden">
+            <div class="bg-white p-6 rounded-xl border border-softBorder shadow-sm">
+                <h3 class="text-xl font-bold text-teaGreenDark mb-2">5. Cây Phát Triển Phân Nhánh Kinh Doanh (Business Game Tree)</h3>
+                <p class="text-sm text-gray-600 mb-6">
+                    So sánh sự đánh đổi kinh tế giữa 3 mô hình phân nhánh trong game. Sự kết hợp linh hoạt giúp tối ưu dòng tiền và giảm rủi ro mùa vụ.
+                </p>
+
+                <!-- Radar Comparison & Branch Cards -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+                    <div class="lg:col-span-6 bg-cream p-4 rounded-xl border border-softBorder">
+                        <h4 class="font-bold text-gray-800 text-sm mb-2 text-center">🕸️ So Sánh Đặc Tính 3 Phân Nhánh Khởi Nghiệp</h4>
+                        <div class="chart-container">
+                            <canvas id="branchRadarChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-6 space-y-3">
+                        <div class="p-4 rounded-xl border border-softBorder bg-white hover:border-teaGreen transition">
+                            <div class="flex justify-between items-center mb-1">
+                                <h5 class="font-bold text-sm text-teaGreenDark">Nhánh 1: Gia Công Thô B2B (Bulk Sales)</h5>
+                                <span class="text-xs font-bold text-gray-500">Margin: 10 - 15%</span>
+                            </div>
+                            <p class="text-xs text-gray-600 leading-relaxed">
+                                Thu mua búp tươi, chế biến nhanh thành trà mộc đóng bao 25–50kg bán sỉ. Vốn máy móc thấp (75–95tr), thu hồi vốn cực nhanh (3–7 ngày) giúp trang trải chi phí trả nợ ngân hàng ban đầu.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-xl border border-softBorder bg-white hover:border-teaAmber transition">
+                            <div class="flex justify-between items-center mb-1">
+                                <h5 class="font-bold text-sm text-teaAmber">Nhánh 2: Bán Lẻ Thủ Công DTC (Artisanal Boutique)</h5>
+                                <span class="text-xs font-bold text-teaAmber">Margin: 50 - 70%</span>
+                            </div>
+                            <p class="text-xs text-gray-600 leading-relaxed">
+                                Tuyển chọn búp phẩm cấp cao (Đinh trà, Nõn tôm), đóng hộp tinh xảo, xây dựng thương hiệu câu chuyện bản địa. Biên lợi nhuận rất cao nhưng vòng quay vốn dài (30–60 ngày) do chi phí tiếp thị & tồn kho bao bì.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-xl border border-softBorder bg-white hover:border-teaGold transition">
+                            <div class="flex justify-between items-center mb-1">
+                                <h5 class="font-bold text-sm text-teaGold">Nhánh 3: Du Lịch Trải Nghiệm (Farmstay & Workshop)</h5>
+                                <span class="text-xs font-bold text-teaGold">Margin: 70 - 85%</span>
+                            </div>
+                            <p class="text-xs text-gray-600 leading-relaxed">
+                                Mở tour hái trà, hướng dẫn chế biến thủ công và phục vụ lưu trú. CAPEX cao nhất (180–250tr) nhưng thu tiền mặt ngay lập tức, giúp giải quyết triệt để vấn đề mùa đông chè ngủ đông không có sản lượng.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Evolution Path Timeline -->
+                <div class="p-5 bg-sand rounded-xl border border-softBorder">
+                    <h4 class="font-bold text-teaGreenDark text-sm uppercase mb-3">🚀 Tiến Trình Phát Triển Chiến Lược Lộ Trình 3 Giai Đoạn</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="p-3 bg-white rounded-lg border border-softBorder">
+                            <div class="font-bold text-teaGreen mb-1">Giai Đoạn 1: Sinh Tồn (Volume)</div>
+                            <p class="text-gray-600">Tập trung Nhánh B2B. Chạy hết công suất thiết bị mini để tạo dòng tiền hàng tuần trả nợ ngân hàng đúng hạn.</p>
+                        </div>
+                        <div class="p-3 bg-white rounded-lg border border-softBorder">
+                            <div class="font-bold text-teaAmber mb-1">Giai Đoạn 2: Nâng Margin (Brand)</div>
+                            <p class="text-gray-600">Trích dòng tiền đầu tư bao bì DTC, kiểm nghiệm mẫu độc lập và làm chuẩn ATTP để nâng biên lợi nhuận lên 60%.</p>
+                        </div>
+                        <div class="p-3 bg-white rounded-lg border border-softBorder">
+                            <div class="font-bold text-teaGold mb-1">Giai Đoạn 3: Hệ Sinh Thái (Experience)</div>
+                            <p class="text-gray-600">Tái đầu tư cảnh quan nương chè, mở dịch vụ Workshop trà đạo để duy trì doanh thu trong mùa đông.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 6: CINEMATIC STORYBOARD ================= -->
+        <section id="section-cinematic" class="space-y-6 hidden">
+            <div class="bg-white p-6 rounded-xl border border-softBorder shadow-sm">
+                <h3 class="text-xl font-bold text-teaGreenDark mb-2">6. Kịch Bản Chi Tiết Đoạn Mở Màn Video (Intro Cinematic)</h3>
+                <p class="text-sm text-gray-600 mb-6">
+                    Định hướng mỹ thuật 2D Hand-drawn Animation kết hợp âm thanh ASMR chân thực, khắc họa áp lực tài chính và khát vọng hồi sinh di sản trà bản địa.
+                </p>
+
+                <!-- Interactive Scene Carousel / Viewer -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Scene Navigation List -->
+                    <div class="lg:col-span-4 space-y-2" id="sceneList">
+                        <button onclick="showScene(1)" id="scene-btn-1" class="w-full p-3 rounded-lg border text-left bg-teaGreen text-white font-bold text-xs transition">
+                            🎬 Phân cảnh 1: Gánh nặng tài chính (0:00 - 0:15)
+                        </button>
+                        <button onclick="showScene(2)" id="scene-btn-2" class="w-full p-3 rounded-lg border text-left bg-white text-gray-700 font-bold text-xs hover:bg-cream transition">
+                            🎬 Phân cảnh 2: Sự ràng buộc của đòn bẩy nợ (0:15 - 0:35)
+                        </button>
+                        <button onclick="showScene(3)" id="scene-btn-3" class="w-full p-3 rounded-lg border text-left bg-white text-gray-700 font-bold text-xs hover:bg-cream transition">
+                            🎬 Phân cảnh 3: Thức tỉnh & Kết nối thổ nhưỡng (0:35 - 0:50)
+                        </button>
+                        <button onclick="showScene(4)" id="scene-btn-4" class="w-full p-3 rounded-lg border text-left bg-white text-gray-700 font-bold text-xs hover:bg-cream transition">
+                            🎬 Phân cảnh 4: Thử lửa xưởng & Tựa đề (0:50 - 1:05)
+                        </button>
+                    </div>
+
+                    <!-- Scene Details View -->
+                    <div class="lg:col-span-8 bg-cream p-6 rounded-xl border border-softBorder space-y-4">
+                        <div class="flex justify-between items-center border-b border-softBorder pb-3">
+                            <span id="sceneTime" class="px-2.5 py-1 bg-teaGold text-teaGreenDark font-bold text-xs rounded-full">0:00 - 0:15</span>
+                            <span id="sceneCamera" class="text-xs font-semibold text-gray-500">Góc quay: Close-up Tĩnh</span>
+                        </div>
+
+                        <h4 id="sceneTitle" class="text-lg font-bold text-teaGreenDark">Phân cảnh 1: Gánh Nặng Tài Chính & Di Sản Dang Dở</h4>
+
+                        <div class="bg-white p-4 rounded-lg border border-softBorder space-y-2 text-xs">
+                            <div class="font-bold text-gray-700 uppercase">👁️ Hình Ảnh & Diễn Biến Visual:</div>
+                            <p id="sceneVisual" class="text-gray-600 leading-relaxed">
+                                Cận cảnh bàn gỗ cũ kỹ. Khung ảnh gia đình đeo băng tang đen cạnh cuốn sổ tay sờn rách. Điện thoại nứt màn hình phát sáng: "Số dư khả dụng: 200.000.000 VND". Bàn tay chai sần lướt qua, dừng lại phân vân. Camera lia ra cửa sổ: đồi chè già cỗi xơ xác chìm trong sương mờ sau cơn mưa.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                            <div class="bg-white p-3 rounded-lg border border-softBorder">
+                                <div class="font-bold text-teaAmber uppercase mb-1">🎧 Thiết Kế Âm Thanh (ASMR):</div>
+                                <p id="sceneAudio" class="text-gray-600">Tiếng mưa nhỏ giọt tí tách trên mái tôn rỉ sét, tiếng lật trang sổ nợ khô khốc, giai điệu Guitar mộc hòa tấu Lofi piano chậm rãi.</p>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-softBorder">
+                                <div class="font-bold text-teaGreen uppercase mb-1">💬 Subtitle & Dẫn Chuyện:</div>
+                                <p id="sceneSub" class="text-gray-700 italic">"(Tiếng thở dài trầm ngâm... Tiếng kim đồng hồ gõ nhịp tíc-tắc)"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-teaGreenDark text-sand py-6 text-xs border-t border-softBorder mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <p class="font-bold text-white">VƯỜN VÀ TRÀ - Craft Tea Startup Simulation Framework</p>
+                <p class="text-gray-400 mt-0.5">Dựa trên Khung Kinh Tế, Kỹ Thuật Nông Nghiệp & Pháp Lý Khởi Nghiệp Trà Việt Nam 2026</p>
+            </div>
+            <div class="text-gray-400 text-right">
+                <p>Nghị định 55/2015 • Thông tư 38/2018 • Nghị định 115/2018</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Global State Management
+        const state = {
+            activeTab: 'finance',
+            season: 'spring',
+            leafhopper: false,
+            craftingType: 'green',
+            temp1: 255,
+            rollTime: 18,
+            moisture: 4.5,
+            currentScene: 1
+        };
+
+        // Chart Instances
+        let financeChartInstance = null;
+        let agronomyChartInstance = null;
+        let branchRadarChartInstance = null;
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            initFinanceChart();
+            initAgronomyChart();
+            initBranchRadarChart();
+            updateFinanceSimulator();
+            updateCraftingFlow();
+            updateCraftingQuality();
+        });
+
+        // Tab Switcher
+        function switchTab(tabId) {
+            state.activeTab = tabId;
+            const sections = ['finance', 'agronomy', 'crafting', 'legal', 'branches', 'cinematic'];
+            
+            sections.forEach(s => {
+                const secEl = document.getElementById(`section-${s}`);
+                const navEl = document.getElementById(`nav-${s}`);
+                const mnavEl = document.getElementById(`mnav-${s}`);
+
+                if (s === tabId) {
+                    secEl.classList.remove('hidden');
+                    if (navEl) navEl.className = 'py-5 tab-active transition';
+                    if (mnavEl) mnavEl.className = 'px-3 py-1.5 rounded bg-teaGreen text-white font-medium whitespace-nowrap';
+                } else {
+                    secEl.classList.add('hidden');
+                    if (navEl) navEl.className = 'py-5 hover:text-teaGreen transition';
+                    if (mnavEl) mnavEl.className = 'px-3 py-1.5 rounded bg-white text-gray-700 whitespace-nowrap';
+                }
+            });
+
+            // Trigger chart updates if hidden originally
+            if (tabId === 'agronomy' && agronomyChartInstance) agronomyChartInstance.update();
+            if (tabId === 'branches' && branchRadarChartInstance) branchRadarChartInstance.update();
+        }
+
+        // ================= SECTION 1: FINANCE LOGIC =================
+        function updateFinanceSimulator() {
+            const L0 = parseFloat(document.getElementById('inputLoan').value);
+            const r = parseFloat(document.getElementById('inputRate').value) / 100;
+            const n = parseInt(document.getElementById('inputTenure').value);
+            const Rt = parseFloat(document.getElementById('inputRevenue').value);
+            const OPEX = parseFloat(document.getElementById('inputOpex').value);
+
+            // Update UI Labels
+            document.getElementById('valLoan').innerText = L0.toLocaleString('vi-VN');
+            document.getElementById('valRate').innerText = (r * 100).toFixed(1);
+            document.getElementById('valTenure').innerText = n;
+            document.getElementById('valRevenue').innerText = Rt.toLocaleString('vi-VN');
+            document.getElementById('valOpex').innerText = OPEX.toLocaleString('vi-VN');
+
+            // Principal payment
+            const principalPerMonth = L0 / n;
+            // Month 1 interest
+            const firstInterest = L0 * (r / 12);
+            const totalPMT1 = principalPerMonth + firstInterest;
+            const CF1 = Rt - (OPEX + totalPMT1);
+
+            document.getElementById('resPrincipal').innerText = Math.round(principalPerMonth).toLocaleString('vi-VN') + ' VNĐ';
+            document.getElementById('resFirstInterest').innerText = Math.round(firstInterest).toLocaleString('vi-VN') + ' VNĐ';
+            document.getElementById('resTotalPMT').innerText = Math.round(totalPMT1).toLocaleString('vi-VN') + ' VNĐ';
+            
+            const cfEl = document.getElementById('resCF1');
+            cfEl.innerText = Math.round(CF1).toLocaleString('vi-VN') + ' VNĐ';
+            cfEl.className = CF1 >= 0 ? 'text-teaGreen font-bold' : 'text-red-600 font-bold';
+
+            // Update Chart Data over 12 Months
+            const months = Array.from({length: 12}, (_, i) => `Tháng ${i + 1}`);
+            const cashFlowData = [];
+            const remainingLoanData = [];
+
+            let remainingLoan = L0;
+            let cumulativeBuffer = 40000000; // initial cash buffer
+
+            for (let i = 0; i < 12; i++) {
+                const interest = remainingLoan * (r / 12);
+                const pmt = principalPerMonth + interest;
+                const cf = Rt - (OPEX + pmt);
+                cumulativeBuffer += cf;
+                
+                cashFlowData.push(Math.round(cumulativeBuffer / 1000000));
+                remainingLoanData.push(Math.round(remainingLoan / 1000000));
+                remainingLoan -= principalPerMonth;
+            }
+
+            if (financeChartInstance) {
+                financeChartInstance.data.labels = months;
+                financeChartInstance.data.datasets[0].data = cashFlowData;
+                financeChartInstance.data.datasets[1].data = remainingLoanData;
+                financeChartInstance.update();
+            }
+        }
+
+        function initFinanceChart() {
+            const ctx = document.getElementById('financeChart').getContext('2d');
+            financeChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Số Dư Tiền Mặt Quỹ Dữ Liệu (Tr VNĐ)',
+                            data: [],
+                            borderColor: '#4A6B53',
+                            backgroundColor: 'rgba(74, 107, 83, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Dư Nợ Gốc Ngân Hàng Còn Lại (Tr VNĐ)',
+                            data: [],
+                            borderColor: '#8C5A3C',
+                            borderDash: [5, 5],
+                            fill: false,
+                            tension: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { font: { size: 11 } } },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Gia Trị (Triệu VNĐ)', font: { size: 10 } },
+                            grid: { color: '#E2DACD' }
+                        },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // ================= SECTION 2: AGRONOMY LOGIC =================
+        const seasonData = {
+            spring: {
+                title: '📊 Chỉ Số Sinh Hóa & Giá Bán Thương Phẩm Vụ Xuân (Tiền Minh)',
+                theanine: 95,
+                polyphenol: 35,
+                price: 2500000,
+                yield: 18
+            },
+            summer: {
+                title: '📊 Chỉ Số Sinh Hóa & Giá Bán Thương Phẩm Vụ Hè (Chính Vụ)',
+                theanine: 30,
+                polyphenol: 90,
+                price: 350000,
+                yield: 45
+            },
+            autumn: {
+                title: '📊 Chỉ Số Sinh Hóa & Giá Bán Thương Phẩm Vụ Thu (Trà Thu)',
+                theanine: 70,
+                polyphenol: 65,
+                price: 850000,
+                yield: 28
+            },
+            winter: {
+                title: '📊 Chỉ Số Sinh Hóa & Giá Bán Vụ Đông (Ngủ Đông / Đốn Tỉa)',
+                theanine: 10,
+                polyphenol: 10,
+                price: 0,
+                yield: 0
+            }
+        };
+
+        function selectSeason(seasonKey) {
+            state.season = seasonKey;
+            ['spring', 'summer', 'autumn', 'winter'].forEach(s => {
+                const btn = document.getElementById(`btn-${s}`);
+                if (s === seasonKey) {
+                    btn.className = 'p-3 rounded-lg border text-left bg-teaGreen text-white font-semibold text-xs transition';
+                } else {
+                    btn.className = 'p-3 rounded-lg border text-left bg-white text-gray-700 font-semibold text-xs hover:bg-cream transition';
+                }
+            });
+            updateAgronomyChart();
+        }
+
+        function toggleInsectMechanic() {
+            state.leafhopper = document.getElementById('toggleLeafhopper').checked;
+            updateAgronomyChart();
+        }
+
+        function initAgronomyChart() {
+            const ctx = document.getElementById('agronomyChart').getContext('2d');
+            agronomyChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Hàm lượng Theanine (Ngọt)', 'Hàm lượng Polyphenol (Chát)', 'Sản Lượng (% Cả Năm)', 'Giá Bán Quy Đổi (100k VNĐ/kg)'],
+                    datasets: [{
+                        label: 'Chỉ Số Sinh Hóa & Kinh Tế',
+                        data: [95, 35, 18, 25],
+                        backgroundColor: ['#4A6B53', '#8C5A3C', '#C89D54', '#2D4333']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+        }
+
+        function updateAgronomyChart() {
+            const s = seasonData[state.season];
+            let priceVal = s.price / 100000;
+            let title = s.title;
+
+            if (state.leafhopper && (state.season === 'spring' || state.season === 'summer')) {
+                priceVal = (s.price * 4.5) / 100000;
+                title += ' 🌟 (ĐÔNG PHƯƠNG MỸ NHÂN - Giá x4.5!)';
+            }
+
+            document.getElementById('seasonChartTitle').innerText = title;
+
+            if (agronomyChartInstance) {
+                agronomyChartInstance.data.datasets[0].data = [s.theanine, s.polyphenol, s.yield, priceVal];
+                agronomyChartInstance.update();
+            }
+        }
+
+        // ================= SECTION 3: CRAFTING LOGIC =================
+        const greenSteps = [
+            { step: '1. Làm Héo Nhẹ', detail: '3-5 cm trên nong tre, hong 1-2h giảm ẩm tự do.' },
+            { step: '2. Diệt Men Cao Ôn', detail: 'Sát thanh ở 250-260°C trong 2-3 phút, triệt tiêu PPO.' },
+            { step: '3. Rũ Tơi & Quạt Gió', detail: 'Thổi mát giải phóng nhiệt om, giữ màu diệp lục xanh.' },
+            { step: '4. Vò Định Hình', detail: 'Quay 15-20 phút, dập 45-50% tế bào, tạo sợi móc câu.' },
+            { step: '5. Sấy Sơ Bộ & Ủ Ẩm', detail: 'Sấy 90-95°C rút ẩm còn 18-20%, ủ 30-45 phút.' },
+            { step: '6. Sao Lăn Lấy Hương', detail: 'Dải nhiệt 150-240°C kích hoạt phản ứng Maillard, $M \le 5\%$.' }
+        ];
+
+        const blackSteps = [
+            { step: '1. Hong Héo Sâu', detail: 'Hong 8-14 giờ, rút ẩm lá về 58-62%, cấu trúc dẻo dai.' },
+            { step: '2. Vò Dập Sâu', detail: 'Vò nén 35-45 phút, dập trên 80% tế bào tiếp xúc oxy.' },
+            { step: '3. Lên Men Hiếu Khí', detail: 'Ủ 24-28°C, RH 90-98% trong 3-3.5h. Catechin ➔ Theaflavin.' },
+            { step: '4. Sấy Diệt Men Cố Định', detail: 'Sấy nhiệt cao 95-100°C diệt hoàn toàn PPO, rút ẩm $M \le 5\%$.' }
+        ];
+
+        function setCraftingType(type) {
+            state.craftingType = type;
+            const greenBtn = document.getElementById('craft-green-btn');
+            const blackBtn = document.getElementById('craft-black-btn');
+
+            if (type === 'green') {
+                greenBtn.className = 'px-4 py-2 rounded-lg bg-teaGreen text-white font-bold text-xs uppercase tracking-wider shadow-sm';
+                blackBtn.className = 'px-4 py-2 rounded-lg bg-white text-gray-700 font-bold text-xs uppercase tracking-wider border border-softBorder hover:bg-cream';
+            } else {
+                blackBtn.className = 'px-4 py-2 rounded-lg bg-teaAmber text-white font-bold text-xs uppercase tracking-wider shadow-sm';
+                greenBtn.className = 'px-4 py-2 rounded-lg bg-white text-gray-700 font-bold text-xs uppercase tracking-wider border border-softBorder hover:bg-cream';
+            }
+            updateCraftingFlow();
+            updateCraftingQuality();
+        }
+
+        function updateCraftingFlow() {
+            const container = document.getElementById('craftingFlowContainer');
+            const steps = state.craftingType === 'green' ? greenSteps : blackSteps;
+            
+            container.innerHTML = steps.map((item, idx) => `
+                <div class="p-3 bg-cream rounded-lg border border-softBorder text-xs">
+                    <div class="font-bold ${state.craftingType === 'green' ? 'text-teaGreen' : 'text-teaAmber'} mb-1">${item.step}</div>
+                    <p class="text-gray-600 leading-tight">${item.detail}</p>
+                </div>
+            `).join('');
+        }
+
+        function updateCraftingQuality() {
+            const t1 = parseInt(document.getElementById('inputTemp1').value);
+            const roll = parseInt(document.getElementById('inputRollTime').value);
+            const m = parseFloat(document.getElementById('inputMoisture').value);
+
+            document.getElementById('valTemp1').innerText = t1 + '°C';
+            document.getElementById('valRollTime').innerText = roll + ' phút';
+            document.getElementById('valMoisture').innerText = m.toFixed(1) + '%';
+
+            const badge = document.getElementById('qualityBadge');
+            const title = document.getElementById('qualityTitle');
+            const desc = document.getElementById('qualityDesc');
+            const fColor = document.getElementById('flagColor');
+            const fAroma = document.getElementById('flagAroma');
+            const fRisk = document.getElementById('flagRisk');
+
+            if (state.craftingType === 'green') {
+                if (t1 < 220) {
+                    badge.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800';
+                    badge.innerText = 'Lỗi Chế Biến: Đỏ Nước';
+                    title.innerText = 'Lỗi Om Men / Đỏ Nước (Enzyme PPO Hoạt Động)';
+                    desc.innerText = 'Nhiệt độ sát thanh quá thấp (<220°C) không đủ vô hiệu hóa enzyme PPO. Catechin bị oxy hóa ngoài ý muốn khiến nước trà chuyển màu đỏ đục, vị chua nồng.';
+                    fColor.innerText = 'Đỏ Đục'; fColor.className = 'text-red-600 font-bold';
+                    fAroma.innerText = 'Ngái Chua'; fAroma.className = 'text-red-600 font-bold';
+                } else if (t1 > 280) {
+                    badge.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800';
+                    badge.innerText = 'Lỗi Chế Biến: Khét Cháy';
+                    title.innerText = 'Lỗi Khét Cháy Bom Sao Nhiệt Quá Cao';
+                    desc.innerText = 'Nhiệt độ vách bom sao vượt quá 280°C làm cháy xém rìa lá và cám chè, khiến mẻ trà có mùi khét ám khói, nước chát đắng gắt.';
+                    fColor.innerText = 'Vàng Đen'; fColor.className = 'text-red-600 font-bold';
+                    fAroma.innerText = 'Ám Khói Khét'; fAroma.className = 'text-red-600 font-bold';
+                } else if (m > 7.0) {
+                    badge.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800';
+                    badge.innerText = 'Nguy Cơ Mốc Ẩm';
+                    title.innerText = 'Độ Ẩm Dư Thừa Sau Đóng Gói';
+                    desc.innerText = 'Độ ẩm chưa rút về <5%. Nước còn tích tụ trong gân lá khiến vi khuẩn và nấm mốc phát triển sau 15–30 ngày bảo quản.';
+                    fRisk.innerText = 'Mốc sau 20 ngày'; fRisk.className = 'text-red-600 font-bold';
+                } else {
+                    badge.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800';
+                    badge.innerText = 'Đạt Tiêu Chuẩn Thượng Hạng';
+                    title.innerText = 'Trà Xanh Móc Câu Thượng Hạng';
+                    desc.innerText = 'Nhiệt độ sát thanh chuẩn 250–260°C. Sợi chè xoăn chặt, màu diệp lục giữ trọn vẹn, dậy hương cốm non đặc trưng.';
+                    fColor.innerText = 'Xanh Trong'; fColor.className = 'text-teaGreen font-bold';
+                    fAroma.innerText = 'Hương Cốm Non'; fAroma.className = 'text-teaGreen font-bold';
+                    fRisk.innerText = 'An Toàn (>12 tháng)'; fRisk.className = 'text-teaGreen font-bold';
+                }
+            } else {
+                badge.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800';
+                badge.innerText = 'Thành Thành Hồng Trà';
+                title.innerText = 'Hồng Trà Lên Men Hiếu Khí Đạt Chuẩn';
+                desc.innerText = 'Lên men hoàn toàn biến catechin thành theaflavin và thearubigin. Nước trà màu hổ phách, hương trái cây chín đượm dịu.';
+                fColor.innerText = 'Đỏ Hổ Phách'; fColor.className = 'text-teaAmber font-bold';
+                fAroma.innerText = 'Trái Cây Chín'; fAroma.className = 'text-teaAmber font-bold';
+                fRisk.innerText = 'An Toàn (>18 tháng)'; fRisk.className = 'text-teaGreen font-bold';
+            }
+        }
+
+        // ================= SECTION 5: BRANCH RADAR LOGIC =================
+        function initBranchRadarChart() {
+            const ctx = document.getElementById('branchRadarChart').getContext('2d');
+            branchRadarChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Biên Lợi Nhuận', 'Tốc Độ Xoay Vốn', 'Bù Đắp Mùa Đông', 'Yêu Cầu Vốn CAPEX', 'Định Định Thương Hiệu'],
+                    datasets: [
+                        {
+                            label: 'Gia Công B2B',
+                            data: [20, 95, 10, 30, 20],
+                            borderColor: '#2D312E',
+                            backgroundColor: 'rgba(45, 49, 46, 0.1)'
+                        },
+                        {
+                            label: 'Bán Lẻ DTC',
+                            data: [75, 40, 50, 60, 90],
+                            borderColor: '#8C5A3C',
+                            backgroundColor: 'rgba(140, 90, 60, 0.1)'
+                        },
+                        {
+                            label: 'Du Lịch Farmstay',
+                            data: [90, 85, 95, 90, 80],
+                            borderColor: '#C89D54',
+                            backgroundColor: 'rgba(200, 157, 84, 0.1)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 10 } } }
+                    },
+                    scales: {
+                        r: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+        }
+
+        // ================= SECTION 6: CINEMATIC STORYBOARD LOGIC =================
+        const scenes = [
+            {
+                id: 1,
+                time: '0:00 - 0:15',
+                camera: 'Góc quay: Close-up Tĩnh',
+                title: 'Phân cảnh 1: Gánh Nặng Tài Chính & Di Sản Dang Dở',
+                visual: 'Cận cảnh bàn gỗ cũ kỹ. Khung ảnh gia đình đeo băng tang đen cạnh cuốn sổ tay sờn rách. Điện thoại nứt màn hình phát sáng: "Số dư khả dụng: 200.000.000 VND". Bàn tay chai sần lướt qua, dừng lại phân vân. Camera lia ra cửa sổ: đồi chè già cỗi xơ xác chìm trong sương mờ sau cơn mưa.',
+                audio: 'Tiếng mưa nhỏ giọt tí tách trên mái tôn rỉ sét, tiếng lật trang sổ nợ khô khốc, giai điệu Guitar mộc hòa tấu Lofi piano chậm rãi.',
+                sub: '"(Tiếng thở dài trầm ngâm... Tiếng kim đồng hồ gõ nhịp tíc-tắc)"'
+            },
+            {
+                id: 2,
+                time: '0:15 - 0:35',
+                camera: 'Góc quay: Medium Shot Ánh Sáng Tương Phản',
+                title: 'Phân cảnh 2: Sự Ràng Buộc Của Đòn Bẩy Nợ Ngân Hàng',
+                visual: 'Bộ hồ sơ thế chấp sổ đỏ Agribank mộc đỏ. Bút máy run rẩy ký tên. Các thông số số hóa phát sáng nổi: Tiền thuê đồi chè -40tr, Bộ 4 máy mini -95tr, Lãi suất 8.5%/năm... Nhịp kim đồng hồ dồn dập.',
+                audio: 'Tiếng ngòi bút sột soạt dứt khoát trên giấy, tiếng đếm tiền máy ngân hàng xoạch xoạch, tiếng đồng hồ tích tắc nhanh dần.',
+                sub: '"Ngày đến hạn thanh toán đầu tiên: 30 ngày..."'
+            },
+            {
+                id: 3,
+                time: '0:35 - 0:50',
+                camera: 'Góc quay: Low-Angle Wide ➔ Macro Shot',
+                title: 'Phân cảnh 3: Thức Tỉnh & Kết Nối Thổ Nhưỡng',
+                visual: 'Bước chân mang ủng lún trên đất đỏ ẩm. Nhân vật quỳ xuống chạm tay vào búp chè non vừa nhú đọng giọt sương mai. Cận cảnh nâng niu búp chè 1 tôm đưa lên ngửi, ánh mắt kiên định trở lại.',
+                audio: 'Tiếng bước chân trên đất mềm, tiếng ngắt búp chè giòn tan "tách", nhạc Lofi guitar chuyển sang tone thăng hoa ấm áp.',
+                sub: '"Đất không phụ người, nếu người đem lòng trân quý đất..."'
+            },
+            {
+                id: 4,
+                time: '0:50 - 1:05',
+                camera: 'Góc quay: Dynamic Action Close-up',
+                title: 'Phân cảnh 4: Thử Lửa Trong Xưởng & Tựa Đề Game',
+                visual: 'Cửa buồng đốt bom sao bật mở, ngọn lửa củi đỏ rực. Bàn tay thoăn thoắt đảo chè trong chảo gang bốc khói. Làn khói cốm thơm cuộn tròn thành tên game: VƯỜN VÀ TRÀ (The Tea Artisan).',
+                audio: 'Tiếng củi cháy nổ lách tách bập bùng, tiếng lá chè đảo loạt soạt trên vách tôn quay. Giọng đọc thoại trầm ấm vang lên.',
+                sub: '"Đời người cũng như một mẻ trà. Muốn thơm, ắt phải qua lửa đỏ."'
+            }
+        ];
+
+        function showScene(sceneId) {
+            state.currentScene = sceneId;
+            const sc = scenes.find(s => s.id === sceneId);
+
+            scenes.forEach(s => {
+                const btn = document.getElementById(`scene-btn-${s.id}`);
+                if (s.id === sceneId) {
+                    btn.className = 'w-full p-3 rounded-lg border text-left bg-teaGreen text-white font-bold text-xs transition';
+                } else {
+                    btn.className = 'w-full p-3 rounded-lg border text-left bg-white text-gray-700 font-bold text-xs hover:bg-cream transition';
+                }
+            });
+
+            document.getElementById('sceneTime').innerText = sc.time;
+            document.getElementById('sceneCamera').innerText = sc.camera;
+            document.getElementById('sceneTitle').innerText = sc.title;
+            document.getElementById('sceneVisual').innerText = sc.visual;
+            document.getElementById('sceneAudio').innerText = sc.audio;
+            document.getElementById('sceneSub').innerText = sc.sub;
+        }
+    </script>
+</body>
+</html>

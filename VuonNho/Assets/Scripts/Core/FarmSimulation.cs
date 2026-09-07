@@ -18,6 +18,16 @@ namespace VuonNho.Core
         void OnStationStarted(string stageId, string cropId, long atMs);
         void OnStationCompleted(string stageId, string cropId, int amount, long atMs);
         void OnWagesPaid(long coins, int workersPaid, int workersUnpaid, long atMs);
+
+        /// <summary>
+        /// Mot su kien kinh doanh: chot ky, tra no, doan kiem tra ghe, giay phep xong, ngan hang
+        /// niem phong. Mot ham cho ca nhom vi ca nhom deu di ve cung mot cho — mot cau bao cho
+        /// nguoi choi biet vua co chuyen gi — chu khong ai trong so chung can mot hieu ung rieng.
+        ///
+        /// <paramref name="kind"/> la ma su kien de log doc duoc; <paramref name="detail"/> la
+        /// cau **da san sang hien ra man hinh**.
+        /// </summary>
+        void OnBusinessEvent(string kind, string detail, long coins, long atMs);
     }
 
     /// <summary>
@@ -154,7 +164,7 @@ namespace VuonNho.Core
             {
                 long coins = state.Machine.BatchOutputCoins;
                 string recipeId = state.Machine.BatchRecipeId;
-                state.Coins += coins;
+                CollectOrDefer(state, coins, atMs);
                 state.Machine.BatchRunning = false;
                 state.Machine.BatchRecipeId = null;
                 state.Machine.BatchFromPacked = false;
@@ -188,8 +198,17 @@ namespace VuonNho.Core
             //    may duoc phep chay trong ky sap toi.
             PayWagesIfDue(state, atMs);
 
+            // 3b. Ho so phap ly den han, doan kiem tra ghe, va chot ky tai chinh. Ba viec nay
+            //     phai chay **truoc** khi may bat dau me moi: mot lenh dinh chi hay mot lan siet
+            //     no ma den sau thi ky do van co mot me tra chay lot vao, va nguoi choi se thay
+            //     xuong minh vua bi dong cua lai vua dang san xuat.
+            ResolvePermits(state, atMs);
+            InspectIfDue(state, atMs);
+            CloseCycleIfDue(state, atMs);
+
             // 4. Robot: toi noi thi thu dung o da nham, roi nham o chin gan nhat con lai.
-            if (state.RobotUnlocked) ServiceRobot(state, atMs);
+            //    Nuong che bi niem phong thi robot dung — do la y nghia cua chu "niem phong".
+            if (state.RobotUnlocked && !state.Loan.Sealed) ServiceRobot(state, atMs);
 
             // 5. May che bien ranh va du nguyen lieu thi bat dau me moi, theo thu tu day chuyen.
             //    Uu tien chang dau: mot day chuyen dung o giua thi hang o dau se don lai, con
@@ -224,11 +243,287 @@ namespace VuonNho.Core
             {
                 long affordable = state.Coins / wage;
                 if (affordable < paid) paid = (int)affordable;
-                state.Coins -= paid * wage;
+                state.SpendCoins(paid * wage);
             }
             state.StaffedWorkers = paid;
             state.NextPayrollAtMs = atMs + period;
             NotifyWagesPaid(paid * wage, paid, state.HiredWorkers - paid, atMs);
+        }
+
+        /// <summary>Ho so dang cho tham dinh da xong chua. Xong thi giay phep co hieu luc ngay.</summary>
+        void ResolvePermits(GameState state, long atMs)
+        {
+            var compliance = state.Compliance;
+            if (compliance.PendingEntity != BusinessEntity.None && compliance.EntityReadyAtMs <= atMs)
+            {
+                var option = Compliance.Entity(compliance.PendingEntity);
+                compliance.Entity = compliance.PendingEntity;
+                compliance.PendingEntity = BusinessEntity.None;
+                compliance.EntityReadyAtMs = 0;
+                NotifyBusinessEvent("entity_registered",
+                    "Đã đăng ký xong " + (option != null ? option.DisplayName : "hình thức kinh doanh") +
+                    ". Từ kỳ này bắt đầu tính thuế.", 0, atMs);
+            }
+
+            if (compliance.FoodSafetyPending && compliance.FoodSafetyReadyAtMs <= atMs)
+            {
+                compliance.FoodSafetyPending = false;
+                compliance.FoodSafetyReadyAtMs = 0;
+                compliance.FoodSafetyCertified = true;
+                NotifyBusinessEvent("food_safety_certified",
+                    "Có giấy chứng nhận an toàn thực phẩm. Xưởng được phép hoạt động.", 0, atMs);
+            }
+        }
+
+        /// <summary>
+        /// Doan kiem tra ghe xuong theo ky. Doc trang thai that cua co so roi lap bien ban.
+        ///
+        /// Duoi mot cai may thi khong kiem tra: mot nguoi moi co bon o dat va chua xay gi ca thi
+        /// khong co xuong nao de kiem, va phat ho luc do chi la mot cai bay khong day duoc gi.
+        /// </summary>
+        void InspectIfDue(GameState state, long atMs)
+        {
+            var compliance = state.Compliance;
+            long period = Finance.CycleMs(_catalog.Balance) * _catalog.Balance.InspectionEveryCycles;
+            if (compliance.NextInspectionAtMs <= 0) compliance.NextInspectionAtMs = atMs + period;
+            if (compliance.NextInspectionAtMs > atMs) return;
+            compliance.NextInspectionAtMs = atMs + period;
+
+            if (!Compliance.HasFactory(state)) return;
+
+            var result = Compliance.Inspect(_catalog, state, atMs);
+            compliance.InspectionCount = result.Index;
+            compliance.LastInspectionIndex = result.Index;
+            compliance.LastFineCoins = result.FineCoins;
+            compliance.LastViolationIds = string.Join(",", result.ViolationIds.ToArray());
+
+            if (result.Clean)
+            {
+                NotifyBusinessEvent("inspection_clean",
+                    "Đoàn kiểm tra an toàn thực phẩm ghé xưởng: không có vi phạm nào.", 0, atMs);
+                return;
+            }
+
+            if (result.LicenceWarningOnly)
+            {
+                compliance.LicenceWarned = true;
+                NotifyBusinessEvent("inspection_warning",
+                    "Đoàn kiểm tra nhắc: xưởng chưa có giấy an toàn thực phẩm. Lần này chỉ nhắc, " +
+                    "kỳ sau là phạt 20–30 triệu kèm đình chỉ. Xin giấy ở bảng Pháp lý.", 0, atMs);
+                return;
+            }
+
+            if (result.FineCoins > 0)
+            {
+                state.SpendCoins(result.FineCoins);
+                compliance.TotalFinesCoins += result.FineCoins;
+            }
+            if (result.Suspended)
+                compliance.SuspendedUntilMs = atMs + Finance.CycleMs(_catalog.Balance) *
+                                              _catalog.Balance.SuspensionCycles;
+
+            var first = Compliance.Violation(result.ViolationIds[0]);
+            string detail = "Biên bản kiểm tra: " + (first != null ? first.DisplayName : "có vi phạm");
+            if (result.ViolationIds.Count > 1)
+                detail += " và " + (result.ViolationIds.Count - 1) + " lỗi nữa";
+            detail += ". Phạt " + result.FineCoins.ToString("N0") + DefaultContent.CoinGlyph;
+            if (result.Suspended) detail += ", đình chỉ sản xuất";
+            detail += ".";
+            NotifyBusinessEvent("inspection_fined", detail, result.FineCoins, atMs);
+        }
+
+        /// <summary>
+        /// Chot mot ky: thu tien hang ban tra cham, thu tien du lich, dong thue va chi phi ke
+        /// toan, tra no ngan hang, roi ghi mot dong vao lich su dong tien.
+        ///
+        /// Thu tu o day la mot phan cua hop dong. Thu truoc — vi thue tinh tren doanh thu cua ky,
+        /// va tien ban tra cham thu duoc trong ky nay la doanh thu cua ky nay. Tra no sau cung —
+        /// vi ngan hang la nguoi duoc tra sau khi moi thu khac da tinh xong, va do dung la cho
+        /// nguoi choi thay ro nhat vi sao thang nay khong du tien.
+        /// </summary>
+        void CloseCycleIfDue(GameState state, long atMs)
+        {
+            long period = Finance.CycleMs(_catalog.Balance);
+            if (state.NextCycleCloseAtMs <= 0) state.NextCycleCloseAtMs = atMs + period;
+            if (state.NextCycleCloseAtMs > atMs) return;
+            state.NextCycleCloseAtMs = atMs + period;
+            state.CycleIndex++;
+
+            CollectReceivables(state, atMs);
+
+            long tourism = Branches.FarmstayIncome(_catalog.Balance, state);
+            if (tourism > 0)
+            {
+                state.EarnCoins(tourism);
+                NotifyBusinessEvent("farmstay_income",
+                    "Tour hái trà và workshop kỳ này thu " + tourism.ToString("N0") +
+                    DefaultContent.CoinGlyph + ".", tourism, atMs);
+            }
+
+            // Chot doanh thu va chi phi van hanh **truoc** khi cong thue vao chi phi: thue tinh
+            // tren hai con so cua ky, khong tinh tren chinh no.
+            long revenue = state.CycleRevenueCoins;
+            long operatingExpense = state.CycleExpenseCoins;
+
+            long tax = Compliance.TaxFor(state.Compliance.Entity, revenue, operatingExpense);
+            var entity = Compliance.Entity(state.Compliance.Entity);
+            long bookkeeping = entity == null ? 0 : entity.BookkeepingCoinsPerCycle;
+            if (tax + bookkeeping > 0)
+            {
+                state.SpendCoins(tax + bookkeeping);
+                state.Compliance.TotalTaxCoins += tax;
+                if (tax > 0)
+                    NotifyBusinessEvent("tax_paid",
+                        "Nộp thuế kỳ này " + tax.ToString("N0") + DefaultContent.CoinGlyph +
+                        (bookkeeping > 0 ? " và " + bookkeeping.ToString("N0") + DefaultContent.CoinGlyph +
+                                           " phí kế toán" : "") + ".", tax + bookkeeping, atMs);
+            }
+
+            long debtService = ServiceLoan(state, atMs);
+
+            var record = new CashCycleRecord
+            {
+                Month = state.CycleIndex,
+                RevenueCoins = revenue,
+                ExpenseCoins = operatingExpense + tax + bookkeeping,
+                DebtServiceCoins = debtService,
+                DebtRemainingCoins = state.Loan.RemainingPrincipalCoins + state.Loan.OverdueCoins,
+                Shortfall = state.Loan.ConsecutiveShortfalls > 0
+            };
+            record.NetCashCoins = record.RevenueCoins - record.ExpenseCoins - record.DebtServiceCoins;
+            state.CashHistory.Add(record);
+            while (state.CashHistory.Count > _catalog.Balance.CashHistoryCycles)
+                state.CashHistory.RemoveAt(0);
+
+            state.CycleRevenueCoins = 0;
+            state.CycleExpenseCoins = 0;
+        }
+
+        /// <summary>Tien hang ban tra cham da den han thi ve tui. Kenh ban le thu cong sinh ra chung.</summary>
+        void CollectReceivables(GameState state, long atMs)
+        {
+            long collected = 0;
+            for (int i = state.Receivables.Count - 1; i >= 0; i--)
+            {
+                if (state.Receivables[i].DueAtMs > atMs) continue;
+                collected += state.Receivables[i].AmountCoins;
+                state.Receivables.RemoveAt(i);
+            }
+            if (collected <= 0) return;
+            state.EarnCoins(collected);
+            NotifyBusinessEvent("receivables_collected",
+                "Khách bán lẻ đã thanh toán " + collected.ToString("N0") + DefaultContent.CoinGlyph + ".",
+                collected, atMs);
+        }
+
+        /// <summary>
+        /// Tra nghia vu cua mot ky. Tra du thi lich tien mot buoc; khong du thi lich **dung yen**
+        /// va phan lai chua tra cong don thanh no qua han.
+        ///
+        /// Goc chua tra khong bi cong hai lan: no van nam nguyen trong du no, chi la ky nay khong
+        /// giam duoc. Nen thieu tien lam khoan vay **dai ra** chu khong lam no **phinh ra** — dung
+        /// mot cai gia, khong phai hai.
+        /// </summary>
+        long ServiceLoan(GameState state, long atMs)
+        {
+            var loan = state.Loan;
+            if (!loan.Active && loan.OverdueCoins <= 0) return 0;
+
+            long interest = Finance.InterestDue(loan.RemainingPrincipalCoins, loan.AnnualRateBps);
+            long principal = Finance.PrincipalDue(loan.PrincipalCoins, loan.TermMonths, loan.MonthsPaid);
+            if (principal > loan.RemainingPrincipalCoins) principal = loan.RemainingPrincipalCoins;
+
+            long carried = loan.OverdueCoins;
+            long due = carried + interest + principal;
+            if (due <= 0) return 0;
+
+            long paid = state.Coins < due ? state.Coins : due;
+            if (paid > 0) state.SpendCoins(paid);
+
+            long left = paid;
+            long payCarried = left < carried ? left : carried;
+            loan.OverdueCoins -= payCarried;
+            left -= payCarried;
+
+            long payInterest = left < interest ? left : interest;
+            loan.InterestPaidCoins += payInterest;
+            loan.OverdueCoins += interest - payInterest;
+            left -= payInterest;
+
+            long payPrincipal = left < principal ? left : principal;
+            loan.RemainingPrincipalCoins -= payPrincipal;
+
+            if (paid >= due)
+            {
+                loan.MonthsPaid++;
+                loan.ConsecutiveShortfalls = 0;
+            }
+            else
+            {
+                loan.ConsecutiveShortfalls++;
+            }
+            loan.NextDueAtMs = atMs + Finance.CycleMs(_catalog.Balance);
+
+            if (loan.RemainingPrincipalCoins <= 0 && loan.OverdueCoins <= 0)
+            {
+                loan.Kind = LoanKind.None;
+                loan.PrincipalCoins = 0;
+                loan.RemainingPrincipalCoins = 0;
+                loan.TermMonths = 0;
+                loan.MonthsPaid = 0;
+                loan.AnnualRateBps = 0;
+                loan.NextDueAtMs = 0;
+                loan.ConsecutiveShortfalls = 0;
+                NotifyBusinessEvent("loan_cleared", "Đã trả xong nợ ngân hàng. Nương chè là của mình.",
+                                    paid, atMs);
+                return paid;
+            }
+
+            if (!loan.Sealed && loan.ConsecutiveShortfalls >= _catalog.Balance.LoanSealShortfalls)
+            {
+                loan.Sealed = true;
+                loan.SealedAtMs = atMs;
+                NotifyBusinessEvent("loan_sealed",
+                    "Ba kỳ liền không trả đủ nợ. Ngân hàng siết nợ và niêm phong nương chè: " +
+                    "trả hết " + Finance.PayoffAmount(loan).ToString("N0") + DefaultContent.CoinGlyph +
+                    " mới mở lại được.", 0, atMs);
+                return paid;
+            }
+
+            if (paid < due)
+            {
+                NotifyBusinessEvent("loan_shortfall",
+                    "Kỳ này chỉ trả được " + paid.ToString("N0") + DefaultContent.CoinGlyph + " trên " +
+                    due.ToString("N0") + DefaultContent.CoinGlyph + " phải trả. Thiếu " +
+                    loan.ConsecutiveShortfalls + " kỳ liền — đủ " + _catalog.Balance.LoanSealShortfalls +
+                    " kỳ là bị siết nợ.", paid, atMs);
+            }
+            else
+            {
+                NotifyBusinessEvent("loan_paid",
+                    "Trả nợ kỳ " + loan.MonthsPaid + "/" + loan.TermMonths + ": " +
+                    paid.ToString("N0") + DefaultContent.CoinGlyph + " (lãi " +
+                    payInterest.ToString("N0") + DefaultContent.CoinGlyph + ").", paid, atMs);
+            }
+            return paid;
+        }
+
+        void NotifyBusinessEvent(string kind, string detail, long coins, long atMs)
+        {
+            if (ListenersMuted) return;
+            for (int i = 0; i < _listeners.Count; i++) _listeners[i].OnBusinessEvent(kind, detail, coins, atMs);
+        }
+
+        /// <summary>
+        /// Xuong co duoc phep chay khong. Bi dinh chi hay bi niem phong thi khong.
+        ///
+        /// Hai cai nay khac nhau: **dinh chi** la lenh cua doan kiem tra, chi dong xuong, vuon van
+        /// lon binh thuong. **Niem phong** la ngan hang siet no, dong ca vuon. Nen o day tra loi
+        /// cho xuong, con vuon co mot cau tra loi rieng.
+        /// </summary>
+        public bool FactoryAllowed(GameState state, long atMs)
+        {
+            return !state.Loan.Sealed && !state.Compliance.Suspended(atMs);
         }
 
         /// <summary>
@@ -237,6 +532,7 @@ namespace VuonNho.Core
         /// </summary>
         public void TryStartStations(GameState state, long atMs)
         {
+            if (!FactoryAllowed(state, atMs)) return;
             int slots = state.StaffedWorkers * Workforce.StationsPerWorker - state.RunningStationCount();
             if (slots <= 0) return;
 
@@ -336,7 +632,43 @@ namespace VuonNho.Core
                 }
             }
 
-            if (state.RobotUnlocked)
+            // Chot ky tai chinh, lan kiem tra ke tiep va hai moc tham dinh ho so deu la deadline
+            // nhu moi deadline khac. Thieu chung thi mot vuon khong gieo gi se ngu qua ca ky tra
+            // no khi chay bu offline, roi tinh dot mot phat ba ky thieu tien luc quay lai.
+            if (state.NextCycleCloseAtMs > 0 && (!found || state.NextCycleCloseAtMs < best))
+            {
+                best = state.NextCycleCloseAtMs;
+                found = true;
+            }
+            if (state.Compliance.NextInspectionAtMs > 0 &&
+                (!found || state.Compliance.NextInspectionAtMs < best))
+            {
+                best = state.Compliance.NextInspectionAtMs;
+                found = true;
+            }
+            if (state.Compliance.PendingEntity != BusinessEntity.None &&
+                (!found || state.Compliance.EntityReadyAtMs < best))
+            {
+                best = state.Compliance.EntityReadyAtMs;
+                found = true;
+            }
+            if (state.Compliance.FoodSafetyPending &&
+                (!found || state.Compliance.FoodSafetyReadyAtMs < best))
+            {
+                best = state.Compliance.FoodSafetyReadyAtMs;
+                found = true;
+            }
+
+            // Luc lenh dinh chi het hieu luc cung la mot deadline: het dinh chi thi xuong duoc chay
+            // lai ngay, khong phai doi cho toi khi co chuyen gi khac xay ra.
+            if (state.Compliance.SuspendedUntilMs > state.SimulationTimeMs &&
+                (!found || state.Compliance.SuspendedUntilMs < best))
+            {
+                best = state.Compliance.SuspendedUntilMs;
+                found = true;
+            }
+
+            if (state.RobotUnlocked && !state.Loan.Sealed)
             {
                 if (state.RobotTargetPlotId >= 0)
                 {
@@ -470,6 +802,14 @@ namespace VuonNho.Core
             if (plot == null || plot.Phase != PlotPhase.Ready) return false;
 
             string harvestedCropId = plot.CurrentCropId;
+            // O bi ray xanh chich hut cho ra **mat hang khac**: la ray xanh, khong phai bup che
+            // thuong. Doi ten mat hang ngay tai day chu khong doi luc pha tra, vi kho phai la noi
+            // nguoi choi nhin thay minh dang co gi — mot dong "la ray xanh 28" trong kho la thu
+            // duy nhat noi cho ho biet lan nay duoc mon qua.
+            CropDefinition leafhopperCrop;
+            if (plot.Leafhopper && harvestedCropId != null &&
+                _catalog.TryGetCrop(DefaultContent.CropOrientalBeauty, out leafhopperCrop))
+                harvestedCropId = leafhopperCrop.Id;
             // Sau benh khong duoc chua thi vu do mat trang. O van duoc gieo lai binh thuong: mat
             // mot vu da du dau, mat luon cho dat thi nguoi choi khong con duong nao go lai.
             int amount = plot.PestActive ? 0 : plot.PendingYield;
@@ -480,6 +820,7 @@ namespace VuonNho.Core
             plot.PestActive = false;
             plot.PestPending = false;
             plot.PestAtMs = 0;
+            plot.Leafhopper = false;
 
             plot.Phase = PlotPhase.Empty;
             plot.CurrentCropId = null;
@@ -519,13 +860,27 @@ namespace VuonNho.Core
 
             long growthMs = Cultivation.GrowthWithWeeds(_catalog.Balance, GrowthMsFor(state, cropId), plot.Weeds);
             plot.FinishAtMs = atMs + growthMs;
-            plot.PendingYield = Cultivation.YieldFor(_catalog.Balance, crop, plot.Fertility, inSeason);
+            int yield = Cultivation.YieldFor(_catalog.Balance, crop, plot.Fertility, inSeason);
+            // Che khong "trai vu" theo mat na mua nhu tra thao moc: no chiu bang sinh hoa cua tung
+            // mua — he thi nhieu bup ma gia thap, xuan thi it bup ma dat, dong thi gan nhu khong
+            // co gi. He so nay la nua "so luong" cua bang do; nua "gia" nam o Agronomy.PricePercentFor.
+            if (crop.PluckGraded)
+                yield = yield * Agronomy.Profile(season).YieldPercent / 100;
+            plot.PendingYield = yield < 0 ? 0 : yield;
 
             plot.Fertility = Cultivation.Clamp(plot.Fertility - _catalog.Balance.PlantFertilityCost, 0, 100);
 
+            // Ray xanh dung truoc sau benh: mot vu duoc ray xanh chich hut la mot vu **khong** bi
+            // sau benh. Hai cai do la cung mot con vat, chi khac o muc do — chich hut nhe thi cay
+            // tiet linalool va geraniol, nang thi mat trang.
+            plot.Leafhopper = crop.PluckGraded &&
+                              Agronomy.LeafhopperStrikes(state.PestSeed, plot.PlotId, plot.CycleIndex,
+                                                         season, _catalog.Balance.LeafhopperChancePercent);
+
             plot.PestActive = false;
-            plot.PestPending = Cultivation.PestStrikes(state.PestSeed, plot.PlotId, plot.CycleIndex,
-                                                      PestChancePercent(state));
+            plot.PestPending = !plot.Leafhopper &&
+                               Cultivation.PestStrikes(state.PestSeed, plot.PlotId, plot.CycleIndex,
+                                                       PestChancePercent(state));
             plot.PestAtMs = plot.PestPending
                 ? Cultivation.PestAppearsAtMs(state.PestSeed, plot.PlotId, plot.CycleIndex, atMs, growthMs)
                 : 0;
@@ -595,26 +950,141 @@ namespace VuonNho.Core
         {
             var machine = state.Machine;
             if (machine.BatchRunning) return false;
+            if (state.Loan.Sealed) return false;
 
             RecipeDefinition recipe;
             if (!_catalog.TryGetRecipe(machine.SelectedRecipeId, out recipe)) return false;
             if (!state.UnlockedRecipeIds.Contains(recipe.Id)) return false;
 
-            bool packed = HasPackedInput(state, recipe);
-            string itemId = packed ? PackedItemFor(recipe) : recipe.InputCropId;
-            int count = packed ? recipe.PackedInputCount : recipe.InputCount;
-            long coins = packed ? recipe.PackedOutputCoins : recipe.OutputCoins;
-            if (state.InventoryOf(itemId) < count) return false;
+            var sale = ResolveSale(state, recipe, atMs);
+            if (sale == null) return false;
 
-            state.AddInventory(itemId, -count);
+            state.AddInventory(sale.ItemId, -sale.Count);
             machine.BatchRunning = true;
             machine.BatchRecipeId = recipe.Id;
-            machine.BatchFromPacked = packed;
+            machine.BatchFromPacked = sale.FromPacked;
             machine.BatchStartAtMs = atMs;
             machine.BatchFinishAtMs = atMs + BrewMsFor(state, recipe.Id);
-            machine.BatchOutputCoins = coins;
+            machine.BatchOutputCoins = sale.Coins;
             NotifyBatchStarted(recipe.Id, atMs);
             return true;
+        }
+
+        /// <summary>
+        /// Tien cua mot me da ra: vao tui ngay, hay thanh mot khoan phai thu.
+        ///
+        /// Kenh ban le thu cong tra cham 30–60 ngay. Do la **cai gia cua bien loi nhuan cao**, va
+        /// no phai la mot cai gia that: hang ghi nhan ban xong roi ma tien chua ve tay thi ky nay
+        /// van co the khong du tra no. Cong ngay vao tui thi bien 165% tro thanh mot mon qua
+        /// khong kem dieu kien nao.
+        /// </summary>
+        void CollectOrDefer(GameState state, long coins, long atMs)
+        {
+            if (coins <= 0) return;
+            var channel = state.UnlockedBranches.Contains(state.SalesChannel)
+                ? Branches.Definition(state.SalesChannel) : null;
+            int delayDays = channel == null ? 0 : channel.PayoutDelayDays;
+            if (delayDays <= 0)
+            {
+                state.EarnCoins(coins);
+                return;
+            }
+            state.Receivables.Add(new Receivable
+            {
+                AmountCoins = coins,
+                DueAtMs = atMs + delayDays * Compliance.DayMs(_catalog.Balance)
+            });
+        }
+
+        /// <summary>
+        /// Quay tra se ban gi, lay bao nhieu, duoc bao nhieu xu — mot cho duy nhat tra loi.
+        ///
+        /// Truoc day cau tra loi nay bi chep hai lan: mot ban trong TryStartBatch va mot ban trong
+        /// CanStartBatchNow. Hai ban do phai giong nhau **tuyet doi**, khong thi vong su kien se
+        /// bao "co viec ngay bay gio" o mot moc ma TryStartBatch tu choi lam, va AdvanceTo se
+        /// quay tai cho cho toi khi vuot MaxEventsPerAdvance. Gop lai lam mot la cach duy nhat
+        /// giu duoc dieu do khi cong thuc tinh gia dai them ba he so.
+        ///
+        /// Tra ve null khi khong ban duoc gi.
+        /// </summary>
+        public CounterSale ResolveSale(GameState state, RecipeDefinition recipe, long atMs)
+        {
+            if (recipe == null) return null;
+
+            string packedItem = PackedItemFor(recipe);
+            string bulkItem = BulkItemFor(recipe);
+            var channel = state.UnlockedBranches.Contains(state.SalesChannel)
+                ? Branches.Definition(state.SalesChannel) : null;
+
+            CounterSale sale = null;
+            if (recipe.PackedInputCount > 0 && packedItem != null &&
+                state.InventoryOf(packedItem) >= recipe.PackedInputCount)
+            {
+                sale = new CounterSale
+                {
+                    ItemId = packedItem, Count = recipe.PackedInputCount,
+                    Coins = recipe.PackedOutputCoins, FromPacked = true
+                };
+            }
+            else if (channel != null && channel.SellsUnpacked && recipe.PackedInputCount > 0 &&
+                     bulkItem != null && state.InventoryOf(bulkItem) >= recipe.PackedInputCount)
+            {
+                // Gia cong tho B2B ban tra **moc**: bo qua chang dong goi, an dung gia cua hang da
+                // dong goi roi chiu he so kenh. Do la ly do nhanh nay ton it may nhat — va cung la
+                // ly do ai da mua may dong goi thi nen doi sang kenh khac.
+                sale = new CounterSale
+                {
+                    ItemId = bulkItem, Count = recipe.PackedInputCount,
+                    Coins = recipe.PackedOutputCoins, FromPacked = true
+                };
+            }
+            else if (state.InventoryOf(recipe.InputCropId) >= recipe.InputCount)
+            {
+                sale = new CounterSale
+                {
+                    ItemId = recipe.InputCropId, Count = recipe.InputCount,
+                    Coins = recipe.OutputCoins, FromPacked = false
+                };
+            }
+            if (sale == null) return null;
+
+            sale.PricePercent = SalePricePercent(state, recipe, atMs);
+            sale.Coins = sale.Coins * sale.PricePercent / 100;
+            return sale;
+        }
+
+        /// <summary>
+        /// He so gia cua mot me: mua vu, roi can lua, roi kenh ban. Ba he nhan lien tiep nhau.
+        ///
+        /// Chi che chiu hai he dau. Tra thao moc khong co bang sinh hoa nao trong ban mo phong va
+        /// khong ai sao diet men mot bong cuc, nen dem hai con so do ap cho chung se la hai con so
+        /// tu bay ra.
+        /// </summary>
+        public int SalePricePercent(GameState state, RecipeDefinition recipe, long atMs)
+        {
+            int percent = 100;
+            if (Agronomy.IsTea(_catalog, recipe.InputCropId))
+            {
+                var season = Cultivation.SeasonAt(_catalog.Balance, atMs);
+                percent = percent * Agronomy.Profile(season).PricePercent / 100;
+
+                bool leafhopperLeaves = recipe.InputCropId == DefaultContent.CropOrientalBeauty;
+                var verdict = Crafting.Evaluate(state.Craft, leafhopperLeaves,
+                                                _catalog.Balance.PremiumBatchPricePercent,
+                                                _catalog.Balance.FlawedBatchPricePercent);
+                percent = percent * Crafting.BatchPricePercent(
+                    verdict, leafhopperLeaves, _catalog.Balance.OrientalBeautyFallbackPercent) / 100;
+            }
+            percent = percent * Branches.PricePercentFor(state) / 100;
+            return percent < 1 ? 1 : percent;
+        }
+
+        /// <summary>Duoi ten cua chang truoc chang dong goi — tra moc, hang cua kenh B2B.</summary>
+        public string BulkItemFor(RecipeDefinition recipe)
+        {
+            if (recipe == null || _catalog.Stages.Count < 2) return null;
+            string suffix = _catalog.Stages[_catalog.Stages.Count - 2].OutputSuffix;
+            return suffix == null ? null : ProcessChain.ItemId(recipe.InputCropId, suffix);
         }
 
         /// <summary>
@@ -647,20 +1117,21 @@ namespace VuonNho.Core
         public bool CanStartBatchNow(GameState state)
         {
             if (state.Machine.BatchRunning) return false;
+            if (state.Loan.Sealed) return false;
 
             RecipeDefinition recipe;
             if (!_catalog.TryGetRecipe(state.Machine.SelectedRecipeId, out recipe)) return false;
             if (!state.UnlockedRecipeIds.Contains(recipe.Id)) return false;
 
-            bool packed = HasPackedInput(state, recipe);
-            string itemId = packed ? PackedItemFor(recipe) : recipe.InputCropId;
-            int count = packed ? recipe.PackedInputCount : recipe.InputCount;
-            return state.InventoryOf(itemId) >= count;
+            return ResolveSale(state, recipe, state.SimulationTimeMs) != null;
         }
 
         /// <summary>Co may nao co the bat dau ngay bay gio khong. Dung chung dieu kien voi TryStartStations.</summary>
         public bool CanStartAnyStation(GameState state)
         {
+            // Dieu kien phai **dung bang** dieu kien cua TryStartStations. Rong hon mot chut thi
+            // TryGetNextEventTime se bao "co viec ngay bay gio" mai mai o cung mot moc thoi gian.
+            if (!FactoryAllowed(state, state.SimulationTimeMs)) return false;
             if (state.StaffedWorkers * Workforce.StationsPerWorker - state.RunningStationCount() <= 0)
                 return false;
             for (int i = 0; i < _catalog.Stages.Count; i++)

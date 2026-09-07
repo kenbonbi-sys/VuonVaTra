@@ -26,8 +26,11 @@ namespace VuonNho.Core
 
     public sealed class SaveSnapshot
     {
-        /// <summary>5 = canh tac: do phi, co dai, sau benh va so thu tu vu cua tung o.</summary>
-        public const int CurrentSchemaVersion = 5;
+        /// <summary>
+        /// 5 = canh tac: do phi, co dai, sau benh va so thu tu vu cua tung o.
+        /// 6 = von va no, ho so phap ly, bon nut can lua, phan nhanh kinh doanh, dong tien.
+        /// </summary>
+        public const int CurrentSchemaVersion = 6;
 
         public int SchemaVersion = CurrentSchemaVersion;
         public string BalanceVersion;
@@ -98,7 +101,8 @@ namespace VuonNho.Core
                     .Set("cycleIndex", plot.CycleIndex)
                     .Set("pestPending", plot.PestPending)
                     .Set("pestActive", plot.PestActive)
-                    .Set("pestAtMs", plot.PestAtMs));
+                    .Set("pestAtMs", plot.PestAtMs)
+                    .Set("leafhopper", plot.Leafhopper));
             }
             root.Set("plots", plots);
 
@@ -153,6 +157,84 @@ namespace VuonNho.Core
                     .Set("rotationDeg", item.RotationDeg));
             }
             root.Set("decorations", decorations);
+
+            // --- bon he cua ban mo phong khoi nghiep tra
+            var loan = state.Loan;
+            root.Set("loan", JsonValue.NewObject()
+                .Set("kind", (int)loan.Kind)
+                .Set("principalCoins", loan.PrincipalCoins)
+                .Set("remainingPrincipalCoins", loan.RemainingPrincipalCoins)
+                .Set("annualRateBps", loan.AnnualRateBps)
+                .Set("termMonths", loan.TermMonths)
+                .Set("monthsPaid", loan.MonthsPaid)
+                .Set("nextDueAtMs", loan.NextDueAtMs)
+                .Set("consecutiveShortfalls", loan.ConsecutiveShortfalls)
+                .Set("overdueCoins", loan.OverdueCoins)
+                .Set("interestPaidCoins", loan.InterestPaidCoins)
+                .Set("sealed", loan.Sealed)
+                .Set("sealedAtMs", loan.SealedAtMs));
+
+            var compliance = state.Compliance;
+            root.Set("compliance", JsonValue.NewObject()
+                .Set("entity", (int)compliance.Entity)
+                .Set("pendingEntity", (int)compliance.PendingEntity)
+                .Set("entityReadyAtMs", compliance.EntityReadyAtMs)
+                .Set("foodSafetyCertified", compliance.FoodSafetyCertified)
+                .Set("foodSafetyPending", compliance.FoodSafetyPending)
+                .Set("foodSafetyReadyAtMs", compliance.FoodSafetyReadyAtMs)
+                .Set("protectiveGear", compliance.ProtectiveGear)
+                .Set("licenceWarned", compliance.LicenceWarned)
+                .Set("nextInspectionAtMs", compliance.NextInspectionAtMs)
+                .Set("inspectionCount", compliance.InspectionCount)
+                .Set("suspendedUntilMs", compliance.SuspendedUntilMs)
+                .Set("totalFinesCoins", compliance.TotalFinesCoins)
+                .Set("totalTaxCoins", compliance.TotalTaxCoins)
+                .Set("lastInspectionIndex", compliance.LastInspectionIndex)
+                .Set("lastViolationIds", compliance.LastViolationIds)
+                .Set("lastFineCoins", compliance.LastFineCoins));
+
+            root.Set("craft", JsonValue.NewObject()
+                .Set("route", (int)state.Craft.Route)
+                .Set("fixTempC", state.Craft.FixTempC)
+                .Set("rollMinutes", state.Craft.RollMinutes)
+                .Set("moisturePermille", state.Craft.MoisturePermille)
+                .Set("oxidationPercent", state.Craft.OxidationPercent));
+
+            // Thu tu theo enum, khong theo thu tu them vao: hai lan ghi cung mot state phai cho
+            // cung mot chuoi byte, va HashSet khong hua gi ve thu tu duyet.
+            var branches = JsonValue.NewArray();
+            for (int kind = (int)BusinessBranch.BulkB2B; kind <= (int)BusinessBranch.Farmstay; kind++)
+                if (state.UnlockedBranches.Contains((BusinessBranch)kind)) branches.Add(JsonValue.Of(kind));
+            root.Set("unlockedBranches", branches);
+            root.Set("salesChannel", (int)state.SalesChannel);
+
+            var receivables = JsonValue.NewArray();
+            for (int i = 0; i < state.Receivables.Count; i++)
+                receivables.Add(JsonValue.NewObject()
+                    .Set("amountCoins", state.Receivables[i].AmountCoins)
+                    .Set("dueAtMs", state.Receivables[i].DueAtMs));
+            root.Set("receivables", receivables);
+
+            root.Set("nextCycleCloseAtMs", state.NextCycleCloseAtMs);
+            root.Set("cycleIndex", state.CycleIndex);
+            root.Set("cycleRevenueCoins", state.CycleRevenueCoins);
+            root.Set("cycleExpenseCoins", state.CycleExpenseCoins);
+            root.Set("introSeen", state.IntroSeen);
+
+            var cashHistory = JsonValue.NewArray();
+            for (int i = 0; i < state.CashHistory.Count; i++)
+            {
+                var row = state.CashHistory[i];
+                cashHistory.Add(JsonValue.NewObject()
+                    .Set("month", row.Month)
+                    .Set("revenueCoins", row.RevenueCoins)
+                    .Set("expenseCoins", row.ExpenseCoins)
+                    .Set("debtServiceCoins", row.DebtServiceCoins)
+                    .Set("netCashCoins", row.NetCashCoins)
+                    .Set("debtRemainingCoins", row.DebtRemainingCoins)
+                    .Set("shortfall", row.Shortfall));
+            }
+            root.Set("cashHistory", cashHistory);
 
             if (state.PendingOfflineSummary == null)
             {
@@ -299,7 +381,8 @@ namespace VuonNho.Core
                     CycleIndex = entry.GetInt("cycleIndex", 0),
                     PestPending = entry.GetBool("pestPending", false),
                     PestActive = entry.GetBool("pestActive", false),
-                    PestAtMs = entry.GetLong("pestAtMs", 0)
+                    PestAtMs = entry.GetLong("pestAtMs", 0),
+                    Leafhopper = entry.GetBool("leafhopper", false)
                 };
 
                 int phase = entry.GetInt("phase", -1);
@@ -457,8 +540,163 @@ namespace VuonNho.Core
                 state.PendingOfflineSummary = summary;
             }
 
+            ReadBusinessState(root, state, catalog);
+
             snapshot.State = state;
             return snapshot;
+        }
+
+        /// <summary>
+        /// Bon he cua ban mo phong khoi nghiep tra.
+        ///
+        /// Moi truong deu co mac dinh, va mac dinh do la **trang thai ban dau cua he thong**:
+        /// khong vay dong nao, chua dang ky gi, bon nut can lua o chuan tra xanh, chua mo phan
+        /// nhanh nao. Nho vay mot save cua ban truoc doc len la mot van dang choi hop le chu
+        /// khong phai mot van bi khoa vi thieu du lieu.
+        /// </summary>
+        static void ReadBusinessState(JsonValue root, GameState state, ContentCatalog catalog)
+        {
+            var loanValue = root.Get("loan");
+            if (loanValue != null && loanValue.Kind == JsonKind.Object)
+            {
+                var loan = state.Loan;
+                loan.Kind = (LoanKind)loanValue.GetInt("kind", 0);
+                loan.PrincipalCoins = loanValue.GetLong("principalCoins", 0);
+                loan.RemainingPrincipalCoins = loanValue.GetLong("remainingPrincipalCoins", 0);
+                loan.AnnualRateBps = loanValue.GetInt("annualRateBps", 0);
+                loan.TermMonths = loanValue.GetInt("termMonths", 0);
+                loan.MonthsPaid = loanValue.GetInt("monthsPaid", 0);
+                loan.NextDueAtMs = loanValue.GetLong("nextDueAtMs", 0);
+                loan.ConsecutiveShortfalls = loanValue.GetInt("consecutiveShortfalls", 0);
+                loan.OverdueCoins = loanValue.GetLong("overdueCoins", 0);
+                loan.InterestPaidCoins = loanValue.GetLong("interestPaidCoins", 0);
+                loan.Sealed = loanValue.GetBool("sealed", false);
+                loan.SealedAtMs = loanValue.GetLong("sealedAtMs", 0);
+
+                if (loan.PrincipalCoins < 0 || loan.RemainingPrincipalCoins < 0 ||
+                    loan.OverdueCoins < 0 || loan.AnnualRateBps < 0)
+                    throw new SaveCorruptException("Khoan vay co so am.");
+                if (loan.RemainingPrincipalCoins > loan.PrincipalCoins)
+                    throw new SaveCorruptException("Du no lon hon goc ban dau.");
+                if (loan.TermMonths < 0 || loan.MonthsPaid < 0)
+                    throw new SaveCorruptException("Ky han khoan vay am.");
+            }
+
+            var complianceValue = root.Get("compliance");
+            if (complianceValue != null && complianceValue.Kind == JsonKind.Object)
+            {
+                var compliance = state.Compliance;
+                compliance.Entity = (BusinessEntity)complianceValue.GetInt("entity", 0);
+                compliance.PendingEntity = (BusinessEntity)complianceValue.GetInt("pendingEntity", 0);
+                compliance.EntityReadyAtMs = complianceValue.GetLong("entityReadyAtMs", 0);
+                compliance.FoodSafetyCertified = complianceValue.GetBool("foodSafetyCertified", false);
+                compliance.FoodSafetyPending = complianceValue.GetBool("foodSafetyPending", false);
+                compliance.FoodSafetyReadyAtMs = complianceValue.GetLong("foodSafetyReadyAtMs", 0);
+                compliance.ProtectiveGear = complianceValue.GetBool("protectiveGear", false);
+                compliance.LicenceWarned = complianceValue.GetBool("licenceWarned", false);
+                compliance.NextInspectionAtMs = complianceValue.GetLong("nextInspectionAtMs", 0);
+                compliance.InspectionCount = complianceValue.GetInt("inspectionCount", 0);
+                compliance.SuspendedUntilMs = complianceValue.GetLong("suspendedUntilMs", 0);
+                compliance.TotalFinesCoins = complianceValue.GetLong("totalFinesCoins", 0);
+                compliance.TotalTaxCoins = complianceValue.GetLong("totalTaxCoins", 0);
+                compliance.LastInspectionIndex = complianceValue.GetInt("lastInspectionIndex", 0);
+                compliance.LastViolationIds = complianceValue.GetStringOrNull("lastViolationIds");
+                compliance.LastFineCoins = complianceValue.GetLong("lastFineCoins", 0);
+
+                if (compliance.InspectionCount < 0 || compliance.TotalFinesCoins < 0 ||
+                    compliance.TotalTaxCoins < 0)
+                    throw new SaveCorruptException("Ho so phap ly co so am.");
+            }
+
+            var craftValue = root.Get("craft");
+            if (craftValue != null && craftValue.Kind == JsonKind.Object)
+            {
+                var route = (TeaRoute)craftValue.GetInt("route", 0);
+                var windows = Crafting.Windows(route);
+                state.Craft = new CraftSettings
+                {
+                    Route = route,
+                    // Kep vao khoang cho phep ngay luc doc: mot save bi sua tay voi nhiet do
+                    // 99999 khong duoc bien thanh mot me tra khong the danh gia.
+                    FixTempC = Cultivation.Clamp(craftValue.GetInt("fixTempC", windows[0].IdealLow),
+                                                 windows[0].Minimum, windows[0].Maximum),
+                    RollMinutes = Cultivation.Clamp(craftValue.GetInt("rollMinutes", windows[1].IdealLow),
+                                                    windows[1].Minimum, windows[1].Maximum),
+                    MoisturePermille = Cultivation.Clamp(
+                        craftValue.GetInt("moisturePermille", windows[2].IdealHigh),
+                        windows[2].Minimum, windows[2].Maximum),
+                    OxidationPercent = Cultivation.Clamp(
+                        craftValue.GetInt("oxidationPercent", windows[3].IdealLow),
+                        windows[3].Minimum, windows[3].Maximum)
+                };
+            }
+
+            var branchesValue = root.Get("unlockedBranches");
+            if (branchesValue != null && branchesValue.Kind == JsonKind.Array)
+                for (int i = 0; i < branchesValue.Count; i++)
+                {
+                    var branch = (BusinessBranch)branchesValue.Items[i].AsInt();
+                    if (Branches.Definition(branch) == null)
+                        throw new SaveCorruptException("Phan nhanh khong ton tai: " + (int)branch);
+                    state.UnlockedBranches.Add(branch);
+                }
+
+            state.SalesChannel = (BusinessBranch)root.GetInt("salesChannel", 0);
+            if (state.SalesChannel != BusinessBranch.None &&
+                !state.UnlockedBranches.Contains(state.SalesChannel))
+                state.SalesChannel = BusinessBranch.None;
+
+            var receivablesValue = root.Get("receivables");
+            if (receivablesValue != null && receivablesValue.Kind == JsonKind.Array)
+                for (int i = 0; i < receivablesValue.Count; i++)
+                {
+                    var entry = receivablesValue.Items[i];
+                    long amount = entry.GetLong("amountCoins", 0);
+                    if (amount < 0) throw new SaveCorruptException("Khoan phai thu am.");
+                    state.Receivables.Add(new Receivable
+                    {
+                        AmountCoins = amount,
+                        DueAtMs = entry.GetLong("dueAtMs", 0)
+                    });
+                }
+
+            state.NextCycleCloseAtMs = root.GetLong("nextCycleCloseAtMs",
+                                                    Finance.CycleMs(catalog.Balance));
+            state.CycleIndex = root.GetInt("cycleIndex", 0);
+            state.CycleRevenueCoins = root.GetLong("cycleRevenueCoins", 0);
+            state.CycleExpenseCoins = root.GetLong("cycleExpenseCoins", 0);
+            state.IntroSeen = root.GetBool("introSeen", false);
+
+            if (state.NextCycleCloseAtMs < 0 || state.CycleIndex < 0 ||
+                state.CycleRevenueCoins < 0 || state.CycleExpenseCoins < 0)
+                throw new SaveCorruptException("So lieu ky tai chinh am.");
+
+            // Ky dau tien phai co mot moc, khong thi chot ky se khong bao gio den han va ca he
+            // tai chinh nam im — mot loi khong bao gi ca.
+            if (state.NextCycleCloseAtMs == 0)
+                state.NextCycleCloseAtMs = state.SimulationTimeMs + Finance.CycleMs(catalog.Balance);
+            if (state.Compliance.NextInspectionAtMs == 0)
+                state.Compliance.NextInspectionAtMs = state.SimulationTimeMs +
+                    Finance.CycleMs(catalog.Balance) * catalog.Balance.InspectionEveryCycles;
+
+            var historyValue = root.Get("cashHistory");
+            if (historyValue != null && historyValue.Kind == JsonKind.Array)
+                for (int i = 0; i < historyValue.Count; i++)
+                {
+                    var entry = historyValue.Items[i];
+                    state.CashHistory.Add(new CashCycleRecord
+                    {
+                        Month = entry.GetInt("month", 0),
+                        RevenueCoins = entry.GetLong("revenueCoins", 0),
+                        ExpenseCoins = entry.GetLong("expenseCoins", 0),
+                        DebtServiceCoins = entry.GetLong("debtServiceCoins", 0),
+                        NetCashCoins = entry.GetLong("netCashCoins", 0),
+                        DebtRemainingCoins = entry.GetLong("debtRemainingCoins", 0),
+                        Shortfall = entry.GetBool("shortfall", false)
+                    });
+                }
+            while (state.CashHistory.Count > catalog.Balance.CashHistoryCycles)
+                state.CashHistory.RemoveAt(0);
         }
 
         static void ReadIdSet(JsonValue array, HashSet<string> target, ContentCatalog catalog, bool crops)
@@ -517,7 +755,14 @@ namespace VuonNho.Core
             // 4 -> 5: them do phi, co dai, sau benh. Cung the: moi truong moi deu co mac dinh o
             // buoc doc, va mac dinh do la mot khu vuon dat con tot, sach co, khong sau benh —
             // dung trang thai ma mot van dang choi dang o.
-            if (fromSchemaVersion == 4) return root;
+            if (fromSchemaVersion == 4) fromSchemaVersion = 5;
+
+            // 5 -> 6: them von va no, phap ly, can lua, phan nhanh kinh doanh. ReadBusinessState
+            // co mac dinh dung cho tat ca — khong vay dong nao, chua dang ky gi — nen o day khong
+            // phai them gi. Ba truong doc tu goc (moc chot ky va moc kiem tra) duoc bu bang
+            // SimulationTimeMs cua chinh save do, nen mot van dang choi doc len se bat dau tinh
+            // ky tai chinh tu luc no dang o chu khong tu moc 0.
+            if (fromSchemaVersion == 5) return root;
 
             throw new SaveCorruptException("Khong co buoc migration tu schema " + fromSchemaVersion + ".");
         }

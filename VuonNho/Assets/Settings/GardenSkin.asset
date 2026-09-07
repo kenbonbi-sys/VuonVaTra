@@ -15,7 +15,7 @@ MonoBehaviour:
   PlotSpacing: 1.6
   PlotSize: 1.4
   GroundSize: 54
-  CameraOrthographicSize: 8.5
+  CameraOrthographicSize: 6.6
   SoilPrefab: {fileID: 2577605644824434187, guid: 36da81312d6574d41a7bf9fb266efcad, type: 3}
   LockedOverlayPrefab: {fileID: 4531101483982125011, guid: 82c4643cc23bc8942bc28610ae30d20f, type: 3}
   SeedlingPrefab: {fileID: 718328680928917701, guid: 78387059e5d50b241875ee2cb056fb42, type: 3}

@@ -22,6 +22,18 @@ namespace VuonNho.Core
         /// mot cai luat ma ho chua co cach nao doc ra.
         /// </summary>
         public int SeasonMask;
+
+        /// <summary>
+        /// Cay che, hai theo phan hang bup — xem <see cref="Agronomy"/>. Chi cay che chiu bang
+        /// sinh hoa theo mua va co the bi ray xanh chich hut; tra thao moc thi khong.
+        /// </summary>
+        public bool PluckGraded;
+
+        /// <summary>
+        /// Khong gieo duoc, chi sinh ra tu mot su kien trong vuon. Dong Phuong My Nhan la la cua
+        /// mot o da bi ray xanh chich hut, khong ai gieo ra no duoc.
+        /// </summary>
+        public bool EventOnly;
     }
 
     public sealed class RecipeDefinition
@@ -54,7 +66,9 @@ namespace VuonNho.Core
         GrowthSpeed,
         BrewSpeed,
         /// <summary>Phong tru sinh hoc. IntValue = ty le sau benh CON LAI, tinh bang phan tram.</summary>
-        PestControl
+        PestControl,
+        /// <summary>Do bao ho y te cho tho. Thieu no thi ky kiem tra nao cung bi phat.</summary>
+        ProtectiveGear
     }
 
     public sealed class UpgradeDefinition
@@ -158,6 +172,69 @@ namespace VuonNho.Core
         public long PayrollPeriodMs = 60000;
         /// <summary>Tran so tho thue duoc. Bang so may, thue them nua cung khong chay them may nao.</summary>
         public int MaximumWorkers = 6;
+
+        // --- tai chinh: von, vay ngan hang va dong tien (muc 1 cua ban mo phong)
+        /// <summary>
+        /// Bao nhieu xu la mot trieu dong. Mot cho duy nhat quy doi giua don vi cua game va don
+        /// vi cua ban mo phong — doi so nay la doi het moi con so tai chinh hien ra man hinh.
+        /// </summary>
+        public int CoinsPerMillionVnd = 10;
+
+        /// <summary>Von tu co dau game trong kich ban, trieu dong. Chi de ke va de doi chieu.</summary>
+        public long SeedCapitalMillionVnd = 200;
+
+        /// <summary>Han muc vay tin chap: 200 trieu, lai 6,5%–8,5%/nam.</summary>
+        public long UnsecuredLoanCapCoins = 2000;
+        public int UnsecuredMinRateBps = 650;
+        public int UnsecuredMaxRateBps = 850;
+
+        /// <summary>Han muc the chap: 70% dinh gia so do 500 trieu, lai 7,5%–9,0%/nam.</summary>
+        public long SecuredLoanCapCoins = 3500;
+        public int SecuredMinRateBps = 750;
+        public int SecuredMaxRateBps = 900;
+
+        public int LoanMinTermMonths = 12;
+        public int LoanMaxTermMonths = 36;
+
+        /// <summary>Mot mua chia lam bao nhieu ky tra no. Mua la mot quy, nen ba thang.</summary>
+        public int MonthsPerSeason = 3;
+
+        /// <summary>Bao nhieu ky lien tiep khong tra du thi ngan hang niem phong nuong che.</summary>
+        public int LoanSealShortfalls = 3;
+
+        /// <summary>Giu lai bao nhieu ky gan nhat cho do thi dong tien.</summary>
+        public int CashHistoryCycles = 12;
+
+        // --- phap ly va an toan thuc pham (muc 4)
+        /// <summary>Le phi va thoi gian tham dinh giay an toan thuc pham.</summary>
+        public long FoodSafetyFeeCoins = 180;
+        public int FoodSafetyMinDays = 15;
+        public int FoodSafetyMaxDays = 45;
+
+        /// <summary>Bao nhieu ky thi doan kiem tra ghe mot lan.</summary>
+        public int InspectionEveryCycles = 2;
+
+        /// <summary>Bi dinh chi thi dung san xuat bao lau, tinh bang ky.</summary>
+        public int SuspensionCycles = 1;
+
+        // --- che bien (muc 3)
+        /// <summary>He so gia cua me tra thuong hang va cua me bi loi, phan tram.</summary>
+        public int PremiumBatchPricePercent = 130;
+        public int FlawedBatchPricePercent = 55;
+
+        // --- ray xanh va Dong Phuong My Nhan (muc 2)
+        /// <summary>Bao nhieu phan tram so vu che bi ray xanh chich hut, trong mua ray.</summary>
+        public int LeafhopperChancePercent = 22;
+
+        /// <summary>
+        /// La ray xanh bi lam sai duong thi chi con bay nhieu phan tram gia. Dong Phuong My Nhan
+        /// dat gap nam lan hong tra thuong, nen lam sai la mat gan het phan chenh do.
+        /// </summary>
+        public int OrientalBeautyFallbackPercent = 20;
+
+        // --- du lich trai nghiem (muc 5)
+        public long FarmstayBaseIncomeCoins = 40;
+        public long FarmstayIncomePerDecorationCoins = 12;
 
         // Toc do cay x0,8 -> 4/5. Toc do may x0,5 -> 1/2.
         public int GrowthSpeedNumerator = 4;
@@ -402,6 +479,65 @@ namespace VuonNho.Core
                 throw new ContentValidationException("Ky tra luong phai duong.");
             if (Balance.MaximumWorkers < 0)
                 throw new ContentValidationException("Tran so tho am.");
+
+            // --- tai chinh
+            if (Balance.CoinsPerMillionVnd <= 0)
+                throw new ContentValidationException("Ti le quy doi xu ra trieu dong phai duong.");
+            if (Balance.MonthsPerSeason <= 0)
+                throw new ContentValidationException("So thang mot mua phai duong.");
+            // Mot ky ngan hon mot millisecond thi vong su kien se quay tai cho o moc den han.
+            if (Balance.SeasonLengthMs / Balance.MonthsPerSeason <= 0)
+                throw new ContentValidationException("Ky tra no ngan hon mot millisecond.");
+            if (Balance.UnsecuredLoanCapCoins < 0 || Balance.SecuredLoanCapCoins < 0)
+                throw new ContentValidationException("Han muc vay am.");
+            if (Balance.UnsecuredMinRateBps < 0 || Balance.UnsecuredMaxRateBps < Balance.UnsecuredMinRateBps)
+                throw new ContentValidationException("Khoang lai suat tin chap khong hop le.");
+            if (Balance.SecuredMinRateBps < 0 || Balance.SecuredMaxRateBps < Balance.SecuredMinRateBps)
+                throw new ContentValidationException("Khoang lai suat the chap khong hop le.");
+            if (Balance.LoanMinTermMonths <= 0 || Balance.LoanMaxTermMonths < Balance.LoanMinTermMonths)
+                throw new ContentValidationException("Khoang thoi han vay khong hop le.");
+            if (Balance.LoanSealShortfalls <= 0)
+                throw new ContentValidationException("Nguong siet no phai duong.");
+            if (Balance.CashHistoryCycles <= 0)
+                throw new ContentValidationException("So ky luu cho do thi dong tien phai duong.");
+
+            // --- phap ly
+            if (Balance.FoodSafetyFeeCoins < 0)
+                throw new ContentValidationException("Le phi giay an toan thuc pham am.");
+            if (Balance.FoodSafetyMinDays <= 0 || Balance.FoodSafetyMaxDays < Balance.FoodSafetyMinDays)
+                throw new ContentValidationException("Khoang tham dinh giay an toan thuc pham khong hop le.");
+            if (Balance.InspectionEveryCycles <= 0)
+                throw new ContentValidationException("Ky kiem tra phai duong.");
+            if (Balance.SuspensionCycles < 0)
+                throw new ContentValidationException("So ky dinh chi am.");
+
+            // --- che bien va thoi vu
+            if (Balance.PremiumBatchPricePercent < 100)
+                throw new ContentValidationException("Me thuong hang phai duoc gia cao hon me dat.");
+            if (Balance.FlawedBatchPricePercent < 0 || Balance.FlawedBatchPricePercent > 100)
+                throw new ContentValidationException("He so gia me loi phai nam trong 0..100.");
+            if (Balance.LeafhopperChancePercent < 0 || Balance.LeafhopperChancePercent > 100)
+                throw new ContentValidationException("Ty le ray xanh phai nam trong 0..100.");
+            if (Balance.OrientalBeautyFallbackPercent < 0 || Balance.OrientalBeautyFallbackPercent > 100)
+                throw new ContentValidationException("He so la ray xanh lam sai phai nam trong 0..100.");
+            if (Balance.FarmstayBaseIncomeCoins < 0 || Balance.FarmstayIncomePerDecorationCoins < 0)
+                throw new ContentValidationException("Thu nhap du lich am.");
+
+            // Cay che phai co du bon phan hang, va phan hang nao cung phai tro toi mot cay co that:
+            // thieu mot phan hang thi bang thu hai trong so tay se co mot dong khong bam duoc.
+            var grades = Agronomy.Grades();
+            for (int i = 0; i < grades.Count; i++)
+            {
+                CropDefinition crop;
+                if (!TryGetCrop(grades[i].CropId, out crop))
+                    throw new ContentValidationException("Phan hang thu hai tro toi cay khong ton tai: " +
+                                                        grades[i].CropId);
+                if (!crop.PluckGraded)
+                    throw new ContentValidationException("Cay cua phan hang thu hai phai la cay che: " +
+                                                        crop.Id);
+                if (grades[i].FreshPerDryPermille <= 0)
+                    throw new ContentValidationException("Ty le tuoi tren kho phai duong: " + grades[i].CropId);
+            }
 
             // Day chuyen phai noi lien: dau vao cua chang sau dung bang dau ra cua chang truoc.
             // Dut mot mat xich thi mot cai may se khong bao gio nhan duoc nguyen lieu, va loi do

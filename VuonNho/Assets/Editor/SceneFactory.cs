@@ -222,7 +222,8 @@ namespace VuonNho.EditorTools
             var rig = go.AddComponent<CameraRig>();
             rig.Camera = camera;
             rig.MinSize = 3.2f;
-            rig.MaxSize = skin.CameraOrthographicSize * 1.85f;
+            // Starting closer must retain the existing zoom-out range.
+            rig.MaxSize = Mathf.Max(8.5f, skin.CameraOrthographicSize) * 1.85f;
             rig.PanLimit = 14f;
             return camera;
         }

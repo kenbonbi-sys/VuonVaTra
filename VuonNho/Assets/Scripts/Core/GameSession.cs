@@ -77,6 +77,10 @@ namespace VuonNho.Core
         /// <summary>Duoi nguong nay thi khong hien bao cao quay lai, nhung tien do van duoc ap dung.</summary>
         public const long OfflineReportMinMs = 60000;
 
+        /// <summary>Cau tu choi khi nuong che dang bi ngan hang niem phong.</summary>
+        public const string SealedReason =
+            "Nương chè đang bị ngân hàng niêm phong. Trả hết nợ ở bảng Vốn và nợ để mở lại.";
+
         readonly ContentCatalog _catalog;
         readonly FarmSimulation _simulation;
         readonly IClock _clock;
@@ -357,6 +361,7 @@ namespace VuonNho.Core
         public CommandResult Plant(int plotId, string cropId)
         {
             EnsureCurrent();
+            if (_state.Loan.Sealed) return CommandResult.Fail(SealedReason);
             var plot = _state.Plot(plotId);
             if (plot == null) return CommandResult.Fail("Không có ô này.");
             if (!plot.Unlocked) return CommandResult.Fail("Ô đất chưa mở.");
@@ -403,6 +408,7 @@ namespace VuonNho.Core
         public CommandResult HarvestAndReplant(int plotId)
         {
             EnsureCurrent();
+            if (_state.Loan.Sealed) return CommandResult.Fail(SealedReason);
             var plot = _state.Plot(plotId);
             if (plot == null) return CommandResult.Fail("Không có ô này.");
             if (plot.Phase != PlotPhase.Ready) return CommandResult.Fail("Cây chưa chín.");
@@ -443,7 +449,7 @@ namespace VuonNho.Core
             if (have < amount) return CommandResult.Fail("Kho không đủ " + crop.DisplayName + ".");
 
             _state.AddInventory(cropId, -amount);
-            _state.Coins += crop.RawSellPrice * amount;
+            _state.EarnCoins(crop.RawSellPrice * amount);
             _simulation.ResolveImmediate(_state);
             _dirty = true;
             Log("raw_sold", "cropId", cropId, "amount", amount.ToString());
@@ -503,7 +509,7 @@ namespace VuonNho.Core
 
             var upgrade = _catalog.Upgrade(upgradeId);
             var working = _state.Clone();
-            working.Coins -= upgrade.Cost;
+            working.SpendCoins(upgrade.Cost);
             working.UpgradeLevels[upgrade.Id] = working.UpgradeLevel(upgrade.Id) + 1;
 
             switch (upgrade.Kind)
@@ -528,6 +534,9 @@ namespace VuonNho.Core
                 case UpgradeKind.GrowthSpeed:
                 case UpgradeKind.BrewSpeed:
                     // Deadline dang chay giu nguyen; chu ky bat dau sau khi mua moi dung so moi.
+                    break;
+                case UpgradeKind.ProtectiveGear:
+                    working.Compliance.ProtectiveGear = true;
                     break;
             }
 
@@ -590,7 +599,7 @@ namespace VuonNho.Core
                                           " " + DefaultContent.CoinGlyph);
 
             var working = _state.Clone();
-            working.Coins -= _catalog.Balance.CompostCost;
+            working.SpendCoins(_catalog.Balance.CompostCost);
             working.Plot(plotId).Fertility = _catalog.Balance.CompostFertility;
             return Commit(working, "plot_composted", "plotId", plotId.ToString());
         }
@@ -623,7 +632,7 @@ namespace VuonNho.Core
                                           " " + DefaultContent.CoinGlyph);
 
             var working = _state.Clone();
-            working.Coins -= _catalog.Balance.PestTreatmentCost;
+            working.SpendCoins(_catalog.Balance.PestTreatmentCost);
             var target = working.Plot(plotId);
             target.PestActive = false;
             target.PestPending = false;
@@ -674,7 +683,7 @@ namespace VuonNho.Core
 
             var stage = _catalog.Stage(stageId);
             var working = _state.Clone();
-            working.Coins -= stage.Cost;
+            working.SpendCoins(stage.Cost);
             var station = working.Station(stageId);
             station.Owned = true;
 
@@ -708,7 +717,7 @@ namespace VuonNho.Core
             if (!CanHireWorker(out reason)) return CommandResult.Fail(reason);
 
             var working = _state.Clone();
-            working.Coins -= _catalog.Balance.WorkerHireCost;
+            working.SpendCoins(_catalog.Balance.WorkerHireCost);
             working.HiredWorkers += 1;
 
             // Nguoi dau tien mo so luong. Ky dau tinh tu bay gio chu khong tu moc 0, neu khong
@@ -762,6 +771,267 @@ namespace VuonNho.Core
             Log(eventName, fields);
             RaiseChanged();
             return CommandResult.Ok();
+        }
+
+        // ------------------------------------------------- von, phap ly, can lua, phan nhanh
+        //
+        // Bon nhom lenh cua ban mo phong khoi nghiep tra. Tat ca deu di qua Commit nhu moi lenh
+        // khac, nen ghi save that bai la khong co gi thay doi — mot khoan vay bi tru xu ma khong
+        // ghi lai duoc se la cach xau nhat de mat tien cua nguoi choi.
+
+        /// <summary>Nuong che dang bi ngan hang niem phong. Moi viec trong vuon dung lai.</summary>
+        public bool FarmSealed
+        {
+            get { return _state != null && _state.Loan.Sealed; }
+        }
+
+        /// <summary>Xuong dang bi dinh chi theo bien ban kiem tra.</summary>
+        public bool FactorySuspended
+        {
+            get { return _state != null && _state.Compliance.Suspended(_state.SimulationTimeMs); }
+        }
+
+        public bool CanBorrow(LoanKind kind, long principalCoins, int termMonths, out string reason)
+        {
+            EnsureCurrent();
+            return Finance.CanBorrow(_catalog.Balance, _state, kind, principalCoins, termMonths, out reason);
+        }
+
+        /// <summary>
+        /// Nhan mot khoan vay. Tien vao tui ngay, va ky tra no dau tien la mot thang nua.
+        /// </summary>
+        public CommandResult TakeLoan(LoanKind kind, long principalCoins, int termMonths)
+        {
+            EnsureCurrent();
+            string reason;
+            if (!Finance.CanBorrow(_catalog.Balance, _state, kind, principalCoins, termMonths, out reason))
+                return CommandResult.Fail(reason);
+
+            var working = _state.Clone();
+            Finance.Borrow(_catalog.Balance, working, kind, principalCoins, termMonths,
+                           working.SimulationTimeMs);
+            return Commit(working, "loan_taken", "kind", kind.ToString(),
+                          "principal", principalCoins.ToString(),
+                          "termMonths", termMonths.ToString(),
+                          "rateBps", working.Loan.AnnualRateBps.ToString());
+        }
+
+        /// <summary>
+        /// Tra bot no ngoai ky. Tra het thi khoan vay dong lai va niem phong duoc thao.
+        ///
+        /// Tra vao no qua han truoc roi moi vao goc: no qua han la thu dang dem nguoi choi den cho
+        /// bi siet no, nen do phai la thu duoc tra truoc tien.
+        /// </summary>
+        public CommandResult RepayLoan(long amountCoins)
+        {
+            EnsureCurrent();
+            var loan = _state.Loan;
+            if (!loan.Active && loan.OverdueCoins <= 0)
+                return CommandResult.Fail("Không còn khoản vay nào.");
+            if (amountCoins <= 0) return CommandResult.Fail("Số tiền trả phải lớn hơn 0.");
+            if (_state.Coins < amountCoins)
+                return CommandResult.Fail("Thiếu " + (amountCoins - _state.Coins) + " " +
+                                          DefaultContent.CoinGlyph);
+
+            var working = _state.Clone();
+            var target = working.Loan;
+            long left = amountCoins;
+            long payOverdue = left < target.OverdueCoins ? left : target.OverdueCoins;
+            target.OverdueCoins -= payOverdue;
+            left -= payOverdue;
+            long payPrincipal = left < target.RemainingPrincipalCoins ? left : target.RemainingPrincipalCoins;
+            target.RemainingPrincipalCoins -= payPrincipal;
+            working.SpendCoins(payOverdue + payPrincipal);
+
+            bool cleared = target.RemainingPrincipalCoins <= 0 && target.OverdueCoins <= 0;
+            if (cleared)
+            {
+                target.Kind = LoanKind.None;
+                target.PrincipalCoins = 0;
+                target.TermMonths = 0;
+                target.MonthsPaid = 0;
+                target.AnnualRateBps = 0;
+                target.NextDueAtMs = 0;
+                target.ConsecutiveShortfalls = 0;
+                target.Sealed = false;
+                target.SealedAtMs = 0;
+            }
+            return Commit(working, "loan_repaid", "amount", (payOverdue + payPrincipal).ToString(),
+                          "cleared", cleared ? "1" : "0");
+        }
+
+        public bool CanRegisterEntity(BusinessEntity entity, out string reason)
+        {
+            reason = null;
+            var option = Compliance.Entity(entity);
+            if (option == null)
+            {
+                reason = "Không có hình thức này.";
+                return false;
+            }
+            if (_state.Compliance.Entity == entity)
+            {
+                reason = "Đã đăng ký hình thức này.";
+                return false;
+            }
+            if (_state.Compliance.PendingEntity != BusinessEntity.None)
+            {
+                reason = "Đang có hồ sơ chờ thẩm định.";
+                return false;
+            }
+            if (_state.Coins < option.FeeCoins)
+            {
+                reason = "Thiếu " + (option.FeeCoins - _state.Coins) + " " + DefaultContent.CoinGlyph;
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Nop ho so dang ky ho kinh doanh hoac cong ty. Tham dinh mat mot so ngay in-game roi
+        /// giay moi co hieu luc — do la ly do phai nop **truoc** khi can den no.
+        /// </summary>
+        public CommandResult RegisterEntity(BusinessEntity entity)
+        {
+            EnsureCurrent();
+            string reason;
+            if (!CanRegisterEntity(entity, out reason)) return CommandResult.Fail(reason);
+
+            var option = Compliance.Entity(entity);
+            var working = _state.Clone();
+            working.SpendCoins(option.FeeCoins);
+            int days = Compliance.ReviewDays(working.PestSeed, option.MinDays, option.MaxDays,
+                                             (int)entity);
+            working.Compliance.PendingEntity = entity;
+            working.Compliance.EntityReadyAtMs =
+                working.SimulationTimeMs + days * Compliance.DayMs(_catalog.Balance);
+            return Commit(working, "entity_filed", "entity", entity.ToString(), "days", days.ToString());
+        }
+
+        public bool CanApplyFoodSafety(out string reason)
+        {
+            reason = null;
+            if (_state.Compliance.FoodSafetyCertified)
+            {
+                reason = "Đã có giấy an toàn thực phẩm.";
+                return false;
+            }
+            if (_state.Compliance.FoodSafetyPending)
+            {
+                reason = "Hồ sơ đang chờ thẩm định.";
+                return false;
+            }
+            if (_state.Compliance.Entity == BusinessEntity.None)
+            {
+                reason = "Phải đăng ký hộ kinh doanh hoặc công ty trước.";
+                return false;
+            }
+            if (_state.Coins < _catalog.Balance.FoodSafetyFeeCoins)
+            {
+                reason = "Thiếu " + (_catalog.Balance.FoodSafetyFeeCoins - _state.Coins) + " " +
+                         DefaultContent.CoinGlyph;
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>Nop ho so xin giay an toan thuc pham. Tham dinh 15–45 ngay in-game.</summary>
+        public CommandResult ApplyFoodSafety()
+        {
+            EnsureCurrent();
+            string reason;
+            if (!CanApplyFoodSafety(out reason)) return CommandResult.Fail(reason);
+
+            var working = _state.Clone();
+            working.SpendCoins(_catalog.Balance.FoodSafetyFeeCoins);
+            int days = Compliance.ReviewDays(working.PestSeed, _catalog.Balance.FoodSafetyMinDays,
+                                             _catalog.Balance.FoodSafetyMaxDays, 91);
+            working.Compliance.FoodSafetyPending = true;
+            working.Compliance.FoodSafetyReadyAtMs =
+                working.SimulationTimeMs + days * Compliance.DayMs(_catalog.Balance);
+            return Commit(working, "food_safety_filed", "days", days.ToString());
+        }
+
+        /// <summary>
+        /// Doi duong che bien. Bon nut ve dung chuan cua duong moi, khong giu lai so cu:
+        /// 255°C la chuan cua tra xanh nhung la "diet men" doi voi hong tra, nen giu lai so cu khi
+        /// doi duong se lam nguoi choi vua doi xong da co ngay mot me loi ma khong hieu tai sao.
+        /// </summary>
+        public CommandResult SetCraftRoute(TeaRoute route)
+        {
+            EnsureCurrent();
+            var working = _state.Clone();
+            working.Craft = Crafting.DefaultsFor(route);
+            return Commit(working, "craft_route", "route", route.ToString());
+        }
+
+        /// <summary>Xoay mot nut can lua. Chi so theo dung thu tu cua <see cref="Crafting.Windows"/>.</summary>
+        public CommandResult SetCraftValue(int windowIndex, int value)
+        {
+            EnsureCurrent();
+            var windows = Crafting.Windows(_state.Craft.Route);
+            if (windowIndex < 0 || windowIndex >= windows.Count)
+                return CommandResult.Fail("Không có thông số này.");
+            var window = windows[windowIndex];
+            int clamped = Cultivation.Clamp(value, window.Minimum, window.Maximum);
+
+            var working = _state.Clone();
+            switch (windowIndex)
+            {
+                case 0: working.Craft.FixTempC = clamped; break;
+                case 1: working.Craft.RollMinutes = clamped; break;
+                case 2: working.Craft.MoisturePermille = clamped; break;
+                default: working.Craft.OxidationPercent = clamped; break;
+            }
+            return Commit(working, "craft_value", "index", windowIndex.ToString(),
+                          "value", clamped.ToString());
+        }
+
+        public bool CanUnlockBranch(BusinessBranch branch, out string reason)
+        {
+            EnsureCurrent();
+            return Branches.CanUnlock(_catalog, _state, branch, out reason);
+        }
+
+        /// <summary>Mo mot phan nhanh kinh doanh. Mo roi thi no la kenh ban duoc chon ngay.</summary>
+        public CommandResult UnlockBranch(BusinessBranch branch)
+        {
+            EnsureCurrent();
+            string reason;
+            if (!Branches.CanUnlock(_catalog, _state, branch, out reason))
+                return CommandResult.Fail(reason);
+
+            var definition = Branches.Definition(branch);
+            var working = _state.Clone();
+            working.SpendCoins(definition.UnlockCostCoins);
+            working.UnlockedBranches.Add(branch);
+            // Du lich khong phai mot kenh ban tra, no la mot nguon thu rieng — mo no khong duoc
+            // lam doi cho ma tra dang di ra.
+            if (branch != BusinessBranch.Farmstay) working.SalesChannel = branch;
+            return Commit(working, "branch_unlocked", "branch", branch.ToString());
+        }
+
+        /// <summary>Doi kenh ban chinh. None nghia la ban nhu cu, khong he so nao.</summary>
+        public CommandResult SetSalesChannel(BusinessBranch branch)
+        {
+            EnsureCurrent();
+            if (branch == BusinessBranch.Farmstay)
+                return CommandResult.Fail("Du lịch trải nghiệm không phải kênh bán trà.");
+            if (branch != BusinessBranch.None && !_state.UnlockedBranches.Contains(branch))
+                return CommandResult.Fail("Chưa mở phân nhánh này.");
+
+            var working = _state.Clone();
+            working.SalesChannel = branch;
+            return Commit(working, "sales_channel", "branch", branch.ToString());
+        }
+
+        /// <summary>Da xem doan mo man. Ghi ngay de tat game giua doan cung khong phai xem lai.</summary>
+        public void MarkIntroSeen()
+        {
+            if (_state == null || _state.IntroSeen) return;
+            _state.IntroSeen = true;
+            _dirty = true;
+            SaveNow();
         }
 
         // ---------------------------------------------------------------- trang tri (pha 2)
@@ -859,7 +1129,7 @@ namespace VuonNho.Core
                 return CommandResult.Fail("Thiếu " + (definition.Cost - _state.Coins) + " " + DefaultContent.CoinGlyph);
 
             var working = _state.Clone();
-            working.Coins -= definition.Cost;
+            working.SpendCoins(definition.Cost);
             working.Decorations.Add(new PlacedDecoration
             {
                 DefinitionId = definitionId,
@@ -919,7 +1189,7 @@ namespace VuonNho.Core
 
             var working = _state.Clone();
             working.Decorations.RemoveAt(index);
-            working.Coins += refund;
+            working.EarnCoins(refund);
 
             var commit = CommitWithSave(working, "Chưa lưu được thay đổi, hãy thử lại.");
             if (!commit.Success) return commit;
@@ -1037,6 +1307,12 @@ namespace VuonNho.Core
         void ISimulationListener.OnBatchCompleted(string recipeId, long coins, long atMs)
         {
             _dirty = true;
+        }
+
+        void ISimulationListener.OnBusinessEvent(string kind, string detail, long coins, long atMs)
+        {
+            _dirty = true;
+            Log(kind, "coins", coins.ToString(), "atMs", atMs.ToString());
         }
 
         // ---------------------------------------------------------------- tien ich

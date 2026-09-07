@@ -30,11 +30,26 @@ namespace VuonNho.Core
         public const string CropLemongrass = "crop_lemongrass";
         public const string CropJasmine = "crop_jasmine";
 
+        // Cay che: mot goc cay, bon tieu chuan thu hai. Xem bang trong Agronomy.Grades().
+        public const string CropTeaXo = "crop_tea_xo";
+        public const string CropTeaMocCau = "crop_tea_moccau";
+        public const string CropTeaNon = "crop_tea_nontom";
+        public const string CropTeaDinh = "crop_tea_dinh";
+
+        /// <summary>La cua o bi ray xanh chich hut. Khong gieo duoc, chi thu ve duoc.</summary>
+        public const string CropOrientalBeauty = "crop_oriental_beauty";
+
         public const string RecipeMint = "recipe_mint";
         public const string RecipeChamomile = "recipe_chamomile";
         public const string RecipeStrawberry = "recipe_strawberry";
         public const string RecipeLemongrass = "recipe_lemongrass";
         public const string RecipeJasmine = "recipe_jasmine";
+
+        public const string RecipeTeaXo = "recipe_tea_xo";
+        public const string RecipeTeaMocCau = "recipe_tea_moccau";
+        public const string RecipeTeaNon = "recipe_tea_nontom";
+        public const string RecipeTeaDinh = "recipe_tea_dinh";
+        public const string RecipeOrientalBeauty = "recipe_oriental_beauty";
 
         public const string UpgradeRobot = "upgrade_robot";
         public const string UpgradeChamomile = "upgrade_unlock_chamomile";
@@ -48,6 +63,12 @@ namespace VuonNho.Core
         public const string UpgradeLemongrass = "upgrade_unlock_lemongrass";
         public const string UpgradeJasmine = "upgrade_unlock_jasmine";
         public const string UpgradePestControl = "upgrade_pest_control";
+
+        public const string UpgradeTea = "upgrade_unlock_tea";
+        public const string UpgradePluckMocCau = "upgrade_pluck_moccau";
+        public const string UpgradePluckNon = "upgrade_pluck_nontom";
+        public const string UpgradePluckDinh = "upgrade_pluck_dinh";
+        public const string UpgradeProtectiveGear = "upgrade_protective_gear";
 
         // Mat na mua, theo dung thu tu cua enum Season.
         public const int SeasonMaskXuan = 1 << (int)Season.Xuan;
@@ -92,6 +113,43 @@ namespace VuonNho.Core
                     Id = CropJasmine, DisplayName = "Nhài", BaseGrowthMs = 60000,
                     Yield = 4, RawSellPrice = 22, UnlockUpgradeId = UpgradeJasmine, SortOrder = 4,
                     SeasonMask = SeasonMaskHa
+                },
+
+                // Bon tieu chuan thu hai tren cung mot goc che: cung thoi gian lon, khac nhau o
+                // **so bup hai duoc** va **gia mot don vi**. Nhan lai thi doanh thu mot vu cua bon
+                // phan hang gan bang nhau — cai khac la bao nhieu hang phai chay qua day chuyen.
+                //
+                // Khong khai bao SeasonMask: che khong "trai vu", no chiu bang sinh hoa cua
+                // Agronomy.Profile — bao gom ca vu dong chi con mot phan tu nang suat.
+                new CropDefinition
+                {
+                    Id = CropTeaXo, DisplayName = "Chè búp xô", BaseGrowthMs = 90000,
+                    Yield = 64, RawSellPrice = 3, UnlockUpgradeId = UpgradeTea, SortOrder = 5,
+                    PluckGraded = true
+                },
+                new CropDefinition
+                {
+                    Id = CropTeaMocCau, DisplayName = "Chè 1 tôm 2 lá", BaseGrowthMs = 90000,
+                    Yield = 28, RawSellPrice = 8, UnlockUpgradeId = UpgradePluckMocCau, SortOrder = 6,
+                    PluckGraded = true
+                },
+                new CropDefinition
+                {
+                    Id = CropTeaNon, DisplayName = "Chè 1 tôm 1 lá", BaseGrowthMs = 90000,
+                    Yield = 11, RawSellPrice = 22, UnlockUpgradeId = UpgradePluckNon, SortOrder = 7,
+                    PluckGraded = true
+                },
+                new CropDefinition
+                {
+                    Id = CropTeaDinh, DisplayName = "Chè đinh", BaseGrowthMs = 90000,
+                    Yield = 4, RawSellPrice = 60, UnlockUpgradeId = UpgradePluckDinh, SortOrder = 8,
+                    PluckGraded = true
+                },
+                new CropDefinition
+                {
+                    Id = CropOrientalBeauty, DisplayName = "Lá rầy xanh", BaseGrowthMs = 90000,
+                    Yield = 28, RawSellPrice = 30, UnlockUpgradeId = null, SortOrder = 9,
+                    PluckGraded = true, EventOnly = true
                 }
             };
 
@@ -128,6 +186,45 @@ namespace VuonNho.Core
                     Id = RecipeJasmine, DisplayName = "Trà nhài", InputCropId = CropJasmine, InputCount = 8,
                     BaseBrewMs = 18000, OutputCoins = 86, UnlockUpgradeId = UpgradeJasmine, SortOrder = 4,
                     PackedInputCount = 8, PackedOutputCoins = 430
+                },
+
+                // Gia mot don vi theo bang "Phan khuc & Dinh gia": bup xo 160 nghin mot kilogram
+                // kho, dinh tra 2,5 trieu. Ti le giua bon dong nay chinh la ti le trong bang.
+                new RecipeDefinition
+                {
+                    Id = RecipeTeaXo, DisplayName = "Trà búp thông thường", InputCropId = CropTeaXo,
+                    InputCount = 8, BaseBrewMs = 8000, OutputCoins = 24,
+                    UnlockUpgradeId = UpgradeTea, SortOrder = 5,
+                    PackedInputCount = 8, PackedOutputCoins = 120
+                },
+                new RecipeDefinition
+                {
+                    Id = RecipeTeaMocCau, DisplayName = "Trà móc câu thượng hạng", InputCropId = CropTeaMocCau,
+                    InputCount = 8, BaseBrewMs = 10000, OutputCoins = 60,
+                    UnlockUpgradeId = UpgradePluckMocCau, SortOrder = 6,
+                    PackedInputCount = 8, PackedOutputCoins = 300
+                },
+                new RecipeDefinition
+                {
+                    Id = RecipeTeaNon, DisplayName = "Trà nõn tôm", InputCropId = CropTeaNon,
+                    InputCount = 8, BaseBrewMs = 12000, OutputCoins = 160,
+                    UnlockUpgradeId = UpgradePluckNon, SortOrder = 7,
+                    PackedInputCount = 8, PackedOutputCoins = 800
+                },
+                new RecipeDefinition
+                {
+                    Id = RecipeTeaDinh, DisplayName = "Trà đinh ngọc", InputCropId = CropTeaDinh,
+                    InputCount = 8, BaseBrewMs = 14000, OutputCoins = 440,
+                    UnlockUpgradeId = UpgradePluckDinh, SortOrder = 8,
+                    PackedInputCount = 8, PackedOutputCoins = 2200
+                },
+                new RecipeDefinition
+                {
+                    Id = RecipeOrientalBeauty, DisplayName = "Đông Phương Mỹ Nhân",
+                    InputCropId = CropOrientalBeauty,
+                    InputCount = 8, BaseBrewMs = 16000, OutputCoins = 600,
+                    UnlockUpgradeId = UpgradeTea, SortOrder = 9,
+                    PackedInputCount = 8, PackedOutputCoins = 3000
                 }
             };
 
@@ -222,6 +319,49 @@ namespace VuonNho.Core
                     RequiresUpgradeId = UpgradeLemongrass,
                     Description = "Cho chọn cây nhài và trà nhài.",
                     SortOrder = 10
+                },
+
+                // Tay nghe hai bup: mo dan tu bup xo len tan dinh tra. Moi bac khong lam vuon
+                // giau hon ngay, no cho **doi mot vu it hang dat tien lay mot vu nhieu hang re** —
+                // va lua chon do chi co y nghia khi day chuyen da la gioi han.
+                new UpgradeDefinition
+                {
+                    Id = UpgradeTea, DisplayName = "Nhận nương chè + trà búp", Cost = 300,
+                    Kind = UpgradeKind.UnlockCrop, TargetId = CropTeaXo,
+                    RequiresUpgradeId = UpgradeChamomile,
+                    Description = "Trồng chè hái búp xô, và bán được lá rầy xanh nếu gặp.",
+                    SortOrder = 11
+                },
+                new UpgradeDefinition
+                {
+                    Id = UpgradePluckMocCau, DisplayName = "Tay nghề hái 1 tôm 2 lá", Cost = 700,
+                    Kind = UpgradeKind.UnlockCrop, TargetId = CropTeaMocCau,
+                    RequiresUpgradeId = UpgradeTea,
+                    Description = "Ít búp hơn, giá gấp hai lần rưỡi. Nhẹ tải cho dây chuyền.",
+                    SortOrder = 12
+                },
+                new UpgradeDefinition
+                {
+                    Id = UpgradePluckNon, DisplayName = "Tay nghề hái 1 tôm 1 lá", Cost = 1600,
+                    Kind = UpgradeKind.UnlockCrop, TargetId = CropTeaNon,
+                    RequiresUpgradeId = UpgradePluckMocCau,
+                    Description = "Nõn tôm cho giới thưởng trà. Một phần sáu số búp, gấp năm giá.",
+                    SortOrder = 13
+                },
+                new UpgradeDefinition
+                {
+                    Id = UpgradePluckDinh, DisplayName = "Tay nghề hái đinh trà", Cost = 3400,
+                    Kind = UpgradeKind.UnlockCrop, TargetId = CropTeaDinh,
+                    RequiresUpgradeId = UpgradePluckNon,
+                    Description = "Chỉ hái tôm: bốn búp một ô, nhưng là hàng quà tặng cao cấp.",
+                    SortOrder = 14
+                },
+                new UpgradeDefinition
+                {
+                    Id = UpgradeProtectiveGear, DisplayName = "Đồ bảo hộ y tế cho thợ", Cost = 120,
+                    Kind = UpgradeKind.ProtectiveGear,
+                    Description = "Khẩu trang, tạp dề, mũ trùm. Thiếu là kỳ kiểm tra nào cũng bị phạt.",
+                    SortOrder = 15
                 }
             };
 
