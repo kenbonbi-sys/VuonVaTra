@@ -1361,8 +1361,7 @@ namespace VuonNho.Views
                 else if (!HasFarmHudNavButton(panelName)) _hud.OpenPanelByName(panelName);
                 else
                 {
-                    string buttonName = char.ToUpperInvariant(panelName[0]) + panelName.Substring(1) + "Button";
-                    var nav = _hud.transform.Find("FarmHud/" + buttonName);
+                    var nav = FindFarmHudNavButton(panelName);
                     string detail;
                     bool clicked = TryClickButton(nav != null ? nav.GetComponent<Button>() : null, out detail);
                     Check("Nút điều hướng mở " + panelName, clicked && FindOpenSurface(panelName) != null, detail);
@@ -1588,8 +1587,26 @@ namespace VuonNho.Views
         /// </summary>
         bool HasFarmHudNavButton(string panelName)
         {
+            return FindFarmHudNavButton(panelName) != null;
+        }
+
+        /// <summary>
+        /// Nut dieu huong cua mot be mat, tim o bat cu dau trong HUD noi.
+        ///
+        /// Tim de quy chu khong theo duong "FarmHud/<Ten>Button": nam nut cua cot trai nam trong
+        /// mot container rieng de layout tu khep lai khi nut trang tri con an. Neo cung duong dan
+        /// thi doi cach bo tri la ca nhom muc kiem nay lang le doi sang nhanh "khong co nut dieu
+        /// huong" — van bao dat, nhung khong con kiem cai gi nua.
+        /// </summary>
+        Transform FindFarmHudNavButton(string panelName)
+        {
+            var farmHud = _hud.transform.Find("FarmHud");
+            if (farmHud == null) return null;
             string buttonName = char.ToUpperInvariant(panelName[0]) + panelName.Substring(1) + "Button";
-            return _hud.transform.Find("FarmHud/" + buttonName) != null;
+            var all = farmHud.GetComponentsInChildren<Transform>(true);
+            for (int i = 0; i < all.Length; i++)
+                if (all[i].name == buttonName) return all[i];
+            return null;
         }
 
         RectTransform FindOpenSurface(string panelName)
@@ -1795,7 +1812,7 @@ namespace VuonNho.Views
                 return;
             }
 
-            foreach (string name in new[] { "Profile", "FarmStats", "CoinChip", "WorkerChip", "StockChip" })
+            foreach (string name in new[] { "Profile", "StatusPill" })
             {
                 var region = farmHud.Find(name) as RectTransform;
                 bool visible = region != null && region.gameObject.activeInHierarchy;
@@ -1810,6 +1827,8 @@ namespace VuonNho.Views
                 Check("Thẻ " + name + " nằm trong màn hình và không bị che", visible, null);
             }
 
+            CheckRailTooltips(farmHud);
+
             var buttons = farmHud.GetComponentsInChildren<Button>(false);
             var unreachable = new List<string>();
             foreach (var button in buttons)
@@ -1821,11 +1840,73 @@ namespace VuonNho.Views
                   unreachable.Count == 0 ? buttons.Length + " nút" : string.Join("; ", unreachable.ToArray()));
         }
 
+        /// <summary>
+        /// Nam nut cot trai chi co icon, ten hien ra khi re chuot. Khong co ten thi khong nut nao
+        /// trong so do doc duoc, nen day la thu duy nhat noi cho nguoi choi biet cai nut lam gi.
+        ///
+        /// Gui thang PointerEnter va PointerExit qua EventSystem — dung con duong ma con chuot
+        /// that di — roi doc lai xem the ten co hien va co an dung luc khong. Anh chup khong bat
+        /// duoc trang thai re chuot nen neu khong kiem o day thi khong ai kiem.
+        /// </summary>
+        void CheckRailTooltips(Transform farmHud)
+        {
+            var rail = farmHud.Find("LeftRail");
+            if (rail == null)
+            {
+                Check("Cột nút trái có thẻ tên khi rê chuột", false, "Không tìm thấy LeftRail.");
+                return;
+            }
+
+            var offenders = new List<string>();
+            int checkedCount = 0;
+            for (int i = 0; i < rail.childCount; i++)
+            {
+                var button = rail.GetChild(i);
+                if (!button.gameObject.activeInHierarchy) continue;
+                var chip = button.Find("Tooltip");
+                if (chip == null)
+                {
+                    offenders.Add(button.name + ": không có thẻ tên");
+                    continue;
+                }
+
+                var caption = chip.GetComponentInChildren<Text>(true);
+                if (caption == null || string.IsNullOrEmpty(caption.text))
+                {
+                    offenders.Add(button.name + ": thẻ tên rỗng");
+                    continue;
+                }
+
+                checkedCount++;
+                if (chip.gameObject.activeSelf) offenders.Add(button.name + ": thẻ tên hiện sẵn khi chưa rê chuột");
+
+                var pointer = new PointerEventData(EventSystem.current);
+                ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerEnterHandler);
+                if (!chip.gameObject.activeSelf) offenders.Add(button.name + ": rê chuột lên mà thẻ tên không hiện");
+
+                // The ten nam ben phai nut, khong duoc de len chinh cai nut vua duoc re toi.
+                if (chip.gameObject.activeSelf)
+                {
+                    var chipRect = chip as RectTransform;
+                    var buttonRect = button as RectTransform;
+                    if (chipRect != null && buttonRect != null && Overlaps(chipRect, buttonRect))
+                        offenders.Add(button.name + ": thẻ tên đè lên nút");
+                }
+
+                ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerExitHandler);
+                if (chip.gameObject.activeSelf) offenders.Add(button.name + ": rời chuột mà thẻ tên không tắt");
+            }
+
+            Check("Cột nút trái có thẻ tên khi rê chuột",
+                  checkedCount > 0 && offenders.Count == 0,
+                  offenders.Count == 0 ? checkedCount + " nút" : string.Join("; ", offenders.ToArray()));
+        }
+
         void CheckDoesNotCoverTopCounters(string surface, RectTransform panel)
         {
             var covered = new List<string>();
-            // Bang ben duoc phep de len the kho thap hon, nhung ho so va hai so tren cung phai con ro.
-            foreach (string name in new[] { "Profile", "CoinChip", "WorkerChip" })
+            // Ho so o goc trai va the ba con so o goc phai deu phai con doc duoc khi dang mo bang.
+            foreach (string name in new[] { "Profile", "StatusPill" })
             {
                 var region = _hud.transform.Find("FarmHud/" + name) as RectTransform;
                 if (region == null || !region.gameObject.activeInHierarchy) covered.Add(name + " không hiển thị");

@@ -1,14 +1,16 @@
 Mono path[0] = 'C:/Users/PC/Desktop/Game/VuonNho/Build/HudReview/VuonNho-HudReview_Data/Managed'
 Mono config path = 'C:/Users/PC/Desktop/Game/VuonNho/Build/HudReview/MonoBleedingEdge/etc'
 CodeReloadManager initialized
-Found 2 interfaces on host : 0) 192.168.102.61 1) 26.253.10.125
-Player connection [5280]  Target information:
+Found 3 interfaces on host : 0) 192.168.102.61 1) 26.253.10.125 2) 172.24.64.1
+Player connection [26992]  Target information:
 
-Player connection [5280]  * "[IP] 192.168.102.61 [Port] 55000 [Flags] 2 [Guid] 2444113331 [EditorId] 64766845 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+Player connection [26992]  * "[IP] 192.168.102.61 [Port] 55000 [Flags] 2 [Guid] 3654465908 [EditorId] 2649396268 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
 
-Player connection [5280]  * "[IP] 26.253.10.125 [Port] 55000 [Flags] 2 [Guid] 2444113331 [EditorId] 64766845 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+Player connection [26992]  * "[IP] 26.253.10.125 [Port] 55000 [Flags] 2 [Guid] 3654465908 [EditorId] 2649396268 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
 
-Player connection [5280] Started UDP target info broadcast (1) on [225.0.0.222:54997].
+Player connection [26992]  * "[IP] 172.24.64.1 [Port] 55000 [Flags] 2 [Guid] 3654465908 [EditorId] 2649396268 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+
+Player connection [26992] Started UDP target info broadcast (1) on [225.0.0.222:54997].
 
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
@@ -34,7 +36,28 @@ Begin MonoManager ReloadAssembly
 [Physics::Module] Threading Mode: Multi-Threaded
 <RI> Initializing input.
 <RI> Input initialized.
-UnloadTime: 0.817700 ms
+UnloadTime: 1.033400 ms
+[VuonNho] Khong du xu tra luong: 1 tho nghi trong ky nay.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:LogWarning (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:223)
+VuonNho.Views.GameBootstrap:OnDiagnostic (string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/GameBootstrap.cs:568)
+VuonNho.Core.GameSession:RaiseDiagnostic (string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/GameSession.cs:1335)
+VuonNho.Core.GameSession:VuonNho.Core.ISimulationListener.OnWagesPaid (long,int,int,long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/GameSession.cs:1304)
+VuonNho.Core.FarmSimulation:NotifyWagesPaid (long,int,int,long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/FarmSimulation.cs:1169)
+VuonNho.Core.FarmSimulation:PayWagesIfDue (VuonNho.Core.GameState,long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/FarmSimulation.cs:250)
+VuonNho.Core.FarmSimulation:ResolveAt (VuonNho.Core.GameState,long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/FarmSimulation.cs:199)
+VuonNho.Core.FarmSimulation:AdvanceTo (VuonNho.Core.GameState,long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/FarmSimulation.cs:113)
+VuonNho.Core.GameSession:DebugAdvance (long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/GameSession.cs:1352)
+VuonNho.Views.QaScreenshot:BuildWholeChain (VuonNho.Core.GameSession) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:335)
+VuonNho.Views.QaScreenshot:SeedGrownGarden () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:239)
+VuonNho.Views.QaScreenshot:Update () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:87)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 223)
+
 [VuonNho] Day chuyen: 6 may, 6 tho.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
@@ -48,7 +71,7 @@ VuonNho.Views.QaScreenshot:Update () (at C:/Users/PC/Desktop/Game/VuonNho/Assets
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[VuonNho] Da tua vuon: 12 o, 713 xu.
+[VuonNho] Da tua vuon: 12 o, 2055 xu.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -77,4 +100,4 @@ Input System module state changed to: ShutdownInProgress.
 Input Polling Thread exited.
 Input System module state changed to: Shutdown.
 CodeReloadManager destroyed
-PlayerConnection::Cleanup##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1788790050123,"processId":5640,"allocatedMemory":32571,"memoryLabels":[{"Default":3832},{"NewDelete":104},{"Thread":2304},{"Manager":9364},{"GfxDevice":72},{"GfxThread":6912},{"Serialization":616},{"BaseObject":4512},{"String":431},{"PoolAlloc":192},{"ScriptManager":5688},{"CodeReload":440},{"CloudService":144},{"VR":1928},{"Video":144},{"Subsystems":96},{"CoreBusinessMetrics":128}]}
+PlayerConnection::Cleanup##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1788807810853,"processId":25152,"allocatedMemory":32571,"memoryLabels":[{"Default":3832},{"NewDelete":104},{"Thread":2304},{"Manager":9364},{"GfxDevice":72},{"GfxThread":6912},{"Serialization":616},{"BaseObject":4512},{"String":431},{"PoolAlloc":192},{"ScriptManager":5688},{"CodeReload":440},{"CloudService":144},{"VR":1928},{"Video":144},{"Subsystems":96},{"CoreBusinessMetrics":128}]}

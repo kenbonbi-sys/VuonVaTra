@@ -15,7 +15,12 @@ namespace VuonNho.Views
     public sealed partial class GameHud : MonoBehaviour
     {
         /// <summary>Panel chi tiet nam duoi hang ho so va tai nguyen.</summary>
-        const float ContentTop = 76f;
+        /// <summary>
+        /// Mep tren cua cac panel ben phai. Phai nam duoi the ba con so o goc phai tren
+        /// (cao 68 px tu moc -24), khong thi panel se de len no — co mot muc kiem trong bo
+        /// QA doi ba con so do luon doc duoc du dang mo bang nao.
+        /// </summary>
+        const float ContentTop = 100f;
         const float SidePanelWidth = 360f;
 
         GameSession _session;

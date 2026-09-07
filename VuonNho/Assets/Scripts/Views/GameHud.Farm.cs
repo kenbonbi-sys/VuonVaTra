@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using VuonNho.Core;
 
@@ -15,14 +16,23 @@ namespace VuonNho.Views
         static readonly Color HudShadow = new Color32(99, 104, 63, 100);
         static readonly Color HudGreen = new Color32(113, 174, 70, 255);
         static readonly Color HudBrown = new Color32(135, 105, 71, 255);
-        Text _landCount, _readyCount, _stockCount, _staffCount, _actionCaption;
-        Text _careBadge, _bookGoal;
+        Text _stockCount, _staffCount, _actionCaption;
+        Text _bookGoal;
         Image _seasonProgress;
         GameObject _journalPanel;
         Button _journalButton;
         Image _debtChip;
         Text _debtCaption, _debtValue;
         int _actionPlot = -1;
+
+        /// <summary>Cot nut ben trai bat dau ngay duoi the ho so, va moi nut la mot o vuong.</summary>
+        const float RailTop = 124f;
+        const float RailButtonSize = 68f;
+        const float RailGap = 10f;
+        const float RailTooltipGap = 10f;
+
+        /// <summary>Be ngang the ba con so o goc phai tren: 6 + 142 + 10 + 132 + 10 + 150 + 6.</summary>
+        const float StatusPillWidth = 468f;
 
         static void Place(RectTransform rect, Vector2 anchor, float x, float y, float width, float height)
         {
@@ -115,77 +125,19 @@ namespace VuonNho.Views
                 out _seasonProgress);
             Place(seasonTrack.rectTransform, tl, 113, -60, 158, 7);
 
-            var land = FarmSurface(hud.transform, "FarmStats", tl, 22, -114, 187, 87);
-            FarmIcon(land.transform, FarmHudIcon.Kind.Sprout, 10, -6, 35);
-            _landCount = FarmText(land.transform, "Plots", "", 18, 53, -7, 124, 31, true);
-            var divider = UiFactory.Panel(land.transform, "Divider", GardenPalette.PanelDivider);
-            Place(divider.rectTransform, tl, 13, -43, 160, 1);
-            divider.raycastTarget = false;
-            FarmIcon(land.transform, FarmHudIcon.Kind.Leaf, 13, -48, 29);
-            _readyCount = FarmText(land.transform, "Ready", "", 16, 53, -46, 126, 30);
+            BuildLeftRail(hud.transform);
+            BuildStatusPill(hud.transform, tr);
 
-            var care = FarmButton(hud.transform, "CareButton", "Chăm cây", FarmHudIcon.Kind.Heart,
-                tl, 22, -214, OpenCarePlot);
-            _careBadge = FarmText(care.transform, "CareBadge", "", 13, 44, 4, 22, 23, true);
-            _careBadge.alignment = TextAnchor.MiddleCenter;
-            _careBadge.color = GardenPalette.ButtonDanger;
-
-            var coins = FarmSurface(hud.transform, "CoinChip", tr, -22, -24, 209, 48, 17);
-            FarmIcon(coins.transform, FarmHudIcon.Kind.Coin, -8, 5, 59);
-            _coinsLabel = FarmText(coins.transform, "Value", "0", 23, 56, -5, 137, 36, true);
-            _coinsLabel.alignment = TextAnchor.MiddleRight;
-            _coinsLabel.resizeTextForBestFit = true;
-            _coinsLabel.resizeTextMinSize = 13;
-            _coinsLabel.resizeTextMaxSize = 23;
-
-            var workers = FarmSurface(hud.transform, "WorkerChip", tr, -246, -24, 133, 48, 17);
-            FarmIcon(workers.transform, FarmHudIcon.Kind.Workers, 0, 0, 47);
-            _staffCount = FarmText(workers.transform, "Value", "", 19, 52, -7, 70, 33, true);
-            var workerOpen = workers.gameObject.AddComponent<Button>();
-            workerOpen.targetGraphic = workers;
-            workerOpen.onClick.AddListener(ShowWorkshopPanel);
-
-            var stock = FarmSurface(hud.transform, "StockChip", tr, -22, -87, 172, 72, 17);
-            FarmIcon(stock.transform, FarmHudIcon.Kind.Crate, 1, -1, 64);
-            FarmText(stock.transform, "Caption", "Trong kho", 13, 71, -7, 90, 23);
-            _stockCount = FarmText(stock.transform, "Value", "", 23, 71, -29, 88, 32, true);
-            _stockCount.resizeTextForBestFit = true;
-            _stockCount.resizeTextMinSize = 12;
-            _stockCount.resizeTextMaxSize = 23;
-            var stockOpen = stock.gameObject.AddComponent<Button>();
-            stockOpen.targetGraphic = stock;
-            stockOpen.onClick.AddListener(delegate { TogglePanel(_inventoryPanel); });
-
-            // Thẻ nợ: một khoản vay là nghĩa vụ có kỳ hạn, nên nó phải nhìn thấy được mà không
-            // phải mở bảng nào. Chỉ hiện khi đang có nợ — người chưa vay không cần một ô trống.
-            // Dưới nút Chăm cây, không chen vào giữa cột: hồ sơ dừng ở −100, thẻ vườn ở −114…−201,
-            // nút Chăm cây ở −214…−278. Đặt cao hơn −290 là đè lên một trong ba cái đó.
-            _debtChip = FarmSurface(hud.transform, "DebtChip", new Vector2(0, 1), 22, -290, 210, 66, 16);
-            FarmIcon(_debtChip.transform, FarmHudIcon.Kind.Banknotes, 2, -2, 54);
-            _debtCaption = FarmText(_debtChip.transform, "Caption", "Dư nợ", 13, 62, -6, 132, 22);
-            _debtValue = FarmText(_debtChip.transform, "Value", "", 18, 62, -26, 132, 30, true);
-            var debtOpen = _debtChip.gameObject.AddComponent<Button>();
-            debtOpen.targetGraphic = _debtChip;
-            debtOpen.onClick.AddListener(delegate { TogglePanel(_financePanel); });
-            _debtChip.gameObject.SetActive(false);
-
-            _upgradeButton = FarmButton(hud.transform, "UpgradeButton", "Nâng cấp", FarmHudIcon.Kind.Tools,
-                bl, 22, 174, delegate { TogglePanel(_upgradePanel); });
-            _journalButton = FarmButton(hud.transform, "JournalButton", "Sổ tay", FarmHudIcon.Kind.Book,
-                bl, 22, 98, delegate { TogglePanel(_journalPanel); });
-            FarmButton(hud.transform, "HomeButton", "Khu vườn", FarmHudIcon.Kind.House,
-                bl, 22, 22, ResetFarmView);
-            _inventoryButton = FarmButton(hud.transform, "InventoryButton", "Kho", FarmHudIcon.Kind.Clipboard,
-                bl, 96, 22, delegate { TogglePanel(_inventoryPanel); });
-            _decorateButton = FarmButton(hud.transform, "DecorateButton", "Trang trí", FarmHudIcon.Kind.Sprout,
-                bl, 170, 22, delegate { TogglePanel(_decoratePanel); });
-
+            // Ba nut ben phai neo vao **giua chieu doc** chu khong vao day man hinh: cot trai da
+            // chiem het mep trai tu tren xuong, de ca hai cung tut xuong day thi hai cum dinh
+            // nhau o goc duoi. Giua phai la cho duy nhat con trong ma tay van voi tan.
+            var rightMiddle = new Vector2(1, .5f);
             _workshopButton = FarmButton(hud.transform, "WorkshopButton", "Xưởng", FarmHudIcon.Kind.Factory,
-                br, -22, 174, delegate { TogglePanel(_workshopPanel); });
+                rightMiddle, -22, 100, delegate { TogglePanel(_workshopPanel); }, 74, 78);
             FarmButton(hud.transform, "WorkersButton", "Nhân sự", FarmHudIcon.Kind.Workers,
-                br, -22, 98, ShowWorkshopPanel);
+                rightMiddle, -22, 12, ShowWorkshopPanel, 74, 78);
             _settingsButton = FarmButton(hud.transform, "SettingsButton", "Cài đặt", FarmHudIcon.Kind.Settings,
-                br, -22, 22, delegate { TogglePanel(_settingsPanel); });
+                rightMiddle, -22, -76, delegate { TogglePanel(_settingsPanel); }, 74, 78);
 
             var dock = FarmSurface(hud.transform, "ActionDock", new Vector2(.5f, 0), 0, 22, 292, 78, 20);
             // 74 px chu khong 64: o 64 px thi o chu chi con 58 px, va "Xem xưởng" o co chu 12
@@ -213,6 +165,208 @@ namespace VuonNho.Views
             _actionCaption = FarmText(action.transform, "Label", "Gieo hạt", 17, 10, -54, 88, 34, true);
             _actionCaption.alignment = TextAnchor.MiddleCenter;
             _actionCaption.color = HudRim;
+        }
+
+        /// <summary>
+        /// Cot nut doc o mep trai: chi icon, ten hien ra thanh mot the ben phai khi re chuot len.
+        ///
+        /// Dung VerticalLayoutGroup chu khong dat toa do cung cho tung nut, vi nut trang tri chi
+        /// hien sau khi nguoi choi dung xong vuon o pha 1 — dat cung toa do thi truoc do cot se
+        /// co mot cai lo o dau, con layout thi tu khep lai. Them nut moi ve sau cung khong phai
+        /// tinh lai toa do cua nhung nut ben duoi.
+        /// </summary>
+        void BuildLeftRail(Transform hud)
+        {
+            var rail = UiFactory.Node(hud, "LeftRail");
+            var railRect = UiFactory.Rect(rail);
+            railRect.anchorMin = railRect.anchorMax = railRect.pivot = new Vector2(0, 1);
+            railRect.anchoredPosition = new Vector2(22, -RailTop);
+            railRect.sizeDelta = new Vector2(RailButtonSize, 0);
+            var list = UiFactory.VerticalList(rail, RailGap, new RectOffset(0, 0, 0, 0));
+            // childControl bat, childForceExpand tat: layout lay kich thuoc tu LayoutElement cua
+            // tung nut (68 x 68) chu khong keo gian chung. Tat childControl thi layout doc
+            // sizeDelta cua nut, ma nut vua tao ra chua co kich thuoc nao — no se ra o 100 x 100
+            // mac dinh cua RectTransform, tuc mot cot hinh chu nhat cao thay vi nam o vuong.
+            list.childForceExpandWidth = false;
+            list.childForceExpandHeight = false;
+            list.childControlWidth = true;
+            list.childControlHeight = true;
+            var fitter = rail.AddComponent<ContentSizeFitter>();
+            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+            _decorateButton = RailButton(rail.transform, "DecorateButton", "Trang trí",
+                FarmHudIcon.Kind.Sprout, delegate { TogglePanel(_decoratePanel); });
+            _upgradeButton = RailButton(rail.transform, "UpgradeButton", "Nâng cấp",
+                FarmHudIcon.Kind.Tools, delegate { TogglePanel(_upgradePanel); });
+            _journalButton = RailButton(rail.transform, "JournalButton", "Sổ tay",
+                FarmHudIcon.Kind.Book, delegate { TogglePanel(_journalPanel); });
+            RailButton(rail.transform, "HomeButton", "Khu vườn", FarmHudIcon.Kind.House, ResetFarmView);
+            _inventoryButton = RailButton(rail.transform, "InventoryButton", "Kho",
+                FarmHudIcon.Kind.Crate, delegate { TogglePanel(_inventoryPanel); });
+
+            // Thẻ nợ nằm dưới cùng cột, ngoài layout: một khoản vay là nghĩa vụ có kỳ hạn nên nó
+            // phải nhìn thấy được mà không phải mở bảng nào, nhưng người chưa vay thì không cần
+            // một ô trống nên nó ẩn hẳn chứ không nằm đó ở dạng rỗng.
+            _debtChip = FarmSurface(hud, "DebtChip", new Vector2(0, 1), 22,
+                -(RailTop + 5 * RailButtonSize + 5 * RailGap), 210, 66, 16);
+            FarmIcon(_debtChip.transform, FarmHudIcon.Kind.Banknotes, 2, -2, 54);
+            _debtCaption = FarmText(_debtChip.transform, "Caption", "Dư nợ", 13, 62, -6, 132, 22);
+            _debtValue = FarmText(_debtChip.transform, "Value", "", 18, 62, -26, 132, 30, true);
+            var debtOpen = _debtChip.gameObject.AddComponent<Button>();
+            debtOpen.targetGraphic = _debtChip;
+            debtOpen.onClick.AddListener(delegate { TogglePanel(_financePanel); });
+            _debtChip.gameObject.SetActive(false);
+        }
+
+        /// <summary>Mot nut cua cot trai: o vuong chi co icon, kem the ten hien khi re chuot.</summary>
+        Button RailButton(Transform rail, string name, string caption, FarmHudIcon.Kind icon,
+                          UnityAction onClick)
+        {
+            var rim = UiFactory.Panel(rail, name, HudRim, 15);
+            var size = rim.gameObject.AddComponent<LayoutElement>();
+            size.preferredWidth = RailButtonSize;
+            size.preferredHeight = RailButtonSize;
+            size.minWidth = RailButtonSize;
+            size.minHeight = RailButtonSize;
+            var shadow = rim.gameObject.AddComponent<Shadow>();
+            shadow.effectColor = HudShadow;
+            shadow.effectDistance = new Vector2(0, -5);
+            shadow.useGraphicAlpha = true;
+
+            var inset = UiFactory.Panel(rim.transform, "Inset", HudFace, 11);
+            UiFactory.Stretch(inset.rectTransform, Vector2.zero, Vector2.one,
+                new Vector2(4, 5), new Vector2(-4, -4));
+            inset.raycastTarget = false;
+
+            var button = rim.gameObject.AddComponent<Button>();
+            button.targetGraphic = inset;
+            var colors = button.colors;
+            colors.highlightedColor = new Color(1f, 1f, 0.91f);
+            colors.pressedColor = new Color(0.78f, 0.82f, 0.65f);
+            colors.selectedColor = colors.highlightedColor;
+            colors.fadeDuration = 0.12f;
+            button.colors = colors;
+            button.onClick.AddListener(onClick);
+
+            float glyph = RailButtonSize - 24f;
+            FarmIcon(rim.transform, icon, (RailButtonSize - glyph) / 2f, -(RailButtonSize - glyph) / 2f, glyph);
+
+            var style = rim.gameObject.AddComponent<UiButtonStyle>();
+            style.Background = inset;
+            style.BaseColor = HudFace;
+            style.BaseTextColor = GardenPalette.TextPrimary;
+
+            AttachRailTooltip(rim.transform, caption);
+            return button;
+        }
+
+        /// <summary>
+        /// The ten hien ben phai nut khi re chuot len.
+        ///
+        /// Khong ve chu ngay duoi icon nhu cac nut khac: nam cai nut xep doc, moi cai mang mot
+        /// dong chu, la mot cot chu chay doc mep trai man hinh che mat khu vuon. The chi hien mot
+        /// cai moi luc va chi khi nguoi choi dang hoi den no.
+        ///
+        /// The khong nhan raycast — no de len chinh cai nut vua duoc re chuot toi, va cuop mat
+        /// cu bam do la loi de xay ra nhat o day.
+        /// </summary>
+        void AttachRailTooltip(Transform button, string caption)
+        {
+            var chip = UiFactory.Panel(button, "Tooltip", HudGreen, 10);
+            Place(chip.rectTransform, new Vector2(1, .5f), RailTooltipGap, 0, 0, 34);
+            chip.rectTransform.pivot = new Vector2(0, .5f);
+            chip.raycastTarget = false;
+
+            var label = UiFactory.Label(chip.transform, "Text", caption, 15,
+                TextAnchor.MiddleCenter, HudRim, true);
+            UiFactory.Stretch(label.rectTransform, Vector2.zero, Vector2.one,
+                new Vector2(12, 0), new Vector2(-12, 0));
+            label.raycastTarget = false;
+            label.horizontalOverflow = HorizontalWrapMode.Overflow;
+
+            // Be ngang do theo chinh chu, khong go cung: "Trang trí" va "Kho" dai khac nhau, va
+            // mot be ngang co dinh se hoac cat chu dai hoac de mot khoang trong sau chu ngan.
+            var fitter = chip.gameObject.AddComponent<ContentSizeFitter>();
+            fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+            var layout = UiFactory.HorizontalList(chip.gameObject, 0, new RectOffset(12, 12, 0, 0));
+            layout.childForceExpandHeight = true;
+            layout.childControlWidth = true;
+
+            chip.gameObject.SetActive(false);
+
+            var trigger = button.gameObject.AddComponent<EventTrigger>();
+            var enter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+            enter.callback.AddListener(delegate { chip.gameObject.SetActive(true); });
+            trigger.triggers.Add(enter);
+            var exit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+            exit.callback.AddListener(delegate { chip.gameObject.SetActive(false); });
+            trigger.triggers.Add(exit);
+        }
+
+        /// <summary>
+        /// Mot the duy nhat o goc phai tren cho ba con so: tho, xu, kho.
+        ///
+        /// Truoc day la ba the roi. Gop lam mot vi ba con so nay luon duoc doc cung nhau — "co du
+        /// tien thue them tho khong", "kho da day chua" — va ba cai vien rieng bat mat nhin phai
+        /// nhay ba lan de tra loi mot cau hoi.
+        /// </summary>
+        void BuildStatusPill(Transform hud, Vector2 topRight)
+        {
+            var pill = FarmSurface(hud, "StatusPill", topRight, -22, -24, StatusPillWidth, 68, 18);
+            var tl = new Vector2(0, 1);
+
+            var workers = StatusSegment(pill.transform, "WorkerSeg", 6, 142, ShowWorkshopPanel);
+            FarmIcon(workers, FarmHudIcon.Kind.Workers, 2, -4, 47);
+            _staffCount = FarmText(workers, "Value", "", 19, 54, -14, 80, 33, true);
+
+            var firstRule = UiFactory.Panel(pill.transform, "Rule1", GardenPalette.PanelDivider);
+            Place(firstRule.rectTransform, tl, 152, -18, 1, 32);
+            firstRule.raycastTarget = false;
+
+            var coins = UiFactory.Node(pill.transform, "CoinSeg");
+            Place(UiFactory.Rect(coins), tl, 162, -6, 132, 56);
+            FarmIcon(coins.transform, FarmHudIcon.Kind.Coin, -4, -1, 55);
+            _coinsLabel = FarmText(coins.transform, "Value", "0", 22, 52, -12, 76, 34, true);
+            _coinsLabel.alignment = TextAnchor.MiddleRight;
+            _coinsLabel.resizeTextForBestFit = true;
+            _coinsLabel.resizeTextMinSize = 12;
+            _coinsLabel.resizeTextMaxSize = 22;
+
+            var secondRule = UiFactory.Panel(pill.transform, "Rule2", GardenPalette.PanelDivider);
+            Place(secondRule.rectTransform, tl, 302, -18, 1, 32);
+            secondRule.raycastTarget = false;
+
+            var stock = StatusSegment(pill.transform, "StockSeg", 312, 150,
+                delegate { TogglePanel(_inventoryPanel); });
+            FarmIcon(stock, FarmHudIcon.Kind.Crate, 0, -2, 56);
+            FarmText(stock, "Caption", "Trong kho", 13, 58, -6, 88, 22);
+            _stockCount = FarmText(stock, "Value", "", 21, 58, -26, 86, 30, true);
+            _stockCount.resizeTextForBestFit = true;
+            _stockCount.resizeTextMinSize = 11;
+            _stockCount.resizeTextMaxSize = 21;
+        }
+
+        /// <summary>
+        /// Mot doan bam duoc trong the goc phai tren.
+        ///
+        /// Nen cua doan dung dung mau nen cua the nen no vo hinh khi khong ai cham vao, nhung no
+        /// la mot Graphic that — nut khong co graphic thi khong nhan duoc raycast, va bo QA co
+        /// mot muc kiem doi moi nut noi phai bam toi duoc.
+        /// </summary>
+        Transform StatusSegment(Transform pill, string name, float x, float width, UnityAction onClick)
+        {
+            var face = UiFactory.Panel(pill, name, HudFace, 12);
+            Place(face.rectTransform, new Vector2(0, 1), x, -6, width, 56);
+            var button = face.gameObject.AddComponent<Button>();
+            button.targetGraphic = face;
+            var colors = button.colors;
+            colors.highlightedColor = new Color(1f, 1f, 0.91f);
+            colors.pressedColor = new Color(0.86f, 0.89f, 0.76f);
+            colors.selectedColor = colors.highlightedColor;
+            colors.fadeDuration = 0.12f;
+            button.colors = colors;
+            button.onClick.AddListener(onClick);
+            return face.transform;
         }
 
         void BuildMachineCard(Transform root)
@@ -289,16 +443,18 @@ namespace VuonNho.Views
                     if (plot.Unlocked && plot.Phase == PlotPhase.Empty) { _actionPlot = plot.PlotId; break; }
                 _actionCaption.text = _actionPlot >= 0 ? "Gieo hạt" : "Chăm cây";
             }
-            _landCount.text = state.UnlockedPlotCount() + " / " + catalog.Balance.MaximumPlots + " ô đất";
-            _readyCount.text = ready + " ô chờ thu";
             _stockCount.text = stock.ToString("N0");
             _staffCount.text = state.HiredWorkers + " thợ";
-            _careBadge.text = pests > 0 ? pests.ToString() : "";
             UiFactory.SetProgress(_seasonProgress, 1f - (float)untilNextSeason / catalog.Balance.SeasonLengthMs);
             int seconds = Mathf.CeilToInt(untilNextSeason / 1000f);
             var season = Cultivation.SeasonAt(catalog.Balance, state.SimulationTimeMs);
             _seasonLabel.text = "Mùa " + SeasonName(season) + "  ·  " + seconds / 60 + ":" + (seconds % 60).ToString("D2");
-            _bookGoal.text = pests > 0 ? pests + " ô có sâu · Bấm trái tim để chăm cây" :
+
+            // Dòng nhắc dưới nút giữa là chỗ duy nhất còn nói về tình trạng khu vườn sau khi thẻ
+            // "12/12 ô đất" biến mất khỏi HUD, nên nó phải nói đủ: mấy ô có sâu, mấy ô chờ thu,
+            // hay chưa gieo gì. Nút giữa cũng chính là nút làm việc đó, nên câu nhắc và cái nút
+            // luôn nói về cùng một việc.
+            _bookGoal.text = pests > 0 ? pests + " ô có sâu · Bấm nút giữa để chăm cây" :
                 ready > 0 ? "Có " + ready + " ô đã chín · Sẵn sàng thu hoạch" :
                 _actionPlot >= 0 ? "Gieo những mầm đầu tiên cho khu vườn" : "Cây đang lớn · Ghé xưởng pha một mẻ trà";
             SetNavActive(_workshopButton, _workshopPanel.activeSelf);

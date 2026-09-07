@@ -1,14 +1,16 @@
 Mono path[0] = 'C:/Users/PC/Desktop/Game/VuonNho/Build/HudReview/VuonNho-HudReview_Data/Managed'
 Mono config path = 'C:/Users/PC/Desktop/Game/VuonNho/Build/HudReview/MonoBleedingEdge/etc'
 CodeReloadManager initialized
-Found 2 interfaces on host : 0) 192.168.102.61 1) 26.253.10.125
-Player connection [12940]  Target information:
+Found 3 interfaces on host : 0) 192.168.102.61 1) 26.253.10.125 2) 172.24.64.1
+Player connection [2704]  Target information:
 
-Player connection [12940]  * "[IP] 192.168.102.61 [Port] 55000 [Flags] 2 [Guid] 3166572656 [EditorId] 64766845 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+Player connection [2704]  * "[IP] 192.168.102.61 [Port] 55000 [Flags] 2 [Guid] 1844721273 [EditorId] 2236001751 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
 
-Player connection [12940]  * "[IP] 26.253.10.125 [Port] 55000 [Flags] 2 [Guid] 3166572656 [EditorId] 64766845 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+Player connection [2704]  * "[IP] 26.253.10.125 [Port] 55000 [Flags] 2 [Guid] 1844721273 [EditorId] 2236001751 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
 
-Player connection [12940] Started UDP target info broadcast (1) on [225.0.0.222:54997].
+Player connection [2704]  * "[IP] 172.24.64.1 [Port] 55000 [Flags] 2 [Guid] 1844721273 [EditorId] 2236001751 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+
+Player connection [2704] Started UDP target info broadcast (1) on [225.0.0.222:54997].
 
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
@@ -25,7 +27,7 @@ Direct3D:
     VRAM:     12115 MB
     Driver:   32.0.15.6109
 Begin MonoManager ReloadAssembly
-- Finished resetting the current domain, in  0.011 seconds
+- Finished resetting the current domain, in  0.013 seconds
 [Physics::Module] Selected backend.
 [Physics::Module] Name: PhysX
 [Physics::Module] Id: 0xf2b8ea05
@@ -34,21 +36,8 @@ Begin MonoManager ReloadAssembly
 [Physics::Module] Threading Mode: Multi-Threaded
 <RI> Initializing input.
 <RI> Input initialized.
-UnloadTime: 1.063700 ms
-[VuonNho] Day chuyen: 6 may, 6 tho.
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
-UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
-UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
-VuonNho.Views.QaScreenshot:BuildWholeChain (VuonNho.Core.GameSession) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:341)
-VuonNho.Views.QaScreenshot:SeedGrownGarden () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:239)
-VuonNho.Views.QaScreenshot:Update () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:87)
-
-(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
-
-[VuonNho] Khong du xu tra luong: 6 tho nghi trong ky nay.
+UnloadTime: 6.894500 ms
+[VuonNho] Khong du xu tra luong: 1 tho nghi trong ky nay.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -63,12 +52,26 @@ VuonNho.Core.FarmSimulation:PayWagesIfDue (VuonNho.Core.GameState,long) (at C:/U
 VuonNho.Core.FarmSimulation:ResolveAt (VuonNho.Core.GameState,long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/FarmSimulation.cs:199)
 VuonNho.Core.FarmSimulation:AdvanceTo (VuonNho.Core.GameState,long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/FarmSimulation.cs:113)
 VuonNho.Core.GameSession:DebugAdvance (long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/GameSession.cs:1352)
-VuonNho.Views.QaScreenshot:SeedGrownGarden () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:243)
+VuonNho.Views.QaScreenshot:BuildWholeChain (VuonNho.Core.GameSession) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:335)
+VuonNho.Views.QaScreenshot:SeedGrownGarden () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:239)
 VuonNho.Views.QaScreenshot:Update () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:87)
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 223)
 
-[VuonNho] Da tua vuon: 12 o, 1840 xu.
+[VuonNho] Day chuyen: 6 may, 6 tho.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaScreenshot:BuildWholeChain (VuonNho.Core.GameSession) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:341)
+VuonNho.Views.QaScreenshot:SeedGrownGarden () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:239)
+VuonNho.Views.QaScreenshot:Update () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:87)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[VuonNho] Da tua vuon: 12 o, 4664 xu.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -97,4 +100,4 @@ Input System module state changed to: ShutdownInProgress.
 Input Polling Thread exited.
 Input System module state changed to: Shutdown.
 CodeReloadManager destroyed
-PlayerConnection::Cleanup##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1788790129932,"processId":18268,"allocatedMemory":32581,"memoryLabels":[{"Default":3832},{"NewDelete":104},{"Thread":2304},{"Manager":9364},{"GfxDevice":72},{"GfxThread":6912},{"Serialization":616},{"BaseObject":4512},{"String":441},{"PoolAlloc":192},{"ScriptManager":5688},{"CodeReload":440},{"CloudService":144},{"VR":1928},{"Video":144},{"Subsystems":96},{"CoreBusinessMetrics":128}]}
+PlayerConnection::Cleanup##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1788807555490,"processId":18712,"allocatedMemory":32581,"memoryLabels":[{"Default":3832},{"NewDelete":104},{"Thread":2304},{"Manager":9364},{"GfxDevice":72},{"GfxThread":6912},{"Serialization":616},{"BaseObject":4512},{"String":441},{"PoolAlloc":192},{"ScriptManager":5688},{"CodeReload":440},{"CloudService":144},{"VR":1928},{"Video":144},{"Subsystems":96},{"CoreBusinessMetrics":128}]}

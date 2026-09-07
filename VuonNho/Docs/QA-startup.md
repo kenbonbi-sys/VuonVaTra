@@ -2,17 +2,17 @@
 
 Chạy tự động bên trong bản build Windows, không phải trong Editor.
 
-- Thời điểm: 2026-09-07 21:06:14
+- Thời điểm: 2026-09-08 02:02:24
 - Build: 0.2.0 (development)
 - Độ phân giải: 1366 × 768
-- Kết quả: **198 đạt, 0 không đạt**
+- Kết quả: **196 đạt, 0 không đạt**
 
 
 ## Khởi động
 
-- ĐẠT — Nạp save và dựng phiên chơi dưới 2 giây · 0.197 s
+- ĐẠT — Nạp save và dựng phiên chơi dưới 2 giây · 0.233 s
 - ĐẠT — Engine khởi động + splash Unity (chỉ ghi nhận, không phải mục tiêu của game) · 2.02 s
-- ĐẠT — Tổng thời gian tới khung hình chơi được · 2.73 s (bao gồm splash)
+- ĐẠT — Tổng thời gian tới khung hình chơi được · 2.77 s (bao gồm splash)
 - ĐẠT — Độ phân giải chạy thật · 1366 × 768
 
 ## Vườn mới
@@ -32,7 +32,7 @@ Chạy tự động bên trong bản build Windows, không phải trong Editor.
 - ĐẠT — Có xu đầu tiên từ trà · ở phút mô phỏng 0.3
 - ĐẠT — Trà đầu trong vòng 2 phút mô phỏng · 0.3 phút
 - ĐẠT — Mua được robot
-- ĐẠT — Đủ tiền mua robot trong 8 phút mô phỏng · 2.6 phút, 60 lần thu tay
+- ĐẠT — Đủ tiền mua robot trong 8 phút mô phỏng · 2.4 phút, 56 lần thu tay
 - ĐẠT — Mua Mở cúc + công thức
 - ĐẠT — Mua Mở vườn lần 1
 - ĐẠT — Mua Tốc độ máy I
@@ -52,15 +52,15 @@ Chạy tự động bên trong bản build Windows, không phải trong Editor.
 - ĐẠT — Mở đủ 12 ô · 12 ô sau 91.4 phút mô phỏng
 - ĐẠT — Mua hết toàn bộ nâng cấp MVP
 - ĐẠT — Mở hết mọi loại cây gieo được · 9/9 loại
-- ĐẠT — Không có xu âm · 19 xu
+- ĐẠT — Không có xu âm · 145 xu
 
 ## Reload khi cây và máy đang chạy
 
 - ĐẠT — Có cây đang lớn lúc lưu
-- ĐẠT — Máy đang pha lúc lưu · công thức Trà đinh ngọc, kho còn 0/8 nguyên liệu
+- ĐẠT — Máy đang pha lúc lưu · công thức Trà đinh ngọc, kho còn 1/8 nguyên liệu
 - ĐẠT — Nạp lại được file save vừa ghi · LoadedPrimary
-- ĐẠT — Giữ nguyên số xu sau khi nạp lại · 19 → 19
-- ĐẠT — Thời gian mô phỏng không lùi · 5590302 → 5590315
+- ĐẠT — Giữ nguyên số xu sau khi nạp lại · 145 → 145
+- ĐẠT — Thời gian mô phỏng không lùi · 6000427 → 6000439
 - ĐẠT — Trạng thái ô đất dựng lại đúng
 - ĐẠT — Hướng dẫn tiếp tục đúng bước · ChooseNextUpgrade
 - ĐẠT — Hình ảnh ô đất khớp trạng thái sau khi dựng lại · 0 ô lệch
@@ -68,28 +68,26 @@ Chạy tự động bên trong bản build Windows, không phải trong Editor.
 ## Giao diện ở 1366 × 768
 
 - ĐẠT — Thẻ Profile nằm trong màn hình và không bị che
-- ĐẠT — Thẻ FarmStats nằm trong màn hình và không bị che
-- ĐẠT — Thẻ CoinChip nằm trong màn hình và không bị che
-- ĐẠT — Thẻ WorkerChip nằm trong màn hình và không bị che
-- ĐẠT — Thẻ StockChip nằm trong màn hình và không bị che
-- ĐẠT — Các nút nổi nhận được click khi không mở bảng · 14 nút
+- ĐẠT — Thẻ StatusPill nằm trong màn hình và không bị che
+- ĐẠT — Cột nút trái có thẻ tên khi rê chuột · 5 nút
+- ĐẠT — Các nút nổi nhận được click khi không mở bảng · 13 nút
 - ĐẠT — Click ngoài panel vẫn xuống được vườn · click trúng PlotRoot_0
 - ĐẠT — Modal OfflineModal có lối thoát bấm được · OfflineModal/Card/ActionRow/Continue
 - ĐẠT — Nút Tiếp tục vừa bằng chữ và nằm giữa · nút 120 px / thẻ 560 px, lệch tâm 0.0 px
 - ĐẠT — Modal BlockedModal có lối thoát bấm được · BlockedModal/Card/Actions/Settings, BlockedModal/Card/Actions/Quit
-- ĐẠT — Nút điều hướng mở inventory · HudCanvas/FarmHud/InventoryButton; graphic trên cùng: HudCanvas/FarmHud/InventoryButton; click handler: HudCanvas/FarmHud/InventoryButton
+- ĐẠT — Nút điều hướng mở inventory · HudCanvas/FarmHud/LeftRail/InventoryButton; graphic trên cùng: HudCanvas/FarmHud/LeftRail/InventoryButton; click handler: HudCanvas/FarmHud/LeftRail/InventoryButton
 - ĐẠT — Mở được bề mặt inventory
-- ĐẠT — Chữ không tràn khỏi ô chứa — inventory · 106 nhãn
+- ĐẠT — Chữ không tràn khỏi ô chứa — inventory · 107 nhãn
 - ĐẠT — Click trên inventory bị UI chặn, không xuống tới vườn · UI nhận click: InventoryPanel; đối tượng nhận sự kiện pointer: không có; nếu không chặn sẽ trúng WorkshopFence
 - ĐẠT — inventory không che hồ sơ, xu và số thợ · ba thẻ trên cùng vẫn nhìn thấy
 - ĐẠT — Nút đóng nhận click thật và đóng bề mặt inventory · HudCanvas/InventoryPanel/Close; graphic trên cùng: HudCanvas/InventoryPanel/Close; click handler: HudCanvas/InventoryPanel/Close
-- ĐẠT — Nút điều hướng mở upgrade · HudCanvas/FarmHud/UpgradeButton; graphic trên cùng: HudCanvas/FarmHud/UpgradeButton; click handler: HudCanvas/FarmHud/UpgradeButton
+- ĐẠT — Nút điều hướng mở upgrade · HudCanvas/FarmHud/LeftRail/UpgradeButton; graphic trên cùng: HudCanvas/FarmHud/LeftRail/UpgradeButton; click handler: HudCanvas/FarmHud/LeftRail/UpgradeButton
 - ĐẠT — Mở được bề mặt upgrade
 - ĐẠT — Chữ không tràn khỏi ô chứa — upgrade · 87 nhãn
-- ĐẠT — Click trên upgrade bị UI chặn, không xuống tới vườn · UI nhận click: Row_upgrade_expand_8; đối tượng nhận sự kiện pointer: không có; nếu không chặn sẽ trúng WorkshopFence
+- ĐẠT — Click trên upgrade bị UI chặn, không xuống tới vườn · UI nhận click: UpgradePanel; đối tượng nhận sự kiện pointer: không có; nếu không chặn sẽ trúng WorkshopFence
 - ĐẠT — upgrade không che hồ sơ, xu và số thợ · ba thẻ trên cùng vẫn nhìn thấy
 - ĐẠT — Nút đóng nhận click thật và đóng bề mặt upgrade · HudCanvas/UpgradePanel/Close; graphic trên cùng: HudCanvas/UpgradePanel/Close; click handler: HudCanvas/UpgradePanel/Close
-- ĐẠT — Nút điều hướng mở decorate · HudCanvas/FarmHud/DecorateButton; graphic trên cùng: HudCanvas/FarmHud/DecorateButton; click handler: HudCanvas/FarmHud/DecorateButton
+- ĐẠT — Nút điều hướng mở decorate · HudCanvas/FarmHud/LeftRail/DecorateButton; graphic trên cùng: HudCanvas/FarmHud/LeftRail/DecorateButton; click handler: HudCanvas/FarmHud/LeftRail/DecorateButton
 - ĐẠT — Mở được bề mặt decorate
 - ĐẠT — Chữ không tràn khỏi ô chứa — decorate · 30 nhãn
 - ĐẠT — Click trên decorate bị UI chặn, không xuống tới vườn · UI nhận click: Row_deco_planter; đối tượng nhận sự kiện pointer: không có; nếu không chặn sẽ trúng WorkshopFence
@@ -107,10 +105,10 @@ Chạy tự động bên trong bản build Windows, không phải trong Editor.
 - ĐẠT — Click trên settings bị UI chặn, không xuống tới vườn · UI nhận click: SettingsPanel; đối tượng nhận sự kiện pointer: không có; nếu không chặn sẽ trúng WorkshopFence
 - ĐẠT — settings không che hồ sơ, xu và số thợ · ba thẻ trên cùng vẫn nhìn thấy
 - ĐẠT — Nút đóng nhận click thật và đóng bề mặt settings · HudCanvas/SettingsPanel/Close; graphic trên cùng: HudCanvas/SettingsPanel/Close; click handler: HudCanvas/SettingsPanel/Close
-- ĐẠT — Nút điều hướng mở journal · HudCanvas/FarmHud/JournalButton; graphic trên cùng: HudCanvas/FarmHud/JournalButton; click handler: HudCanvas/FarmHud/JournalButton
+- ĐẠT — Nút điều hướng mở journal · HudCanvas/FarmHud/LeftRail/JournalButton; graphic trên cùng: HudCanvas/FarmHud/LeftRail/JournalButton; click handler: HudCanvas/FarmHud/LeftRail/JournalButton
 - ĐẠT — Mở được bề mặt journal
 - ĐẠT — Chữ không tràn khỏi ô chứa — journal · 13 nhãn
-- ĐẠT — Click trên journal bị UI chặn, không xuống tới vườn · UI nhận click: OpenAgronomy; đối tượng nhận sự kiện pointer: OpenAgronomy; nếu không chặn sẽ trúng WorkshopFence
+- ĐẠT — Click trên journal bị UI chặn, không xuống tới vườn · UI nhận click: JournalPanel; đối tượng nhận sự kiện pointer: không có; nếu không chặn sẽ trúng WorkshopFence
 - ĐẠT — journal không che hồ sơ, xu và số thợ · ba thẻ trên cùng vẫn nhìn thấy
 - ĐẠT — Nút đóng nhận click thật và đóng bề mặt journal · HudCanvas/JournalPanel/Close; graphic trên cùng: HudCanvas/JournalPanel/Close; click handler: HudCanvas/JournalPanel/Close
 - ĐẠT — Mở được bề mặt plot
@@ -143,14 +141,14 @@ Chạy tự động bên trong bản build Windows, không phải trong Editor.
 - ĐẠT — Click trên model bị UI chặn, không xuống tới vườn · UI nhận click: Branch_BulkB2B; đối tượng nhận sự kiện pointer: không có; nếu không chặn sẽ trúng WorkshopFence
 - ĐẠT — model không che hồ sơ, xu và số thợ · ba thẻ trên cùng vẫn nhìn thấy
 - ĐẠT — Nút đóng nhận click thật và đóng bề mặt model · HudCanvas/ModelPanel/Close; graphic trên cùng: HudCanvas/ModelPanel/Close; click handler: HudCanvas/ModelPanel/Close
-- ĐẠT — Chữ không tràn khỏi ô chứa — HUD · 24 nhãn
+- ĐẠT — Chữ không tràn khỏi ô chứa — HUD · 19 nhãn
 
 ## Offline và hiệu năng
 
-- ĐẠT — Mô phỏng bù 4 giờ dưới 250 ms · lần chậm nhất 8 ms trên 5 lần, vườn 12 ô
+- ĐẠT — Mô phỏng bù 4 giờ dưới 250 ms · lần chậm nhất 6 ms trên 5 lần, vườn 12 ô
 - ĐẠT — 5 vòng thoát/quay lại không đóng băng khung hình · frame dài nhất 11 ms
-- ĐẠT — p95 frame time dưới 16,7 ms khi vườn đầy · trung bình 180 FPS, p95 5.6 ms, 719 khung hình
-- ĐẠT — Trung bình đạt 60 FPS · trung bình 180 FPS, p95 5.6 ms, 719 khung hình
+- ĐẠT — p95 frame time dưới 16,7 ms khi vườn đầy · trung bình 180 FPS, p95 5.6 ms, 720 khung hình
+- ĐẠT — Trung bình đạt 60 FPS · trung bình 180 FPS, p95 5.6 ms, 720 khung hình
 
 ## Điều khiển camera và nhân vật
 
@@ -176,19 +174,19 @@ Chạy tự động bên trong bản build Windows, không phải trong Editor.
 - ĐẠT — Món đặt xuống giữ đúng góc đã xoay · góc 225°
 - ĐẠT — Thoát chế độ thì bóng ma biến mất
 - ĐẠT — Túi đồ có một ô cho mỗi mặt hàng · 70 ô / 70 mặt hàng
-- ĐẠT — Ô chi tiết nằm dưới đáy và không trống · Bạc hà tươi: 11
+- ĐẠT — Ô chi tiết nằm dưới đáy và không trống · Bạc hà tươi: 7
 - ĐẠT — Bấm ra ngoài vườn thì dừng ở mép · đích (14.5, -14.5), giới hạn 14.5
 
 ## Dây chuyền chế biến trà
 
 - ĐẠT — Có đủ sáu công đoạn giữa thu hoạch và quầy trà · 6 công đoạn
-- ĐẠT — Gom đủ xu để xây cả dây chuyền · 12881 / 12780 xu
+- ĐẠT — Gom đủ xu để xây cả dây chuyền · 13007 / 12780 xu
 - ĐẠT — Mua được cả sáu máy · 6 máy
 - ĐẠT — Không mua được một cái máy hai lần · Đã mua.
 - ĐẠT — Thuê đủ thợ cho tất cả các máy · 6 thợ
 - ĐẠT — Lá tươi đi hết chuỗi thành trà đóng gói
-- ĐẠT — Thợ ăn lương và xu vẫn không âm · 4029 xu, 6/6 thợ đang làm
-- ĐẠT — Xây dây chuyền xong vẫn kiếm được xu · trước 4101, sau 4029
+- ĐẠT — Thợ ăn lương và xu vẫn không âm · 5413 xu, 6/6 thợ đang làm
+- ĐẠT — Xây dây chuyền xong vẫn kiếm được xu · trước 4227, sau 5413
 - ĐẠT — Bảng Xưởng mở được và có đủ hàng
 - ĐẠT — Chữ không tràn khỏi ô chứa — workshop · 26 nhãn
 
@@ -211,21 +209,21 @@ Chạy tự động bên trong bản build Windows, không phải trong Editor.
 
 ## Robot đi thu từng ô
 
-- ĐẠT — Robot mất thời gian đi tới ô · còn 567 ms nữa mới tới ô 5
+- ĐẠT — Robot mất thời gian đi tới ô · còn 395 ms nữa mới tới ô 10
 - ĐẠT — Cây chín nằm chờ chứ không bị thu sạch tức thì · 1 ô đang chín chờ robot
-- ĐẠT — Hình robot chạy theo mô phỏng · đi được 319 cm
-- ĐẠT — Thu xong thì robot đứng lại ngay ô đó · ô 5
+- ĐẠT — Hình robot chạy theo mô phỏng · đi được 35 cm
+- ĐẠT — Thu xong thì robot đứng lại ngay ô đó · ô 10
 
 ## Canh tác: độ phì, cỏ, sâu bệnh, thời vụ
 
 - ĐẠT — Gieo một vụ thì trừ độ phì của ô · 100 → 96 (trừ 4)
 - ĐẠT — Đất bỏ không tự hồi nhưng dừng ở trần tự nhiên · 45/100, trần 45
-- ĐẠT — Bón phân đưa đất về mức tốt nhất và trừ đúng tiền · độ phì 100, còn 6128 xu
+- ĐẠT — Bón phân đưa đất về mức tốt nhất và trừ đúng tiền · độ phì 100, còn 6835 xu
 - ĐẠT — Đất đang tốt thì không cho bón thêm
 - ĐẠT — Bỏ bê một lúc thì cỏ mọc kín ô · 100/100
 - ĐẠT — Cỏ dại làm cây lớn chậm hơn hẳn · 5120 ms → 8192 ms
 - ĐẠT — Làm cỏ xoá sạch cỏ của ô · 0/100
-- ĐẠT — Trị được sâu bệnh và trừ đúng tiền · còn 123051 xu
+- ĐẠT — Trị được sâu bệnh và trừ đúng tiền · còn 106774 xu
 - ĐẠT — Ô không có sâu thì không cho trị
 - ĐẠT — Trồng trái vụ thu ít hơn trồng đúng vụ · 4 → 2 đơn vị
 - ĐẠT — Mùa suy ra được từ đồng hồ mô phỏng · đang là mùa đông
@@ -234,13 +232,13 @@ Chạy tự động bên trong bản build Windows, không phải trong Editor.
 - ĐẠT — Ô sạch sâu bệnh thì không có nút trị sâu · activeSelf = False
 - ĐẠT — Ô có sâu bệnh thì nút trị sâu hiện ra
 - ĐẠT — Chữ không tràn khỏi ô chứa — popup ô · 16 nhãn
-- ĐẠT — Thẻ hồ sơ hiện đúng mùa hiện tại và đồng hồ mùa · Mùa đông  ·  3:35
+- ĐẠT — Thẻ hồ sơ hiện đúng mùa hiện tại và đồng hồ mùa · Mùa đông  ·  2:05
 - ĐẠT — Ô đầy cỏ và có sâu thì thấy được ngay trong vườn · cỏ True, sâu True
 - ĐẠT — Làm cỏ trị sâu xong thì dấu hiệu biến mất
 
 ## Âm lượng, reset và thoát
 
 - ĐẠT — Bật tắt âm thanh và ghi nhớ được lựa chọn
-- ĐẠT — Xuất được dữ liệu test · Đã xuất dữ liệu test: C:/Users/PC/AppData/LocalLow/Vuon va Tra/VuonNho-HudReview\vuon-nho-export-20260907-210614.log
+- ĐẠT — Xuất được dữ liệu test · Đã xuất dữ liệu test: C:/Users/PC/AppData/LocalLow/Vuon va Tra/VuonNho-HudReview\vuon-nho-export-20260908-020224.log
 - ĐẠT — Reset trả về vườn mới · 0 xu, 4 ô
 - ĐẠT — Sau reset vẫn có file save hợp lệ · C:/Users/PC/AppData/LocalLow/Vuon va Tra/VuonNho-HudReview\vuon-nho-save.json
