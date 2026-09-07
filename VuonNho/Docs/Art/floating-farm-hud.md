@@ -6,8 +6,7 @@ ngang:
 - **Góc trái trên** — thẻ hồ sơ: chân dung, tên game, mùa và tiến độ mùa.
 - **Cột dọc mép trái**, ngay dưới thẻ hồ sơ — năm nút vuông **chỉ có icon**: trang trí, nâng cấp,
   sổ tay, khu vườn, kho. Rê chuột lên một nút thì tên hiện ra thành một thẻ xanh bên phải nó.
-- **Góc phải trên** — **một thẻ duy nhất** cho ba con số: số thợ, xu, tổng vật phẩm trong kho.
-  Bấm vào đoạn thợ mở bảng xưởng, bấm vào đoạn kho mở tủ đồ. Các số đều đọc từ GameState.
+- **Góc phải trên** — thẻ xu. Chỉ một con số, đọc từ GameState.
 - **Giữa mép phải** — ba nút có chữ: xưởng, nhân sự, cài đặt.
 - **Giữa dưới** — về toàn cảnh, hành động theo trạng thái cây, xem cận xưởng. Nút tròn mở ô trống
   để gieo, thu một ô đã chín qua GameSession, hoặc mở bảng chăm cây khi tất cả đang lớn.
@@ -31,14 +30,14 @@ dưới.
 ra chưa có kích thước nào — nó sẽ ra 100 × 100 mặc định của `RectTransform`, tức một cột hình chữ
 nhật cao thay vì năm ô vuông.
 
-## Vì sao ba con số gộp làm một thẻ
+## Góc phải trên chỉ còn xu
 
-Trước đây là ba thẻ rời. Ba con số này luôn được đọc cùng nhau — "có đủ tiền thuê thêm thợ không",
-"kho đã đầy chưa" — và ba cái viền riêng bắt mắt nhìn phải nhảy ba lần để trả lời một câu hỏi.
+Thẻ này từng mang cả số thợ và số hàng trong kho. Bỏ cả hai vì chúng **đã có đường vào riêng**: nút
+"Nhân sự" ở mép phải và nút "Kho" ở cột trái. Một con số vừa hiện ở góc màn hình vừa có một cái nút
+riêng là hai chỗ nói cùng một chuyện, và cái ở góc màn hình thì không bấm được để làm gì sâu hơn.
 
-Hai đoạn bấm được trong thẻ có nền **đúng màu nền của thẻ**, nên chúng vô hình khi không ai chạm
-vào, nhưng vẫn là `Graphic` thật: một nút không có graphic thì không nhận được raycast, và bộ QA có
-một mục kiểm đòi mọi nút nổi phải bấm tới được.
+Xu ở lại vì nó khác hẳn: nó đổi sau **mọi** hành động — gieo, thu, mua, trả nợ — nên nó là con số
+duy nhất cần nhìn thấy liên tục mà không phải mở gì cả.
 
 Thẻ cao 68 px từ mốc −24, nên `GameHud.ContentTop` phải là 100 — các bảng bên phải bắt đầu dưới nó.
 Để 76 như cũ thì bảng đè lên đáy thẻ, và có một mục kiểm bắt được điều đó.

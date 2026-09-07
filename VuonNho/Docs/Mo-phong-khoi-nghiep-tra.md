@@ -36,9 +36,17 @@ Một kỳ trả nợ là một "tháng" trong game: `SeasonLengthMs / MonthsPer
 quý, nên ba tháng một mùa.
 
 **Chỗ làm khác bản mô phỏng.** Bản mô phỏng nói ngân hàng "siết nợ và niêm phong nương chè" — một
-game over. Ở đây niêm phong **dừng cả vườn lẫn xưởng** nhưng có đường ra: trả hết nợ quá hạn là mở
-lại. Xoá sạch tiến độ của một người chơi cozy sau ba kỳ thiếu tiền là mất nhiều hơn được, mà cái
-răng của luật — phải giữ dòng tiền dương — vẫn còn nguyên khi vườn đứng im.
+game over. Ở đây niêm phong dừng **xưởng, quầy trà và robot**, tức toàn bộ phần làm ra tiền nhanh,
+nhưng không dừng việc làm tay trong vườn. Trả hết nợ quá hạn là mở lại. Xoá sạch tiến độ của một
+người chơi cozy sau ba kỳ thiếu tiền là mất nhiều hơn được, mà cái răng của luật — phải giữ dòng
+tiền dương — vẫn còn nguyên khi cả dây chuyền đứng im.
+
+Vườn phải chạy tiếp, không được dừng theo. Bản đầu dừng cả vườn, và nó tạo ra một ngõ cụt thật:
+một người hết sạch xu, kho rỗng và đang bị niêm phong thì không còn đường nào kiếm ra một đồng để
+trả nợ — ván chơi kẹt ở đó vĩnh viễn. Một cái bẫy không lối ra thì không dạy được người chơi điều
+gì cả. Đường về là đường chậm nhất của game: hái bằng tay, bán lá tươi, mà lá tươi rẻ hơn trà đã
+đóng gói hàng chục lần — nên món nợ vẫn là một cái giá thật phải trả bằng thời gian. Có một bài
+test chạy trọn con đường đó (`BiNiemPhongVoiKhoRongVanConDuongTraNo`).
 
 Tiền vay **không** tính là doanh thu (`Finance.Borrow` cộng thẳng vào `Coins`, không qua
 `EarnCoins`). Một khoản vay không làm vườn giàu hơn, nó đổi một cục tiền bây giờ lấy một chuỗi

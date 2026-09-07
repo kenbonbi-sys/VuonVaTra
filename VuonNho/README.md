@@ -209,10 +209,10 @@ Bản build nằm ở `Build/VuonNho-playtest/` và `Build/VuonNho-dev/`.
 "C:\Program Files\Unity\Hub\Editor\6000.6.0f1\Editor\Unity.exe" -batchmode -projectPath "C:\Users\PC\Desktop\Game\VuonNho" -runTests -testPlatform EditMode -testResults results.xml -logFile test.log
 ```
 
-204 test EditMode. 149 bài phủ bảng "Kiểm thử logic bắt buộc" ở mục 10 của kế hoạch: tính nhất
+205 test EditMode. 149 bài phủ bảng "Kiểm thử logic bắt buộc" ở mục 10 của kế hoạch: tính nhất
 quán thời gian, biên timer, trước/sau robot, cap offline 4 giờ, đồng thời, đổi cây/công thức, nâng
 tốc độ giữa chu kỳ, kho, giao dịch, resume lặp, save/backup/schema, chỉnh đồng hồ, balance khác và
-múi giờ. 55 bài còn lại phủ sáu mục của bản mô phỏng khởi nghiệp trà — xem
+múi giờ. 56 bài còn lại phủ sáu mục của bản mô phỏng khởi nghiệp trà — xem
 [Docs/Mo-phong-khoi-nghiep-tra.md](Docs/Mo-phong-khoi-nghiep-tra.md).
 
 Phần "kiểm thử build và giao diện" của mục 10 chạy bằng bộ QA nằm trong chính bản build:
@@ -456,7 +456,7 @@ Hai điều đã làm hỏng một lượt chụp và sẽ làm hỏng lượt s
 - **Mô phỏng khởi nghiệp trà** — sáu mục của bản HTML thành cơ chế chơi được: vay ngân hàng và
   nguy cơ bị siết nợ, cây chè bốn tiêu chuẩn thu hái và bảng sinh hoá bốn mùa, rầy xanh thành
   Đông Phương Mỹ Nhân, bốn thông số căn lửa, hộ kinh doanh / công ty và chế tài ATTP, ba phân
-  nhánh kinh doanh, và đoạn mở màn bốn phân cảnh. Năm bảng mới mở từ Sổ tay; 55 test logic và
+  nhánh kinh doanh, và đoạn mở màn bốn phân cảnh. Năm bảng mới mở từ Sổ tay; 56 test logic và
   47 mục kiểm mới trong bản build. Save lên schema 6; save cũ mở được như một ván chưa vay đồng
   nào và chưa đăng ký gì. Xem [Docs/Mo-phong-khoi-nghiep-tra.md](Docs/Mo-phong-khoi-nghiep-tra.md).
 

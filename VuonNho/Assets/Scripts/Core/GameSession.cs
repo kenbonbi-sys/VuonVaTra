@@ -77,9 +77,20 @@ namespace VuonNho.Core
         /// <summary>Duoi nguong nay thi khong hien bao cao quay lai, nhung tien do van duoc ap dung.</summary>
         public const long OfflineReportMinMs = 60000;
 
-        /// <summary>Cau tu choi khi nuong che dang bi ngan hang niem phong.</summary>
+        /// <summary>
+        /// Cau tu choi khi nuong che dang bi ngan hang niem phong.
+        ///
+        /// Niem phong dong **xuong, quay tra va robot** — tuc toan bo phan lam ra tien nhanh —
+        /// nhung khong dong viec lam tay trong vuon. Dong het thi mot nguoi het sach xu, kho rong
+        /// va dang bi niem phong se khong con duong nao kiem ra mot dong de tra no: van choi ket
+        /// o do vinh vien, ma mot cai bay khong loi ra thi khong day duoc nguoi choi lam gi ca.
+        ///
+        /// Con lai la duong cham nhat cua game: hai bang tay, ban la tuoi. La tuoi re hon tra da
+        /// dong goi hang chuc lan, nen mon no van la mot cai gia that phai tra bang thoi gian.
+        /// </summary>
         public const string SealedReason =
-            "Nương chè đang bị ngân hàng niêm phong. Trả hết nợ ở bảng Vốn và nợ để mở lại.";
+            "Nương chè đang bị ngân hàng niêm phong. Xưởng và quầy trà dừng cho tới khi trả hết nợ; " +
+            "trong lúc đó vẫn hái và bán lá tươi được.";
 
         readonly ContentCatalog _catalog;
         readonly FarmSimulation _simulation;
@@ -361,7 +372,6 @@ namespace VuonNho.Core
         public CommandResult Plant(int plotId, string cropId)
         {
             EnsureCurrent();
-            if (_state.Loan.Sealed) return CommandResult.Fail(SealedReason);
             var plot = _state.Plot(plotId);
             if (plot == null) return CommandResult.Fail("Không có ô này.");
             if (!plot.Unlocked) return CommandResult.Fail("Ô đất chưa mở.");
@@ -408,7 +418,6 @@ namespace VuonNho.Core
         public CommandResult HarvestAndReplant(int plotId)
         {
             EnsureCurrent();
-            if (_state.Loan.Sealed) return CommandResult.Fail(SealedReason);
             var plot = _state.Plot(plotId);
             if (plot == null) return CommandResult.Fail("Không có ô này.");
             if (plot.Phase != PlotPhase.Ready) return CommandResult.Fail("Cây chưa chín.");

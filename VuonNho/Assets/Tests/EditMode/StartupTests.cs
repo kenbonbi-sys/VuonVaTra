@@ -138,18 +138,56 @@ namespace VuonNho.Tests
         }
 
         [Test]
-        public void NiemPhongThiVuonDungLai()
+        public void NiemPhongDongXuongVaQuayTraChuKhongDongVuon()
         {
             FakeClock clock;
             MemorySaveRepository repository;
             var session = TestKit.NewSession(out clock, out repository);
             session.State.Loan.Sealed = true;
 
-            var planted = session.Plant(0, DefaultContent.CropMint);
-            Assert.IsFalse(planted.Success);
-            Assert.AreEqual(GameSession.SealedReason, planted.FailureReason);
-            Assert.IsFalse(_simulation.CanStartBatchNow(session.State),
-                           "Quay tra cung phai dung, khong chi vuon.");
+            Assert.IsFalse(_simulation.CanStartBatchNow(session.State), "Quầy trà phải dừng.");
+            Assert.IsFalse(_simulation.FactoryAllowed(session.State, session.State.SimulationTimeMs),
+                           "Xưởng phải dừng.");
+            Assert.IsTrue(session.Plant(0, DefaultContent.CropMint).Success,
+                          "Vẫn phải gieo được bằng tay, nếu không thì không còn đường trả nợ.");
+        }
+
+        [Test]
+        public void BiNiemPhongVoiKhoRongVanConDuongTraNo()
+        {
+            // Bai test quan trong nhat cua ca he: mot cai bay khong loi ra thi khong day duoc
+            // nguoi choi lam gi ca. Het sach xu, kho rong, dang bi niem phong — van phai co
+            // duong ve, du la duong cham nhat.
+            FakeClock clock;
+            MemorySaveRepository repository;
+            var session = TestKit.NewSession(out clock, out repository);
+            var loan = session.State.Loan;
+            loan.Kind = LoanKind.Unsecured;
+            loan.PrincipalCoins = 200;
+            loan.RemainingPrincipalCoins = 200;
+            loan.TermMonths = 12;
+            loan.Sealed = true;
+            session.State.Coins = 0;
+            foreach (var itemId in _catalog.Items) session.State.Inventory[itemId] = 0;
+
+            long guard = 0;
+            while (session.State.Coins < Finance.PayoffAmount(session.State.Loan) && guard++ < 400)
+            {
+                for (int i = 0; i < session.State.Plots.Count; i++)
+                {
+                    var plot = session.State.Plot(i);
+                    if (!plot.Unlocked) continue;
+                    if (plot.Phase == PlotPhase.Empty) session.Plant(i, DefaultContent.CropMint);
+                    else if (plot.Phase == PlotPhase.Ready) session.HarvestAndReplant(i);
+                }
+                session.SellAllRaw(DefaultContent.CropMint);
+                session.DebugAdvance(10000);
+            }
+
+            Assert.GreaterOrEqual(session.State.Coins, Finance.PayoffAmount(session.State.Loan),
+                                  "Hái tay và bán lá tươi phải gom đủ tiền trả nợ.");
+            Assert.IsTrue(session.RepayLoan(Finance.PayoffAmount(session.State.Loan)).Success);
+            Assert.IsFalse(session.State.Loan.Sealed, "Trả hết nợ là thảo niêm phong.");
         }
 
         [Test]

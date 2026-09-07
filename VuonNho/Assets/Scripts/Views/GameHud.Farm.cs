@@ -16,8 +16,7 @@ namespace VuonNho.Views
         static readonly Color HudShadow = new Color32(99, 104, 63, 100);
         static readonly Color HudGreen = new Color32(113, 174, 70, 255);
         static readonly Color HudBrown = new Color32(135, 105, 71, 255);
-        Text _stockCount, _staffCount, _actionCaption;
-        Text _bookGoal;
+        Text _actionCaption, _bookGoal;
         Image _seasonProgress;
         GameObject _journalPanel;
         Button _journalButton;
@@ -31,8 +30,8 @@ namespace VuonNho.Views
         const float RailGap = 10f;
         const float RailTooltipGap = 10f;
 
-        /// <summary>Be ngang the ba con so o goc phai tren: 6 + 142 + 10 + 132 + 10 + 150 + 6.</summary>
-        const float StatusPillWidth = 468f;
+        /// <summary>Be ngang the xu: icon 62 px roi mot o so bon chu so.</summary>
+        const float StatusPillWidth = 210f;
 
         static void Place(RectTransform rect, Vector2 anchor, float x, float y, float width, float height)
         {
@@ -304,69 +303,25 @@ namespace VuonNho.Views
         }
 
         /// <summary>
-        /// Mot the duy nhat o goc phai tren cho ba con so: tho, xu, kho.
+        /// The xu o goc phai tren.
         ///
-        /// Truoc day la ba the roi. Gop lam mot vi ba con so nay luon duoc doc cung nhau — "co du
-        /// tien thue them tho khong", "kho da day chua" — va ba cai vien rieng bat mat nhin phai
-        /// nhay ba lan de tra loi mot cau hoi.
+        /// Truoc day the nay con mang so tho va so hang trong kho. Bo ca hai vi chung **da co
+        /// duong vao rieng**: nut "Nhan su" o mep phai va nut "Kho" o cot trai. Mot con so vua
+        /// hien o goc man hinh vua co mot cai nut rieng la hai cho noi cung mot chuyen, va cai o
+        /// goc man hinh thi khong bam duoc de lam gi sau hon.
+        ///
+        /// Xu o lai vi no khac han: no doi sau **moi** hanh dong — gieo, thu, mua, tra no — nen
+        /// no la con so duy nhat can nhin thay lien tuc ma khong phai mo gi ca.
         /// </summary>
         void BuildStatusPill(Transform hud, Vector2 topRight)
         {
             var pill = FarmSurface(hud, "StatusPill", topRight, -22, -24, StatusPillWidth, 68, 18);
-            var tl = new Vector2(0, 1);
-
-            var workers = StatusSegment(pill.transform, "WorkerSeg", 6, 142, ShowWorkshopPanel);
-            FarmIcon(workers, FarmHudIcon.Kind.Workers, 2, -4, 47);
-            _staffCount = FarmText(workers, "Value", "", 19, 54, -14, 80, 33, true);
-
-            var firstRule = UiFactory.Panel(pill.transform, "Rule1", GardenPalette.PanelDivider);
-            Place(firstRule.rectTransform, tl, 152, -18, 1, 32);
-            firstRule.raycastTarget = false;
-
-            var coins = UiFactory.Node(pill.transform, "CoinSeg");
-            Place(UiFactory.Rect(coins), tl, 162, -6, 132, 56);
-            FarmIcon(coins.transform, FarmHudIcon.Kind.Coin, -4, -1, 55);
-            _coinsLabel = FarmText(coins.transform, "Value", "0", 22, 52, -12, 76, 34, true);
+            FarmIcon(pill.transform, FarmHudIcon.Kind.Coin, 4, -3, 62);
+            _coinsLabel = FarmText(pill.transform, "Value", "0", 24, 70, -17, 132, 36, true);
             _coinsLabel.alignment = TextAnchor.MiddleRight;
             _coinsLabel.resizeTextForBestFit = true;
-            _coinsLabel.resizeTextMinSize = 12;
-            _coinsLabel.resizeTextMaxSize = 22;
-
-            var secondRule = UiFactory.Panel(pill.transform, "Rule2", GardenPalette.PanelDivider);
-            Place(secondRule.rectTransform, tl, 302, -18, 1, 32);
-            secondRule.raycastTarget = false;
-
-            var stock = StatusSegment(pill.transform, "StockSeg", 312, 150,
-                delegate { TogglePanel(_inventoryPanel); });
-            FarmIcon(stock, FarmHudIcon.Kind.Crate, 0, -2, 56);
-            FarmText(stock, "Caption", "Trong kho", 13, 58, -6, 88, 22);
-            _stockCount = FarmText(stock, "Value", "", 21, 58, -26, 86, 30, true);
-            _stockCount.resizeTextForBestFit = true;
-            _stockCount.resizeTextMinSize = 11;
-            _stockCount.resizeTextMaxSize = 21;
-        }
-
-        /// <summary>
-        /// Mot doan bam duoc trong the goc phai tren.
-        ///
-        /// Nen cua doan dung dung mau nen cua the nen no vo hinh khi khong ai cham vao, nhung no
-        /// la mot Graphic that — nut khong co graphic thi khong nhan duoc raycast, va bo QA co
-        /// mot muc kiem doi moi nut noi phai bam toi duoc.
-        /// </summary>
-        Transform StatusSegment(Transform pill, string name, float x, float width, UnityAction onClick)
-        {
-            var face = UiFactory.Panel(pill, name, HudFace, 12);
-            Place(face.rectTransform, new Vector2(0, 1), x, -6, width, 56);
-            var button = face.gameObject.AddComponent<Button>();
-            button.targetGraphic = face;
-            var colors = button.colors;
-            colors.highlightedColor = new Color(1f, 1f, 0.91f);
-            colors.pressedColor = new Color(0.86f, 0.89f, 0.76f);
-            colors.selectedColor = colors.highlightedColor;
-            colors.fadeDuration = 0.12f;
-            button.colors = colors;
-            button.onClick.AddListener(onClick);
-            return face.transform;
+            _coinsLabel.resizeTextMinSize = 13;
+            _coinsLabel.resizeTextMaxSize = 24;
         }
 
         void BuildMachineCard(Transform root)
@@ -443,8 +398,6 @@ namespace VuonNho.Views
                     if (plot.Unlocked && plot.Phase == PlotPhase.Empty) { _actionPlot = plot.PlotId; break; }
                 _actionCaption.text = _actionPlot >= 0 ? "Gieo hạt" : "Chăm cây";
             }
-            _stockCount.text = stock.ToString("N0");
-            _staffCount.text = state.HiredWorkers + " thợ";
             UiFactory.SetProgress(_seasonProgress, 1f - (float)untilNextSeason / catalog.Balance.SeasonLengthMs);
             int seconds = Mathf.CeilToInt(untilNextSeason / 1000f);
             var season = Cultivation.SeasonAt(catalog.Balance, state.SimulationTimeMs);

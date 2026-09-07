@@ -2,15 +2,15 @@ Mono path[0] = 'C:/Users/PC/Desktop/Game/VuonNho/Build/HudReview/VuonNho-HudRevi
 Mono config path = 'C:/Users/PC/Desktop/Game/VuonNho/Build/HudReview/MonoBleedingEdge/etc'
 CodeReloadManager initialized
 Found 3 interfaces on host : 0) 192.168.102.61 1) 26.253.10.125 2) 172.24.64.1
-Player connection [2704]  Target information:
+Player connection [27400]  Target information:
 
-Player connection [2704]  * "[IP] 192.168.102.61 [Port] 55000 [Flags] 2 [Guid] 1844721273 [EditorId] 2236001751 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+Player connection [27400]  * "[IP] 192.168.102.61 [Port] 55001 [Flags] 2 [Guid] 2858161861 [EditorId] 3671002593 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
 
-Player connection [2704]  * "[IP] 26.253.10.125 [Port] 55000 [Flags] 2 [Guid] 1844721273 [EditorId] 2236001751 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+Player connection [27400]  * "[IP] 26.253.10.125 [Port] 55001 [Flags] 2 [Guid] 2858161861 [EditorId] 3671002593 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
 
-Player connection [2704]  * "[IP] 172.24.64.1 [Port] 55000 [Flags] 2 [Guid] 1844721273 [EditorId] 2236001751 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+Player connection [27400]  * "[IP] 172.24.64.1 [Port] 55001 [Flags] 2 [Guid] 2858161861 [EditorId] 3671002593 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
 
-Player connection [2704] Started UDP target info broadcast (1) on [225.0.0.222:54997].
+Player connection [27400] Started UDP target info broadcast (1) on [225.0.0.222:54997].
 
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
@@ -27,7 +27,7 @@ Direct3D:
     VRAM:     12115 MB
     Driver:   32.0.15.6109
 Begin MonoManager ReloadAssembly
-- Finished resetting the current domain, in  0.013 seconds
+- Finished resetting the current domain, in  0.010 seconds
 [Physics::Module] Selected backend.
 [Physics::Module] Name: PhysX
 [Physics::Module] Id: 0xf2b8ea05
@@ -36,7 +36,7 @@ Begin MonoManager ReloadAssembly
 [Physics::Module] Threading Mode: Multi-Threaded
 <RI> Initializing input.
 <RI> Input initialized.
-UnloadTime: 6.894500 ms
+UnloadTime: 1.250500 ms
 [VuonNho] Khong du xu tra luong: 1 tho nghi trong ky nay.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
@@ -45,13 +45,13 @@ UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,st
 UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
 UnityEngine.Debug:LogWarning (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:223)
 VuonNho.Views.GameBootstrap:OnDiagnostic (string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/GameBootstrap.cs:568)
-VuonNho.Core.GameSession:RaiseDiagnostic (string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/GameSession.cs:1335)
-VuonNho.Core.GameSession:VuonNho.Core.ISimulationListener.OnWagesPaid (long,int,int,long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/GameSession.cs:1304)
+VuonNho.Core.GameSession:RaiseDiagnostic (string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/GameSession.cs:1344)
+VuonNho.Core.GameSession:VuonNho.Core.ISimulationListener.OnWagesPaid (long,int,int,long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/GameSession.cs:1313)
 VuonNho.Core.FarmSimulation:NotifyWagesPaid (long,int,int,long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/FarmSimulation.cs:1169)
 VuonNho.Core.FarmSimulation:PayWagesIfDue (VuonNho.Core.GameState,long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/FarmSimulation.cs:250)
 VuonNho.Core.FarmSimulation:ResolveAt (VuonNho.Core.GameState,long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/FarmSimulation.cs:199)
 VuonNho.Core.FarmSimulation:AdvanceTo (VuonNho.Core.GameState,long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/FarmSimulation.cs:113)
-VuonNho.Core.GameSession:DebugAdvance (long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/GameSession.cs:1352)
+VuonNho.Core.GameSession:DebugAdvance (long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/GameSession.cs:1361)
 VuonNho.Views.QaScreenshot:BuildWholeChain (VuonNho.Core.GameSession) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:335)
 VuonNho.Views.QaScreenshot:SeedGrownGarden () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:239)
 VuonNho.Views.QaScreenshot:Update () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:87)
@@ -71,7 +71,28 @@ VuonNho.Views.QaScreenshot:Update () (at C:/Users/PC/Desktop/Game/VuonNho/Assets
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[VuonNho] Da tua vuon: 12 o, 4664 xu.
+[VuonNho] Khong du xu tra luong: 1 tho nghi trong ky nay.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:LogWarning (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:223)
+VuonNho.Views.GameBootstrap:OnDiagnostic (string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/GameBootstrap.cs:568)
+VuonNho.Core.GameSession:RaiseDiagnostic (string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/GameSession.cs:1344)
+VuonNho.Core.GameSession:VuonNho.Core.ISimulationListener.OnWagesPaid (long,int,int,long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/GameSession.cs:1313)
+VuonNho.Core.FarmSimulation:NotifyWagesPaid (long,int,int,long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/FarmSimulation.cs:1169)
+VuonNho.Core.FarmSimulation:PayWagesIfDue (VuonNho.Core.GameState,long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/FarmSimulation.cs:250)
+VuonNho.Core.FarmSimulation:ResolveAt (VuonNho.Core.GameState,long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/FarmSimulation.cs:199)
+VuonNho.Core.FarmSimulation:AdvanceTo (VuonNho.Core.GameState,long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/FarmSimulation.cs:113)
+VuonNho.Core.GameSession:DebugAdvance (long) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Core/GameSession.cs:1361)
+VuonNho.Views.QaScreenshot:SettleLegalPaperwork (VuonNho.Core.GameSession) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:270)
+VuonNho.Views.QaScreenshot:SeedGrownGarden () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:240)
+VuonNho.Views.QaScreenshot:Update () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaScreenshot.cs:87)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 223)
+
+[VuonNho] Da tua vuon: 12 o, 4569 xu.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -100,4 +121,4 @@ Input System module state changed to: ShutdownInProgress.
 Input Polling Thread exited.
 Input System module state changed to: Shutdown.
 CodeReloadManager destroyed
-PlayerConnection::Cleanup##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1788807555490,"processId":18712,"allocatedMemory":32581,"memoryLabels":[{"Default":3832},{"NewDelete":104},{"Thread":2304},{"Manager":9364},{"GfxDevice":72},{"GfxThread":6912},{"Serialization":616},{"BaseObject":4512},{"String":441},{"PoolAlloc":192},{"ScriptManager":5688},{"CodeReload":440},{"CloudService":144},{"VR":1928},{"Video":144},{"Subsystems":96},{"CoreBusinessMetrics":128}]}
+PlayerConnection::Cleanup##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1788808726411,"processId":22752,"allocatedMemory":32581,"memoryLabels":[{"Default":3832},{"NewDelete":104},{"Thread":2304},{"Manager":9364},{"GfxDevice":72},{"GfxThread":6912},{"Serialization":616},{"BaseObject":4512},{"String":441},{"PoolAlloc":192},{"ScriptManager":5688},{"CodeReload":440},{"CloudService":144},{"VR":1928},{"Video":144},{"Subsystems":96},{"CoreBusinessMetrics":128}]}
