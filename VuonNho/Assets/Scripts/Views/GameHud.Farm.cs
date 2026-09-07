@@ -18,6 +18,7 @@ namespace VuonNho.Views
         static readonly Color HudBrown = new Color32(135, 105, 71, 255);
         Text _actionCaption, _bookGoal;
         Image _seasonProgress;
+        GameObject _machineFallback;
         GameObject _journalPanel;
         Button _journalButton;
         Image _debtChip;
@@ -92,9 +93,10 @@ namespace VuonNho.Views
             colors.fadeDuration = 0.12f;
             button.colors = colors;
             button.onClick.AddListener(onClick);
-            FarmIcon(rim.transform, icon, (width - 42) / 2, -3, 42);
-            var label = FarmText(rim.transform, "Label", caption, 12,
-                3, -42, width - 6, 17, true);
+            float iconSize = height > 70 ? 48 : 40;
+            FarmIcon(rim.transform, icon, (width - iconSize) / 2, -4, iconSize);
+            var label = FarmText(rim.transform, "Label", caption, 14,
+                3, -(height > 70 ? 51 : 39), width - 6, 23, true);
             label.alignment = TextAnchor.MiddleCenter;
             var style = rim.gameObject.AddComponent<UiButtonStyle>();
             style.Background = inset;
@@ -133,25 +135,25 @@ namespace VuonNho.Views
             // nhau o goc duoi. Giua phai la cho duy nhat con trong ma tay van voi tan.
             var rightMiddle = new Vector2(1, .5f);
             _workshopButton = FarmButton(hud.transform, "WorkshopButton", "Xưởng", FarmHudIcon.Kind.Factory,
-                rightMiddle, -22, 100, delegate { TogglePanel(_workshopPanel); }, 74, 78);
+                rightMiddle, -22, 100, delegate { TogglePanel(_workshopPanel); }, 82, 80);
             FarmButton(hud.transform, "WorkersButton", "Nhân sự", FarmHudIcon.Kind.Workers,
-                rightMiddle, -22, 12, ShowWorkshopPanel, 74, 78);
+                rightMiddle, -22, 12, ShowWorkshopPanel, 82, 80);
             _settingsButton = FarmButton(hud.transform, "SettingsButton", "Cài đặt", FarmHudIcon.Kind.Settings,
-                rightMiddle, -22, -76, delegate { TogglePanel(_settingsPanel); }, 74, 78);
+                rightMiddle, -22, -76, delegate { TogglePanel(_settingsPanel); }, 82, 80);
 
-            var dock = FarmSurface(hud.transform, "ActionDock", new Vector2(.5f, 0), 0, 22, 292, 78, 20);
+            var dock = FarmSurface(hud.transform, "ActionDock", new Vector2(.5f, 0), 0, 22, 328, 78, 20);
             // 74 px chu khong 64: o 64 px thi o chu chi con 58 px, va "Xem xưởng" o co chu 12
             // xuong hai dong roi tran ra khoi o — co mot muc kiem trong bo QA giu dieu do. Dock
             // rong 292 px voi nut giua 108 px nen 74 + 108 + 74 van con thua le hai ben.
             FarmButton(dock.transform, "ResetCameraButton", "Về giữa", FarmHudIcon.Kind.Reset,
-                bl, 8, 6, ResetFarmView, 74, 63);
+                bl, 8, 6, ResetFarmView, 92, 63);
             FarmButton(dock.transform, "FocusWorkshopButton", "Xem xưởng", FarmHudIcon.Kind.Play,
                 br, -8, 6, delegate
                 {
                     var boot = FindAnyObjectByType<GameBootstrap>();
                     if (boot != null && boot.Rig != null)
                         boot.Rig.FocusGround(new Vector3(8.5f, 0, .7f), 5.7f);
-                }, 74, 63);
+                }, 92, 63);
             var action = FarmSurface(dock.transform, "FarmActionButton", new Vector2(.5f, 0), 0, -1, 108, 108, 54);
             var green = action.transform.Find("Inset").GetComponent<Image>();
             green.color = new Color32(80, 140, 52, 255);
@@ -165,6 +167,8 @@ namespace VuonNho.Views
             _actionCaption = FarmText(action.transform, "Label", "Gieo hạt", 17, 10, -54, 88, 34, true);
             _actionCaption.alignment = TextAnchor.MiddleCenter;
             _actionCaption.color = HudRim;
+            foreach (var button in hud.GetComponentsInChildren<Button>(true))
+                button.gameObject.AddComponent<FarmButtonMotion>();
         }
 
         /// <summary>
@@ -248,7 +252,7 @@ namespace VuonNho.Views
             button.colors = colors;
             button.onClick.AddListener(onClick);
 
-            float glyph = RailButtonSize - 24f;
+            float glyph = RailButtonSize - 16f;
             FarmIcon(rim.transform, icon, (RailButtonSize - glyph) / 2f, -(RailButtonSize - glyph) / 2f, glyph);
 
             var style = rim.gameObject.AddComponent<UiButtonStyle>();
@@ -330,15 +334,16 @@ namespace VuonNho.Views
 
         void BuildMachineCard(Transform root)
         {
-            var card = FarmSurface(root, "MachineCard", new Vector2(.5f, 1), 0, -24, 342, 64, 16);
-            _machineIcon = UiFactory.Icon(card.transform, "MachineIcon", null, 39);
-            Place(_machineIcon.rectTransform, new Vector2(0, 1), 10, -8, 39, 39);
-            _machineLabel = FarmText(card.transform, "MachineLabel", "", 14, 59, -5, 255, 44);
+            var card = FarmSurface(root, "MachineCard", new Vector2(.5f, 1), 0, -24, 374, 76, 16);
+            _machineFallback = FarmIcon(card.transform, FarmHudIcon.Kind.Leaf, 10, -12, 46).gameObject;
+            _machineIcon = UiFactory.Icon(card.transform, "MachineIcon", null, 46);
+            Place(_machineIcon.rectTransform, new Vector2(0, 1), 10, -12, 46, 46);
+            _machineLabel = FarmText(card.transform, "MachineLabel", "", 16, 65, -4, 286, 53);
             _machineDot = UiFactory.Panel(card.transform, "MachineDot", MachineView.StatusIdle, 4);
             Place(_machineDot.rectTransform, Vector2.one, -11, -12, 8, 8);
             _machineDot.raycastTarget = false;
             _machineBarTrack = UiFactory.ProgressBar(card.transform, "MachineBar", HudGreen, out _machineBarFill);
-            Place(_machineBarTrack.rectTransform, new Vector2(0, 1), 60, -53, 266, 5);
+            Place(_machineBarTrack.rectTransform, new Vector2(0, 1), 65, -63, 292, 7);
         }
 
         void BuildJournal()

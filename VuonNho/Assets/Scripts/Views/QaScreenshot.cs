@@ -1,5 +1,7 @@
 using System;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using VuonNho.Core;
 
 namespace VuonNho.Views
@@ -179,10 +181,63 @@ namespace VuonNho.Views
             }
 
             _captured = true;
-            ScreenCapture.CaptureScreenshot(_outputPath);
+            CaptureRenderedFrame(_outputPath);
             Debug.Log("[VuonNho] QA screenshot: " + _outputPath);
             // Cho vai frame de file duoc ghi xong roi moi thoat.
             Invoke("QuitAfterCapture", 2f);
+        }
+
+        // An explicit render target also works when the QA player has a hidden window.
+        // ScreenCapture otherwise returns a black or missing image when Windows skips presentation.
+        void CaptureRenderedFrame(string path)
+        {
+            var camera = Camera.main;
+            var hud = FindAnyObjectByType<GameHud>();
+            var canvas = hud != null ? hud.GetComponent<Canvas>() : null;
+            if (camera == null) throw new InvalidOperationException("QA capture requires the game camera.");
+            var previousTarget = camera.targetTexture;
+            var previousActive = RenderTexture.active;
+            var previousMode = canvas != null ? canvas.renderMode : RenderMode.ScreenSpaceOverlay;
+            var previousCamera = canvas != null ? canvas.worldCamera : null;
+            float previousDistance = canvas != null ? canvas.planeDistance : 0;
+            var target = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.ARGB32);
+            target.antiAliasing = 4;
+            Texture2D pixels = null;
+            try
+            {
+                camera.targetTexture = target;
+                if (canvas != null)
+                {
+                    canvas.renderMode = RenderMode.ScreenSpaceCamera;
+                    canvas.worldCamera = camera;
+                    canvas.planeDistance = camera.nearClipPlane + 1;
+                }
+                Canvas.ForceUpdateCanvases();
+                var request = new UniversalRenderPipeline.SingleCameraRequest { destination = target };
+                if (RenderPipeline.SupportsRenderRequest(camera, request))
+                    RenderPipeline.SubmitRenderRequest(camera, request);
+                else camera.Render();
+                RenderTexture.active = target;
+                pixels = new Texture2D(target.width, target.height, TextureFormat.RGB24, false);
+                pixels.ReadPixels(new Rect(0, 0, target.width, target.height), 0, 0);
+                pixels.Apply();
+                System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path));
+                System.IO.File.WriteAllBytes(path, pixels.EncodeToPNG());
+            }
+            finally
+            {
+                camera.targetTexture = previousTarget;
+                RenderTexture.active = previousActive;
+                if (canvas != null)
+                {
+                    canvas.renderMode = previousMode;
+                    canvas.worldCamera = previousCamera;
+                    canvas.planeDistance = previousDistance;
+                }
+                if (pixels != null) Destroy(pixels);
+                target.Release();
+                Destroy(target);
+            }
         }
 
         /// <summary>

@@ -1311,6 +1311,7 @@ namespace VuonNho.Views
             RefreshWorkshop();
 
             RefreshMachineCard(state);
+            if (_machineFallback != null) _machineFallback.SetActive(!_machineIcon.gameObject.activeSelf);
 
             SetNavActive(_inventoryButton, _inventoryPanel.activeSelf);
             SetNavActive(_upgradeButton, _upgradePanel.activeSelf);

@@ -31,6 +31,16 @@ MonoBehaviour:
     MaturePrefab: {fileID: 4491294599061181809, guid: 1906e72c5403a724f8e31fb07e864fa0, type: 3}
   - CropId: crop_jasmine
     MaturePrefab: {fileID: 6617784360100790244, guid: edc7f7680b7766a4db442d8c9c2646e7, type: 3}
+  - CropId: crop_tea_xo
+    MaturePrefab: {fileID: 0}
+  - CropId: crop_tea_moccau
+    MaturePrefab: {fileID: 0}
+  - CropId: crop_tea_nontom
+    MaturePrefab: {fileID: 0}
+  - CropId: crop_tea_dinh
+    MaturePrefab: {fileID: 0}
+  - CropId: crop_oriental_beauty
+    MaturePrefab: {fileID: 0}
   StationPrefab: {fileID: 4186430695575864216, guid: 3c6a91b347ae393439f8bf32da3a7767, type: 3}
   RobotPrefab: {fileID: 7065989557344915967, guid: 73f5757dd801e484197da5d1a754c0b4, type: 3}
   CharacterPrefab: {fileID: 8704440418347989326, guid: f509f083f5c78484888fe88aa904c9c7, type: 3}
@@ -88,4 +98,4 @@ MonoBehaviour:
   UpgradeClip: {fileID: 8300000, guid: 830a5a57113c5ee40813718741123ce6, type: 3}
   SkyColor: {r: 0.62, g: 0.78, b: 0.82, a: 1}
   AmbientColor: {r: 0.45, g: 0.48, b: 0.46, a: 1}
-  KeyLightIntensity: 1.15
+  KeyLightIntensity: 1.08

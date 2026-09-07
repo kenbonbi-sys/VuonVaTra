@@ -138,7 +138,7 @@ Material:
     - _ScreenSpaceReflections: 1
     - _ScreenSpaceReflectionsContributeTransparent: 1
     - _Shininess: 1
-    - _Smoothness: 0.5
+    - _Smoothness: 0.12
     - _SmoothnessTextureChannel: 0
     - _SpecSource: 0
     - _SpecularHighlights: 1

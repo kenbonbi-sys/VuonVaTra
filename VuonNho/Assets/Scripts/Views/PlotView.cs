@@ -64,6 +64,15 @@ namespace VuonNho.Views
         float _readySpin;
         float _harvestEndTime = -1f;
         PlotPhase _lastPhase = PlotPhase.Locked;
+        PlotVegetation _vegetation;
+        bool _plantPoseCached;
+        Quaternion _cropRestRotation;
+        Vector3 _seedlingRestScale;
+        Transform _growingCrop;
+        float _cropScale = 1f;
+        float _cropTargetScale = 1f;
+        float _seedlingScale = 1f;
+        float _seedlingTargetScale = 1f;
 
         public PlotPhase LastPhase { get { return _lastPhase; } }
 
@@ -75,9 +84,10 @@ namespace VuonNho.Views
                 SetActive(WeedTufts.gameObject, weedy);
                 if (weedy)
                 {
-                    // Cao dan tu 40% den 100%: o vua chom co va o day co phai nhin ra khac nhau.
-                    float grown = 0.4f + 0.6f * Mathf.Clamp01(plot.Weeds / 100f);
-                    WeedTufts.localScale = new Vector3(grown, grown, grown);
+                    // Giữ chân cỏ ở mép ô: tăng từng bụi thay vì co cả cụm vào giữa cây.
+                    if (_vegetation == null) _vegetation = new PlotVegetation(WeedTufts, PlotId);
+                    WeedTufts.localScale = Vector3.one;
+                    _vegetation.SetSeverity(Mathf.InverseLerp(WeedVisibleThreshold, 100f, plot.Weeds));
                 }
             }
 
@@ -88,6 +98,7 @@ namespace VuonNho.Views
         {
             var plot = state.Plot(PlotId);
             if (plot == null) return;
+            CachePlantPose();
 
             // Do phi doc thang tren mat dat: dat tot thi tham, dat bac mau thi nhat di. Nguoi
             // choi liec ca vuon la thay o nao can bon ma khong phai mo tung popup.
@@ -110,6 +121,7 @@ namespace VuonNho.Views
                 SetActive(SeedlingVisual, false);
                 HideAllCropVisuals();
                 SetActive(ReadyBadge, false);
+                _growingCrop = null;
                 _lastPhase = plot.Phase;
                 return;
             }
@@ -122,6 +134,8 @@ namespace VuonNho.Views
             Color accent = GardenPalette.CropReadyAccent(plot.CurrentCropId);
 
             SetActive(SeedlingVisual, !showMature);
+            if (!showMature) _growingCrop = null;
+            _seedlingTargetScale = Mathf.Lerp(0.70f, 1.08f, Mathf.Clamp01(progress / MatureStageThreshold));
             if (SeedlingRenderer != null) SeedlingRenderer.material.color = body;
 
             var active = FindCropVisual(plot.CurrentCropId);
@@ -137,7 +151,13 @@ namespace VuonNho.Views
                 // Ba trang thai hinh anh: mam, giua vu, chin. Giua vu lon dan de nhin ra dang lon.
                 float t = ready ? 1f : Mathf.InverseLerp(MatureStageThreshold, 1f, progress);
                 float scale = Mathf.Lerp(0.55f, 1f, t);
-                active.Root.transform.localScale = new Vector3(scale, scale, scale);
+                if (_growingCrop != active.Root.transform)
+                {
+                    _growingCrop = active.Root.transform;
+                    _cropScale = scale;
+                    _growingCrop.localScale = Vector3.one * scale;
+                }
+                _cropTargetScale = scale;
 
                 if (active.FoliageRenderer != null)
                     active.FoliageRenderer.material.color = ready ? accent : body;
@@ -191,6 +211,46 @@ namespace VuonNho.Views
             if (HarvestFeedback == null) return;
             _harvestEndTime = Time.time + 0.3f;
             HarvestFeedback.gameObject.SetActive(true);
+        }
+
+        void CachePlantPose()
+        {
+            if (_plantPoseCached) return;
+            _plantPoseCached = true;
+            if (CropAnchor != null) _cropRestRotation = CropAnchor.localRotation;
+            if (SeedlingVisual != null) _seedlingRestScale = SeedlingVisual.transform.localScale;
+        }
+
+        void LateUpdate()
+        {
+            if (_vegetation != null) _vegetation.Tick(Time.time, Time.deltaTime);
+            if (!_plantPoseCached) return;
+
+            // Chỉ nghiêng phần cây quanh gốc. Mặt đất, hitbox và dấu trạng thái luôn đứng yên.
+            float phase = PlotId * 1.73f;
+            float breeze = Mathf.Sin(Time.time * 1.12f + phase);
+            float flutter = Mathf.Sin(Time.time * 2.03f + phase * 0.67f);
+            float amplitude = _lastPhase == PlotPhase.Ready ? 1.15f : 1.55f;
+            if (CropAnchor != null)
+                CropAnchor.localRotation = _cropRestRotation * Quaternion.Euler(
+                    breeze * amplitude, 0f, flutter * amplitude * 0.62f);
+
+            float blend = 1f - Mathf.Exp(-Time.deltaTime * 9f);
+            if (_growingCrop != null && _growingCrop.gameObject.activeSelf)
+            {
+                _cropScale = Mathf.Lerp(_cropScale, _cropTargetScale, blend);
+                _growingCrop.localScale = Vector3.one * _cropScale;
+            }
+            if (SeedlingVisual != null && SeedlingVisual.activeSelf)
+            {
+                _seedlingScale = Mathf.Lerp(_seedlingScale, _seedlingTargetScale, blend);
+                SeedlingVisual.transform.localScale = _seedlingRestScale * _seedlingScale;
+            }
+        }
+
+        void OnDestroy()
+        {
+            if (_vegetation != null) _vegetation.Dispose();
         }
 
         void Update()

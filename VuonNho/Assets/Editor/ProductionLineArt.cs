@@ -113,8 +113,27 @@ namespace VuonNho.EditorTools
             Cube(segment, "Frame", new Vector3(0f, 0.465f, 0f), new Vector3(OuterWidth, 0.17f, length), _cream);
             Cube(segment, "Belt", new Vector3(0f, 0.55f, 0f), new Vector3(BeltWidth, 0.035f, length), _belt);
             for (int side = -1; side <= 1; side += 2)
+            {
                 Cube(segment, "EdgeRail_" + side, new Vector3(side * 0.30f, 0.583f, 0f),
                      new Vector3(0.045f, 0.08f, length), _metal);
+                Cube(segment, "FrameInset_" + side, new Vector3(side * 0.332f, 0.458f, 0f),
+                     new Vector3(0.012f, 0.072f, Mathf.Max(0.03f, length - 0.15f)), _metal);
+            }
+
+            // A few broad belt joints read when zoomed in without a field of tiny noisy meshes.
+            int seams = Mathf.Clamp(Mathf.FloorToInt(length / 0.32f), 0, 6);
+            for (int i = 0; i < seams; i++)
+                Cube(segment, "BeltJoint_" + i,
+                    new Vector3(0f, 0.571f, Mathf.Lerp(-length * 0.5f, length * 0.5f, (i + 1f) / (seams + 1f))),
+                    new Vector3(BeltWidth - 0.02f, 0.006f, 0.014f), _metal);
+
+            if (length > 0.75f)
+            {
+                Cube(segment, "DriveHousing", new Vector3(0.29f, 0.33f, -length * 0.5f + 0.18f),
+                    new Vector3(0.075f, 0.13f, 0.26f), _metal);
+                Cube(segment, "DriveCover", new Vector3(0.33f, 0.33f, -length * 0.5f + 0.18f),
+                    new Vector3(0.012f, 0.088f, 0.16f), _cream);
+            }
 
             int supports = length > 2.0f ? 3 : 2;
             for (int i = 0; i < supports; i++)

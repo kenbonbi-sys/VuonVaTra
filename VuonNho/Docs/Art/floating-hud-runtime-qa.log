@@ -2,15 +2,15 @@ Mono path[0] = 'C:/Users/PC/Desktop/Game/VuonNho/Build/HudReview/VuonNho-HudRevi
 Mono config path = 'C:/Users/PC/Desktop/Game/VuonNho/Build/HudReview/MonoBleedingEdge/etc'
 CodeReloadManager initialized
 Found 3 interfaces on host : 0) 192.168.102.61 1) 26.253.10.125 2) 172.24.64.1
-Player connection [27116]  Target information:
+Player connection [21052]  Target information:
 
-Player connection [27116]  * "[IP] 192.168.102.61 [Port] 55000 [Flags] 2 [Guid] 859285762 [EditorId] 2183389421 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+Player connection [21052]  * "[IP] 192.168.102.61 [Port] 55000 [Flags] 2 [Guid] 1548153124 [EditorId] 889117370 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
 
-Player connection [27116]  * "[IP] 26.253.10.125 [Port] 55000 [Flags] 2 [Guid] 859285762 [EditorId] 2183389421 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+Player connection [21052]  * "[IP] 26.253.10.125 [Port] 55000 [Flags] 2 [Guid] 1548153124 [EditorId] 889117370 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
 
-Player connection [27116]  * "[IP] 172.24.64.1 [Port] 55000 [Flags] 2 [Guid] 859285762 [EditorId] 2183389421 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+Player connection [21052]  * "[IP] 172.24.64.1 [Port] 55000 [Flags] 2 [Guid] 1548153124 [EditorId] 889117370 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
 
-Player connection [27116] Started UDP target info broadcast (1) on [225.0.0.222:54997].
+Player connection [21052] Started UDP target info broadcast (1) on [225.0.0.222:54997].
 
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
@@ -36,8 +36,8 @@ Begin MonoManager ReloadAssembly
 [Physics::Module] Threading Mode: Multi-Threaded
 <RI> Initializing input.
 <RI> Input initialized.
-UnloadTime: 0.764200 ms
-[QA] PASS Nạp save và dựng phiên chơi dưới 2 giây | 0.273 s
+UnloadTime: 0.834200 ms
+[QA] PASS Nạp save và dựng phiên chơi dưới 2 giây | 0.274 s
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -63,7 +63,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Tổng thời gian tới khung hình chơi được | 2.81 s (bao gồm splash)
+[QA] PASS Tổng thời gian tới khung hình chơi được | 2.80 s (bao gồm splash)
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -76,7 +76,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Độ phân giải chạy thật | 1920 × 1080
+[QA] PASS Độ phân giải chạy thật | 1366 × 768
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -124,6 +124,20 @@ UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/un
 UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
 VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:2078)
 VuonNho.Views.QaChecklist/<Run>d__11:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:88)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+(Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
+
+[QA] PASS Đóng báo cáo offline bằng nút Tiếp tục và xác nhận báo cáo | OfflineModal/Card/ActionRow/Continue; graphic trên cùng: OfflineModal/Card/ActionRow/Continue; click handler: OfflineModal/Card/ActionRow/Continue
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[]) (at C:/build/output/unity/unity/Runtime/Export/Logging/DebugLogHandler.cs:9)
+UnityEngine.Logger:Log (UnityEngine.LogType,object) (at C:/build/output/unity/unity/Runtime/Export/Logging/Logger.cs:60)
+UnityEngine.Debug:Log (object) (at C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs:130)
+VuonNho.Views.QaChecklist:Check (string,bool,string) (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:2078)
+VuonNho.Views.QaChecklist:DismissOfflinePopupIfOpen () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1400)
+VuonNho.Views.QaChecklist/<CheckPrimaryFarmAction>d__33:MoveNext () (at C:/Users/PC/Desktop/Game/VuonNho/Assets/Scripts/Views/QaChecklist.cs:1262)
 UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr) (at C:/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
@@ -206,7 +220,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Đủ tiền mua robot trong 8 phút mô phỏng | 2.4 phút, 56 lần thu tay
+[QA] PASS Đủ tiền mua robot trong 8 phút mô phỏng | 2.6 phút, 60 lần thu tay
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -427,7 +441,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Mở đủ 12 ô | 12 ô sau 89.8 phút mô phỏng
+[QA] PASS Mở đủ 12 ô | 12 ô sau 89.4 phút mô phỏng
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -466,7 +480,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Không có xu âm | 0 xu
+[QA] PASS Không có xu âm | 167 xu
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -518,7 +532,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Giữ nguyên số xu sau khi nạp lại | 0 → 0
+[QA] PASS Giữ nguyên số xu sau khi nạp lại | 167 → 167
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -531,7 +545,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Thời gian mô phỏng không lùi | 5385288 → 5385303
+[QA] PASS Thời gian mô phỏng không lùi | 5477236 → 5477240
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -662,7 +676,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Nút Tiếp tục vừa bằng chữ và nằm giữa | nút 167 px / thẻ 787 px, lệch tâm 0.0 px
+[QA] PASS Nút Tiếp tục vừa bằng chữ và nằm giữa | nút 120 px / thẻ 560 px, lệch tâm 0.0 px
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -1621,7 +1635,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS 5 vòng thoát/quay lại không đóng băng khung hình | frame dài nhất 11 ms
+[QA] PASS 5 vòng thoát/quay lại không đóng băng khung hình | frame dài nhất 5 ms
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -1634,7 +1648,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS p95 frame time dưới 16,7 ms khi vườn đầy | trung bình 180 FPS, p95 5.6 ms, 721 khung hình
+[QA] PASS p95 frame time dưới 16,7 ms khi vườn đầy | trung bình 1496 FPS, p95 0.8 ms, 5983 khung hình
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -1647,7 +1661,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Trung bình đạt 60 FPS | trung bình 180 FPS, p95 5.6 ms, 721 khung hình
+[QA] PASS Trung bình đạt 60 FPS | trung bình 1496 FPS, p95 0.8 ms, 5983 khung hình
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -1829,7 +1843,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Không đi xuyên qua đồ đã đặt | dừng cách tâm ghế 66 cm
+[QA] PASS Không đi xuyên qua đồ đã đặt | dừng cách tâm ghế 65 cm
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -1946,7 +1960,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Ô chi tiết nằm dưới đáy và không trống | Bạc hà tươi: 9
+[QA] PASS Ô chi tiết nằm dưới đáy và không trống | Bạc hà tươi: 7
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -1985,7 +1999,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Gom đủ xu để xây cả dây chuyền | 13034 / 12780 xu
+[QA] PASS Gom đủ xu để xây cả dây chuyền | 12859 / 12780 xu
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -2050,7 +2064,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Thợ ăn lương và xu vẫn không âm | 4639 xu, 6/6 thợ đang làm
+[QA] PASS Thợ ăn lương và xu vẫn không âm | 4007 xu, 6/6 thợ đang làm
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -2063,7 +2077,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Xây dây chuyền xong vẫn kiếm được xu | trước 4254, sau 4639
+[QA] PASS Xây dây chuyền xong vẫn kiếm được xu | trước 4079, sau 4007
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -2142,7 +2156,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Tay thợ chuyển động trong player | lệch nhiều nhất 73.2°
+[QA] PASS Tay thợ chuyển động trong player | lệch nhiều nhất 74.1°
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -2207,7 +2221,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Robot mất thời gian đi tới ô | còn 590 ms nữa mới tới ô 5
+[QA] PASS Robot mất thời gian đi tới ô | còn 491 ms nữa mới tới ô 4
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -2233,7 +2247,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Hình robot chạy theo mô phỏng | đi được 301 cm
+[QA] PASS Hình robot chạy theo mô phỏng | đi được 386 cm
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -2246,7 +2260,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Thu xong thì robot đứng lại ngay ô đó | ô 5
+[QA] PASS Thu xong thì robot đứng lại ngay ô đó | ô 4
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -2285,7 +2299,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Bón phân đưa đất về mức tốt nhất và trừ đúng tiền | độ phì 100, còn 14318 xu
+[QA] PASS Bón phân đưa đất về mức tốt nhất và trừ đúng tiền | độ phì 100, còn 4673 xu
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -2350,7 +2364,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Trị được sâu bệnh và trừ đúng tiền | còn 121534 xu
+[QA] PASS Trị được sâu bệnh và trừ đúng tiền | còn 119710 xu
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -2389,7 +2403,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Mùa suy ra được từ đồng hồ mô phỏng | đang là mùa thu
+[QA] PASS Mùa suy ra được từ đồng hồ mô phỏng | đang là mùa hạ
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -2402,7 +2416,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Popup ô hiện độ phì, cỏ và mùa | Độ phì 100/100 · cỏ 0/100 · mùa thu
+[QA] PASS Popup ô hiện độ phì, cỏ và mùa | Độ phì 100/100 · cỏ 0/100 · mùa hạ
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -2468,7 +2482,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Thẻ hồ sơ hiện đúng mùa hiện tại và đồng hồ mùa | Mùa thu  ·  1:39
+[QA] PASS Thẻ hồ sơ hiện đúng mùa hiện tại và đồng hồ mùa | Mùa hạ  ·  0:45
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -2521,7 +2535,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] PASS Xuất được dữ liệu test | Đã xuất dữ liệu test: C:/Users/PC/AppData/LocalLow/Vuon va Tra/VuonNho-HudReview\vuon-nho-export-20260908-033019.log
+[QA] PASS Xuất được dữ liệu test | Đã xuất dữ liệu test: C:/Users/PC/AppData/LocalLow/Vuon va Tra/VuonNho-HudReview\vuon-nho-export-20260908-030952.log
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -2563,7 +2577,7 @@ UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[QA] Bao cao: C:\Users\PC\Desktop\Game\VuonNho\Docs\QA-startup-1080p.md — 189 dat, 1 khong dat.
+[QA] Bao cao: C:\Users\PC\Desktop\Game\VuonNho\Docs\Art\floating-hud-qa-1366.md — 190 dat, 1 khong dat.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -2582,4 +2596,4 @@ Input System module state changed to: ShutdownInProgress.
 Input Polling Thread exited.
 Input System module state changed to: Shutdown.
 CodeReloadManager destroyed
-PlayerConnection::Cleanup##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1788813019803,"processId":1084,"allocatedMemory":48890,"memoryLabels":[{"Default":3832},{"NewDelete":104},{"Thread":2304},{"Manager":9364},{"GfxDevice":72},{"GfxThread":6912},{"Serialization":17000},{"BaseObject":4512},{"String":366},{"PoolAlloc":192},{"ScriptManager":5688},{"CodeReload":440},{"CloudService":144},{"VR":1928},{"Video":144},{"Subsystems":96},{"CoreBusinessMetrics":128}]}
+PlayerConnection::Cleanup##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1788811792674,"processId":23904,"allocatedMemory":39674,"memoryLabels":[{"Default":3832},{"NewDelete":104},{"Manager":9364},{"GfxDevice":72},{"Serialization":17000},{"BaseObject":4512},{"String":366},{"PoolAlloc":192},{"ScriptManager":5688},{"CodeReload":440},{"CloudService":144},{"VR":1928},{"Video":144},{"Subsystems":96},{"CoreBusinessMetrics":128}]}

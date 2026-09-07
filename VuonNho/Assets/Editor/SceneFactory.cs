@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 using VuonNho.Core;
 using VuonNho.Views;
@@ -50,6 +51,7 @@ namespace VuonNho.EditorTools
         public static void BuildScene()
         {
             ProjectSetup.Configure();
+            ConfigureRenderQuality();
             var skin = LoadOrCreateSkin();
             var catalog = DefaultContent.Create();
             WarnIfLayoutDiffers(skin, catalog);
@@ -198,12 +200,34 @@ namespace VuonNho.EditorTools
 
         // ---------------------------------------------------------------- camera va anh sang
 
+        static void ConfigureRenderQuality()
+        {
+            var pipeline = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(ProjectSetup.PipelinePath);
+            if (pipeline == null) return;
+            // MSAA keeps the tiny silhouettes crisp without blurring the art with a post filter.
+            pipeline.msaaSampleCount = 4;
+            pipeline.renderScale = 1f;
+            pipeline.mainLightShadowmapResolution = 4096;
+            // One orthographic cascade spends the full atlas on this compact, flat diorama.
+            pipeline.shadowCascadeCount = 1;
+            pipeline.shadowDistance = 45f;
+            pipeline.shadowDepthBias = 0.7f;
+            pipeline.shadowNormalBias = 0.65f;
+            // URP 17 exposes the soft-shadow setter internally; use its serialized editor field.
+            var serialized = new SerializedObject(pipeline);
+            serialized.FindProperty("m_SoftShadowsSupported").boolValue = true;
+            serialized.FindProperty("m_SoftShadowQuality").intValue = (int)SoftShadowQuality.High;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(pipeline);
+        }
+
         static Camera BuildCamera(GardenSkin skin)
         {
             var go = new GameObject("MainCamera");
             go.tag = "MainCamera";
             var camera = go.AddComponent<Camera>();
             camera.orthographic = true;
+            camera.allowMSAA = true;
             camera.orthographicSize = skin.CameraOrthographicSize;
             camera.nearClipPlane = 0.1f;
             camera.farClipPlane = 100f;
@@ -236,6 +260,10 @@ namespace VuonNho.EditorTools
             light.color = new Color(1f, 0.97f, 0.90f);
             light.intensity = skin.KeyLightIntensity;
             light.shadows = LightShadows.Soft;
+            light.shadowStrength = 0.86f;
+            light.shadowResolution = UnityEngine.Rendering.LightShadowResolution.VeryHigh;
+            var lightData = go.AddComponent<UniversalAdditionalLightData>();
+            lightData.softShadowQuality = SoftShadowQuality.High;
             go.transform.rotation = Quaternion.Euler(48f, -30f, 0f);
 
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;

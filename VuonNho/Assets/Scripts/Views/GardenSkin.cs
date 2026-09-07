@@ -138,7 +138,7 @@ namespace VuonNho.Views
         [Header("Ánh sáng")]
         public Color SkyColor = new Color(0.62f, 0.78f, 0.82f);
         public Color AmbientColor = new Color(0.45f, 0.48f, 0.46f);
-        public float KeyLightIntensity = 1.15f;
+        public float KeyLightIntensity = 1.08f;
 
         public GameObject MaturePrefabFor(string cropId)
         {

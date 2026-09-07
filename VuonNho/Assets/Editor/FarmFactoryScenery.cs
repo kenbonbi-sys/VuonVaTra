@@ -73,10 +73,24 @@ namespace VuonNho.EditorTools
             shelter.SetParent(site, false);
             shelter.localPosition = new Vector3(6.1f, 0f, -4.5f);
             Cube(shelter, "Deck", new Vector3(0f, 0.045f, 0f), new Vector3(3.2f, 0.09f, 1.3f), "Timber", Timber);
+            for (int i = 0; i < 8; i++)
+                Cube(shelter, "DeckPlank", new Vector3(-1.39f + i * 0.397f, 0.101f, 0f),
+                    new Vector3(0.382f, 0.022f, 1.26f), i % 3 == 0 ? "TimberLight" : "Timber", i % 3 == 0 ? Timber * 1.08f : Timber);
             foreach (float x in new[] { -1.43f, 1.43f })
+            {
                 Cube(shelter, "Post", new Vector3(x, 0.84f, 0.45f), new Vector3(0.10f, 1.68f, 0.10f), "Timber", Timber);
+                var brace = Cube(shelter, "RoofBrace", new Vector3(x - Mathf.Sign(x) * 0.15f, 1.43f, 0.45f),
+                    new Vector3(0.075f, 0.48f, 0.075f), "Timber", Timber);
+                brace.transform.localRotation = Quaternion.Euler(0f, 0f, -Mathf.Sign(x) * 42f);
+            }
             Cube(shelter, "Roof", new Vector3(0f, 1.68f, 0f), new Vector3(3.48f, 0.12f, 1.7f), "Sage", Sage);
             Cube(shelter, "Fascia", new Vector3(0f, 1.58f, -0.81f), new Vector3(3.45f, 0.17f, 0.055f), "Cream", Cream);
+            for (int i = 0; i < 6; i++)
+                Cube(shelter, "RoofSeam", new Vector3(-1.45f + i * 0.58f, 1.749f, 0f),
+                    new Vector3(0.026f, 0.024f, 1.7f), "SageLight", Sage * 1.12f);
+            foreach (float side in new[] { -1f, 1f })
+                Cube(shelter, "RoofEdge", new Vector3(side * 1.72f, 1.68f, 0f),
+                    new Vector3(0.045f, 0.13f, 1.72f), "SageDark", Sage * 0.85f);
             for (int i = 0; i < 3; i++)
                 Pallet(shelter, new Vector3(-0.92f + 0.90f * i, 0.09f, 0f), i != 2);
 
@@ -118,6 +132,8 @@ namespace VuonNho.EditorTools
                 {
                     Cube(root, "TeaCarton", new Vector3(0f, 0.27f + i * 0.3f, 0f), new Vector3(0.62f, 0.28f, 0.54f), "Carton", new Color(0.78f, 0.62f, 0.39f));
                     Cube(root, "PackingBand", new Vector3(0f, 0.27f + i * 0.3f, -0.275f), new Vector3(0.12f, 0.28f, 0.012f), "Cream", Cream);
+                    Cube(root, "TopPackingBand", new Vector3(0f, 0.414f + i * 0.3f, 0f), new Vector3(0.12f, 0.012f, 0.55f), "Cream", Cream);
+                    Cube(root, "TeaSeal", new Vector3(-0.16f, 0.29f + i * 0.3f, -0.278f), new Vector3(0.1f, 0.11f, 0.014f), "Sage", Sage);
                 }
             }
             else
@@ -125,8 +141,14 @@ namespace VuonNho.EditorTools
                 Cube(root, "CrateInside", new Vector3(0f, 0.24f, 0f), new Vector3(0.58f, 0.2f, 0.56f), "Leaves", Sage);
                 foreach (float side in new[] { -1f, 1f })
                 {
-                    Cube(root, "CrateSide", new Vector3(side * 0.35f, 0.27f, 0f), new Vector3(0.07f, 0.33f, 0.74f), "Timber", Timber);
-                    Cube(root, "CrateSide", new Vector3(0f, 0.27f, side * 0.35f), new Vector3(0.64f, 0.33f, 0.07f), "Timber", Timber);
+                    for (int slat = 0; slat < 3; slat++)
+                    {
+                        Cube(root, "CrateSideSlat", new Vector3(side * 0.35f, 0.16f + slat * 0.11f, 0f), new Vector3(0.07f, 0.088f, 0.74f), "Timber", Timber);
+                        Cube(root, "CrateEndSlat", new Vector3(0f, 0.16f + slat * 0.11f, side * 0.35f), new Vector3(0.64f, 0.088f, 0.07f), "Timber", Timber);
+                    }
+                    foreach (float end in new[] { -1f, 1f })
+                        Cube(root, "CrateCorner", new Vector3(side * 0.31f, 0.27f, end * 0.31f),
+                            new Vector3(0.075f, 0.33f, 0.075f), "TimberLight", Timber * 1.08f);
                 }
             }
             var collider = root.gameObject.AddComponent<BoxCollider>();
@@ -216,6 +238,7 @@ namespace VuonNho.EditorTools
                     AssetDatabase.CreateAsset(material, path);
                 }
                 material.color = colour;
+                if (material.HasProperty("_Smoothness")) material.SetFloat("_Smoothness", 0.12f);
                 EditorUtility.SetDirty(material);
                 Materials[key] = material;
             }

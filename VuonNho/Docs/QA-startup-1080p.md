@@ -2,7 +2,7 @@
 
 Chạy tự động bên trong bản build Windows, không phải trong Editor.
 
-- Thời điểm: 2026-09-08 02:59:39
+- Thời điểm: 2026-09-08 03:30:19
 - Build: 0.2.0 (development)
 - Độ phân giải: 1920 × 1080
 - Kết quả: **189 đạt, 1 không đạt**
@@ -10,9 +10,9 @@ Chạy tự động bên trong bản build Windows, không phải trong Editor.
 
 ## Khởi động
 
-- ĐẠT — Nạp save và dựng phiên chơi dưới 2 giây · 0.232 s
-- ĐẠT — Engine khởi động + splash Unity (chỉ ghi nhận, không phải mục tiêu của game) · 2.02 s
-- ĐẠT — Tổng thời gian tới khung hình chơi được · 2.77 s (bao gồm splash)
+- ĐẠT — Nạp save và dựng phiên chơi dưới 2 giây · 0.273 s
+- ĐẠT — Engine khởi động + splash Unity (chỉ ghi nhận, không phải mục tiêu của game) · 2.01 s
+- ĐẠT — Tổng thời gian tới khung hình chơi được · 2.81 s (bao gồm splash)
 - ĐẠT — Độ phân giải chạy thật · 1920 × 1080
 
 ## Vườn mới
@@ -32,7 +32,7 @@ Chạy tự động bên trong bản build Windows, không phải trong Editor.
 - ĐẠT — Có xu đầu tiên từ trà · ở phút mô phỏng 0.3
 - ĐẠT — Trà đầu trong vòng 2 phút mô phỏng · 0.3 phút
 - ĐẠT — Mua được robot
-- ĐẠT — Đủ tiền mua robot trong 8 phút mô phỏng · 2.6 phút, 60 lần thu tay
+- ĐẠT — Đủ tiền mua robot trong 8 phút mô phỏng · 2.4 phút, 56 lần thu tay
 - ĐẠT — Mua Mở cúc + công thức
 - ĐẠT — Mua Mở vườn lần 1
 - ĐẠT — Mua Tốc độ máy I
@@ -49,18 +49,18 @@ Chạy tự động bên trong bản build Windows, không phải trong Editor.
 - ĐẠT — Mua Tay nghề hái 1 tôm 1 lá
 - ĐẠT — Mua Tay nghề hái đinh trà
 - ĐẠT — Mua Đồ bảo hộ y tế cho thợ
-- ĐẠT — Mở đủ 12 ô · 12 ô sau 89.1 phút mô phỏng
+- ĐẠT — Mở đủ 12 ô · 12 ô sau 89.8 phút mô phỏng
 - ĐẠT — Mua hết toàn bộ nâng cấp MVP
 - ĐẠT — Mở hết mọi loại cây gieo được · 9/9 loại
-- ĐẠT — Không có xu âm · 167 xu
+- ĐẠT — Không có xu âm · 0 xu
 
 ## Reload khi cây và máy đang chạy
 
 - ĐẠT — Có cây đang lớn lúc lưu
 - ĐẠT — Máy đang pha lúc lưu · công thức Trà đinh ngọc, kho còn 0/8 nguyên liệu
 - ĐẠT — Nạp lại được file save vừa ghi · LoadedPrimary
-- ĐẠT — Giữ nguyên số xu sau khi nạp lại · 167 → 167
-- ĐẠT — Thời gian mô phỏng không lùi · 5500299 → 5500312
+- ĐẠT — Giữ nguyên số xu sau khi nạp lại · 0 → 0
+- ĐẠT — Thời gian mô phỏng không lùi · 5385288 → 5385303
 - ĐẠT — Trạng thái ô đất dựng lại đúng
 - ĐẠT — Hướng dẫn tiếp tục đúng bước · ChooseNextUpgrade
 - ĐẠT — Hình ảnh ô đất khớp trạng thái sau khi dựng lại · 0 ô lệch
@@ -146,9 +146,9 @@ Chạy tự động bên trong bản build Windows, không phải trong Editor.
 ## Offline và hiệu năng
 
 - ĐẠT — Mô phỏng bù 4 giờ dưới 250 ms · lần chậm nhất 6 ms trên 5 lần, vườn 12 ô
-- ĐẠT — 5 vòng thoát/quay lại không đóng băng khung hình · frame dài nhất 6 ms
-- ĐẠT — p95 frame time dưới 16,7 ms khi vườn đầy · trung bình 180 FPS, p95 5.6 ms, 720 khung hình
-- ĐẠT — Trung bình đạt 60 FPS · trung bình 180 FPS, p95 5.6 ms, 720 khung hình
+- ĐẠT — 5 vòng thoát/quay lại không đóng băng khung hình · frame dài nhất 11 ms
+- ĐẠT — p95 frame time dưới 16,7 ms khi vườn đầy · trung bình 180 FPS, p95 5.6 ms, 721 khung hình
+- ĐẠT — Trung bình đạt 60 FPS · trung bình 180 FPS, p95 5.6 ms, 721 khung hình
 
 ## Điều khiển camera và nhân vật
 
@@ -166,8 +166,8 @@ Chạy tự động bên trong bản build Windows, không phải trong Editor.
 - ĐẠT — Nhận lệnh đi tới điểm được chỉ · đích (-0.8, -1.4)
 - ĐẠT — Đi tới nơi rồi dừng · cách đích 6 cm
 - ĐẠT — Không đi xuyên qua đồ đã đặt · dừng cách tâm ghế 66 cm
-- ĐẠT — Lối đi lát đá vẫn bước lên được · dừng cách tâm phiến đá 5 cm
-- ĐẠT — Không đi xuyên qua quầy trà · dừng cách tâm quầy 111 cm
+- ĐẠT — Lối đi lát đá vẫn bước lên được · dừng cách tâm phiến đá 6 cm
+- ĐẠT — Không đi xuyên qua quầy trà · dừng cách tâm quầy 110 cm
 - ĐẠT — Chọn món thì hiện bóng ma xem trước · món deco_bench, góc 0
 - ĐẠT — Bóng ma dựng được model của món đang cầm
 - ĐẠT — R xoay 180° và kéo chuột phải xoay tiếp · sau R rồi kéo 45°: 225°
@@ -180,13 +180,13 @@ Chạy tự động bên trong bản build Windows, không phải trong Editor.
 ## Dây chuyền chế biến trà
 
 - ĐẠT — Có đủ sáu công đoạn giữa thu hoạch và quầy trà · 6 công đoạn
-- ĐẠT — Gom đủ xu để xây cả dây chuyền · 12859 / 12780 xu
+- ĐẠT — Gom đủ xu để xây cả dây chuyền · 13034 / 12780 xu
 - ĐẠT — Mua được cả sáu máy · 6 máy
 - ĐẠT — Không mua được một cái máy hai lần · Đã mua.
 - ĐẠT — Thuê đủ thợ cho tất cả các máy · 6 thợ
 - ĐẠT — Lá tươi đi hết chuỗi thành trà đóng gói
-- ĐẠT — Thợ ăn lương và xu vẫn không âm · 4464 xu, 6/6 thợ đang làm
-- ĐẠT — Xây dây chuyền xong vẫn kiếm được xu · trước 4079, sau 4464
+- ĐẠT — Thợ ăn lương và xu vẫn không âm · 4639 xu, 6/6 thợ đang làm
+- ĐẠT — Xây dây chuyền xong vẫn kiếm được xu · trước 4254, sau 4639
 - ĐẠT — Bảng Xưởng mở được và có đủ hàng
 - ĐẠT — Chữ không tràn khỏi ô chứa — workshop · 26 nhãn
 
@@ -203,21 +203,21 @@ Chạy tự động bên trong bản build Windows, không phải trong Editor.
 
 ## Robot đi thu từng ô
 
-- ĐẠT — Robot mất thời gian đi tới ô · còn 515 ms nữa mới tới ô 1
+- ĐẠT — Robot mất thời gian đi tới ô · còn 590 ms nữa mới tới ô 5
 - ĐẠT — Cây chín nằm chờ chứ không bị thu sạch tức thì · 1 ô đang chín chờ robot
-- ĐẠT — Hình robot chạy theo mô phỏng · đi được 453 cm
-- ĐẠT — Thu xong thì robot đứng lại ngay ô đó · ô 1
+- ĐẠT — Hình robot chạy theo mô phỏng · đi được 301 cm
+- ĐẠT — Thu xong thì robot đứng lại ngay ô đó · ô 5
 
 ## Canh tác: độ phì, cỏ, sâu bệnh, thời vụ
 
 - ĐẠT — Gieo một vụ thì trừ độ phì của ô · 100 → 96 (trừ 4)
 - ĐẠT — Đất bỏ không tự hồi nhưng dừng ở trần tự nhiên · 45/100, trần 45
-- ĐẠT — Bón phân đưa đất về mức tốt nhất và trừ đúng tiền · độ phì 100, còn 20291 xu
+- ĐẠT — Bón phân đưa đất về mức tốt nhất và trừ đúng tiền · độ phì 100, còn 14318 xu
 - ĐẠT — Đất đang tốt thì không cho bón thêm
 - ĐẠT — Bỏ bê một lúc thì cỏ mọc kín ô · 100/100
 - ĐẠT — Cỏ dại làm cây lớn chậm hơn hẳn · 5120 ms → 8192 ms
 - ĐẠT — Làm cỏ xoá sạch cỏ của ô · 0/100
-- ĐẠT — Trị được sâu bệnh và trừ đúng tiền · còn 139753 xu
+- ĐẠT — Trị được sâu bệnh và trừ đúng tiền · còn 121534 xu
 - ĐẠT — Ô không có sâu thì không cho trị
 - ĐẠT — Trồng trái vụ thu ít hơn trồng đúng vụ · 4 → 2 đơn vị
 - ĐẠT — Mùa suy ra được từ đồng hồ mô phỏng · đang là mùa thu
@@ -226,13 +226,13 @@ Chạy tự động bên trong bản build Windows, không phải trong Editor.
 - ĐẠT — Ô sạch sâu bệnh thì không có nút trị sâu · activeSelf = False
 - ĐẠT — Ô có sâu bệnh thì nút trị sâu hiện ra
 - ĐẠT — Chữ không tràn khỏi ô chứa — popup ô · 16 nhãn
-- ĐẠT — Thẻ hồ sơ hiện đúng mùa hiện tại và đồng hồ mùa · Mùa thu  ·  1:11
+- ĐẠT — Thẻ hồ sơ hiện đúng mùa hiện tại và đồng hồ mùa · Mùa thu  ·  1:39
 - ĐẠT — Ô đầy cỏ và có sâu thì thấy được ngay trong vườn · cỏ True, sâu True
 - ĐẠT — Làm cỏ trị sâu xong thì dấu hiệu biến mất
 
 ## Âm lượng, reset và thoát
 
 - ĐẠT — Bật tắt âm thanh và ghi nhớ được lựa chọn
-- ĐẠT — Xuất được dữ liệu test · Đã xuất dữ liệu test: C:/Users/PC/AppData/LocalLow/Vuon va Tra/VuonNho-HudReview\vuon-nho-export-20260908-025939.log
+- ĐẠT — Xuất được dữ liệu test · Đã xuất dữ liệu test: C:/Users/PC/AppData/LocalLow/Vuon va Tra/VuonNho-HudReview\vuon-nho-export-20260908-033019.log
 - ĐẠT — Reset trả về vườn mới · 0 xu, 4 ô
 - ĐẠT — Sau reset vẫn có file save hợp lệ · C:/Users/PC/AppData/LocalLow/Vuon va Tra/VuonNho-HudReview\vuon-nho-save.json

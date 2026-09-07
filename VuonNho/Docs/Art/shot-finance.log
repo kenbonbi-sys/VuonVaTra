@@ -2,15 +2,15 @@ Mono path[0] = 'C:/Users/PC/Desktop/Game/VuonNho/Build/HudReview/VuonNho-HudRevi
 Mono config path = 'C:/Users/PC/Desktop/Game/VuonNho/Build/HudReview/MonoBleedingEdge/etc'
 CodeReloadManager initialized
 Found 3 interfaces on host : 0) 192.168.102.61 1) 26.253.10.125 2) 172.24.64.1
-Player connection [23784]  Target information:
+Player connection [16576]  Target information:
 
-Player connection [23784]  * "[IP] 192.168.102.61 [Port] 55000 [Flags] 2 [Guid] 1817441948 [EditorId] 2183389421 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+Player connection [16576]  * "[IP] 192.168.102.61 [Port] 55001 [Flags] 2 [Guid] 1931527122 [EditorId] 2183389421 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
 
-Player connection [23784]  * "[IP] 26.253.10.125 [Port] 55000 [Flags] 2 [Guid] 1817441948 [EditorId] 2183389421 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+Player connection [16576]  * "[IP] 26.253.10.125 [Port] 55001 [Flags] 2 [Guid] 1931527122 [EditorId] 2183389421 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
 
-Player connection [23784]  * "[IP] 172.24.64.1 [Port] 55000 [Flags] 2 [Guid] 1817441948 [EditorId] 2183389421 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
+Player connection [16576]  * "[IP] 172.24.64.1 [Port] 55001 [Flags] 2 [Guid] 1931527122 [EditorId] 2183389421 [Version] 1048832 [Id] WindowsPlayer(2,DESKTOP-4OFHBEV) [Debug] 0 [PackageName] WindowsPlayer [ProjectName] VuonNho-HudReview" 
 
-Player connection [23784] Started UDP target info broadcast (1) on [225.0.0.222:54997].
+Player connection [16576] Started UDP target info broadcast (1) on [225.0.0.222:54997].
 
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
@@ -36,8 +36,8 @@ Begin MonoManager ReloadAssembly
 [Physics::Module] Threading Mode: Multi-Threaded
 <RI> Initializing input.
 <RI> Input initialized.
-UnloadTime: 0.849300 ms
-[VuonNho] Khong du xu tra luong: 2 tho nghi trong ky nay.
+UnloadTime: 0.863400 ms
+[VuonNho] Khong du xu tra luong: 3 tho nghi trong ky nay.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -71,7 +71,7 @@ VuonNho.Views.QaScreenshot:Update () (at C:/Users/PC/Desktop/Game/VuonNho/Assets
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[VuonNho] Da tua vuon: 12 o, 603 xu.
+[VuonNho] Da tua vuon: 12 o, 5225 xu.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -83,7 +83,7 @@ VuonNho.Views.QaScreenshot:Update () (at C:/Users/PC/Desktop/Game/VuonNho/Assets
 
 (Filename: C:/build/output/unity/unity/Runtime/Export/Debug/Debug.bindings.cs Line: 130)
 
-[VuonNho] QA screenshot: C:\Users\PC\Desktop\Game\VuonNho\Docs\screenshots\16-floating-farm-hud.png
+[VuonNho] QA screenshot: C:/Users/PC/Desktop/Game/VuonNho/Docs/screenshots/hero-von-va-no.png
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace () (at C:/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:23)
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -100,4 +100,4 @@ Input System module state changed to: ShutdownInProgress.
 Input Polling Thread exited.
 Input System module state changed to: Shutdown.
 CodeReloadManager destroyed
-PlayerConnection::Cleanup##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1788812949082,"processId":24896,"allocatedMemory":32506,"memoryLabels":[{"Default":3832},{"NewDelete":104},{"Thread":2304},{"Manager":9364},{"GfxDevice":72},{"GfxThread":6912},{"Serialization":616},{"BaseObject":4512},{"String":366},{"PoolAlloc":192},{"ScriptManager":5688},{"CodeReload":440},{"CloudService":144},{"VR":1928},{"Video":144},{"Subsystems":96},{"CoreBusinessMetrics":128}]}
+PlayerConnection::Cleanup##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1788813210684,"processId":22020,"allocatedMemory":32506,"memoryLabels":[{"Default":3832},{"NewDelete":104},{"Thread":2304},{"Manager":9364},{"GfxDevice":72},{"GfxThread":6912},{"Serialization":616},{"BaseObject":4512},{"String":366},{"PoolAlloc":192},{"ScriptManager":5688},{"CodeReload":440},{"CloudService":144},{"VR":1928},{"Video":144},{"Subsystems":96},{"CoreBusinessMetrics":128}]}

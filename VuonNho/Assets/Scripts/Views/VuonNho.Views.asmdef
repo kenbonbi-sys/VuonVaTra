@@ -3,7 +3,8 @@
     "rootNamespace": "VuonNho.Views",
     "references": [
         "VuonNho.Core",
-        "VuonNho.Infrastructure"
+        "VuonNho.Infrastructure",
+        "Unity.RenderPipelines.Universal.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
