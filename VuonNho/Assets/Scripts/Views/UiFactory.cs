@@ -437,6 +437,7 @@ namespace VuonNho.Views
             // that ma layout group vua tinh duoc tu nhan.
             var layout = go.AddComponent<LayoutElement>();
             layout.minHeight = ButtonHeight;
+            AttachPressFeedback(button);
             return button;
         }
 
@@ -449,6 +450,18 @@ namespace VuonNho.Views
         /// trong cho moi thu co flexibleWidth duong, khong quan tam childForceExpandWidth da tat
         /// hay chua. Ep ve 0 la cach duy nhat de nut dung yen o be rong cua no.
         /// </summary>
+        /// <summary>
+        /// Gan phan hoi bam cho mot nut da dung xong.
+        ///
+        /// Goi o cuoi <see cref="TextButton"/> nen moi nut di qua day deu co, khong phai nho tung
+        /// cho goi lai — mot nut quen goi la mot nut cam giac khac han nhung cac nut ben canh, va
+        /// khong ai phat hien ra cho toi khi cham vao no.
+        /// </summary>
+        static void AttachPressFeedback(Button button)
+        {
+            UiMotion.AttachPress(button);
+        }
+
         public static void HugContent(Button button)
         {
             if (button == null) return;

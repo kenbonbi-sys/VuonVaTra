@@ -1282,7 +1282,7 @@ namespace VuonNho.Views
             if (_session == null || _session.State == null) return;
             RefreshVolatile();
             if (_toastPanel != null && _toastPanel.gameObject.activeSelf && Time.unscaledTime > _toastHideTime)
-                _toastPanel.gameObject.SetActive(false);
+                UiMotion.FadeOutAndHide(_toastPanel.gameObject);
         }
 
         public void Refresh()
@@ -1300,7 +1300,8 @@ namespace VuonNho.Views
             var state = _session.State;
             var catalog = _session.Catalog;
 
-            _coinsLabel.text = state.Coins.ToString();
+            // So xu do RefreshFarmHud ghi, qua UiMotion.CountTo. Ghi them mot lan o day se cat
+            // ngang con so dang chay va lam no giat moi khung hinh.
             var season = Cultivation.SeasonAt(catalog.Balance, state.SimulationTimeMs);
             long untilNextSeason = Cultivation.NextSeasonChangeMs(catalog.Balance, state.SimulationTimeMs) -
                                    state.SimulationTimeMs;
@@ -1737,20 +1738,21 @@ namespace VuonNho.Views
         {
             if (panel == null) return;
             bool willOpen = !panel.activeSelf;
-            if (_journalPanel != null) _journalPanel.SetActive(false);
-            _inventoryPanel.SetActive(false);
-            _upgradePanel.SetActive(false);
-            _settingsPanel.SetActive(false);
-            _decoratePanel.SetActive(false);
-            _workshopPanel.SetActive(false);
-            // Nam bang cua ban mo phong deu neo cung mot cho ben phai nen chung phai loai tru
-            // nhau y nhu cac panel cu.
-            if (_financePanel != null) _financePanel.SetActive(false);
-            if (_agronomyPanel != null) _agronomyPanel.SetActive(false);
-            if (_craftPanel != null) _craftPanel.SetActive(false);
-            if (_legalPanel != null) _legalPanel.SetActive(false);
-            if (_modelPanel != null) _modelPanel.SetActive(false);
-            panel.SetActive(willOpen);
+            // Moi bang deu neo cung mot cho ben phai nen chung loai tru nhau. Dong bang chuyen
+            // dong chu khong SetActive(false) thang: bang dang mo phai mo di va truot ra, roi moi
+            // tat han — nguoi choi thay no **di ve dau**, va cai vua mo thay the vao dung cho do.
+            UiMotion.HidePanel(_journalPanel);
+            UiMotion.HidePanel(_inventoryPanel);
+            UiMotion.HidePanel(_upgradePanel);
+            UiMotion.HidePanel(_settingsPanel);
+            UiMotion.HidePanel(_decoratePanel);
+            UiMotion.HidePanel(_workshopPanel);
+            UiMotion.HidePanel(_financePanel);
+            UiMotion.HidePanel(_agronomyPanel);
+            UiMotion.HidePanel(_craftPanel);
+            UiMotion.HidePanel(_legalPanel);
+            UiMotion.HidePanel(_modelPanel);
+            if (willOpen) UiMotion.ShowPanel(panel);
             if (panel != _decoratePanel) CancelDecorationMode();
             if (!willOpen) return;
 
@@ -1770,7 +1772,7 @@ namespace VuonNho.Views
         {
             if (string.IsNullOrEmpty(message)) return;
             _toastLabel.text = message;
-            _toastPanel.gameObject.SetActive(true);
+            UiMotion.Pop(_toastPanel.gameObject);
             LayoutRebuilder.ForceRebuildLayoutImmediate(UiFactory.Rect(_toastPanel.gameObject));
             _toastHideTime = Time.unscaledTime + 3f;
         }

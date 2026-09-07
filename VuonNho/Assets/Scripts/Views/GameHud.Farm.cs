@@ -101,6 +101,7 @@ namespace VuonNho.Views
             style.Caption = label;
             style.BaseColor = HudFace;
             style.BaseTextColor = GardenPalette.TextPrimary;
+            UiMotion.AttachPress(button);
             return button;
         }
 
@@ -256,6 +257,9 @@ namespace VuonNho.Views
             style.BaseTextColor = GardenPalette.TextPrimary;
 
             AttachRailTooltip(rim.transform, caption);
+            // Sau AttachRailTooltip: ca hai dung chung mot EventTrigger, va AttachPress tim lai
+            // cai da co chu khong them cai thu hai.
+            UiMotion.AttachPress(button);
             return button;
         }
 
@@ -295,10 +299,10 @@ namespace VuonNho.Views
 
             var trigger = button.gameObject.AddComponent<EventTrigger>();
             var enter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
-            enter.callback.AddListener(delegate { chip.gameObject.SetActive(true); });
+            enter.callback.AddListener(delegate { UiMotion.Pop(chip.gameObject); });
             trigger.triggers.Add(enter);
             var exit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
-            exit.callback.AddListener(delegate { chip.gameObject.SetActive(false); });
+            exit.callback.AddListener(delegate { UiMotion.FadeOutAndHide(chip.gameObject); });
             trigger.triggers.Add(exit);
         }
 
@@ -380,7 +384,7 @@ namespace VuonNho.Views
 
         void RefreshFarmHud(GameState state, ContentCatalog catalog, long untilNextSeason)
         {
-            _coinsLabel.text = state.Coins.ToString("N0");
+            UiMotion.CountTo(_coinsLabel, state.Coins);
             int ready = 0, pests = 0;
             long stock = 0;
             _actionPlot = -1;
@@ -398,7 +402,7 @@ namespace VuonNho.Views
                     if (plot.Unlocked && plot.Phase == PlotPhase.Empty) { _actionPlot = plot.PlotId; break; }
                 _actionCaption.text = _actionPlot >= 0 ? "Gieo hạt" : "Chăm cây";
             }
-            UiFactory.SetProgress(_seasonProgress, 1f - (float)untilNextSeason / catalog.Balance.SeasonLengthMs);
+            UiMotion.GlideFill(_seasonProgress, 1f - (float)untilNextSeason / catalog.Balance.SeasonLengthMs);
             int seconds = Mathf.CeilToInt(untilNextSeason / 1000f);
             var season = Cultivation.SeasonAt(catalog.Balance, state.SimulationTimeMs);
             _seasonLabel.text = "Mùa " + SeasonName(season) + "  ·  " + seconds / 60 + ":" + (seconds % 60).ToString("D2");

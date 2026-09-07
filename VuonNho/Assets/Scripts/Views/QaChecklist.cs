@@ -1340,7 +1340,7 @@ namespace VuonNho.Views
             DismissOfflinePopupIfOpen();
             yield return null;
 
-            CheckFloatingHud();
+            yield return CheckFloatingHud();
             CheckGardenClickReachable();
             yield return CheckModalHasEscape("OfflineModal");
             yield return CheckOfflineCtaFitsItsText();
@@ -1366,8 +1366,7 @@ namespace VuonNho.Views
                     bool clicked = TryClickButton(nav != null ? nav.GetComponent<Button>() : null, out detail);
                     Check("Nút điều hướng mở " + panelName, clicked && FindOpenSurface(panelName) != null, detail);
                 }
-                yield return null;
-                yield return null;
+                yield return SettleMotion();
 
                 var opened = FindOpenSurface(panelName);
                 Check("Mở được bề mặt " + panelName, opened != null, null);
@@ -1380,7 +1379,7 @@ namespace VuonNho.Views
                 CheckButtonReceivesClick(panelName, opened);
 
                 CloseSurface(panelName);
-                yield return null;
+                yield return SettleMotion();
             }
 
             CheckTextOverflow("HUD", _hud.transform as RectTransform);
@@ -1585,6 +1584,24 @@ namespace VuonNho.Views
         /// Co thi phep do phai di qua dung cai nut do — mot be mat mo duoc bang code ma nut cua
         /// no khong nhan click la dung loi ma bo QA nay ton tai de bat.
         /// </summary>
+        /// <summary>
+        /// Doi moi chuyen dong cua giao dien dung han.
+        ///
+        /// Do bo cuc giua luc mot cai bang dang truot vao thi no nam sai cho, va phep do "bang co
+        /// chan click xuong vuon khong" se bao sai theo — bang chua toi noi thi click di lot qua
+        /// that. Doi nhu vay cung co nghia bo QA van kiem **dung duong chay that** chu khong kiem
+        /// mot che do khong chuyen dong rieng.
+        ///
+        /// Co tran khung hinh: mot tween ket lai vi loi nao do khong duoc treo ca bo kiem.
+        /// </summary>
+        IEnumerator SettleMotion()
+        {
+            int guard = 0;
+            while (UiMotion.Busy && guard++ < 240) yield return null;
+            // Them mot khung hinh cho layout chay lai sau khi vi tri cuoi duoc ghi.
+            yield return null;
+        }
+
         bool HasFarmHudNavButton(string panelName)
         {
             return FindFarmHudNavButton(panelName) != null;
@@ -1803,13 +1820,13 @@ namespace VuonNho.Views
                       : blockedByUi + " ô bị UI che, " + noCollider + " ô không có collider nhận tia");
         }
 
-        void CheckFloatingHud()
+        IEnumerator CheckFloatingHud()
         {
             var farmHud = _hud.transform.Find("FarmHud");
             if (farmHud == null)
             {
                 Check("HUD nổi hiển thị và các nút bấm tới được", false, "Không tìm thấy FarmHud.");
-                return;
+                yield break;
             }
 
             foreach (string name in new[] { "Profile", "StatusPill" })
@@ -1827,7 +1844,7 @@ namespace VuonNho.Views
                 Check("Thẻ " + name + " nằm trong màn hình và không bị che", visible, null);
             }
 
-            CheckRailTooltips(farmHud);
+            yield return CheckRailTooltips(farmHud);
 
             var buttons = farmHud.GetComponentsInChildren<Button>(false);
             var unreachable = new List<string>();
@@ -1848,13 +1865,13 @@ namespace VuonNho.Views
         /// that di — roi doc lai xem the ten co hien va co an dung luc khong. Anh chup khong bat
         /// duoc trang thai re chuot nen neu khong kiem o day thi khong ai kiem.
         /// </summary>
-        void CheckRailTooltips(Transform farmHud)
+        IEnumerator CheckRailTooltips(Transform farmHud)
         {
             var rail = farmHud.Find("LeftRail");
             if (rail == null)
             {
                 Check("Cột nút trái có thẻ tên khi rê chuột", false, "Không tìm thấy LeftRail.");
-                return;
+                yield break;
             }
 
             var offenders = new List<string>();
@@ -1882,6 +1899,9 @@ namespace VuonNho.Views
 
                 var pointer = new PointerEventData(EventSystem.current);
                 ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerEnterHandler);
+                // The ten hien ra bang mot chuyen dong ngan, va tat cung vay. Doc `activeSelf`
+                // ngay sau su kien thi bat duoc trang thai giua chung — bao sai ca hai chieu.
+                yield return SettleMotion();
                 if (!chip.gameObject.activeSelf) offenders.Add(button.name + ": rê chuột lên mà thẻ tên không hiện");
 
                 // The ten nam ben phai nut, khong duoc de len chinh cai nut vua duoc re toi.
@@ -1894,6 +1914,7 @@ namespace VuonNho.Views
                 }
 
                 ExecuteEvents.Execute(button.gameObject, pointer, ExecuteEvents.pointerExitHandler);
+                yield return SettleMotion();
                 if (chip.gameObject.activeSelf) offenders.Add(button.name + ": rời chuột mà thẻ tên không tắt");
             }
 

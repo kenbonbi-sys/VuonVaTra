@@ -431,7 +431,7 @@ Hai điều đã làm hỏng một lượt chụp và sẽ làm hỏng lượt s
 - **Mốc A** — vòng chơi, save/offline/lifecycle, HUD, 83 test, hai bản build.
 - **L01 + B02** — 13 model Blender (gồm sả và nhài), 9 material, 5 cue âm thanh, prefab và
   GardenSkin đã điền đủ. Xem [Docs/Art/L01-B02.md](Docs/Art/L01-B02.md).
-- **Checklist mục 10** — 149 test logic + 196 mục kiểm trong bản build, hai độ phân giải.
+- **Checklist mục 10** — 149 test logic + 190 mục kiểm trong bản build, hai độ phân giải.
   Xem [Docs/QA-moc-A.md](Docs/QA-moc-A.md).
 - **Hướng v1** — đổi tên, siết nhịp, thêm sả/nhài, pha 2 trang trí.
   Xem [Docs/Huong-di-v1.md](Docs/Huong-di-v1.md).
@@ -457,7 +457,7 @@ Hai điều đã làm hỏng một lượt chụp và sẽ làm hỏng lượt s
   nguy cơ bị siết nợ, cây chè bốn tiêu chuẩn thu hái và bảng sinh hoá bốn mùa, rầy xanh thành
   Đông Phương Mỹ Nhân, bốn thông số căn lửa, hộ kinh doanh / công ty và chế tài ATTP, ba phân
   nhánh kinh doanh, và đoạn mở màn bốn phân cảnh. Năm bảng mới mở từ Sổ tay; 56 test logic và
-  47 mục kiểm mới trong bản build. Save lên schema 6; save cũ mở được như một ván chưa vay đồng
+  41 mục kiểm mới trong bản build. Save lên schema 6; save cũ mở được như một ván chưa vay đồng
   nào và chưa đăng ký gì. Xem [Docs/Mo-phong-khoi-nghiep-tra.md](Docs/Mo-phong-khoi-nghiep-tra.md).
 
 ## Còn lại

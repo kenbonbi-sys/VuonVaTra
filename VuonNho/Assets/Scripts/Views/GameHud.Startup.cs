@@ -10,44 +10,61 @@ namespace VuonNho.Views
     /// Nam bang cua ban mo phong khoi nghiep tra: von va no, nong hoc, can lua, phap ly, mo hinh
     /// kinh doanh.
     ///
-    /// Nguyen tac chung cua ca nam: **moi con so hien ra deu doc tu GameState hoac tu mot ham
-    /// thuan tuy trong Core**, khong mot con so nao duoc go tay o day. Cho nao la bang tham chieu
-    /// — bang sinh hoa bon mua, bang phan hang thu hai, khung tien phat — thi lay tu chinh du lieu
-    /// ma mo phong dung, nen doi can bang o Core la bang trong so tay doi theo, khong lech.
+    /// Hai nguyen tac cua ca nam:
     ///
-    /// Khong dung slider: cac nut "− gia tri +" doc duoc trong nen art nay va khong can thanh
-    /// keo moi. Moi buoc nhay la mot lenh qua GameSession nhu moi lenh khac.
+    /// **Moi con so hien ra deu doc tu GameState hoac tu mot ham thuan tuy trong Core.** Khong
+    /// mot con so nao duoc go tay o day. Cho nao la bang tham chieu — bang sinh hoa bon mua, bang
+    /// phan hang thu hai, khung tien phat — thi lay tu chinh du lieu ma mo phong dung, nen doi can
+    /// bang o Core la bang trong so tay doi theo, khong lech.
+    ///
+    /// **Dung component cua <see cref="UiKit"/>, khong dung khoi chu.** Ban dau nam bang nay deu
+    /// la nhung khoi chu nhieu dong. Doc duoc, nhung doc nhu mot trang tai lieu: mat khong bat
+    /// duoc con so nao truoc, khong biet cai nao dang tot cai nao dang hong. Gio moi con so la mot
+    /// hang co nhan trai gia tri phai, moi trang thai la mot the mang mau cua no, va moi thong so
+    /// co thang do rieng voi khoang chuan ve san tren nen.
+    ///
+    /// Khong dung slider: cac nut "− gia tri +" doc duoc trong nen art nay va khong can thanh keo
+    /// moi. Moi buoc nhay la mot lenh qua GameSession nhu moi lenh khac.
     /// </summary>
     public sealed partial class GameHud
     {
         GameObject _financePanel, _agronomyPanel, _craftPanel, _legalPanel, _modelPanel;
 
         // Von va no
-        Text _loanStatus, _loanTerms, _loanProjection, _cashFlowChart;
+        Text _loanStateBadge, _loanHint;
+        UiKit.Row _loanDebtRow, _loanRateRow, _loanTermRow, _loanDueRow, _loanOverdueRow;
+        UiKit.Row _quoteRateRow, _quotePrincipalRow, _quoteInterestRow, _quotePmtRow;
+        Text _loanAmountLabel, _loanTermLabel;
+        Button _borrowButton, _repayButton;
+        readonly List<UiKit.Gauge> _cashRows = new List<UiKit.Gauge>();
+        Text _cashEmptyNote;
         long _loanAmountCoins = 1000;
         int _loanTermMonths = 24;
         LoanKind _loanKind = LoanKind.Unsecured;
-        Text _loanAmountLabel, _loanTermLabel;
-        Button _borrowButton, _repayButton;
+        readonly List<Button> _loanKindButtons = new List<Button>();
+
+        // Nong hoc
+        Text _seasonBadge, _leafhopperBadge;
+        UiKit.Row _seasonYieldRow, _seasonPriceRow, _seasonFlavourRow;
+        UiKit.Gauge _theanineGauge, _polyphenolGauge;
 
         // Can lua
-        Text _craftVerdictTitle, _craftVerdictBody;
-        readonly List<Text> _craftValueLabels = new List<Text>();
-        readonly List<Text> _craftWindowLabels = new List<Text>();
+        Text _craftVerdictBadge, _craftProductName, _craftNote, _craftRouteNote;
+        UiKit.Row _craftLiquorRow, _craftAromaRow, _craftStorageRow, _craftPriceRow;
+        readonly List<UiKit.Gauge> _craftGauges = new List<UiKit.Gauge>();
         readonly List<Button> _craftRouteButtons = new List<Button>();
 
         // Phap ly
-        Text _legalStatus, _inspectionLog;
+        UiKit.Row _entityRow, _foodSafetyRow, _gearRow, _oneWayRow, _taxRow, _fineRow, _inspectionRow;
+        Text _suspendedBadge;
         Button _hkdButton, _tnhhButton, _foodSafetyButton;
 
         // Mo hinh kinh doanh
-        Text _phaseLabel;
+        Text _phaseBadge, _phaseGoal;
+        UiKit.Row _tourismRow, _receivableRow;
         readonly List<Button> _branchButtons = new List<Button>();
-        readonly List<Text> _branchStatus = new List<Text>();
+        readonly List<Text> _branchBadges = new List<Text>();
         readonly List<Button> _channelButtons = new List<Button>();
-
-        // Nong hoc
-        Text _seasonNow;
 
         void BuildStartupPanels()
         {
@@ -77,81 +94,6 @@ namespace VuonNho.Views
 
         // ---------------------------------------------------------------- tien ich dung chung
 
-        static Text SectionTitle(Transform body, string text)
-        {
-            return UiFactory.Label(body, "T_" + text, text, UiFactory.FontSizeTitle,
-                                   TextAnchor.MiddleLeft, GardenPalette.TextPrimary, true);
-        }
-
-        static Text Paragraph(Transform body, string name, string text)
-        {
-            return UiFactory.Label(body, name, text, UiFactory.FontSizeMeta,
-                                   TextAnchor.UpperLeft, GardenPalette.TextMuted);
-        }
-
-        /// <summary>
-        /// Mot khoi chu don khoang cach dong, dung cho bang tham chieu.
-        ///
-        /// Bang cua ban mo phong co bon, nam cot; dung layout thanh cot that o day se lam moi
-        /// bang thanh mot cai luoi phai canh tay. Chu don khoi voi dau gach giua doc duoc va
-        /// khong bao gio tran ra ngoai panel.
-        /// </summary>
-        static Text Monoblock(Transform body, string name, string text)
-        {
-            var label = UiFactory.Label(body, name, text, UiFactory.FontSizeMeta,
-                                        TextAnchor.UpperLeft, GardenPalette.TextPrimary);
-            label.lineSpacing = 1.25f;
-            return label;
-        }
-
-        static Image Card(Transform body, string name)
-        {
-            var card = UiFactory.Panel(body, name, GardenPalette.PanelSoft, UiFactory.RadiusControl);
-            UiFactory.VerticalList(card.gameObject, 6f, new RectOffset(12, 12, 10, 10));
-            return card;
-        }
-
-        /// <summary>Hang "− gia tri +". Hai nut goi lai <paramref name="onStep"/> voi buoc nhay.</summary>
-        static Text StepperRow(Transform parent, string name, string caption,
-                               Action<int> onStep, int step)
-        {
-            var row = UiFactory.Node(parent, name);
-            var layout = UiFactory.HorizontalList(row, 8f, new RectOffset(0, 0, 0, 0));
-            layout.childForceExpandWidth = false;
-            layout.childAlignment = TextAnchor.MiddleLeft;
-            var rowSize = row.AddComponent<LayoutElement>();
-            rowSize.minHeight = UiFactory.ButtonHeight;
-
-            var title = UiFactory.Label(row.transform, "Caption", caption, UiFactory.FontSizeMeta,
-                                        TextAnchor.MiddleLeft, GardenPalette.TextMuted);
-            var titleFlex = title.gameObject.AddComponent<LayoutElement>();
-            titleFlex.flexibleWidth = 1f;
-
-            var minus = UiFactory.TextButton(row.transform, "Minus", "−",
-                                             delegate { onStep(-step); }, UiFactory.ButtonStyle.Quiet);
-            SizeStepButton(minus);
-
-            var value = UiFactory.Label(row.transform, "Value", "", UiFactory.FontSizeRowTitle,
-                                        TextAnchor.MiddleCenter, GardenPalette.TextPrimary);
-            var valueSize = value.gameObject.AddComponent<LayoutElement>();
-            valueSize.preferredWidth = 108f;
-            valueSize.minWidth = 108f;
-            valueSize.flexibleWidth = 0f;
-
-            var plus = UiFactory.TextButton(row.transform, "Plus", "+",
-                                            delegate { onStep(step); }, UiFactory.ButtonStyle.Quiet);
-            SizeStepButton(plus);
-            return value;
-        }
-
-        static void SizeStepButton(Button button)
-        {
-            var size = button.gameObject.AddComponent<LayoutElement>();
-            size.preferredWidth = UiFactory.ButtonHeight;
-            size.minWidth = UiFactory.ButtonHeight;
-            size.flexibleWidth = 0f;
-        }
-
         string Coins(long amount)
         {
             return amount.ToString("N0") + DefaultContent.CoinGlyph;
@@ -172,63 +114,157 @@ namespace VuonNho.Views
             return (bps / 100) + "," + ((bps % 100) / 10) + "%";
         }
 
+        /// <summary>Hang nut chia deu be ngang. Dung cho chon goi vay, chon duong, chon kenh.</summary>
+        static GameObject ButtonRow(Transform parent, string name)
+        {
+            var row = UiFactory.Node(parent, name);
+            var list = UiFactory.HorizontalList(row, UiTokens.Space2, UiTokens.NoPadding);
+            list.childForceExpandWidth = true;
+            row.AddComponent<LayoutElement>().minHeight = UiFactory.ButtonHeight;
+            return row;
+        }
+
+        /// <summary>Hang "− gia tri +". Hai nut goi lai <paramref name="onStep"/> voi buoc nhay.</summary>
+        static Text StepperRow(Transform parent, string name, string caption,
+                               Action<int> onStep, int step)
+        {
+            var row = UiFactory.Node(parent, name);
+            var layout = UiFactory.HorizontalList(row, UiTokens.Space2, UiTokens.NoPadding);
+            layout.childForceExpandWidth = false;
+            layout.childAlignment = TextAnchor.MiddleLeft;
+            row.AddComponent<LayoutElement>().minHeight = UiFactory.ButtonHeight;
+
+            var title = UiFactory.Label(row.transform, "Caption", caption, UiTokens.TextMeta,
+                                        TextAnchor.MiddleLeft, GardenPalette.TextMuted);
+            title.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
+
+            SizeStepButton(UiFactory.TextButton(row.transform, "Minus", "−",
+                delegate { onStep(-step); }, UiFactory.ButtonStyle.Quiet));
+
+            var value = UiFactory.Label(row.transform, "Value", "", UiTokens.TextNumber,
+                                        TextAnchor.MiddleCenter, GardenPalette.TextPrimary, true);
+            var valueSize = value.gameObject.AddComponent<LayoutElement>();
+            valueSize.preferredWidth = 108f;
+            valueSize.minWidth = 108f;
+            valueSize.flexibleWidth = 0f;
+
+            SizeStepButton(UiFactory.TextButton(row.transform, "Plus", "+",
+                delegate { onStep(step); }, UiFactory.ButtonStyle.Quiet));
+            return value;
+        }
+
+        /// <summary>
+        /// Hang "nhan − +", khong co o gia tri.
+        ///
+        /// Dung cho cho nao **da co mot cho khac hien gia tri** — bon nut can lua deu co thanh do
+        /// ngay ben duoi, va thanh do do da mang ca ten day du lan con so. Giu them mot o gia tri
+        /// o hang nut la in con so hai lan, va no an mat 108 px lam cai nhan gay xuong hai dong.
+        /// </summary>
+        static void StepperButtons(Transform parent, string name, string caption,
+                                   Action<int> onStep, int step)
+        {
+            var row = UiFactory.Node(parent, name);
+            var layout = UiFactory.HorizontalList(row, UiTokens.Space2, UiTokens.NoPadding);
+            layout.childForceExpandWidth = false;
+            layout.childAlignment = TextAnchor.MiddleLeft;
+            row.AddComponent<LayoutElement>().minHeight = UiFactory.ButtonHeight;
+
+            var title = UiFactory.Label(row.transform, "Caption", caption, UiTokens.TextBody,
+                                        TextAnchor.MiddleLeft, GardenPalette.TextPrimary, true);
+            title.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
+
+            SizeStepButton(UiFactory.TextButton(row.transform, "Minus", "−",
+                delegate { onStep(-step); }, UiFactory.ButtonStyle.Quiet));
+            SizeStepButton(UiFactory.TextButton(row.transform, "Plus", "+",
+                delegate { onStep(step); }, UiFactory.ButtonStyle.Quiet));
+        }
+
+        static void SizeStepButton(Button button)
+        {
+            var size = button.gameObject.AddComponent<LayoutElement>();
+            size.preferredWidth = UiFactory.ButtonHeight;
+            size.minWidth = UiFactory.ButtonHeight;
+            size.flexibleWidth = 0f;
+        }
+
         // ---------------------------------------------------------------- 1. von va no
 
         void BuildFinanceRows(Transform body)
         {
             var balance = _session.Catalog.Balance;
 
-            SectionTitle(body, "Cấu trúc vốn mồi");
-            Monoblock(body, "SeedCapital",
-                "Vốn tự có · " + balance.SeedCapitalMillionVnd + " triệu\n" +
-                "   Chỉ đủ thuê đất 1–2 năm và cọc thiết bị ban đầu.\n" +
-                "Hạn mức tín chấp · " + Million(balance.UnsecuredLoanCapCoins) + "  ·  " +
-                Percent(balance.UnsecuredMinRateBps) + "–" + Percent(balance.UnsecuredMaxRateBps) + "/năm\n" +
-                "   Cần UBND xã xác nhận dự án.\n" +
-                "Hạn mức thế chấp · " + Million(balance.SecuredLoanCapCoins) + "  ·  " +
-                Percent(balance.SecuredMinRateBps) + "–" + Percent(balance.SecuredMaxRateBps) + "/năm\n" +
-                "   70% định giá sổ đỏ 500tr, cần xong giấy an toàn thực phẩm.");
-
-            _loanStatus = Monoblock(body, "LoanStatus", "");
-
-            SectionTitle(body, "Bảng mô phỏng tín dụng");
-            var form = Card(body, "LoanForm");
-
-            var kindRow = UiFactory.Node(form.transform, "KindRow");
-            var kindLayout = UiFactory.HorizontalList(kindRow, 8f, new RectOffset(0, 0, 0, 0));
-            kindLayout.childForceExpandWidth = true;
-            var kindSize = kindRow.AddComponent<LayoutElement>();
-            kindSize.minHeight = UiFactory.ButtonHeight;
-            foreach (var offer in Finance.Offers(balance))
-            {
-                var kind = offer.Kind;
-                UiFactory.TextButton(kindRow.transform, "Kind_" + kind, offer.DisplayName,
-                                     delegate { SelectLoanKind(kind); }, UiFactory.ButtonStyle.Quiet);
-            }
-
-            _loanAmountLabel = StepperRow(form.transform, "Amount", "Số tiền vay (L₀)",
-                                          delegate(int step) { StepLoanAmount(step); }, 100);
-            _loanTermLabel = StepperRow(form.transform, "Term", "Thời hạn (n)",
-                                        delegate(int step) { StepLoanTerm(step); }, 3);
-            _loanTerms = Monoblock(form.transform, "Terms", "");
-
-            _borrowButton = UiFactory.TextButton(form.transform, "Borrow", "Nhận tiền vay",
-                                                 delegate
-            {
-                Run(_session.TakeLoan(_loanKind, _loanAmountCoins, _loanTermMonths));
-            });
-
-            _repayButton = UiFactory.TextButton(body, "Repay", "Trả hết nợ", delegate
+            UiKit.Section(body, "Tình trạng khoản vay");
+            var status = UiKit.Card(body, "LoanStatus");
+            _loanStateBadge = UiKit.Badge(status, "LoanState", "Chưa vay", UiTone.Neutral);
+            _loanDebtRow = UiKit.StatRow(status, "Debt", "Dư nợ còn lại");
+            _loanRateRow = UiKit.StatRow(status, "Rate", "Lãi suất");
+            _loanTermRow = UiKit.StatRow(status, "Term", "Đã trả");
+            _loanDueRow = UiKit.StatRow(status, "Due", "Nghĩa vụ kỳ tới");
+            _loanOverdueRow = UiKit.StatRow(status, "Overdue", "Nợ quá hạn");
+            _loanHint = UiKit.Note(status, "Hint", "");
+            _repayButton = UiFactory.TextButton(status, "Repay", "Trả hết nợ", delegate
             {
                 Run(_session.RepayLoan(Finance.PayoffAmount(_session.State.Loan)));
             });
 
-            SectionTitle(body, "Dòng tiền và dư nợ 12 kỳ");
-            _loanProjection = Monoblock(body, "Projection", "");
-            _cashFlowChart = Monoblock(body, "CashFlow", "");
-            Paragraph(body, "GameOver",
-                "Nếu " + balance.LoanSealShortfalls + " kỳ liền không trả đủ nghĩa vụ, ngân hàng siết " +
-                "nợ và niêm phong nương chè: cả vườn lẫn xưởng dừng cho tới khi trả hết.");
+            UiKit.Section(body, "Cấu trúc vốn mồi");
+            var seed = UiKit.Card(body, "SeedCapital");
+            UiKit.StatRow(seed, "Own", "Vốn tự có", balance.SeedCapitalMillionVnd + " triệu");
+            UiKit.StatRow(seed, "Unsecured", "Hạn mức tín chấp",
+                Million(balance.UnsecuredLoanCapCoins) + " · " +
+                Percent(balance.UnsecuredMinRateBps) + "–" + Percent(balance.UnsecuredMaxRateBps) + "/năm");
+            UiKit.StatRow(seed, "Secured", "Hạn mức thế chấp",
+                Million(balance.SecuredLoanCapCoins) + " · " +
+                Percent(balance.SecuredMinRateBps) + "–" + Percent(balance.SecuredMaxRateBps) + "/năm");
+            UiKit.Callout(seed, "SeedNote",
+                "Vốn tự có chỉ đủ thuê đất 1–2 năm và cọc thiết bị ban đầu. Vay tín chấp cần UBND " +
+                "xã xác nhận dự án; vay thế chấp lấy 70% định giá sổ đỏ và cần xong giấy an toàn " +
+                "thực phẩm.");
+
+            UiKit.Section(body, "Bảng mô phỏng tín dụng");
+            var form = UiKit.Card(body, "LoanForm");
+
+            var kindRow = ButtonRow(form, "KindRow");
+            _loanKindButtons.Clear();
+            foreach (var offer in Finance.Offers(balance))
+            {
+                var kind = offer.Kind;
+                _loanKindButtons.Add(UiFactory.TextButton(kindRow.transform, "Kind_" + kind,
+                    offer.DisplayName, delegate { SelectLoanKind(kind); }, UiFactory.ButtonStyle.Quiet));
+            }
+
+            _loanAmountLabel = StepperRow(form, "Amount", "Số tiền vay (L₀)",
+                                          delegate(int step) { StepLoanAmount(step); }, 100);
+            _loanTermLabel = StepperRow(form, "Term", "Thời hạn (n)",
+                                        delegate(int step) { StepLoanTerm(step); }, 3);
+
+            _quoteRateRow = UiKit.StatRow(form, "QuoteRate", "Lãi suất áp dụng");
+            _quotePrincipalRow = UiKit.StatRow(form, "QuotePrincipal", "Trả gốc mỗi kỳ (L₀/n)");
+            _quoteInterestRow = UiKit.StatRow(form, "QuoteInterest", "Lãi kỳ đầu");
+            _quotePmtRow = UiKit.StatRow(form, "QuotePmt", "Tổng phải trả kỳ đầu (PMT₁)");
+            _borrowButton = UiFactory.TextButton(form, "Borrow", "Nhận tiền vay", delegate
+            {
+                Run(_session.TakeLoan(_loanKind, _loanAmountCoins, _loanTermMonths));
+            });
+            UiKit.Callout(form, "BorrowNote",
+                "Vay dài hơn thì lãi suất cao hơn. Tiền vay không tính là doanh thu — nó đổi một " +
+                "cục tiền bây giờ lấy một chuỗi nghĩa vụ về sau.");
+
+            UiKit.Section(body, "Dòng tiền theo kỳ");
+            var chart = UiKit.Card(body, "CashFlow");
+            _cashEmptyNote = UiKit.Note(chart, "Empty", "");
+            _cashRows.Clear();
+            for (int i = 0; i < balance.CashHistoryCycles; i++)
+            {
+                var gauge = UiKit.Meter(chart, "Cycle" + i, "");
+                gauge.Node.SetActive(false);
+                _cashRows.Add(gauge);
+            }
+            UiKit.Callout(chart, "GameOverNote",
+                "Nếu " + balance.LoanSealShortfalls + " kỳ liền không trả đủ nghĩa vụ, ngân hàng " +
+                "niêm phong nương chè: xưởng, quầy trà và robot dừng cho tới khi trả hết nợ. " +
+                "Vẫn hái và bán lá tươi được — đó là đường về, và là đường chậm nhất.",
+                UiTone.Warn);
         }
 
         void SelectLoanKind(LoanKind kind)
@@ -263,167 +299,181 @@ namespace VuonNho.Views
             var offer = Finance.Offer(balance, _loanKind);
             int rateBps = Finance.RateBpsFor(offer, _loanTermMonths);
 
+            for (int i = 0; i < _loanKindButtons.Count; i++)
+                UiFactory.SetButtonState(_loanKindButtons[i],
+                    (LoanKind)(i + 1) == _loanKind ? UiFactory.ButtonState.Selected
+                                                   : UiFactory.ButtonState.Normal);
+
             _loanAmountLabel.text = Coins(_loanAmountCoins);
             _loanTermLabel.text = _loanTermMonths + " tháng";
 
             long principalDue = Finance.PrincipalDue(_loanAmountCoins, _loanTermMonths, 0);
             long interestDue = Finance.InterestDue(_loanAmountCoins, rateBps);
-            _loanTerms.text =
-                offer.DisplayName + " · lãi " + Percent(rateBps) + "/năm · " + Million(_loanAmountCoins) + "\n" +
-                "Trả gốc mỗi kỳ (L₀/n) · " + Coins(principalDue) + "\n" +
-                "Lãi kỳ đầu · " + Coins(interestDue) + "\n" +
-                "Tổng phải trả kỳ đầu (PMT₁) · " + Coins(principalDue + interestDue) + "\n" +
-                offer.Requirement;
+            _quoteRateRow.Set(Percent(rateBps) + "/năm");
+            _quotePrincipalRow.Set(Coins(principalDue));
+            _quoteInterestRow.Set(Coins(interestDue));
+            _quotePmtRow.Set(Coins(principalDue + interestDue), UiTone.Accent);
 
             string borrowReason;
             bool canBorrow = _session.CanBorrow(_loanKind, _loanAmountCoins, _loanTermMonths, out borrowReason);
             UiFactory.SetInteractable(_borrowButton, canBorrow);
 
-            if (loan.Active || loan.OverdueCoins > 0)
+            bool owing = loan.Active || loan.OverdueCoins > 0;
+            _loanDebtRow.SetVisible(owing);
+            _loanRateRow.SetVisible(owing);
+            _loanTermRow.SetVisible(owing);
+            _loanDueRow.SetVisible(owing);
+            _loanOverdueRow.SetVisible(owing && loan.OverdueCoins > 0);
+            _repayButton.gameObject.SetActive(owing);
+
+            if (!owing)
             {
-                _loanStatus.text =
-                    "Đang vay · " + Coins(loan.RemainingPrincipalCoins) + " dư nợ\n" +
-                    "Lãi " + Percent(loan.AnnualRateBps) + "/năm · đã trả " + loan.MonthsPaid + "/" +
-                    loan.TermMonths + " kỳ\n" +
-                    "Nghĩa vụ kỳ tới · " + Coins(Finance.InstallmentDue(loan)) +
-                    (loan.OverdueCoins > 0 ? "\nNợ quá hạn · " + Coins(loan.OverdueCoins) : "") +
-                    (loan.ConsecutiveShortfalls > 0
-                        ? "\nĐã thiếu " + loan.ConsecutiveShortfalls + "/" + balance.LoanSealShortfalls +
-                          " kỳ liền"
-                        : "") +
-                    (loan.Sealed ? "\nNGÂN HÀNG ĐÃ NIÊM PHONG NƯƠNG CHÈ" : "");
-                _loanStatus.color = loan.Sealed || loan.ConsecutiveShortfalls > 0
-                    ? GardenPalette.StateWarn : GardenPalette.TextPrimary;
-                _repayButton.gameObject.SetActive(true);
-                long payoff = Finance.PayoffAmount(loan);
-                UiFactory.SetButtonCaption(_repayButton, "Trả hết nợ · " + Coins(payoff));
-                UiFactory.SetInteractable(_repayButton, state.Coins >= payoff);
-            }
-            else
-            {
-                _loanStatus.text = canBorrow
-                    ? "Chưa vay đồng nào. Vốn tự có chỉ đủ mở đầu."
+                UiKit.SetBadge(_loanStateBadge, "Chưa vay", UiTone.Neutral);
+                _loanHint.text = canBorrow
+                    ? "Vốn tự có chỉ đủ mở đầu. Vay là cách duy nhất dựng xong dây chuyền sớm."
                     : borrowReason;
-                _loanStatus.color = GardenPalette.TextMuted;
-                _repayButton.gameObject.SetActive(false);
+                return;
             }
 
-            // Du bao dung doanh thu va chi phi cua ky vua chot, khong dung mot con so uoc: nguoi
-            // choi quyet dinh vay dua tren cai ho dang lam duoc, khong dua tren mot vi du.
-            long revenue = 0, expense = 0;
-            if (state.CashHistory.Count > 0)
-            {
-                var last = state.CashHistory[state.CashHistory.Count - 1];
-                revenue = last.RevenueCoins;
-                expense = last.ExpenseCoins;
-            }
-            var rows = Finance.Project(_loanAmountCoins, rateBps, _loanTermMonths, revenue, expense, 6);
-            var projection = new System.Text.StringBuilder();
-            projection.Append("Dự báo với doanh thu ").Append(Coins(revenue))
-                      .Append(" và chi phí ").Append(Coins(expense)).Append(" mỗi kỳ:\n");
-            long running = 0;
-            for (int i = 0; i < rows.Count; i++)
-            {
-                running += rows[i].NetCashCoins;
-                projection.Append("Kỳ ").Append(rows[i].Month)
-                          .Append(" · trả ").Append(Coins(rows[i].DebtServiceCoins))
-                          .Append(" · ròng ").Append(Coins(rows[i].NetCashCoins))
-                          .Append(" · lũy kế ").Append(Coins(running))
-                          .Append(" · dư nợ ").Append(Coins(rows[i].DebtRemainingCoins))
-                          .Append('\n');
-            }
-            _loanProjection.text = projection.ToString();
-            _cashFlowChart.text = BuildCashFlowChart(state);
+            UiTone tone = loan.Sealed ? UiTone.Bad
+                : loan.ConsecutiveShortfalls > 0 ? UiTone.Warn : UiTone.Good;
+            UiKit.SetBadge(_loanStateBadge,
+                loan.Sealed ? "Đang bị niêm phong"
+                    : loan.ConsecutiveShortfalls > 0
+                        ? "Thiếu " + loan.ConsecutiveShortfalls + "/" + balance.LoanSealShortfalls + " kỳ"
+                        : "Đang trả đúng hạn",
+                tone);
+
+            _loanDebtRow.Set(Coins(loan.RemainingPrincipalCoins), tone);
+            _loanRateRow.Set(Percent(loan.AnnualRateBps) + "/năm");
+            _loanTermRow.Set(loan.MonthsPaid + " / " + loan.TermMonths + " kỳ");
+            _loanDueRow.Set(Coins(Finance.InstallmentDue(loan)));
+            _loanOverdueRow.Set(Coins(loan.OverdueCoins), UiTone.Bad);
+
+            long payoff = Finance.PayoffAmount(loan);
+            UiFactory.SetButtonCaption(_repayButton, "Trả hết nợ · " + Coins(payoff));
+            UiFactory.SetInteractable(_repayButton, state.Coins >= payoff);
+            _loanHint.text = loan.Sealed
+                ? "Xưởng, quầy trà và robot đang dừng. Hái tay và bán lá tươi để gom đủ " +
+                  Coins(payoff) + "."
+                : "Kỳ tới chốt sau " +
+                  Mathf.CeilToInt(Math.Max(0, state.NextCycleCloseAtMs - state.SimulationTimeMs) / 1000f) +
+                  " giây.";
+
+            RefreshCashFlow(state);
         }
 
         /// <summary>
-        /// Do thi dong tien bang chinh dong chu.
+        /// Do thi dong tien: moi ky mot thanh, do dai theo do lon so voi ky manh nhat.
         ///
-        /// Mot do thi ve bang Image se can mot lop ve rieng va mot lan bo tri lai moi ky; mot day
-        /// khoi vuong doc ngay ra duoc chieu cao tuong doi va ai am ai duong, ma no la mot Text.
+        /// Truoc day cho nay la mot day ky tu khoi ve bang chinh dong chu. Doc duoc, nhung khong
+        /// so sanh duoc: mat khong do duoc do dai cua nhung khoi chu nam tren nhung dong khac
+        /// nhau. Mot thanh that tren mot cai rãnh that thi so sanh duoc ngay.
         /// </summary>
-        string BuildCashFlowChart(GameState state)
+        void RefreshCashFlow(GameState state)
         {
-            if (state.CashHistory.Count == 0)
-                return "Chưa chốt kỳ nào. Kỳ đầu dài " +
-                       (Finance.CycleMs(_session.Catalog.Balance) / 1000) + " giây.";
+            int count = state.CashHistory.Count;
+            _cashEmptyNote.gameObject.SetActive(count == 0);
+            if (count == 0)
+            {
+                _cashEmptyNote.text = "Chưa chốt kỳ nào. Một kỳ dài " +
+                                      (Finance.CycleMs(_session.Catalog.Balance) / 1000) + " giây.";
+            }
 
             long peak = 1;
-            for (int i = 0; i < state.CashHistory.Count; i++)
+            for (int i = 0; i < count; i++)
             {
                 long magnitude = Math.Abs(state.CashHistory[i].NetCashCoins);
                 if (magnitude > peak) peak = magnitude;
             }
 
-            var text = new System.Text.StringBuilder();
-            for (int i = 0; i < state.CashHistory.Count; i++)
+            for (int i = 0; i < _cashRows.Count; i++)
             {
-                var row = state.CashHistory[i];
-                int bars = (int)(Math.Abs(row.NetCashCoins) * 12 / peak);
-                text.Append("Kỳ ").Append(row.Month.ToString("D2")).Append(' ');
-                text.Append(row.NetCashCoins < 0 ? '−' : '+');
-                for (int b = 0; b < bars; b++) text.Append('▌');
-                text.Append(' ').Append(Coins(row.NetCashCoins));
-                if (row.Shortfall) text.Append("  thiếu nợ");
-                text.Append('\n');
+                var gauge = _cashRows[i];
+                // Ky moi nhat len tren cung: no la thu nguoi choi hoi den truoc.
+                int source = count - 1 - i;
+                if (source < 0)
+                {
+                    gauge.Node.SetActive(false);
+                    continue;
+                }
+                gauge.Node.SetActive(true);
+                var record = state.CashHistory[source];
+                bool negative = record.NetCashCoins < 0;
+                gauge.Caption.text = "Kỳ " + record.Month + " · nợ " + Coins(record.DebtServiceCoins);
+                gauge.Value.text = (negative ? "−" : "+") + Coins(Math.Abs(record.NetCashCoins));
+                gauge.Value.color = UiTokens.TextOf(negative ? UiTone.Bad : UiTone.Good);
+                gauge.SetBand(0f, 0f);
+                gauge.Set(Math.Abs(record.NetCashCoins) / (float)peak,
+                          negative ? UiTone.Bad : UiTone.Good);
             }
-            return text.ToString();
         }
 
         // ---------------------------------------------------------------- 2. nong hoc
 
         void BuildAgronomyRows(Transform body)
         {
-            SectionTitle(body, "Bốn mùa và chỉ số sinh hoá");
-            _seasonNow = Monoblock(body, "SeasonNow", "");
+            UiKit.Section(body, "Mùa đang chạy");
+            var now = UiKit.Card(body, "SeasonNow");
+            _seasonBadge = UiKit.Badge(now, "Season", "", UiTone.Neutral);
+            _seasonFlavourRow = UiKit.StatRow(now, "Flavour", "Hương vị đặc trưng");
+            _seasonYieldRow = UiKit.StatRow(now, "Yield", "Năng suất chè");
+            _seasonPriceRow = UiKit.StatRow(now, "Price", "Giá thương phẩm");
+            _theanineGauge = UiKit.Meter(now, "Theanine", "Theanine · vị ngọt êm");
+            _polyphenolGauge = UiKit.Meter(now, "Polyphenol", "Polyphenol · vị chát đượm");
+            _leafhopperBadge = UiKit.Badge(now, "Leafhopper", "", UiTone.Good);
 
-            var seasons = new System.Text.StringBuilder();
+            UiKit.Section(body, "Bốn mùa");
             foreach (var profile in Agronomy.AllProfiles())
             {
-                seasons.Append(profile.DisplayName).Append("  ·  ")
-                       .Append(profile.MinTempC).Append('–').Append(profile.MaxTempC).Append("°C\n")
-                       .Append("   ").Append(profile.Flavour).Append('\n')
-                       .Append("   Theanine ").Append(profile.TheaninePermille / 10f).Append("%")
-                       .Append("  ·  Polyphenol ").Append(profile.PolyphenolPermille / 10f).Append("%\n")
-                       .Append("   Năng suất ").Append(profile.YieldPercent).Append("%")
-                       .Append("  ·  Giá ").Append(profile.PricePercent).Append("%\n")
-                       .Append("   ").Append(profile.Work).Append('\n');
+                var card = UiKit.Card(body, "Season_" + profile.Season);
+                UiFactory.Label(card, "Name",
+                    profile.DisplayName + "  ·  " + profile.MinTempC + "–" + profile.MaxTempC + "°C",
+                    UiTokens.TextRowTitle, TextAnchor.MiddleLeft, GardenPalette.TextPrimary, true);
+                UiKit.StatRow(card, "Yield", "Năng suất", profile.YieldPercent + "%");
+                UiKit.StatRow(card, "Price", "Giá", profile.PricePercent + "%");
+                UiKit.StatRow(card, "Theanine", "Theanine", (profile.TheaninePermille / 10f) + "%");
+                UiKit.StatRow(card, "Polyphenol", "Polyphenol", (profile.PolyphenolPermille / 10f) + "%");
+                UiKit.Callout(card, "Work", profile.Work,
+                              profile.Dormant ? UiTone.Warn : UiTone.Neutral);
             }
-            Monoblock(body, "SeasonTable", seasons.ToString());
-            Paragraph(body, "Biochem",
+            UiKit.Callout(body, "Biochem",
                 "Theanine là vị ngọt êm, polyphenol là vị chát đượm. Hai chỉ số biến thiên ngược " +
                 "nhau theo nhiệt độ, nên mùa là một nút xoay giữa nhiều-và-rẻ với ít-và-đắt.");
 
-            SectionTitle(body, "Phân hạng tiêu chuẩn thu hái");
-            var grades = new System.Text.StringBuilder();
+            UiKit.Section(body, "Phân hạng thu hái");
             foreach (var grade in Agronomy.Grades())
             {
                 var crop = _session.Catalog.Crop(grade.CropId);
                 var recipe = _session.Catalog.RecipeForCrop(grade.CropId);
-                grades.Append(grade.PluckName).Append("  ·  ").Append(grade.ProductName).Append('\n')
-                      .Append("   Hái ").Append(grade.FreshGramsPerDay / 1000f).Append(" kg búp tươi/ngày")
-                      .Append("  ·  ").Append(grade.FreshPerDryPermille / 1000f)
-                      .Append(" kg tươi cho 1 kg khô\n")
-                      .Append("   ").Append(grade.PricePerDryKiloThousandVnd).Append("k/kg khô  ·  ")
-                      .Append(grade.Segment).Append('\n')
-                      .Append("   Trong vườn: ").Append(crop.Yield).Append(" búp một ô, mỗi ")
-                      .Append(recipe.PackedInputCount).Append(" búp đóng gói bán ")
-                      .Append(Coins(recipe.PackedOutputCoins)).Append('\n');
+                var card = UiKit.Card(body, "Grade_" + grade.Grade);
+                UiFactory.Label(card, "Name", grade.PluckName + "  ·  " + grade.ProductName,
+                    UiTokens.TextRowTitle, TextAnchor.MiddleLeft, GardenPalette.TextPrimary, true);
+                UiKit.StatRow(card, "Fresh", "Hái mỗi ngày",
+                              (grade.FreshGramsPerDay / 1000f) + " kg búp tươi");
+                UiKit.StatRow(card, "Ratio", "Tươi cho một kg khô",
+                              (grade.FreshPerDryPermille / 1000f) + " kg");
+                UiKit.StatRow(card, "Price", "Giá một kg khô",
+                              grade.PricePerDryKiloThousandVnd + "k · " + grade.Segment);
+                UiKit.StatRow(card, "InGame", "Trong vườn",
+                              crop.Yield + " búp một ô", UiTone.Accent);
+                UiKit.StatRow(card, "Packed", "Mỗi " + recipe.PackedInputCount + " búp đóng gói bán",
+                              Coins(recipe.PackedOutputCoins), UiTone.Accent);
             }
-            Monoblock(body, "GradeTable", grades.ToString());
-            Paragraph(body, "GradeNote",
-                "Doanh thu một vụ của bốn phân hạng gần bằng nhau. Cái khác là số lượng: búp xô cho " +
-                "gấp mười lăm lần số hàng phải chạy qua dây chuyền để kiếm cùng số tiền. Dây chuyền " +
-                "đang là giới hạn thì hái non hơn là thắng.");
+            UiKit.Callout(body, "GradeNote",
+                "Doanh thu một vụ của bốn phân hạng gần bằng nhau. Cái khác là số lượng: búp xô " +
+                "cho gấp mười lăm lần số hàng phải chạy qua dây chuyền để kiếm cùng số tiền. Dây " +
+                "chuyền đang là giới hạn thì hái non hơn là thắng.");
 
-            SectionTitle(body, "Cơ chế rầy xanh");
-            Monoblock(body, "Leafhopper",
-                "Rầy xanh (Jacobiasca formosana) chích hút nhẹ vào cuối xuân đầu hè. Cây chè giải " +
-                "phóng linalool và geraniol để gọi thiên địch, và chính hai chất đó làm nên Đông " +
-                "Phương Mỹ Nhân — giá gấp bốn đến sáu lần.\n\n" +
-                "Ô bị rầy xanh thu về \"lá rầy xanh\" chứ không phải búp chè thường, và vụ đó không " +
-                "bị sâu bệnh. Muốn giữ được giá thì phải chế biến theo đường Đông Phương Mỹ Nhân " +
-                "với mức oxy hoá 60–75%; sao theo đường trà xanh là mất gần hết phần chênh.");
+            UiKit.Section(body, "Cơ chế rầy xanh");
+            UiKit.Callout(body, "Leafhopper",
+                "Rầy xanh chích hút nhẹ vào cuối xuân đầu hè. Cây chè giải phóng linalool và " +
+                "geraniol để gọi thiên địch, và chính hai chất đó làm nên Đông Phương Mỹ Nhân — " +
+                "giá gấp bốn đến sáu lần.\n\n" +
+                "Ô bị rầy xanh thu về \"lá rầy xanh\" chứ không phải búp chè thường, và vụ đó " +
+                "không bị sâu bệnh. Muốn giữ được giá thì phải chế biến theo đường Đông Phương " +
+                "Mỹ Nhân với mức oxy hoá 60–75%.",
+                UiTone.Good);
         }
 
         void RefreshAgronomyPanel(GameState state)
@@ -435,26 +485,35 @@ namespace VuonNho.Views
             for (int i = 0; i < state.Plots.Count; i++)
                 if (state.Plots[i].Leafhopper) leafhopperPlots++;
 
-            _seasonNow.text =
-                "Đang là " + profile.DisplayName + "  ·  " + profile.Flavour + "\n" +
-                "Năng suất chè " + profile.YieldPercent + "%  ·  giá thương phẩm " +
-                profile.PricePercent + "%\n" +
-                (profile.Leafhopper ? "Mùa rầy xanh: " + balance.LeafhopperChancePercent +
-                                      "% số vụ chè được chích hút.\n" : "") +
-                (leafhopperPlots > 0 ? "Đang có " + leafhopperPlots + " ô mang lá rầy xanh." : "");
-            _seasonNow.color = leafhopperPlots > 0 ? GardenPalette.StateOk : GardenPalette.TextPrimary;
+            UiKit.SetBadge(_seasonBadge, profile.DisplayName,
+                           profile.Dormant ? UiTone.Warn : UiTone.Accent);
+            _seasonFlavourRow.Set(profile.Flavour);
+            _seasonYieldRow.Set(profile.YieldPercent + "%",
+                profile.YieldPercent >= 100 ? UiTone.Good : UiTone.Warn);
+            _seasonPriceRow.Set(profile.PricePercent + "%",
+                profile.PricePercent >= 100 ? UiTone.Good : UiTone.Warn);
+
+            // Thang do lay theo dinh cua ca bon mua, khong theo 100%: hai chi so nay khong bao gio
+            // toi 100‰, ap thang 0–100 thi ca bon mua deu ra mot vach ti hon nhu nhau.
+            _theanineGauge.Value.text = (profile.TheaninePermille / 10f) + "%";
+            _theanineGauge.Set(profile.TheaninePermille / 30f, UiTone.Good);
+            _polyphenolGauge.Value.text = (profile.PolyphenolPermille / 10f) + "%";
+            _polyphenolGauge.Set(profile.PolyphenolPermille / 360f, UiTone.Warn);
+
+            bool anyLeafhopper = leafhopperPlots > 0;
+            _leafhopperBadge.transform.parent.gameObject.SetActive(anyLeafhopper || profile.Leafhopper);
+            UiKit.SetBadge(_leafhopperBadge,
+                anyLeafhopper ? "Đang có " + leafhopperPlots + " ô lá rầy xanh"
+                              : "Mùa rầy xanh · " + balance.LeafhopperChancePercent + "% số vụ chè",
+                anyLeafhopper ? UiTone.Good : UiTone.Neutral);
         }
 
         // ---------------------------------------------------------------- 3. can lua
 
         void BuildCraftRows(Transform body)
         {
-            SectionTitle(body, "Đường chế biến");
-            var routeRow = UiFactory.Node(body.gameObject.transform, "RouteRow");
-            var routeLayout = UiFactory.HorizontalList(routeRow, 6f, new RectOffset(0, 0, 0, 0));
-            routeLayout.childForceExpandWidth = true;
-            var routeSize = routeRow.AddComponent<LayoutElement>();
-            routeSize.minHeight = UiFactory.ButtonHeight;
+            UiKit.Section(body, "Đường chế biến");
+            var routeRow = ButtonRow(body, "RouteRow");
             _craftRouteButtons.Clear();
             foreach (TeaRoute route in Enum.GetValues(typeof(TeaRoute)))
             {
@@ -463,33 +522,38 @@ namespace VuonNho.Views
                     Crafting.RouteName(route), delegate { Run(_session.SetCraftRoute(captured)); },
                     UiFactory.ButtonStyle.Quiet));
             }
-            var routeNote = Paragraph(body, "RouteNote", "");
-            routeNote.name = "RouteSummary";
+            _craftRouteNote = UiKit.Note(body, "RouteSummary", "");
 
-            SectionTitle(body, "Thông số căn lửa");
-            var dials = Card(body, "Dials");
-            _craftValueLabels.Clear();
-            _craftWindowLabels.Clear();
+            UiKit.Section(body, "Thông số căn lửa");
+            _craftGauges.Clear();
             var windows = Crafting.Windows(TeaRoute.Green);
             for (int i = 0; i < windows.Count; i++)
             {
                 int index = i;
-                _craftValueLabels.Add(StepperRow(dials.transform, "Dial" + i, ShortDialName(index),
-                    delegate(int step) { StepCraft(index, step); }, CraftStepFor(index)));
-                _craftWindowLabels.Add(Paragraph(dials.transform, "Window" + i, ""));
+                var card = UiKit.Card(body, "Dial" + i);
+                StepperButtons(card, "Step", ShortDialName(index),
+                               delegate(int step) { StepCraft(index, step); }, CraftStepFor(index));
+                _craftGauges.Add(UiKit.Meter(card, "Gauge" + i, ""));
             }
+            UiKit.Callout(body, "BandNote",
+                "Mỗi thanh trải hết khoảng chấp nhận được, và vệt sáng trên nó là khoảng chuẩn. " +
+                "Nằm trong vệt sáng cả bốn thông số thì mẻ đạt thượng hạng; lệch ra mà vẫn trên " +
+                "thanh thì bán được, chỉ không được giá cao nhất; chạm hai đầu thanh là mẻ lỗi.");
 
-            SectionTitle(body, "Trạng thái mẻ trà thành phẩm");
-            var verdict = Card(body, "Verdict");
-            _craftVerdictTitle = UiFactory.Label(verdict.transform, "VerdictTitle", "",
-                                                 UiFactory.FontSizeRowTitle, TextAnchor.MiddleLeft,
-                                                 GardenPalette.TextPrimary);
-            _craftVerdictBody = Monoblock(verdict.transform, "VerdictBody", "");
+            UiKit.Section(body, "Mẻ trà thành phẩm");
+            var verdict = UiKit.Card(body, "Verdict");
+            _craftVerdictBadge = UiKit.Badge(verdict, "Quality", "", UiTone.Neutral);
+            _craftProductName = UiFactory.Label(verdict, "Product", "", UiTokens.TextRowTitle,
+                TextAnchor.MiddleLeft, GardenPalette.TextPrimary, true);
+            _craftLiquorRow = UiKit.StatRow(verdict, "Liquor", "Sắc nước");
+            _craftAromaRow = UiKit.StatRow(verdict, "Aroma", "Hương vị");
+            _craftStorageRow = UiKit.StatRow(verdict, "Storage", "Rủi ro bảo quản");
+            _craftPriceRow = UiKit.StatRow(verdict, "Price", "Hệ số giá");
+            _craftNote = UiKit.Note(verdict, "Note", "");
 
-            Paragraph(body, "CraftNote",
-                "Khoảng chuẩn hẹp còn khoảng chấp nhận được rộng: không đọc sổ tay vẫn làm ra trà " +
-                "bán được, chỉ là không bao giờ đạt giá cao nhất. Hệ số này nhân với hệ số mùa vụ " +
-                "và hệ số kênh bán, và áp lên tiền thật của mỗi mẻ ở quầy trà.");
+            UiKit.Callout(body, "CraftNote",
+                "Hệ số này nhân với hệ số mùa vụ và hệ số kênh bán, rồi áp lên tiền thật của mỗi " +
+                "mẻ ở quầy trà.");
         }
 
         /// <summary>Buoc nhay cua tung nut. Nhiet do nhay 5 do, con lai nhay 1.</summary>
@@ -498,13 +562,7 @@ namespace VuonNho.Views
             return windowIndex == 0 ? 5 : 1;
         }
 
-        /// <summary>
-        /// Ten ngan cua tung nut, cho cot nhan cua hang stepper.
-        ///
-        /// <see cref="CraftWindow.DisplayName"/> la ten day du va no gay ba dong trong cot rong
-        /// 100 px con lai sau hai cai nut va o gia tri. Ten day du van hien, o dong "chuan …"
-        /// ngay ben duoi — cho do rong ca hang nen khong bao gio gay.
-        /// </summary>
+        /// <summary>Ten ngan cua tung nut, cho cot nhan cua hang stepper.</summary>
         static string ShortDialName(int windowIndex)
         {
             switch (windowIndex)
@@ -532,23 +590,28 @@ namespace VuonNho.Views
                 UiFactory.SetButtonState(_craftRouteButtons[i],
                     (TeaRoute)i == settings.Route ? UiFactory.ButtonState.Selected
                                                   : UiFactory.ButtonState.Normal);
+            _craftRouteNote.text = Crafting.RouteSummary(settings.Route);
 
-            var summary = transform.Find("CraftPanel/Viewport/Body/RouteSummary");
-            if (summary != null)
+            for (int i = 0; i < _craftGauges.Count && i < windows.Count; i++)
             {
-                var text = summary.GetComponent<Text>();
-                if (text != null) text.text = Crafting.RouteSummary(settings.Route);
-            }
+                var window = windows[i];
+                var gauge = _craftGauges[i];
+                int compare = Crafting.CompareToIdeal(window, values[i]);
 
-            for (int i = 0; i < _craftValueLabels.Count && i < windows.Count; i++)
-            {
-                _craftValueLabels[i].text = values[i] + windows[i].Unit;
-                int compare = Crafting.CompareToIdeal(windows[i], values[i]);
-                _craftValueLabels[i].color = compare == 0 ? GardenPalette.StateOk
-                                                          : GardenPalette.StateWarn;
-                _craftWindowLabels[i].text = windows[i].DisplayName + " · chuẩn " +
-                                             windows[i].IdealLow + "–" + windows[i].IdealHigh +
-                                             windows[i].Unit;
+                // Truc lay **khoang chap nhan duoc**, khong lay ca dai chinh duoc. Nhiet do chinh
+                // duoc tu 80 den 320 do, ma khoang chuan cua tra xanh chi la 250–260 — ve tren
+                // truc 240 do thi vet sang do rong bon phan tram, tuc mot soi chi khong nhin ra.
+                // Tren truc 235–275 thi no chiem mot phan tu thanh, va no tro thanh thu doc duoc.
+                float low = window.AcceptableLow;
+                float high = window.AcceptableHigh;
+                float span = Mathf.Max(1f, high - low);
+
+                // Hang nut ngay tren da mang ten nut roi, nen o day chi con khoang chuan.
+                gauge.Caption.text = "chuẩn " + window.IdealLow + "–" + window.IdealHigh + window.Unit;
+                gauge.Value.text = values[i] + window.Unit;
+                gauge.Value.color = UiTokens.TextOf(compare == 0 ? UiTone.Good : UiTone.Warn);
+                gauge.SetBand((window.IdealLow - low) / span, (window.IdealHigh - low) / span);
+                gauge.Set((values[i] - low) / span, compare == 0 ? UiTone.Good : UiTone.Warn);
             }
 
             bool leafhopperLeaves = HasLeafhopperLeaves(state);
@@ -558,17 +621,16 @@ namespace VuonNho.Views
                                             balance.FlawedBatchPricePercent);
             int price = Crafting.BatchPricePercent(verdict, leafhopperLeaves,
                                                    balance.OrientalBeautyFallbackPercent);
-            _craftVerdictTitle.text = verdict.Title;
-            _craftVerdictTitle.color = verdict.Quality == BatchQuality.Flawed ? GardenPalette.StateWarn
-                : verdict.Quality == BatchQuality.Premium ? GardenPalette.StateOk
-                : GardenPalette.TextPrimary;
-            _craftVerdictBody.text =
-                verdict.ProductName + "\n" +
-                "Sắc nước · " + verdict.Liquor + "\n" +
-                "Hương vị · " + verdict.Aroma + "\n" +
-                "Rủi ro bảo quản · " + verdict.StorageRisk + "\n" +
-                "Hệ số giá · " + price + "%\n" +
-                verdict.Note;
+            var tone = verdict.Quality == BatchQuality.Flawed ? UiTone.Bad
+                : verdict.Quality == BatchQuality.Premium ? UiTone.Good : UiTone.Neutral;
+
+            UiKit.SetBadge(_craftVerdictBadge, verdict.Title, tone);
+            _craftProductName.text = verdict.ProductName;
+            _craftLiquorRow.Set(verdict.Liquor);
+            _craftAromaRow.Set(verdict.Aroma);
+            _craftStorageRow.Set(verdict.StorageRisk);
+            _craftPriceRow.Set(price + "%", price >= 100 ? UiTone.Good : UiTone.Bad);
+            _craftNote.text = verdict.Note;
         }
 
         /// <summary>
@@ -598,67 +660,77 @@ namespace VuonNho.Views
         {
             var balance = _session.Catalog.Balance;
 
-            SectionTitle(body, "Hình thức kinh doanh");
-            _legalStatus = Monoblock(body, "LegalStatus", "");
+            UiKit.Section(body, "Tình trạng hồ sơ");
+            var status = UiKit.Card(body, "LegalStatus");
+            _suspendedBadge = UiKit.Badge(status, "Suspended", "", UiTone.Bad);
+            _entityRow = UiKit.StatRow(status, "Entity", "Hình thức kinh doanh");
+            _foodSafetyRow = UiKit.StatRow(status, "FoodSafety", "Giấy an toàn thực phẩm");
+            _gearRow = UiKit.StatRow(status, "Gear", "Đồ bảo hộ y tế");
+            _oneWayRow = UiKit.StatRow(status, "OneWay", "Dây chuyền một chiều");
+            _taxRow = UiKit.StatRow(status, "Tax", "Đã nộp thuế");
+            _fineRow = UiKit.StatRow(status, "Fine", "Đã bị phạt");
+            _inspectionRow = UiKit.StatRow(status, "Inspection", "Kỳ kiểm tra tới");
 
+            UiKit.Section(body, "Hình thức kinh doanh");
             foreach (var option in Compliance.Entities())
             {
                 var entity = option.Entity;
-                var card = Card(body, "Entity_" + entity);
-                UiFactory.Label(card.transform, "Name", option.DisplayName + "  ·  " + option.Stage,
-                                UiFactory.FontSizeRowTitle, TextAnchor.MiddleLeft, GardenPalette.TextPrimary);
-                Monoblock(card.transform, "Detail",
-                    "Đăng ký · " + option.Authority + " (" + option.MinDays + "–" + option.MaxDays + " ngày)\n" +
-                    "Nghĩa vụ thuế · " +
-                    (option.RevenueTaxBps > 0 ? "thuế khoán " + Percent(option.RevenueTaxBps) + " doanh thu"
-                                              : "TNDN " + Percent(option.ProfitTaxBps) + " lợi nhuận ròng") +
-                    (option.VatBps > 0 ? " + GTGT " + Percent(option.VatBps) + " (thu của người mua, khấu trừ)"
-                                       : "") + "\n" +
-                    (option.BookkeepingCoinsPerCycle > 0
-                        ? "Kế toán · " + Coins(option.BookkeepingCoinsPerCycle) + " mỗi kỳ\n" : "") +
-                    "Sổ sách · " + option.Bookkeeping + "\n" +
-                    "Được · " + option.Advantage + "\n" +
-                    "Mất · " + option.Drawback);
-                var button = UiFactory.TextButton(card.transform, "Register",
+                var card = UiKit.Card(body, "Entity_" + entity);
+                UiFactory.Label(card, "Name", option.DisplayName, UiTokens.TextRowTitle,
+                                TextAnchor.MiddleLeft, GardenPalette.TextPrimary, true);
+                UiKit.Badge(card, "Stage_" + entity, option.Stage, UiTone.Neutral);
+                UiKit.StatRow(card, "Where", "Đăng ký tại",
+                              option.Authority + " · " + option.MinDays + "–" + option.MaxDays + " ngày");
+                UiKit.StatRow(card, "Tax", "Nghĩa vụ thuế",
+                    option.RevenueTaxBps > 0
+                        ? "khoán " + Percent(option.RevenueTaxBps) + " doanh thu"
+                        : "TNDN " + Percent(option.ProfitTaxBps) + " lợi nhuận");
+                if (option.VatBps > 0)
+                    UiKit.StatRow(card, "Vat", "Hoá đơn GTGT",
+                                  Percent(option.VatBps) + " · thu của người mua, khấu trừ");
+                if (option.BookkeepingCoinsPerCycle > 0)
+                    UiKit.StatRow(card, "Books", "Chi phí kế toán",
+                                  Coins(option.BookkeepingCoinsPerCycle) + " mỗi kỳ");
+                UiKit.Callout(card, "Pro", option.Advantage, UiTone.Good);
+                UiKit.Callout(card, "Con", option.Drawback, UiTone.Warn);
+                var button = UiFactory.TextButton(card, "Register",
                     "Nộp hồ sơ · " + Coins(option.FeeCoins),
                     delegate { Run(_session.RegisterEntity(entity)); });
                 if (entity == BusinessEntity.Hkd) _hkdButton = button; else _tnhhButton = button;
             }
 
-            SectionTitle(body, "Giấy an toàn thực phẩm");
-            Paragraph(body, "FoodSafetyNote",
-                "Thông tư 38/2018/TT-BNNPTNT. Thẩm định " + balance.FoodSafetyMinDays + "–" +
-                balance.FoodSafetyMaxDays + " ngày in-game, nên phải nộp trước khi cần đến nó. " +
-                "Hoạt động khi chưa có giấy là bị đình chỉ.");
-            _foodSafetyButton = UiFactory.TextButton(body, "FoodSafety",
+            UiKit.Section(body, "Giấy an toàn thực phẩm");
+            var attp = UiKit.Card(body, "FoodSafetyCard");
+            UiKit.StatRow(attp, "Fee", "Lệ phí", Coins(balance.FoodSafetyFeeCoins));
+            UiKit.StatRow(attp, "Days", "Thẩm định",
+                          balance.FoodSafetyMinDays + "–" + balance.FoodSafetyMaxDays + " ngày in-game");
+            UiKit.Callout(attp, "Note",
+                "Thông tư 38/2018/TT-BNNPTNT. Phải nộp trước khi cần đến nó — hoạt động khi chưa " +
+                "có giấy là bị phạt kèm đình chỉ.", UiTone.Warn);
+            _foodSafetyButton = UiFactory.TextButton(attp, "FoodSafety",
                 "Xin giấy · " + Coins(balance.FoodSafetyFeeCoins),
                 delegate { Run(_session.ApplyFoodSafety()); });
 
-            SectionTitle(body, "Xưởng sơ chế một chiều");
-            var zones = new System.Text.StringBuilder();
+            UiKit.Section(body, "Xưởng sơ chế một chiều");
+            var zones = UiKit.Card(body, "Zones");
             foreach (var zone in Compliance.Zones())
-            {
-                zones.Append(zone.Order).Append(". ").Append(zone.DisplayName).Append('\n')
-                     .Append("   ").Append(zone.Detail).Append('\n');
-            }
-            Monoblock(body, "Zones", zones.ToString());
-            Paragraph(body, "ZoneNote",
+                UiKit.StatRow(zones, "Zone" + zone.Order, zone.Order + ". " + zone.DisplayName,
+                              zone.Detail);
+            UiKit.Callout(zones, "ZoneNote",
                 "Nguyên liệu và công nhân đi theo một chiều duy nhất để chống nhiễm chéo. Trong " +
                 "game: để hở một chặng giữa dây chuyền là nguyên liệu phải vòng ngược lại qua khu " +
                 "đã xử lý, và đó là vi phạm. Thiếu máy ở cuối dây chuyền chỉ là chưa xây xong.");
 
-            SectionTitle(body, "Chế tài xử phạt");
-            var fines = new System.Text.StringBuilder();
+            UiKit.Section(body, "Chế tài xử phạt");
+            var fines = UiKit.Card(body, "Fines");
             foreach (var violation in Compliance.Violations())
             {
-                fines.Append(violation.DisplayName).Append('\n')
-                     .Append("   Phạt ").Append(Million(violation.MinFineCoins)).Append('–')
-                     .Append(Million(violation.MaxFineCoins))
-                     .Append(violation.Suspends ? " kèm đình chỉ" : "").Append('\n')
-                     .Append("   ").Append(violation.Remedy).Append('\n');
+                UiKit.StatRow(fines, violation.Id, violation.DisplayName,
+                    Million(violation.MinFineCoins) + "–" + Million(violation.MaxFineCoins) +
+                    (violation.Suspends ? " + đình chỉ" : ""),
+                    violation.Suspends ? UiTone.Bad : UiTone.Warn);
+                UiKit.Callout(fines, "Fix_" + violation.Id, violation.Remedy);
             }
-            Monoblock(body, "Fines", fines.ToString());
-            _inspectionLog = Monoblock(body, "InspectionLog", "");
         }
 
         void RefreshLegalPanel(GameState state)
@@ -666,94 +738,94 @@ namespace VuonNho.Views
             var compliance = state.Compliance;
             var option = Compliance.Entity(compliance.Entity);
             long dayMs = Compliance.DayMs(_session.Catalog.Balance);
+            bool suspended = compliance.Suspended(state.SimulationTimeMs);
 
-            var status = new System.Text.StringBuilder();
-            status.Append("Hình thức hiện tại · ")
-                  .Append(option != null ? option.DisplayName : "chưa đăng ký").Append('\n');
+            _suspendedBadge.transform.parent.gameObject.SetActive(suspended);
+            if (suspended) UiKit.SetBadge(_suspendedBadge, "Xưởng đang bị đình chỉ", UiTone.Bad);
+
             if (compliance.PendingEntity != BusinessEntity.None)
             {
                 long left = Math.Max(0, compliance.EntityReadyAtMs - state.SimulationTimeMs);
-                status.Append("Hồ sơ đang thẩm định · còn ").Append(left / dayMs + 1).Append(" ngày\n");
+                _entityRow.Set("đang thẩm định · còn " + (left / dayMs + 1) + " ngày", UiTone.Warn);
             }
-            status.Append("Giấy an toàn thực phẩm · ")
-                  .Append(compliance.FoodSafetyCertified ? "đã có"
-                        : compliance.FoodSafetyPending
-                            ? "đang thẩm định, còn " +
-                              (Math.Max(0, compliance.FoodSafetyReadyAtMs - state.SimulationTimeMs) / dayMs + 1) +
-                              " ngày"
-                            : "chưa có").Append('\n');
-            status.Append("Đồ bảo hộ y tế · ")
-                  .Append(compliance.ProtectiveGear ? "đã có" : "chưa mua (ở bảng Nâng cấp)").Append('\n');
-            status.Append("Dây chuyền một chiều · ")
-                  .Append(Compliance.OneWayRespected(_session.Catalog, state) ? "đạt" : "CÓ LỖ HỔNG").Append('\n');
-            status.Append("Đã nộp thuế · ").Append(Coins(compliance.TotalTaxCoins))
-                  .Append("  ·  đã bị phạt · ").Append(Coins(compliance.TotalFinesCoins));
-            if (compliance.Suspended(state.SimulationTimeMs))
-                status.Append("\nXƯỞNG ĐANG BỊ ĐÌNH CHỈ");
-            _legalStatus.text = status.ToString();
-            _legalStatus.color = compliance.Suspended(state.SimulationTimeMs)
-                ? GardenPalette.StateWarn : GardenPalette.TextPrimary;
+            else
+            {
+                _entityRow.Set(option != null ? option.DisplayName : "chưa đăng ký",
+                               option != null ? UiTone.Good : UiTone.Warn);
+            }
+
+            if (compliance.FoodSafetyCertified) _foodSafetyRow.Set("đã có", UiTone.Good);
+            else if (compliance.FoodSafetyPending)
+                _foodSafetyRow.Set("đang thẩm định · còn " +
+                    (Math.Max(0, compliance.FoodSafetyReadyAtMs - state.SimulationTimeMs) / dayMs + 1) +
+                    " ngày", UiTone.Warn);
+            else _foodSafetyRow.Set("chưa có", UiTone.Bad);
+
+            _gearRow.Set(compliance.ProtectiveGear ? "đã có" : "chưa mua",
+                         compliance.ProtectiveGear ? UiTone.Good : UiTone.Warn);
+            bool oneWay = Compliance.OneWayRespected(_session.Catalog, state);
+            _oneWayRow.Set(oneWay ? "đạt" : "có lỗ hổng", oneWay ? UiTone.Good : UiTone.Bad);
+            _taxRow.Set(Coins(compliance.TotalTaxCoins));
+            _fineRow.Set(Coins(compliance.TotalFinesCoins),
+                         compliance.TotalFinesCoins > 0 ? UiTone.Warn : UiTone.Neutral);
+
+            long nextInspection = Math.Max(0, compliance.NextInspectionAtMs - state.SimulationTimeMs);
+            _inspectionRow.Set("sau " + (nextInspection / 1000) + " giây · đã kiểm " +
+                               compliance.InspectionCount + " lần");
 
             string reason;
             UiFactory.SetInteractable(_hkdButton, _session.CanRegisterEntity(BusinessEntity.Hkd, out reason));
             UiFactory.SetInteractable(_tnhhButton, _session.CanRegisterEntity(BusinessEntity.Tnhh, out reason));
             UiFactory.SetInteractable(_foodSafetyButton, _session.CanApplyFoodSafety(out reason));
-
-            long nextInspection = Math.Max(0, compliance.NextInspectionAtMs - state.SimulationTimeMs);
-            _inspectionLog.text =
-                "Đã kiểm tra " + compliance.InspectionCount + " lần  ·  kỳ tới sau " +
-                (nextInspection / 1000) + " giây\n" +
-                (compliance.LastInspectionIndex > 0
-                    ? "Biên bản gần nhất · " +
-                      (string.IsNullOrEmpty(compliance.LastViolationIds)
-                          ? "không vi phạm"
-                          : compliance.LastViolationIds + ", phạt " + Coins(compliance.LastFineCoins))
-                    : "Chưa có biên bản nào.");
         }
 
         // ---------------------------------------------------------------- 5. mo hinh kinh doanh
 
         void BuildModelRows(Transform body)
         {
-            SectionTitle(body, "Lộ trình ba giai đoạn");
-            _phaseLabel = Monoblock(body, "Phase", "");
+            UiKit.Section(body, "Lộ trình ba giai đoạn");
+            var phase = UiKit.Card(body, "Phase");
+            _phaseBadge = UiKit.Badge(phase, "Phase", "", UiTone.Accent);
+            _phaseGoal = UiKit.Note(phase, "Goal", "");
+            _tourismRow = UiKit.StatRow(phase, "Tourism", "Thu du lịch mỗi kỳ");
+            _receivableRow = UiKit.StatRow(phase, "Receivable", "Đang chờ khách thanh toán");
 
-            SectionTitle(body, "Ba phân nhánh khởi nghiệp");
+            UiKit.Section(body, "Ba phân nhánh");
             _branchButtons.Clear();
-            _branchStatus.Clear();
+            _branchBadges.Clear();
             foreach (var branch in Branches.All())
             {
                 var captured = branch.Branch;
-                var card = Card(body, "Branch_" + captured);
-                UiFactory.Label(card.transform, "Name",
-                    branch.DisplayName + "  ·  biên " + branch.MinMarginPercent + "–" +
-                    branch.MaxMarginPercent + "%",
-                    UiFactory.FontSizeRowTitle, TextAnchor.MiddleLeft, GardenPalette.TextPrimary);
-                Monoblock(card.transform, "Detail",
-                    branch.Summary + "\n" +
-                    "CAPEX · " + branch.MinCapexMillionVnd + "–" + branch.MaxCapexMillionVnd + " triệu\n" +
-                    "Vòng quay vốn · " + branch.MinCashCycleDays + "–" + branch.MaxCashCycleDays + " ngày\n" +
-                    "Trong game · giá " + branch.PricePercent + "%" +
-                    (branch.PayoutDelayDays > 0 ? ", tiền về sau " + branch.PayoutDelayDays + " ngày"
-                                                : ", thu tiền ngay") +
-                    (branch.SellsUnpacked ? ", bán được trà mộc" : "") +
-                    (branch.WinterIncome ? ", có thu cả mùa đông" : "") +
-                    (string.IsNullOrEmpty(branch.Requirement) ? "" : "\n" + branch.Requirement));
-                _branchStatus.Add(Paragraph(card.transform, "Status", ""));
-                _branchButtons.Add(UiFactory.TextButton(card.transform, "Unlock",
+                var card = UiKit.Card(body, "Branch_" + captured);
+                UiFactory.Label(card, "Name", branch.DisplayName, UiTokens.TextRowTitle,
+                                TextAnchor.MiddleLeft, GardenPalette.TextPrimary, true);
+                _branchBadges.Add(UiKit.Badge(card, "State_" + captured, "", UiTone.Neutral));
+                UiKit.StatRow(card, "Margin", "Biên lợi nhuận",
+                              branch.MinMarginPercent + "–" + branch.MaxMarginPercent + "%");
+                UiKit.StatRow(card, "Capex", "CAPEX",
+                              branch.MinCapexMillionVnd + "–" + branch.MaxCapexMillionVnd + " triệu");
+                UiKit.StatRow(card, "Cycle", "Vòng quay vốn",
+                              branch.MinCashCycleDays + "–" + branch.MaxCashCycleDays + " ngày");
+                UiKit.StatRow(card, "Price", "Giá bán trong game", branch.PricePercent + "%",
+                              branch.PricePercent >= 100 ? UiTone.Good : UiTone.Warn);
+                if (branch.PayoutDelayDays > 0)
+                    UiKit.StatRow(card, "Delay", "Tiền về sau",
+                                  branch.PayoutDelayDays + " ngày", UiTone.Warn);
+                if (branch.SellsUnpacked)
+                    UiKit.StatRow(card, "Bulk", "Bán được trà mộc", "không cần máy đóng gói",
+                                  UiTone.Good);
+                if (branch.WinterIncome)
+                    UiKit.StatRow(card, "Winter", "Mùa đông", "vẫn có thu", UiTone.Good);
+                UiKit.Callout(card, "Summary", branch.Summary);
+                _branchButtons.Add(UiFactory.TextButton(card, "Unlock",
                     "Mở nhánh · " + Coins(branch.UnlockCostCoins),
                     delegate { Run(_session.UnlockBranch(captured)); }));
             }
 
-            SectionTitle(body, "Kênh bán chính");
-            var channelRow = UiFactory.Node(body, "ChannelRow");
-            var channelLayout = UiFactory.HorizontalList(channelRow, 6f, new RectOffset(0, 0, 0, 0));
-            channelLayout.childForceExpandWidth = true;
-            var channelSize = channelRow.AddComponent<LayoutElement>();
-            channelSize.minHeight = UiFactory.ButtonHeight;
+            UiKit.Section(body, "Kênh bán chính");
+            var channelRow = ButtonRow(body, "ChannelRow");
             _channelButtons.Clear();
-            var channels = new[] { BusinessBranch.None, BusinessBranch.BulkB2B, BusinessBranch.ArtisanalDtc };
-            foreach (var channel in channels)
+            foreach (var channel in SalesChannels)
             {
                 var captured = channel;
                 string caption = channel == BusinessBranch.None
@@ -762,11 +834,18 @@ namespace VuonNho.Views
                     caption, delegate { Run(_session.SetSalesChannel(captured)); },
                     UiFactory.ButtonStyle.Quiet));
             }
-            Paragraph(body, "ChannelNote",
-                "Ba nhánh không loại trừ nhau — kết hợp lại mới tối ưu được dòng tiền và giảm rủi ro " +
-                "mùa vụ. Cái phải chọn là kênh bán chính cho mỗi mẻ trà, và đổi được bất cứ lúc nào. " +
-                "Du lịch trải nghiệm không phải một kênh bán trà: nó là một nguồn thu riêng mỗi kỳ.");
+            UiKit.Callout(body, "ChannelNote",
+                "Ba nhánh không loại trừ nhau — kết hợp lại mới tối ưu được dòng tiền và giảm rủi " +
+                "ro mùa vụ. Cái phải chọn là kênh bán chính cho mỗi mẻ trà, và đổi được bất cứ lúc " +
+                "nào. Du lịch trải nghiệm không phải một kênh bán trà: nó là một nguồn thu riêng " +
+                "mỗi kỳ.");
         }
+
+        /// <summary>Ba lua chon kenh ban. Du lich khong nam trong day — no khong ban tra.</summary>
+        static readonly BusinessBranch[] SalesChannels =
+        {
+            BusinessBranch.None, BusinessBranch.BulkB2B, BusinessBranch.ArtisanalDtc
+        };
 
         void RefreshModelPanel(GameState state)
         {
@@ -775,40 +854,43 @@ namespace VuonNho.Views
             long receivable = 0;
             for (int i = 0; i < state.Receivables.Count; i++) receivable += state.Receivables[i].AmountCoins;
 
-            _phaseLabel.text =
-                Branches.PhaseName(phase) + "\n" + Branches.PhaseGoal(phase) + "\n" +
-                (tourism > 0 ? "Thu du lịch mỗi kỳ · " + Coins(tourism) + "\n" : "") +
-                (receivable > 0
-                    ? "Đang chờ khách bán lẻ thanh toán · " + Coins(receivable) +
-                      " trong " + state.Receivables.Count + " lô"
-                    : "Không có khoản nào chờ thu.");
+            UiKit.SetBadge(_phaseBadge, Branches.PhaseName(phase), UiTone.Accent);
+            _phaseGoal.text = Branches.PhaseGoal(phase);
+            _tourismRow.SetVisible(tourism > 0);
+            _tourismRow.Set(Coins(tourism), UiTone.Good);
+            _receivableRow.Set(receivable > 0
+                ? Coins(receivable) + " trong " + state.Receivables.Count + " lô"
+                : "không có", receivable > 0 ? UiTone.Warn : UiTone.Neutral);
 
             var all = Branches.All();
             for (int i = 0; i < all.Count && i < _branchButtons.Count; i++)
             {
                 var branch = all[i].Branch;
                 bool owned = state.UnlockedBranches.Contains(branch);
-                string reason;
-                bool can = !owned && _session.CanUnlockBranch(branch, out reason);
-                if (owned) reason = "Đã mở.";
-                else if (can) reason = "";
-                else _session.CanUnlockBranch(branch, out reason);
+                string reason = "Đã mở";
+                bool can = false;
+                if (!owned)
+                {
+                    // Ly do tu choi la cau se hien tren the trang thai, nen phai goi CanUnlockBranch
+                    // ke ca khi da biet la khong mo duoc — chinh no dung ra cau do.
+                    can = _session.CanUnlockBranch(branch, out reason);
+                    if (can) reason = "Mở được ngay";
+                }
 
                 _branchButtons[i].gameObject.SetActive(!owned);
                 UiFactory.SetInteractable(_branchButtons[i], can);
-                _branchStatus[i].text = owned ? "Đã mở." : reason;
-                _branchStatus[i].color = owned ? GardenPalette.StateOk : GardenPalette.StateWarn;
+                UiKit.SetBadge(_branchBadges[i], reason,
+                               owned ? UiTone.Good : can ? UiTone.Accent : UiTone.Warn);
             }
 
-            var channels = new[] { BusinessBranch.None, BusinessBranch.BulkB2B, BusinessBranch.ArtisanalDtc };
-            for (int i = 0; i < _channelButtons.Count && i < channels.Length; i++)
+            for (int i = 0; i < _channelButtons.Count && i < SalesChannels.Length; i++)
             {
                 // Ba trang thai, ba y nghia khac nhau: dang chon, chon duoc, va chua mo nhanh.
-                // SetButtonState tu tat interactable cho Selected va Disabled, nen mot lan goi
-                // la du — goi them SetInteractable sau do se ghi de mau cua Selected.
-                bool selected = state.SalesChannel == channels[i];
-                bool available = channels[i] == BusinessBranch.None ||
-                                 state.UnlockedBranches.Contains(channels[i]);
+                // SetButtonState tu tat interactable cho Selected va Disabled, nen mot lan goi la
+                // du — goi them SetInteractable sau do se ghi de mau cua Selected.
+                bool selected = state.SalesChannel == SalesChannels[i];
+                bool available = SalesChannels[i] == BusinessBranch.None ||
+                                 state.UnlockedBranches.Contains(SalesChannels[i]);
                 UiFactory.SetButtonState(_channelButtons[i],
                     selected ? UiFactory.ButtonState.Selected
                              : available ? UiFactory.ButtonState.Normal

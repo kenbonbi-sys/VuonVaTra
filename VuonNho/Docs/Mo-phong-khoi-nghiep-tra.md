@@ -212,5 +212,5 @@ chính bản build:
 Build\HudReview\VuonNho-HudReview.exe -screen-fullscreen 0 -screen-width 1366 -screen-height 768 -vuonnho-qa "Docs\QA-startup.md"
 ```
 
-196 mục kiểm, đạt hết ở cả 1366 × 768 và 1920 × 1080 (chạy ba lần liên tiếp để chắc là không có mục nào phụ thuộc hạt sâu bệnh của lần chạy). Ảnh của năm bảng ở
+190 mục kiểm ở cả 1366 × 768 và 1920 × 1080 (chạy ba lần liên tiếp để chắc là không có mục nào phụ thuộc hạt sâu bệnh của lần chạy). Ảnh của năm bảng ở
 `Docs/screenshots/17-*.png`, đoạn mở màn ở `18-intro.png`.

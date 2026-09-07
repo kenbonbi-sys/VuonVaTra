@@ -96,7 +96,11 @@ namespace VuonNho.Views
                 var hud = FindAnyObjectByType<GameHud>();
                 if (hud != null) hud.OpenPanelByName(_panelName);
                 _panelName = null;
-                return;   // cho mot frame de panel kip dung xong
+                // Bang truot vao va mo dan trong khoang mot phan nam giay. Chup ngay khung hinh
+                // sau se dinh dung luc no dang mo dang do va con lech sang phai — mot buc anh cua
+                // trang thai giua chung chu khong phai cua bang.
+                _captureAt = Time.realtimeSinceStartup + UiMotion.DurationPanel + 0.25f;
+                return;
             }
 
             if (_placeDefinitionId != null && !_placing)
