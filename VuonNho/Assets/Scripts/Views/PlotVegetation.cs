@@ -137,6 +137,7 @@ namespace VuonNho.Views
                     : new Material(Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard"));
                 material.name = "Farm grass " + i;
                 material.hideFlags = HideFlags.DontSave;
+                material.enableInstancing = true;
                 material.color = colors[i];
                 if (material.HasProperty("_BaseColor")) material.SetColor("_BaseColor", colors[i]);
                 if (material.HasProperty("_Smoothness")) material.SetFloat("_Smoothness", 0.12f);

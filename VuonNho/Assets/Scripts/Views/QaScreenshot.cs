@@ -26,6 +26,7 @@ namespace VuonNho.Views
         string _outputPath;
         string _panelName;
         bool _seed;
+        bool _artStates;
         bool _hasWalkPoint;
         Vector3 _walkPoint;
         bool _walked;
@@ -57,6 +58,8 @@ namespace VuonNho.Views
                     _panelName = arguments[i + 1];
                 else if (arguments[i] == SeedArgument)
                     _seed = true;
+                else if (arguments[i] == "-vuonnho-art-states")
+                    _artStates = true;
                 else if (arguments[i] == WalkArgument && i + 1 < arguments.Length)
                     _hasWalkPoint = TryParsePoint(arguments[i + 1], out _walkPoint);
                 else if (arguments[i] == PlaceArgument && i + 1 < arguments.Length)
@@ -87,6 +90,7 @@ namespace VuonNho.Views
             {
                 _seeded = true;
                 SeedGrownGarden();
+                if (_artStates) ArrangeArtReviewStates();
                 // Cho vuon dung lai theo trang thai moi: HUD tinh lai muc tieu, cay moc len,
                 // may bat dau pha. Chup ngay frame sau se dinh mot khung hinh nua voi nua cu.
                 _captureAt = Time.realtimeSinceStartup + 1.5f;
@@ -137,6 +141,7 @@ namespace VuonNho.Views
                 if (bootstrap != null && bootstrap.Rig != null)
                 {
                     if (_mapView == "farm") bootstrap.Rig.FocusGround(new Vector3(0f, 0f, 0.5f), 5.6f);
+                    if (_mapView == "farm-detail") bootstrap.Rig.FocusGround(new Vector3(0f, 0f, 0.5f), 3.2f);
                     if (_mapView == "factory") bootstrap.Rig.FocusGround(new Vector3(8.5f, 0f, 0.7f), 5.7f);
                     if (string.IsNullOrEmpty(_mapView)) bootstrap.Rig.ResetView();
                 }
@@ -247,6 +252,33 @@ namespace VuonNho.Views
         /// Mua theo dung thu tu catalog: thu tu do da thoa dieu kien mo khoa cua tung muc va
         /// tang dan theo gia, nen khong can chep lai lo trinh cua ban can bang o day.
         /// </summary>
+        void ArrangeArtReviewStates()
+        {
+            // Explicit screenshot fixture: show each crop and both indicators in the QA save.
+            var bootstrap = FindAnyObjectByType<GameBootstrap>();
+            if (bootstrap == null || bootstrap.Session == null) return;
+            var session = bootstrap.Session;
+            var state = session.State;
+            state.RobotTargetPlotId = -1;
+            state.RobotReadyAtMs = state.SimulationTimeMs + 120000;
+            for (int i = 0; i < state.Plots.Count; i++)
+            {
+                var plot = state.Plots[i];
+                plot.Unlocked = i < session.Catalog.Crops.Count;
+                plot.CurrentCropId = plot.Unlocked ? session.Catalog.Crops[i].Id : null;
+                plot.NextCropId = null;
+                plot.Phase = !plot.Unlocked ? PlotPhase.Locked :
+                    (i == 0 || i == 2 || i == 5 || i == 7 ? PlotPhase.Ready : PlotPhase.Growing);
+                plot.StartAtMs = state.SimulationTimeMs - 180000;
+                plot.FinishAtMs = state.SimulationTimeMs + 60000;
+                plot.PestPending = false;
+                plot.PestActive = i == 3;
+                plot.Weeds = i == 8 ? 38 : 0;
+                plot.Fertility = 78;
+            }
+            if (bootstrap.Hud != null) bootstrap.Hud.Refresh();
+        }
+
         void SeedGrownGarden()
         {
             var bootstrap = FindAnyObjectByType<GameBootstrap>();

@@ -19,7 +19,7 @@ namespace VuonNho.Views
 
     /// <summary>
     /// Dung hinh tu state. Khong tu cong vat pham hay xu.
-    /// Root giu scale 1 va collider co dinh, khong to nho theo cay; chi VisualRoot doi.
+    /// Root va mat dat giu scale 1, collider co dinh; chi CropAnchor va cay doi.
     /// </summary>
     public sealed class PlotView : MonoBehaviour
     {
@@ -61,12 +61,13 @@ namespace VuonNho.Views
         const float PopDurationSeconds = 0.20f;
 
         float _popEndTime = -1f;
-        float _readySpin;
         float _harvestEndTime = -1f;
         PlotPhase _lastPhase = PlotPhase.Locked;
         PlotVegetation _vegetation;
+        FarmPlantIndicators _indicators;
         bool _plantPoseCached;
         Quaternion _cropRestRotation;
+        Vector3 _cropRestScale = Vector3.one;
         Vector3 _seedlingRestScale;
         Transform _growingCrop;
         float _cropScale = 1f;
@@ -99,6 +100,7 @@ namespace VuonNho.Views
             var plot = state.Plot(PlotId);
             if (plot == null) return;
             CachePlantPose();
+            if (_indicators == null) _indicators = new FarmPlantIndicators(this);
 
             // Do phi doc thang tren mat dat: dat tot thi tham, dat bac mau thi nhat di. Nguoi
             // choi liec ca vuon la thay o nao can bon ma khong phai mo tung popup.
@@ -106,7 +108,7 @@ namespace VuonNho.Views
             {
                 SoilRenderer.material.color = plot.Unlocked
                     ? Color.Lerp(GardenPalette.SoilPoor, GardenPalette.Soil, plot.Fertility / 100f)
-                    : GardenPalette.SoilLocked;
+                    : Color.Lerp(GardenPalette.SoilPoor, GardenPalette.Soil, 0.55f);
             }
             if (LockedOverlay != null) SetActive(LockedOverlay, !plot.Unlocked);
 
@@ -165,7 +167,6 @@ namespace VuonNho.Views
             }
 
             SetActive(ReadyBadge, ready);
-            if (ReadyBadgeRenderer != null) ReadyBadgeRenderer.material.color = accent;
 
             _lastPhase = plot.Phase;
         }
@@ -200,9 +201,10 @@ namespace VuonNho.Views
             return Mathf.Clamp01((float)elapsed / span);
         }
 
-        /// <summary>Chi scale VisualRoot, khong scale collider.</summary>
+        /// <summary>Chi scale cay; mat dat va collider luon dung yen.</summary>
         public void PlayPlantPop()
         {
+            CachePlantPose();
             _popEndTime = Time.time + PopDurationSeconds;
         }
 
@@ -217,13 +219,18 @@ namespace VuonNho.Views
         {
             if (_plantPoseCached) return;
             _plantPoseCached = true;
-            if (CropAnchor != null) _cropRestRotation = CropAnchor.localRotation;
+            if (CropAnchor != null)
+            {
+                _cropRestRotation = CropAnchor.localRotation;
+                _cropRestScale = CropAnchor.localScale;
+            }
             if (SeedlingVisual != null) _seedlingRestScale = SeedlingVisual.transform.localScale;
         }
 
         void LateUpdate()
         {
             if (_vegetation != null) _vegetation.Tick(Time.time, Time.deltaTime);
+            if (_indicators != null) _indicators.Tick(Time.time);
             if (!_plantPoseCached) return;
 
             // Chỉ nghiêng phần cây quanh gốc. Mặt đất, hitbox và dấu trạng thái luôn đứng yên.
@@ -251,6 +258,7 @@ namespace VuonNho.Views
         void OnDestroy()
         {
             if (_vegetation != null) _vegetation.Dispose();
+            if (_indicators != null) _indicators.Dispose();
         }
 
         void Update()
@@ -269,25 +277,19 @@ namespace VuonNho.Views
                 }
             }
 
-            if (VisualRoot != null)
+            if (CropAnchor != null)
             {
                 if (_popEndTime > 0f && Time.time < _popEndTime)
                 {
                     float t = 1f - (_popEndTime - Time.time) / PopDurationSeconds;
                     float bump = 1f + 0.18f * Mathf.Sin(t * Mathf.PI);
-                    VisualRoot.localScale = new Vector3(bump, bump, bump);
+                    CropAnchor.localScale = _cropRestScale * bump;
                 }
-                else if (VisualRoot.localScale != Vector3.one)
+                else if (_popEndTime > 0f)
                 {
-                    VisualRoot.localScale = Vector3.one;
+                    CropAnchor.localScale = _cropRestScale;
                     _popEndTime = -1f;
                 }
-            }
-
-            if (ReadyBadge != null && ReadyBadge.activeSelf)
-            {
-                _readySpin += Time.deltaTime * 90f;
-                ReadyBadge.transform.localRotation = Quaternion.Euler(0f, _readySpin, 0f);
             }
         }
 

@@ -263,39 +263,11 @@ namespace VuonNho.Views
         /// </summary>
         public static void AttachPress(Button button)
         {
-            if (button == null) return;
-            var target = button.transform;
-            var trigger = button.gameObject.GetComponent<EventTrigger>();
-            if (trigger == null) trigger = button.gameObject.AddComponent<EventTrigger>();
-
-            var down = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
-            down.callback.AddListener(delegate
-            {
-                if (!button.IsInteractable()) return;
-                target.localScale = Vector3.one * PressScale;
-            });
-            trigger.triggers.Add(down);
-
-            var up = new EventTrigger.Entry { eventID = EventTriggerType.PointerUp };
-            up.callback.AddListener(delegate { ReleasePress(button); });
-            trigger.triggers.Add(up);
-
-            // Nhan xuong roi keo ra ngoai nut roi tha: PointerUp khong ban, va nut se ket o trang
-            // thai bi an xuong mai mai neu khong bat ca truong hop nay.
-            var exit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
-            exit.callback.AddListener(delegate { ReleasePress(button); });
-            trigger.triggers.Add(exit);
-        }
-
-        static void ReleasePress(Button button)
-        {
-            if (button == null) return;
-            var target = button.transform;
-            float from = target.localScale.x;
-            if (Mathf.Approximately(from, 1f)) return;
-            Run(button.gameObject, DurationQuick,
-                delegate(float t) { target.localScale = Vector3.one * Mathf.Lerp(from, 1f, EaseBack(t)); },
-                delegate { target.localScale = Vector3.one; });
+            if (button == null || button.GetComponent<FarmButtonMotion>() != null) return;
+            // A single component owns scale on hover, press and release. Reusing it prevents
+            // the former EventTrigger release tween from fighting a per-frame spring.
+            var motion = button.gameObject.AddComponent<FarmButtonMotion>();
+            motion.HoverScale = 1.025f;
         }
 
         // ------------------------------------------------------------------ so va thanh

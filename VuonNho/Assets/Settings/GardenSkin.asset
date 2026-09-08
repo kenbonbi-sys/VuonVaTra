@@ -32,15 +32,15 @@ MonoBehaviour:
   - CropId: crop_jasmine
     MaturePrefab: {fileID: 6617784360100790244, guid: edc7f7680b7766a4db442d8c9c2646e7, type: 3}
   - CropId: crop_tea_xo
-    MaturePrefab: {fileID: 0}
+    MaturePrefab: {fileID: 3057793516464219686, guid: e672bf0d511922f45a05fae58b39b5ec, type: 3}
   - CropId: crop_tea_moccau
-    MaturePrefab: {fileID: 0}
+    MaturePrefab: {fileID: 881044454636165555, guid: 771519f1742a58546ac9768a668e602d, type: 3}
   - CropId: crop_tea_nontom
-    MaturePrefab: {fileID: 0}
+    MaturePrefab: {fileID: 845789302244637556, guid: 5bfb27783db62924abe8ef30e95a12f1, type: 3}
   - CropId: crop_tea_dinh
-    MaturePrefab: {fileID: 0}
+    MaturePrefab: {fileID: 4218877819350501299, guid: 1943383f66527a741b03081a0ac7d5c0, type: 3}
   - CropId: crop_oriental_beauty
-    MaturePrefab: {fileID: 0}
+    MaturePrefab: {fileID: 1278247992435679634, guid: bd3c7363e43ec4b4a9f86261f6879e6e, type: 3}
   StationPrefab: {fileID: 4186430695575864216, guid: 3c6a91b347ae393439f8bf32da3a7767, type: 3}
   RobotPrefab: {fileID: 7065989557344915967, guid: 73f5757dd801e484197da5d1a754c0b4, type: 3}
   CharacterPrefab: {fileID: 8704440418347989326, guid: f509f083f5c78484888fe88aa904c9c7, type: 3}
@@ -91,6 +91,16 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: aa4406315d2646542b98d17e28101931, type: 3}
   - Id: crop_jasmine
     Icon: {fileID: 21300000, guid: ee97788bcfc50b24ba2bf02406a4e58b, type: 3}
+  - Id: crop_tea_xo
+    Icon: {fileID: 21300000, guid: f9bec9160dc40344fa3af519b3971222, type: 3}
+  - Id: crop_tea_moccau
+    Icon: {fileID: 21300000, guid: d9b481d60d3f01f468a8452e44963ece, type: 3}
+  - Id: crop_tea_nontom
+    Icon: {fileID: 21300000, guid: 920e3758f85f681499859bdf7f9e3f6a, type: 3}
+  - Id: crop_tea_dinh
+    Icon: {fileID: 21300000, guid: 0f12b75d492a5f64288df78f9e4413ec, type: 3}
+  - Id: crop_oriental_beauty
+    Icon: {fileID: 21300000, guid: de172a00c986d7d41a0a7c157841a43e, type: 3}
   ClickClip: {fileID: 8300000, guid: 7ac12812b94628142871a3f1fbe0cc02, type: 3}
   PlantClip: {fileID: 8300000, guid: 1d95b701d19a30741aa19e000e546fe6, type: 3}
   HarvestClip: {fileID: 8300000, guid: b4ac2cfe9f5a015469473d1d2a7b63f9, type: 3}

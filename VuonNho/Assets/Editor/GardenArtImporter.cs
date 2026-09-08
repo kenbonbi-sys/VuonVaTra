@@ -34,7 +34,8 @@ namespace VuonNho.EditorTools
             "Plot", "Seedling", "Mint", "Chamomile", "Strawberry", "Lemongrass", "Jasmine",
             "Helper", "TeaStation", "BackgroundTree", "Bush", "Fence", "Rock",
             "StonePath", "Planter", "Lantern", "Bench", "Signboard", "Gardener", "Worker",
-            "WitherTrough", "FixDrum", "RollTable", "OxidationRack", "Dryer", "Packer"
+            "WitherTrough", "FixDrum", "RollTable", "OxidationRack", "Dryer", "Packer",
+            "TeaBush", "TeaMocCau", "TeaNonTom", "TeaDinh", "OrientalBeauty"
         };
         static readonly Vector3[] MaximumDimensions =
         {
@@ -50,7 +51,9 @@ namespace VuonNho.EditorTools
             new Vector3(.9f, 1.6f, .9f),
             new Vector3(2.9f, 1.3f, 1.2f), new Vector3(1.7f, 2.3f, 1.7f),
             new Vector3(1.5f, 1.9f, 1.5f), new Vector3(1.9f, 2.3f, 1.4f),
-            new Vector3(2.9f, 2.1f, 1.3f), new Vector3(1.6f, 2.1f, 1.3f)
+            new Vector3(2.9f, 2.1f, 1.3f), new Vector3(1.6f, 2.1f, 1.3f),
+            new Vector3(1.15f, 1f, 1.15f), new Vector3(1.15f, 1f, 1.15f),
+            new Vector3(1.15f, 1f, 1.15f), new Vector3(1.15f, 1f, 1.15f), new Vector3(1.15f, 1f, 1.15f)
         };
         static readonly string[] DecorationIds =
         {
@@ -462,7 +465,12 @@ namespace VuonNho.EditorTools
                     crop.CropId == DefaultContent.CropChamomile ? "Chamomile" :
                     crop.CropId == DefaultContent.CropStrawberry ? "Strawberry" :
                     crop.CropId == DefaultContent.CropLemongrass ? "Lemongrass" :
-                    crop.CropId == DefaultContent.CropJasmine ? "Jasmine" : null;
+                    crop.CropId == DefaultContent.CropJasmine ? "Jasmine" :
+                    crop.CropId == DefaultContent.CropTeaXo ? "TeaBush" :
+                    crop.CropId == DefaultContent.CropTeaMocCau ? "TeaMocCau" :
+                    crop.CropId == DefaultContent.CropTeaNon ? "TeaNonTom" :
+                    crop.CropId == DefaultContent.CropTeaDinh ? "TeaDinh" :
+                    crop.CropId == DefaultContent.CropOrientalBeauty ? "OrientalBeauty" : null;
                 if (model != null) Fill(ref crop.MaturePrefab, prefabs[model], crop.CropId, filled);
             }
         }
@@ -628,7 +636,12 @@ namespace VuonNho.EditorTools
                 { DefaultContent.CropChamomile, "Chamomile" },
                 { DefaultContent.CropStrawberry, "Strawberry" },
                 { DefaultContent.CropLemongrass, "Lemongrass" },
-                { DefaultContent.CropJasmine, "Jasmine" }
+                { DefaultContent.CropJasmine, "Jasmine" },
+                { DefaultContent.CropTeaXo, "TeaBush" },
+                { DefaultContent.CropTeaMocCau, "TeaMocCau" },
+                { DefaultContent.CropTeaNon, "TeaNonTom" },
+                { DefaultContent.CropTeaDinh, "TeaDinh" },
+                { DefaultContent.CropOrientalBeauty, "OrientalBeauty" }
             };
 
             var icons = new List<IconSkinEntry>(skin.Icons ?? new IconSkinEntry[0]);

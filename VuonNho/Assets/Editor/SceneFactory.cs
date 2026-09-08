@@ -219,6 +219,41 @@ namespace VuonNho.EditorTools
             serialized.FindProperty("m_SoftShadowQuality").intValue = (int)SoftShadowQuality.High;
             serialized.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(pipeline);
+            ConfigureContactShadows();
+        }
+
+        static void ConfigureContactShadows()
+        {
+            var renderer = AssetDatabase.LoadAssetAtPath<UniversalRendererData>(ProjectSetup.RendererPath);
+            if (renderer == null) return;
+            // Read the installed URP feature type, whose settings are serialized/internal in URP 17.
+            var type = typeof(UniversalRendererData).Assembly.GetType(
+                "UnityEngine.Rendering.Universal.ScreenSpaceAmbientOcclusion");
+            if (type == null) return;
+            ScriptableRendererFeature feature = null;
+            foreach (var entry in renderer.rendererFeatures)
+                if (entry != null && entry.GetType() == type) { feature = entry; break; }
+            if (feature == null)
+            {
+                feature = (ScriptableRendererFeature)ScriptableObject.CreateInstance(type);
+                feature.name = "Farm contact shadows";
+                AssetDatabase.AddObjectToAsset(feature, renderer);
+                renderer.rendererFeatures.Add(feature);
+            }
+            var settings = new SerializedObject(feature);
+            settings.FindProperty("m_Settings.Intensity").floatValue = .85f;
+            settings.FindProperty("m_Settings.Radius").floatValue = .22f;
+            settings.FindProperty("m_Settings.DirectLightingStrength").floatValue = .18f;
+            settings.FindProperty("m_Settings.Downsample").boolValue = true;
+            settings.FindProperty("m_Settings.Source").intValue = 1;
+            settings.FindProperty("m_Settings.Samples").intValue = 1;
+            settings.FindProperty("m_Settings.BlurQuality").intValue = 0;
+            settings.FindProperty("m_Settings.Falloff").floatValue = 50f;
+            settings.ApplyModifiedPropertiesWithoutUndo();
+            feature.SetActive(true);
+            renderer.SetDirty();
+            EditorUtility.SetDirty(feature);
+            EditorUtility.SetDirty(renderer);
         }
 
         static Camera BuildCamera(GardenSkin skin)
@@ -257,17 +292,20 @@ namespace VuonNho.EditorTools
             var go = new GameObject("KeyLight");
             var light = go.AddComponent<Light>();
             light.type = LightType.Directional;
-            light.color = new Color(1f, 0.97f, 0.90f);
+            light.color = new Color(1f, 0.93f, 0.79f);
             light.intensity = skin.KeyLightIntensity;
             light.shadows = LightShadows.Soft;
             light.shadowStrength = 0.86f;
             light.shadowResolution = UnityEngine.Rendering.LightShadowResolution.VeryHigh;
             var lightData = go.AddComponent<UniversalAdditionalLightData>();
             lightData.softShadowQuality = SoftShadowQuality.High;
-            go.transform.rotation = Quaternion.Euler(48f, -30f, 0f);
-
-            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = skin.AmbientColor;
+            go.transform.rotation = Quaternion.Euler(42f, -35f, 0f);
+            RenderSettings.sun = light;
+            // Warm afternoon sunlight, cool sky fill and soft earth bounce keep shade legible.
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
+            RenderSettings.ambientSkyColor = new Color(.49f, .57f, .64f);
+            RenderSettings.ambientEquatorColor = skin.AmbientColor * .88f;
+            RenderSettings.ambientGroundColor = new Color(.29f, .26f, .20f);
         }
 
         static void BuildGround(GardenSkin skin)
@@ -304,6 +342,7 @@ namespace VuonNho.EditorTools
         {
             var root = new GameObject("Plots");
             var views = new List<PlotView>();
+            FarmSoilArt.BuildBed(root.transform, skin, Columns, Rows);
 
             for (int row = 0; row < Rows; row++)
             {
@@ -325,7 +364,7 @@ namespace VuonNho.EditorTools
             plotRoot.transform.localPosition = position;
             plotRoot.transform.localScale = Vector3.one;   // root giu scale 1
 
-            float colliderSide = skin.PlotSize + 0.1f;
+            float colliderSide = FarmSoilArt.UsesCultivatedSoil(skin) ? skin.PlotSpacing : skin.PlotSize + 0.1f;
             var collider = plotRoot.AddComponent<BoxCollider>();
             collider.center = new Vector3(0f, 0.25f, 0f);
             collider.size = new Vector3(colliderSide, 0.7f, colliderSide);
@@ -338,7 +377,12 @@ namespace VuonNho.EditorTools
             view.VisualRoot = visualRoot.transform;
 
             // --- mat dat
-            if (skin.SoilPrefab != null)
+            if (FarmSoilArt.UsesCultivatedSoil(skin))
+            {
+                view.SoilRenderer = FarmSoilArt.BuildSurface(visualRoot.transform, plotId, position, skin);
+                view.LockedOverlay = FarmSoilArt.BuildLockedBoundary(visualRoot.transform, skin.PlotSpacing);
+            }
+            else if (skin.SoilPrefab != null)
             {
                 var soil = SpawnArt(skin.SoilPrefab, visualRoot.transform, "SoilMesh", Vector3.zero);
                 if (skin.LockedOverlayPrefab != null)
@@ -391,19 +435,9 @@ namespace VuonNho.EditorTools
             badgeAnchor.transform.SetParent(plotRoot.transform, false);
             badgeAnchor.transform.localPosition = new Vector3(0f, 1.15f, 0f);
 
-            if (skin.ReadyBadgePrefab != null)
-            {
-                view.ReadyBadge = SpawnArt(skin.ReadyBadgePrefab, badgeAnchor.transform,
-                                           "ReadyBadge", Vector3.zero);
-            }
-            else
-            {
-                var badge = Primitive(PrimitiveType.Cube, badgeAnchor.transform, "ReadyBadge",
-                                      Vector3.zero, new Vector3(0.2f, 0.2f, 0.2f), "Accent");
-                badge.transform.localRotation = Quaternion.Euler(45f, 0f, 45f);
-                view.ReadyBadge = badge;
-                view.ReadyBadgeRenderer = badge.GetComponent<Renderer>();
-            }
+            // PlotView supplies the camera-facing harvest icon and downward pointer.
+            view.ReadyBadge = new GameObject("ReadyBadge");
+            view.ReadyBadge.transform.SetParent(badgeAnchor.transform, false);
 
             // --- co dai: bon bui o bon goc o, ca cum to nho theo luong co
             var weeds = new GameObject("WeedTufts");
@@ -424,8 +458,8 @@ namespace VuonNho.EditorTools
             weeds.SetActive(false);
 
             // --- dau hieu sau benh, dung canh dau hieu chin nen hai thu khong de len nhau
-            var pest = Primitive(PrimitiveType.Sphere, badgeAnchor.transform, "PestBadge",
-                                 new Vector3(0.34f, 0f, 0f), new Vector3(0.26f, 0.26f, 0.26f), "Pest");
+            var pest = new GameObject("PestBadge");
+            pest.transform.SetParent(plotRoot.transform, false);
             view.PestBadge = pest;
 
             SetActive(view.SeedlingVisual, false);

@@ -56,7 +56,9 @@ namespace VuonNho.Views
                 _selected = false;
             }
 
-            _scale = Mathf.SmoothDamp(_scale, target, ref _velocity,
+            // Settled buttons must not dirty the canvas transform every frame.
+            if (_scale == target && Mathf.Abs(_velocity) < 0.001f) return;
+            _scale = UiMotion.Instant ? target : Mathf.SmoothDamp(_scale, target, ref _velocity,
                                      Mathf.Max(0.01f, ResponseTime), Mathf.Infinity,
                                      Time.unscaledDeltaTime);
             if (Mathf.Abs(_scale - target) < 0.0001f && Mathf.Abs(_velocity) < 0.001f)

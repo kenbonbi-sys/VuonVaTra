@@ -142,9 +142,7 @@ namespace VuonNho.Views
                 rightMiddle, -22, -76, delegate { TogglePanel(_settingsPanel); }, 82, 80);
 
             var dock = FarmSurface(hud.transform, "ActionDock", new Vector2(.5f, 0), 0, 22, 328, 78, 20);
-            // 74 px chu khong 64: o 64 px thi o chu chi con 58 px, va "Xem xưởng" o co chu 12
-            // xuong hai dong roi tran ra khoi o — co mot muc kiem trong bo QA giu dieu do. Dock
-            // rong 292 px voi nut giua 108 px nen 74 + 108 + 74 van con thua le hai ben.
+            // Wider side buttons leave room for Vietnamese labels at a readable 14 px.
             FarmButton(dock.transform, "ResetCameraButton", "Về giữa", FarmHudIcon.Kind.Reset,
                 bl, 8, 6, ResetFarmView, 92, 63);
             FarmButton(dock.transform, "FocusWorkshopButton", "Xem xưởng", FarmHudIcon.Kind.Play,
@@ -168,7 +166,7 @@ namespace VuonNho.Views
             _actionCaption.alignment = TextAnchor.MiddleCenter;
             _actionCaption.color = HudRim;
             foreach (var button in hud.GetComponentsInChildren<Button>(true))
-                button.gameObject.AddComponent<FarmButtonMotion>();
+                UiMotion.AttachPress(button);
         }
 
         /// <summary>

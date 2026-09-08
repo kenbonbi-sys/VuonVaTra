@@ -22,6 +22,8 @@ from pathlib import Path
 import random
 import sys
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 import bpy
 import bmesh
 from mathutils import Vector
@@ -49,6 +51,8 @@ ASSET_IDS = {
     "SM_Gardener": "A14", "SM_Worker": "A15",
     "SM_WitherTrough": "P01", "SM_FixDrum": "P02", "SM_RollTable": "P03",
     "SM_OxidationRack": "P04", "SM_Dryer": "P05", "SM_Packer": "P06",
+    "SM_TeaBush": "T01", "SM_TeaMocCau": "T02", "SM_TeaNonTom": "T03",
+    "SM_TeaDinh": "T04", "SM_OrientalBeauty": "T05",
 }
 SEED = 60206
 MATERIALS = {}
@@ -835,6 +839,10 @@ BUILDERS = {
     "SM_Gardener": gardener, "SM_Worker": worker,
     "SM_WitherTrough": wither_trough, "SM_FixDrum": fix_drum, "SM_RollTable": roll_table,
     "SM_OxidationRack": oxidation_rack, "SM_Dryer": dryer, "SM_Packer": packer,
+    # The detail pass builds tea bushes directly from an empty metre-scale root.
+    "SM_TeaBush": lambda root: None, "SM_TeaMocCau": lambda root: None,
+    "SM_TeaNonTom": lambda root: None, "SM_TeaDinh": lambda root: None,
+    "SM_OrientalBeauty": lambda root: None,
 }
 
 
@@ -972,6 +980,12 @@ def main():
         random.seed(SEED + list(BUILDERS).index(name))
         root = reset_scene(name)
         BUILDERS[name](root)
+        if name in {"SM_Gardener", "SM_Worker"}:
+            from character_detail import enrich_character
+            enrich_character(root, name)
+        from crop_detail import HERB_ASSETS, TEA_ASSETS, enrich_crop
+        if name in HERB_ASSETS or name in TEA_ASSETS:
+            enrich_crop(root, name)
         manifest["assets"][name] = save_export(name, root, project)
         entry = manifest["assets"][name]
         print(f"EXPORTED: {name}: {entry['triangles']} triangles, {entry['renderers']} renderers, {entry['dimensionsUnityMetres']} m")

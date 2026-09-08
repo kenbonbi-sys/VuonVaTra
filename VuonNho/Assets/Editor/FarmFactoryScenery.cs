@@ -37,6 +37,9 @@ namespace VuonNho.EditorTools
             for (float x = minX + 1.68f; x < maxX; x += 1.68f)
                 Cube(floor, "ConcreteJoint", new Vector3(x, 0.009f, centreZ),
                     new Vector3(0.018f, 0.004f, maxZ - minZ), "Joint", Edge * 1.05f);
+            foreach (float z in new[] { -2.2f, -0.2f, 2f, 4.1f })
+                Cube(floor, "CrossJoint", new Vector3(centreX, 0.011f, z),
+                    new Vector3(maxX - minX, 0.004f, 0.018f), "Joint", Edge * 1.05f);
             Cube(floor, "ServiceAisle", new Vector3(centreX, 0.014f, 0.9f),
                 new Vector3(maxX - minX - 0.5f, 0.015f, 0.88f), "Aisle", new Color(0.64f, 0.66f, 0.54f));
             for (float x = minX + 0.3f; x < maxX - 0.4f; x += 0.8f)
@@ -117,6 +120,119 @@ namespace VuonNho.EditorTools
             if (bench != null) bench.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
             Prop(skin.DecorationPrefabFor(DefaultDecorations.Planter), site, "GardenPlanter", new Vector3(-4.8f, 0f, 3.3f));
             Prop(skin.DecorationPrefabFor(DefaultDecorations.Lantern), site, "PathLantern", new Vector3(2.95f, 0f, -3.7f));
+            BuildWorkshopFixtures(site);
+        }
+
+        /// <summary>
+        /// Permanent preparation/storage fittings give a new yard a purpose before its machines
+        /// are purchased. All upright fittings sit behind z=4.4, clear of the six production bays,
+        /// moving conveyors and central service aisle; the front drainage is flush with the floor.
+        /// These are scenery meshes only, with no production state or click targets.
+        /// </summary>
+        static void BuildWorkshopFixtures(Transform site)
+        {
+            var fixtures = new GameObject("WorkshopFittings").transform;
+            fixtures.SetParent(site, false);
+
+            // A modest cloth canopy gives real directional shadows across the preparation bench.
+            var preparation = new GameObject("PreparationAwning").transform;
+            preparation.SetParent(fixtures, false);
+            preparation.localPosition = new Vector3(6.55f, 0f, 4.91f);
+            foreach (float x in new[] { -1.06f, 1.06f })
+            {
+                Cube(preparation, "AwningPost", new Vector3(x, 1.01f, 0.23f),
+                    new Vector3(0.085f, 2.02f, 0.085f), "Timber", Timber);
+                var brace = Cube(preparation, "AwningBrace", new Vector3(x - Mathf.Sign(x) * 0.13f, 1.80f, 0.23f),
+                    new Vector3(0.06f, 0.39f, 0.06f), "Timber", Timber);
+                brace.transform.localRotation = Quaternion.Euler(0f, 0f, -Mathf.Sign(x) * 42f);
+            }
+            Cube(preparation, "AwningBeam", new Vector3(0f, 2f, 0.23f),
+                new Vector3(2.34f, 0.09f, 0.09f), "Timber", Timber);
+            for (int i = 0; i < 7; i++)
+            {
+                float x = (i - 3) * 0.34f;
+                string key = i % 2 == 0 ? "CanvasCream" : "CanvasSage";
+                Color colour = i % 2 == 0 ? new Color(0.89f, 0.83f, 0.64f) : new Color(0.42f, 0.61f, 0.48f);
+                var cloth = Cube(preparation, "CanvasStripe", new Vector3(x, 2.06f, -0.12f),
+                    new Vector3(0.337f, 0.035f, 1.20f), key, colour);
+                cloth.transform.localRotation = Quaternion.Euler(-7f, 0f, 0f);
+                Cube(preparation, "CanvasValance", new Vector3(x, 1.94f, -0.717f),
+                    new Vector3(0.337f, 0.16f, 0.035f), key, colour);
+            }
+            Cube(preparation, "WorkbenchTop", new Vector3(0f, 0.83f, 0f),
+                new Vector3(1.91f, 0.08f, 0.72f), "TimberLight", Timber * 1.08f);
+            foreach (float x in new[] { -0.79f, 0.79f })
+                foreach (float z in new[] { -0.24f, 0.24f })
+                    Cube(preparation, "WorkbenchLeg", new Vector3(x, 0.39f, z),
+                        new Vector3(0.09f, 0.78f, 0.09f), "Sage", Sage);
+            Cube(preparation, "WorkbenchShelf", new Vector3(0f, 0.22f, 0f),
+                new Vector3(1.73f, 0.055f, 0.57f), "Timber", Timber);
+            Cube(preparation, "ToolDrawer", new Vector3(0.48f, 0.65f, 0f),
+                new Vector3(0.71f, 0.23f, 0.61f), "Cream", Cream);
+            Cube(preparation, "DrawerHandle", new Vector3(0.48f, 0.66f, -0.319f),
+                new Vector3(0.19f, 0.035f, 0.04f), "Sage", Sage);
+            Cube(preparation, "SortingTray", new Vector3(-0.39f, 0.9f, -0.01f),
+                new Vector3(0.58f, 0.05f, 0.43f), "Sage", Sage);
+            foreach (float x in new[] { -0.66f, -0.12f })
+                Cube(preparation, "SortingTrayLip", new Vector3(x, 0.94f, -0.01f),
+                    new Vector3(0.03f, 0.075f, 0.43f), "Timber", Timber);
+            Cube(preparation, "SupplyBox", new Vector3(-0.24f, 0.43f, 0f),
+                new Vector3(0.61f, 0.34f, 0.48f), "Carton", new Color(0.78f, 0.62f, 0.39f));
+            Cube(preparation, "SupplyBoxLabel", new Vector3(-0.24f, 0.45f, -0.248f),
+                new Vector3(0.23f, 0.10f, 0.014f), "Cream", Cream);
+
+            // Empty, stacked drying trays are storage fixtures, not an unlocked processing stage.
+            var rack = new GameObject("DryingTrayStorage").transform;
+            rack.SetParent(fixtures, false);
+            rack.localPosition = new Vector3(11.75f, 0f, 4.94f);
+            foreach (float x in new[] { -0.77f, 0.77f })
+                foreach (float z in new[] { -0.26f, 0.26f })
+                    Cube(rack, "RackUpright", new Vector3(x, 0.69f, z),
+                        new Vector3(0.065f, 1.38f, 0.065f), "Sage", Sage);
+            foreach (float y in new[] { 0.26f, 0.64f, 1.02f })
+            {
+                Cube(rack, "TrayShelf", new Vector3(0f, y, 0f),
+                    new Vector3(1.62f, 0.05f, 0.61f), "Timber", Timber);
+                foreach (float z in new[] { -0.267f, 0.267f })
+                    Cube(rack, "TrayRail", new Vector3(0f, y + 0.045f, z),
+                        new Vector3(1.59f, 0.07f, 0.025f), "TimberLight", Timber * 1.08f);
+            }
+            Cube(rack, "RackBackBrace", new Vector3(0f, 0.88f, 0.27f),
+                new Vector3(1.60f, 0.05f, 0.045f), "Sage", Sage);
+
+            Pipe(fixtures, "WashWaterMain", new Vector3(9.99f, 0.48f, 5.12f), new Vector3(13.12f, 0.48f, 5.12f), 0.035f);
+            Pipe(fixtures, "WashWaterRiser", new Vector3(10.02f, 0.06f, 5.12f), new Vector3(10.02f, 1.02f, 5.12f), 0.035f);
+            Pipe(fixtures, "WashWaterTap", new Vector3(10.02f, 1.02f, 5.12f), new Vector3(10.02f, 1.02f, 4.94f), 0.027f);
+            Cube(fixtures, "TapLever", new Vector3(10.02f, 1.06f, 5.055f),
+                new Vector3(0.16f, 0.035f, 0.045f), "Gold", Gold);
+            Cube(fixtures, "WashBasin", new Vector3(10.02f, 0.69f, 4.86f),
+                new Vector3(0.68f, 0.17f, 0.51f), "Cream", Cream);
+            Cube(fixtures, "BasinInset", new Vector3(10.02f, 0.78f, 4.86f),
+                new Vector3(0.54f, 0.015f, 0.38f), "Sage", Sage);
+            foreach (float x in new[] { 9.77f, 10.27f })
+                Cube(fixtures, "BasinSupport", new Vector3(x, 0.32f, 4.96f),
+                    new Vector3(0.065f, 0.64f, 0.065f), "Sage", Sage);
+            foreach (float x in new[] { 10.06f, 12.97f })
+                Cube(fixtures, "UtilityPipeBracket", new Vector3(x, 0.48f, 5.165f),
+                    new Vector3(0.08f, 0.13f, 0.045f), "Timber", Timber);
+
+            // The drainage strip is flat scenery, leaving every worker route passable.
+            Cube(fixtures, "DrainChannel", new Vector3(10.45f, 0.022f, -2.72f),
+                new Vector3(4.5f, 0.018f, 0.18f), "DrainDark", new Color(0.31f, 0.36f, 0.29f));
+            for (int i = 0; i < 18; i++)
+                Cube(fixtures, "DrainGrille", new Vector3(8.28f + i * 0.254f, 0.035f, -2.72f),
+                    new Vector3(0.045f, 0.015f, 0.16f), "Sage", Sage);
+            // These fixtures never move; let the player build batch their shared palette meshes.
+            foreach (var renderer in fixtures.GetComponentsInChildren<MeshRenderer>())
+                GameObjectUtility.SetStaticEditorFlags(renderer.gameObject, StaticEditorFlags.BatchingStatic);
+        }
+
+        static void Pipe(Transform parent, string name, Vector3 from, Vector3 to, float radius)
+        {
+            var direction = to - from;
+            var pipe = Primitive(PrimitiveType.Cylinder, parent, name, (from + to) * 0.5f,
+                new Vector3(radius * 2f, direction.magnitude * 0.5f, radius * 2f), "Sage", Sage);
+            pipe.transform.localRotation = Quaternion.FromToRotation(Vector3.up, direction);
         }
 
         static void Pallet(Transform parent, Vector3 position, bool packed)
@@ -220,7 +336,12 @@ namespace VuonNho.EditorTools
 
         static GameObject Cube(Transform parent, string name, Vector3 position, Vector3 size, string key, Color colour)
         {
-            var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            return Primitive(PrimitiveType.Cube, parent, name, position, size, key, colour);
+        }
+
+        static GameObject Primitive(PrimitiveType type, Transform parent, string name, Vector3 position, Vector3 size, string key, Color colour)
+        {
+            var go = GameObject.CreatePrimitive(type);
             go.name = name;
             go.transform.SetParent(parent, false);
             go.transform.localPosition = position;

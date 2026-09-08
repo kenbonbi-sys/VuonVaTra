@@ -1,5 +1,5 @@
 {
-    "utc": "2026-09-06T15:24:51.9520554Z",
+    "utc": "2026-09-08T05:22:51.0105519Z",
     "unityVersion": "6000.6.0f1",
     "preset": "FBX static; globalScale 1; Convert Units on; Bake Axis Conversion on; imported normals; hierarchy preserved; no animation, cameras, lights or colliders",
     "passed": true,
@@ -58,18 +58,19 @@
             "size": {
                 "x": 0.4316665232181549,
                 "y": 0.23810380697250366,
-                "z": 0.17713597416877747
+                "z": 0.13947361707687378
             },
             "center": {
                 "x": 0.0033295750617980957,
                 "y": 0.13405188918113708,
                 "z": 0.019754961133003235
             },
-            "triangles": 156,
+            "triangles": 656,
             "renderers": 1,
             "fileScale": 1.0,
             "materialNames": [
-                "M_Leaf"
+                "M_Leaf",
+                "M_Grass"
             ],
             "errors": []
         },
@@ -78,16 +79,16 @@
             "path": "Assets/Art/Models/SM_Mint.fbx",
             "guid": "402474a4dceff4c42809058115c85af1",
             "size": {
-                "x": 0.8171732425689697,
-                "y": 0.9200000166893005,
+                "x": 0.806858479976654,
+                "y": 0.9200000762939453,
                 "z": 0.785342276096344
             },
             "center": {
                 "x": 0.0,
-                "y": 0.46000000834465027,
+                "y": 0.46000003814697266,
                 "z": 0.0
             },
-            "triangles": 868,
+            "triangles": 4396,
             "renderers": 2,
             "fileScale": 1.0,
             "materialNames": [
@@ -103,18 +104,19 @@
             "size": {
                 "x": 0.7685863971710205,
                 "y": 0.8673890829086304,
-                "z": 0.6482707262039185
+                "z": 0.644898533821106
             },
             "center": {
                 "x": -0.007881224155426025,
-                "y": 0.43580538034439087,
+                "y": 0.43580543994903564,
                 "z": 0.07918894290924072
             },
-            "triangles": 1428,
+            "triangles": 10640,
             "renderers": 2,
             "fileScale": 1.0,
             "materialNames": [
                 "M_Leaf",
+                "M_Grass",
                 "M_Cream",
                 "M_Yellow"
             ],
@@ -127,19 +129,21 @@
             "size": {
                 "x": 0.7749027013778687,
                 "y": 0.4554654359817505,
-                "z": 0.7929736375808716
+                "z": 0.7633196115493774
             },
             "center": {
                 "x": -0.011574268341064453,
                 "y": 0.23389166593551636,
-                "z": 0.020609796047210693
+                "z": 0.020609766244888306
             },
-            "triangles": 1368,
+            "triangles": 7580,
             "renderers": 2,
             "fileScale": 1.0,
             "materialNames": [
                 "M_Leaf",
-                "M_Red"
+                "M_Grass",
+                "M_Red",
+                "M_Yellow"
             ],
             "errors": []
         },
@@ -148,21 +152,22 @@
             "path": "Assets/Art/Models/SM_Lemongrass.fbx",
             "guid": "a3087ace32d68ed4f8a20144bb87f881",
             "size": {
-                "x": 0.7394735813140869,
+                "x": 0.7271694540977478,
                 "y": 0.925000011920929,
                 "z": 0.8773216009140015
             },
             "center": {
-                "x": -0.0013570785522460938,
+                "x": -0.001357048749923706,
                 "y": 0.45750001072883606,
                 "z": -0.001071155071258545
             },
-            "triangles": 1788,
+            "triangles": 4724,
             "renderers": 2,
             "fileScale": 1.0,
             "materialNames": [
-                "M_Grass",
                 "M_Cream",
+                "M_Grass",
+                "M_Leaf",
                 "M_Accent",
                 "M_Yellow"
             ],
@@ -174,20 +179,21 @@
             "guid": "5daf121e1b3dd9a48b3bdd768c0a05f5",
             "size": {
                 "x": 0.6150931119918823,
-                "y": 0.8610000014305115,
-                "z": 0.6299573183059692
+                "y": 0.8609999418258667,
+                "z": 0.5980750322341919
             },
             "center": {
                 "x": 0.02066659927368164,
-                "y": 0.43050000071525574,
-                "z": 0.0028108954429626465
+                "y": 0.43049997091293335,
+                "z": 0.002810925245285034
             },
-            "triangles": 1580,
+            "triangles": 8684,
             "renderers": 2,
             "fileScale": 1.0,
             "materialNames": [
-                "M_Leaf",
                 "M_Wood",
+                "M_Leaf",
+                "M_Grass",
                 "M_Cream"
             ],
             "errors": []
@@ -470,15 +476,17 @@
                 "y": 0.6887499690055847,
                 "z": 0.0
             },
-            "triangles": 1754,
+            "triangles": 8390,
             "renderers": 5,
             "fileScale": 1.0,
             "materialNames": [
                 "M_Accent",
                 "M_Cream",
                 "M_Wood",
+                "M_Dark",
                 "M_Yellow",
-                "M_Dark"
+                "M_Soil",
+                "M_Red"
             ],
             "errors": []
         },
@@ -496,14 +504,18 @@
                 "y": 0.6575000286102295,
                 "z": 0.05500000715255737
             },
-            "triangles": 1924,
-            "renderers": 5,
+            "triangles": 8254,
+            "renderers": 7,
             "fileScale": 1.0,
             "materialNames": [
                 "M_Cream",
-                "M_Accent",
                 "M_Wood",
-                "M_Dark"
+                "M_Accent",
+                "M_Dark",
+                "M_Yellow",
+                "M_Leaf",
+                "M_Soil",
+                "M_Red"
             ],
             "errors": []
         },
@@ -660,16 +672,135 @@
                 "M_Wood"
             ],
             "errors": []
+        },
+        {
+            "name": "TeaBush",
+            "path": "Assets/Art/Models/SM_TeaBush.fbx",
+            "guid": "ab43c5276441b804db2ef0f611fc6091",
+            "size": {
+                "x": 0.8999999761581421,
+                "y": 0.7799999713897705,
+                "z": 0.8589354753494263
+            },
+            "center": {
+                "x": 0.0,
+                "y": 0.38999998569488525,
+                "z": 0.0
+            },
+            "triangles": 8400,
+            "renderers": 2,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Wood",
+                "M_Leaf",
+                "M_Grass"
+            ],
+            "errors": []
+        },
+        {
+            "name": "TeaMocCau",
+            "path": "Assets/Art/Models/SM_TeaMocCau.fbx",
+            "guid": "7a1d1e49a6ba2204cb63bd55a90dbea9",
+            "size": {
+                "x": 0.8999999761581421,
+                "y": 0.7799999713897705,
+                "z": 0.7882146239280701
+            },
+            "center": {
+                "x": 0.0,
+                "y": 0.38999998569488525,
+                "z": 0.0
+            },
+            "triangles": 8832,
+            "renderers": 2,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Wood",
+                "M_Leaf",
+                "M_Grass"
+            ],
+            "errors": []
+        },
+        {
+            "name": "TeaNonTom",
+            "path": "Assets/Art/Models/SM_TeaNonTom.fbx",
+            "guid": "b3da5b3545cba0141b54e496ee90728d",
+            "size": {
+                "x": 0.8999999761581421,
+                "y": 0.7799999713897705,
+                "z": 0.8654497861862183
+            },
+            "center": {
+                "x": 0.0,
+                "y": 0.38999998569488525,
+                "z": 0.0
+            },
+            "triangles": 8400,
+            "renderers": 2,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Wood",
+                "M_Leaf",
+                "M_Grass"
+            ],
+            "errors": []
+        },
+        {
+            "name": "TeaDinh",
+            "path": "Assets/Art/Models/SM_TeaDinh.fbx",
+            "guid": "fe28fea9e27998e4490279f2f7f8585f",
+            "size": {
+                "x": 0.8455734252929688,
+                "y": 0.7799999713897705,
+                "z": 0.8999999761581421
+            },
+            "center": {
+                "x": 0.0,
+                "y": 0.38999998569488525,
+                "z": 0.0
+            },
+            "triangles": 7536,
+            "renderers": 2,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Wood",
+                "M_Leaf",
+                "M_Grass"
+            ],
+            "errors": []
+        },
+        {
+            "name": "OrientalBeauty",
+            "path": "Assets/Art/Models/SM_OrientalBeauty.fbx",
+            "guid": "3d33bb5e411a7ef4a803408fe6c2c818",
+            "size": {
+                "x": 0.8226533532142639,
+                "y": 0.7799999713897705,
+                "z": 0.8999999761581421
+            },
+            "center": {
+                "x": 0.0,
+                "y": 0.38999998569488525,
+                "z": 0.0
+            },
+            "triangles": 8400,
+            "renderers": 2,
+            "fileScale": 1.0,
+            "materialNames": [
+                "M_Wood",
+                "M_Leaf",
+                "M_Grass",
+                "M_Red"
+            ],
+            "errors": []
         }
     ],
     "createdPrefabs": [
-        "Assets/Art/Prefabs/PF_Worker.prefab",
-        "Assets/Art/Prefabs/PF_WitherTrough.prefab",
-        "Assets/Art/Prefabs/PF_FixDrum.prefab",
-        "Assets/Art/Prefabs/PF_RollTable.prefab",
-        "Assets/Art/Prefabs/PF_OxidationRack.prefab",
-        "Assets/Art/Prefabs/PF_Dryer.prefab",
-        "Assets/Art/Prefabs/PF_Packer.prefab"
+        "Assets/Art/Prefabs/PF_TeaBush.prefab",
+        "Assets/Art/Prefabs/PF_TeaMocCau.prefab",
+        "Assets/Art/Prefabs/PF_TeaNonTom.prefab",
+        "Assets/Art/Prefabs/PF_TeaDinh.prefab",
+        "Assets/Art/Prefabs/PF_OrientalBeauty.prefab"
     ],
     "preservedPrefabs": [
         "Assets/Art/Prefabs/PF_Plot.prefab",
@@ -690,16 +821,26 @@
         "Assets/Art/Prefabs/PF_Lantern.prefab",
         "Assets/Art/Prefabs/PF_Bench.prefab",
         "Assets/Art/Prefabs/PF_Signboard.prefab",
-        "Assets/Art/Prefabs/PF_Gardener.prefab"
+        "Assets/Art/Prefabs/PF_Gardener.prefab",
+        "Assets/Art/Prefabs/PF_Worker.prefab",
+        "Assets/Art/Prefabs/PF_WitherTrough.prefab",
+        "Assets/Art/Prefabs/PF_FixDrum.prefab",
+        "Assets/Art/Prefabs/PF_RollTable.prefab",
+        "Assets/Art/Prefabs/PF_OxidationRack.prefab",
+        "Assets/Art/Prefabs/PF_Dryer.prefab",
+        "Assets/Art/Prefabs/PF_Packer.prefab"
     ],
     "filledSlots": [
-        "WorkerPrefab",
-        "Stations[stage_wither]",
-        "Stations[stage_fix]",
-        "Stations[stage_roll]",
-        "Stations[stage_oxidise]",
-        "Stations[stage_dry]",
-        "Stations[stage_pack]"
+        "crop_tea_xo",
+        "crop_tea_moccau",
+        "crop_tea_nontom",
+        "crop_tea_dinh",
+        "crop_oriental_beauty",
+        "Icons[crop_tea_xo]",
+        "Icons[crop_tea_moccau]",
+        "Icons[crop_tea_nontom]",
+        "Icons[crop_tea_dinh]",
+        "Icons[crop_oriental_beauty]"
     ],
     "errors": []
 }

@@ -130,6 +130,22 @@ namespace VuonNho.Tests.ArtEditor
         }
 
         [Test]
+        public void EveryPlayableCropHasAnImportedDetailedModel()
+        {
+            var skin = AssetDatabase.LoadAssetAtPath<GardenSkin>(SceneFactory.SkinPath);
+            Assert.That(skin, Is.Not.Null);
+            foreach (var crop in DefaultContent.Create().Crops)
+            {
+                var prefab = skin.MaturePrefabFor(crop.Id);
+                Assert.That(prefab, Is.Not.Null, crop.Id + " still falls back to primitive geometry.");
+                Assert.That(prefab.GetComponentsInChildren<MeshFilter>(true).Length, Is.GreaterThan(0), crop.Id);
+                Assert.That(GardenArtImporter.TryGetBounds(prefab.transform, prefab.transform, out var bounds), Is.True);
+                Assert.That(bounds.size.x, Is.LessThanOrEqualTo(skin.PlotSize), crop.Id + " exceeds plot width.");
+                Assert.That(bounds.size.z, Is.LessThanOrEqualTo(skin.PlotSize), crop.Id + " exceeds plot depth.");
+            }
+        }
+
+        [Test]
         public void EveryDefaultDecorationHasAModel()
         {
             foreach (var definition in DefaultContent.Create().Decorations)
