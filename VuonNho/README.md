@@ -209,11 +209,13 @@ Bản build nằm ở `Build/VuonNho-playtest/` và `Build/VuonNho-dev/`.
 "C:\Program Files\Unity\Hub\Editor\6000.6.0f1\Editor\Unity.exe" -batchmode -projectPath "C:\Users\PC\Desktop\Game\VuonNho" -runTests -testPlatform EditMode -testResults results.xml -logFile test.log
 ```
 
-205 test EditMode. 149 bài phủ bảng "Kiểm thử logic bắt buộc" ở mục 10 của kế hoạch: tính nhất
+207 test EditMode. 149 bài phủ bảng "Kiểm thử logic bắt buộc" ở mục 10 của kế hoạch: tính nhất
 quán thời gian, biên timer, trước/sau robot, cap offline 4 giờ, đồng thời, đổi cây/công thức, nâng
 tốc độ giữa chu kỳ, kho, giao dịch, resume lặp, save/backup/schema, chỉnh đồng hồ, balance khác và
 múi giờ. 56 bài còn lại phủ sáu mục của bản mô phỏng khởi nghiệp trà — xem
-[Docs/Mo-phong-khoi-nghiep-tra.md](Docs/Mo-phong-khoi-nghiep-tra.md).
+[Docs/Mo-phong-khoi-nghiep-tra.md](Docs/Mo-phong-khoi-nghiep-tra.md). Hai bài mới nhất nằm ở nhóm
+art: luống đất kề nhau phải khớp mép không hở và không gãy sáng, và mọi cây gieo được phải có model
+chi tiết đã import.
 
 Phần "kiểm thử build và giao diện" của mục 10 chạy bằng bộ QA nằm trong chính bản build:
 

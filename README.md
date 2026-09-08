@@ -80,6 +80,8 @@ Chè vào game thành bốn loại cây riêng trên cùng một gốc:
 | 1 tôm 1 lá (nõn tôm) | 11 | 800 xu |
 | 1 tôm (đinh trà) | 4 | 2.200 xu |
 
+![Luống chè trên nương](VuonNho/Docs/screenshots/hero-nuong-che.png)
+
 Nhân lại thì **doanh thu một vụ của bốn phân hạng gần bằng nhau**. Cái khác là **số lượng**: búp xô
 cho gấp mười lăm lần số hàng phải chạy qua dây chuyền để kiếm cùng số tiền. Dây chuyền đang là giới
 hạn thì hái non hơn là thắng; dây chuyền còn rộng thì hái xô lại nhanh hơn.
@@ -141,8 +143,9 @@ HUD là mesh vector vẽ trong `FarmHudIcon.cs` — không cần file ảnh nào
 "C:\Program Files\Unity\Hub\Editor\6000.6.0f1\Editor\Unity.exe" -batchmode -projectPath VuonNho -runTests -testPlatform EditMode -testResults results.xml -logFile test.log
 ```
 
-**205 test EditMode** phủ tính nhất quán thời gian, biên timer, bù offline, save và schema, cân
-bằng, và sáu mục của mô hình khởi nghiệp trà.
+**207 test EditMode** phủ tính nhất quán thời gian, biên timer, bù offline, save và schema, cân
+bằng, sáu mục của mô hình khởi nghiệp trà, và hai mục art: luống đất kề nhau phải khớp mép, và mọi
+cây gieo được phải có model chi tiết đã import.
 
 Phần giao diện chạy bằng bộ QA nằm trong chính bản build — **190 mục kiểm** ở cả 1366 × 768 và
 1920 × 1080: chơi từ vườn mới tới mở 12 ô, nạp lại save giữa chu kỳ, quét chữ tràn và click xuyên
